@@ -63,7 +63,75 @@ namespace FlowSharp
             return ret;
         }
 
-        public static int to_i(this float f)
+		public static Point TopLeftCorner(this Rectangle r)
+		{
+			return new Point(r.Left, r.Top);
+		}
+
+		public static Point TopRightCorner(this Rectangle r)
+		{
+			return new Point(r.Right, r.Top);
+		}
+
+		public static Point BottomLeftCorner(this Rectangle r)
+		{
+			return new Point(r.Left, r.Bottom);
+		}
+
+		public static Point BottomRightCorner(this Rectangle r)
+		{
+			return new Point(r.Right, r.Bottom);
+		}
+
+		public static Point LeftMiddle(this Rectangle r)
+		{
+			return new Point(r.Left, r.Top + r.Height / 2);
+		}
+
+		public static Point RightMiddle(this Rectangle r)
+		{
+			return new Point(r.Right, r.Top + r.Height / 2);
+		}
+
+		public static Point TopMiddle(this Rectangle r)
+		{
+			return new Point(r.Left + r.Width /2, r.Top);
+		}
+
+		public static Point BottomMiddle(this Rectangle r)
+		{
+			return new Point(r.Left + r.Width / 2, r.Bottom);
+		}
+
+		public static Rectangle Move(this Rectangle r, Point p)
+		{
+			r.Offset(p);
+
+			return r;
+		}
+
+		public static Rectangle Move(this Rectangle r, int x, int y)
+		{
+			r.Offset(x, y);
+
+			return r;
+		}
+
+		public static Point Move(this Point r, Point p)
+		{
+			r.Offset(p);
+
+			return r;
+		}
+
+		public static Point Move(this Point r, int x, int y)
+		{
+			r.Offset(x, y);
+
+			return r;
+		}
+
+		public static int to_i(this float f)
         {
             return (int)f;
         }

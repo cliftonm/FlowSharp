@@ -47,7 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Anchor.cs" />
     <Compile Include="Box.cs" />
+    <Compile Include="Diamond.cs" />
     <Compile Include="Ellipse.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

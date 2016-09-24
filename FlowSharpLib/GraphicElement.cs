@@ -25,8 +25,10 @@ namespace FlowSharpLib
 
 		protected bool HasCornerAnchors { get; set; }
 		protected bool HasCenterAnchors { get; set; }
+		protected bool HasLeftRightAnchors { get; set; }
+		protected bool HasTopBottomAnchors { get; set; }
 
-        protected Bitmap background;
+		protected Bitmap background;
         protected System.Drawing.Rectangle backgroundRectangle;
         protected Pen selectionPen;
 		protected Pen anchorPen = new Pen(Color.Black);
@@ -42,6 +44,8 @@ namespace FlowSharpLib
             selectionPen = new Pen(Color.Red);
 			HasCenterAnchors = true;
 			HasCornerAnchors = true;
+			HasLeftRightAnchors = false;
+			HasTopBottomAnchors = false;
         }
 
 		public void Dispose()
@@ -68,10 +72,20 @@ namespace FlowSharpLib
 			}
 		}
 
+		public virtual ElementProperties CreateProperties()
+		{
+			return new ElementProperties(this);
+		}
+
+		public virtual Rectangle DefaultRectangle()
+		{
+			return DisplayRectangle;
+		}
+
 		/// <summary>
 		/// Clone onto the specified canvas.
 		/// </summary>
-		public GraphicElement Clone(Canvas canvas)
+		public virtual GraphicElement Clone(Canvas canvas)
 		{
 			GraphicElement el = (GraphicElement)Activator.CreateInstance(GetType(), new object[] { canvas });
 			el.DisplayRectangle = DisplayRectangle;
@@ -179,12 +193,16 @@ namespace FlowSharpLib
 				anchors.Add(new Anchor(AnchorPosition.BottomRight, r));
 			}
 
-			if (HasCenterAnchors)
+			if (HasCenterAnchors || HasLeftRightAnchors)
 			{
 				r = new System.Drawing.Rectangle(ExtensionMethods.LeftMiddle(DisplayRectangle).Move(0, -anchorSize / 2), new Size(anchorSize, anchorSize));
 				anchors.Add(new Anchor(AnchorPosition.LeftMiddle, r));
 				r = new System.Drawing.Rectangle(ExtensionMethods.RightMiddle(DisplayRectangle).Move(-anchorSize, -anchorSize / 2), new Size(anchorSize, anchorSize));
 				anchors.Add(new Anchor(AnchorPosition.RightMiddle, r));
+			}
+
+			if (HasCenterAnchors || HasTopBottomAnchors)
+			{ 
 				r = new System.Drawing.Rectangle(ExtensionMethods.TopMiddle(DisplayRectangle).Move(-anchorSize / 2, 0), new Size(anchorSize, anchorSize));
 				anchors.Add(new Anchor(AnchorPosition.TopMiddle, r));
 				r = new System.Drawing.Rectangle(ExtensionMethods.BottomMiddle(DisplayRectangle).Move(-anchorSize / 2, -anchorSize), new Size(anchorSize, anchorSize));
@@ -193,7 +211,6 @@ namespace FlowSharpLib
 
 			return anchors;
 		}
-
 
 		protected virtual void Draw(Graphics gr)
         {

@@ -47,70 +47,70 @@ namespace FlowSharpLib
             return (a < min) ? min : a;
         }
 
-        public static Rectangle Grow(this System.Drawing.Rectangle r, float w)
+        public static Rectangle Grow(this Rectangle r, float w)
         {
-			System.Drawing.Rectangle ret = r;
+			Rectangle ret = r;
             ret.Inflate((int)w, (int)w);
 
             return ret;
         }
 
-        public static Rectangle Grow(this System.Drawing.Rectangle r, float x, float y)
+        public static Rectangle Grow(this Rectangle r, float x, float y)
         {
-			System.Drawing.Rectangle ret = r;
+			Rectangle ret = r;
             ret.Inflate((int)x, (int)y);
 
             return ret;
         }
 
-		public static Point TopLeftCorner(this System.Drawing.Rectangle r)
+		public static Point TopLeftCorner(this Rectangle r)
 		{
 			return new Point(r.Left, r.Top);
 		}
 
-		public static Point TopRightCorner(this System.Drawing.Rectangle r)
+		public static Point TopRightCorner(this Rectangle r)
 		{
 			return new Point(r.Right, r.Top);
 		}
 
-		public static Point BottomLeftCorner(this System.Drawing.Rectangle r)
+		public static Point BottomLeftCorner(this Rectangle r)
 		{
 			return new Point(r.Left, r.Bottom);
 		}
 
-		public static Point BottomRightCorner(this System.Drawing.Rectangle r)
+		public static Point BottomRightCorner(this Rectangle r)
 		{
 			return new Point(r.Right, r.Bottom);
 		}
 
-		public static Point LeftMiddle(this System.Drawing.Rectangle r)
+		public static Point LeftMiddle(this Rectangle r)
 		{
 			return new Point(r.Left, r.Top + r.Height / 2);
 		}
 
-		public static Point RightMiddle(this System.Drawing.Rectangle r)
+		public static Point RightMiddle(this Rectangle r)
 		{
 			return new Point(r.Right, r.Top + r.Height / 2);
 		}
 
-		public static Point TopMiddle(this System.Drawing.Rectangle r)
+		public static Point TopMiddle(this Rectangle r)
 		{
 			return new Point(r.Left + r.Width /2, r.Top);
 		}
 
-		public static Point BottomMiddle(this System.Drawing.Rectangle r)
+		public static Point BottomMiddle(this Rectangle r)
 		{
 			return new Point(r.Left + r.Width / 2, r.Bottom);
 		}
 
-		public static Rectangle Move(this System.Drawing.Rectangle r, Point p)
+		public static Rectangle Move(this Rectangle r, Point p)
 		{
 			r.Offset(p);
 
 			return r;
 		}
 
-		public static Rectangle Move(this System.Drawing.Rectangle r, int x, int y)
+		public static Rectangle Move(this Rectangle r, int x, int y)
 		{
 			r.Offset(x, y);
 

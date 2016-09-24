@@ -67,8 +67,8 @@ namespace FlowSharpLib
 			Point adjustedDelta = anchor.AdjustedDelta(delta);
 			System.Drawing.Rectangle newRect = anchor.Resize((System.Drawing.Rectangle)el.DisplayRectangle, adjustedDelta);
 
-			// Don't get too small.
-			if (newRect.Width > MIN_WIDTH && newRect.Height > MIN_HEIGHT)
+			// Don't get too small, but growing from something that is too small is OK (safety check if we create an object that is too small.)
+			if ( (newRect.Width >= MIN_WIDTH && newRect.Height >= MIN_HEIGHT) || (delta.X > 0 || delta.Y > 0) )
 			{
 				List<GraphicElement> els = EraseTopToBottom(el, adjustedDelta.X.Abs(), adjustedDelta.Y.Abs());
 				el.DisplayRectangle = newRect;

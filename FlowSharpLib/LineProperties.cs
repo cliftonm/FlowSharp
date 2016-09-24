@@ -1,10 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
-namespace FlowSharp
+namespace FlowSharpLib
 {
 	public class ElementProperties
 	{
+		protected GraphicElement element;
+
+		[Category("Element")]
+		public string Name { get { return element?.GetType().Name; } }
 		[Category("Element")]
 		public Rectangle Rectangle { get; set; }
 
@@ -17,19 +22,20 @@ namespace FlowSharp
 
 		public ElementProperties(GraphicElement el)
 		{
+			this.element = el;
 			Rectangle = el.DisplayRectangle;
 			BorderColor = el.BorderPen.Color;
 			BorderWidth = (int)el.BorderPen.Width;
 			FillColor = el.FillBrush.Color;
 		}
 
-		public void UpdateFrom(GraphicElement el)
+		public virtual void UpdateFrom(GraphicElement el)
 		{
 			// The only thing that can change.
 			Rectangle = el.DisplayRectangle;
 		}
 
-		public void Update(GraphicElement el)
+		public virtual void Update(GraphicElement el)
 		{
 			el.DisplayRectangle = Rectangle;
 			el.BorderPen.Color = BorderColor;

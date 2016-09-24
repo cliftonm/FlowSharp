@@ -54,7 +54,10 @@
     <Compile Include="Ellipse.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GraphicElement.cs" />
+    <Compile Include="HorizontalLine.cs" />
+    <Compile Include="LineProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VerticalLine.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

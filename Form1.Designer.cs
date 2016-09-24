@@ -28,20 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.pnlElements = new System.Windows.Forms.Panel();
+			this.pnlToolbox = new System.Windows.Forms.Panel();
 			this.pnlProperties = new System.Windows.Forms.Panel();
 			this.pgElement = new System.Windows.Forms.PropertyGrid();
 			this.pnlCanvas = new System.Windows.Forms.Panel();
 			this.pnlProperties.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// pnlElements
+			// pnlToolbox
 			// 
-			this.pnlElements.Dock = System.Windows.Forms.DockStyle.Left;
-			this.pnlElements.Location = new System.Drawing.Point(0, 0);
-			this.pnlElements.Name = "pnlElements";
-			this.pnlElements.Size = new System.Drawing.Size(200, 584);
-			this.pnlElements.TabIndex = 0;
+			this.pnlToolbox.Dock = System.Windows.Forms.DockStyle.Left;
+			this.pnlToolbox.Location = new System.Drawing.Point(0, 0);
+			this.pnlToolbox.Name = "pnlToolbox";
+			this.pnlToolbox.Size = new System.Drawing.Size(200, 584);
+			this.pnlToolbox.TabIndex = 0;
 			// 
 			// pnlProperties
 			// 
@@ -60,7 +60,6 @@
 			this.pgElement.Name = "pgElement";
 			this.pgElement.Size = new System.Drawing.Size(200, 584);
 			this.pgElement.TabIndex = 0;
-			this.pgElement.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.pgElement_PropertyValueChanged);
 			// 
 			// pnlCanvas
 			// 
@@ -77,7 +76,7 @@
 			this.ClientSize = new System.Drawing.Size(910, 584);
 			this.Controls.Add(this.pnlCanvas);
 			this.Controls.Add(this.pnlProperties);
-			this.Controls.Add(this.pnlElements);
+			this.Controls.Add(this.pnlToolbox);
 			this.Name = "Form1";
 			this.Text = "Form1";
 			this.pnlProperties.ResumeLayout(false);
@@ -87,7 +86,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.Panel pnlElements;
+		private System.Windows.Forms.Panel pnlToolbox;
 		private System.Windows.Forms.Panel pnlProperties;
 		private System.Windows.Forms.PropertyGrid pgElement;
 		private System.Windows.Forms.Panel pnlCanvas;

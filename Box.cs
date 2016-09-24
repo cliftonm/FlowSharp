@@ -4,8 +4,8 @@ namespace FlowSharp
 {
     public class Box : GraphicElement
     {
-        public Box()
-        {
+        public Box(Canvas canvas) : base(canvas)
+		{
             FillBrush = new SolidBrush(Color.White);
             BorderPen = new Pen(Color.LightGreen);
             BorderPen.Width = 5;

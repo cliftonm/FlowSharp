@@ -6,7 +6,7 @@ namespace FlowSharp
 	{
 		protected Point[] path;
 
-		public Diamond()
+		public Diamond(Canvas canvas) : base(canvas)
 		{
 			FillBrush = new SolidBrush(Color.White);
 			BorderPen = new Pen(Color.Purple);

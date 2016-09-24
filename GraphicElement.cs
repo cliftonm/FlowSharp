@@ -5,20 +5,21 @@ namespace FlowSharp
 {
     public static class GraphicElementHelpers
     {
-        public static void Erase(this Bitmap background, Surface surface, Rectangle r)
+        public static void Erase(this Bitmap background, Canvas canvas, Rectangle r)
         {
-            surface.DrawImage(background, r);
+            canvas.DrawImage(background, r);
             background.Dispose();
         }
 	}
 
 	public abstract class GraphicElement
     {
-        public bool Selected { get; set; }
+		public bool Selected { get; set; }
 		public bool ShowAnchors { get; set; }
-        public Rectangle DisplayRectangle { get; set; }
         public Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width); } }
-        public Pen BorderPen { get; set; }
+
+		public Rectangle DisplayRectangle { get; set; }
+		public Pen BorderPen { get; set; }
         public SolidBrush FillBrush { get; set; }
 
 		protected bool HasCornerAnchors { get; set; }
@@ -30,13 +31,30 @@ namespace FlowSharp
 		protected Pen anchorPen = new Pen(Color.Black);
 		protected SolidBrush anchorBrush = new SolidBrush(Color.White);
 		protected int anchorSize = 6;
+		protected Canvas canvas;
 
-        public GraphicElement()
+        public GraphicElement(Canvas canvas)
         {
+			this.canvas = canvas;
             selectionPen = new Pen(Color.Red);
 			HasCenterAnchors = true;
 			HasCornerAnchors = true;
         }
+
+		public bool OnScreen(Rectangle r)
+		{
+			return canvas.OnScreen(r);
+		}
+
+		public bool OnScreen()
+		{
+			return canvas.OnScreen(UpdateRectangle);
+		}
+
+		public bool OnScreen(int dx, int dy)
+		{
+			return canvas.OnScreen(UpdateRectangle.Grow(dx, dy));
+		}
 
 		public virtual void UpdatePath()
 		{
@@ -47,15 +65,15 @@ namespace FlowSharp
             DisplayRectangle = DisplayRectangle.Move(p);
         }
 
-        public virtual void GetBackground(Surface surface)
+        public virtual void GetBackground()
         {
             background?.Dispose();
 			background = null;
-			backgroundRectangle = surface.Clip(UpdateRectangle);
+			backgroundRectangle = canvas.Clip(UpdateRectangle);
 
-			if (surface.OnScreen(backgroundRectangle))
+			if (canvas.OnScreen(backgroundRectangle))
 			{
-				background = surface.GetImage(backgroundRectangle);
+				background = canvas.GetImage(backgroundRectangle);
 			}
         }
 
@@ -65,36 +83,36 @@ namespace FlowSharp
             background = null;
         }
 
-        public virtual void Erase(Surface surface)
+        public virtual void Erase()
         {
-            if (surface.OnScreen(backgroundRectangle))
+            if (canvas.OnScreen(backgroundRectangle))
             {
-                background?.Erase(surface, backgroundRectangle);
-                // surface.Graphics.DrawRectangle(selectionPen, backgroundRectangle);
+                background?.Erase(canvas, backgroundRectangle);
+                // canvas.Graphics.DrawRectangle(selectionPen, backgroundRectangle);
                 background = null;
             }
         }
 
-        public virtual void UpdateScreen(Surface surface, int ix = 0, int iy = 0)
+        public virtual void UpdateScreen(int ix = 0, int iy = 0)
         {
-			Rectangle r = surface.Clip(UpdateRectangle.Grow(ix, iy));
+			Rectangle r = canvas.Clip(UpdateRectangle.Grow(ix, iy));
 
-			if (surface.OnScreen(r))
+			if (canvas.OnScreen(r))
 			{
-				surface.CopyToScreen(r);
+				canvas.CopyToScreen(r);
 			}
         }
 
-        public virtual void Draw(Surface surface)
+        public virtual void Draw()
         {
-            if (surface.OnScreen(UpdateRectangle))
+            if (canvas.OnScreen(UpdateRectangle))
             {
-                Draw(surface.AntiAliasGraphics);
+                Draw(canvas.AntiAliasGraphics);
             }
 
 			if (ShowAnchors)
 			{
-				DrawAnchors(surface);
+				DrawAnchors();
 			}
         }
 
@@ -140,12 +158,12 @@ namespace FlowSharp
             }
         }
 
-		protected virtual void DrawAnchors(Surface surface)
+		protected virtual void DrawAnchors()
 		{
 			GetAnchors().ForEach(a =>
 			{
-				surface.Graphics.DrawRectangle(anchorPen, a.Rectangle);
-				surface.Graphics.FillRectangle(anchorBrush, a.Rectangle.Grow(-1));
+				canvas.Graphics.DrawRectangle(anchorPen, a.Rectangle);
+				canvas.Graphics.FillRectangle(anchorBrush, a.Rectangle.Grow(-1));
 			});
 		}
     }

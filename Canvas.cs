@@ -5,12 +5,12 @@ using System.Windows.Forms;
 
 namespace FlowSharp
 {
-    public class Surface : Panel
+    public class Canvas : Panel
     {
-        protected SolidBrush surfaceBrush;
+		public Action<Canvas> PaintComplete { get; set; }
+		protected SolidBrush canvasBrush;
         protected Pen gridPen;
         protected Size gridSpacing;
-        protected Action<Surface> PaintComplete;
         protected Bitmap bitmap;
         protected Point origin = new Point(0, 0);
         protected Point dragOffset = new Point(0, 0);
@@ -27,19 +27,18 @@ namespace FlowSharp
             }
         }
 
-        public Surface()
+        protected Canvas()
         {
             DoubleBuffered = true;
-            surfaceBrush = new SolidBrush(Color.White);
+            canvasBrush = new SolidBrush(Color.White);
             gridPen = new Pen(Color.LightBlue);
             gridSpacing = new Size(32, 32);
             Paint += OnPaint;
         }
 
-        public static Surface Initialize(Form parent, Action<Surface> paintComplete)
+        public static Canvas Initialize(Control parent)
         {
-            Surface s = new Surface();
-            s.PaintComplete = paintComplete;
+            Canvas s = new Canvas();
             s.Dock = DockStyle.Fill;
             parent.Controls.Add(s);
             s.CreateBitmap();
@@ -109,7 +108,7 @@ namespace FlowSharp
 
         protected void DrawBackground(Graphics gr)
         {
-            gr.FillRectangle(surfaceBrush, DisplayRectangle);
+            gr.FillRectangle(canvasBrush, DisplayRectangle);
         }
 
         protected void DrawGrid(Graphics gr)

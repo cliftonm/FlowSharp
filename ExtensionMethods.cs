@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace FlowSharp
 {
-    public static class Helpers
+    public static class ExtensionMethods
     {
         public static void Step(this int n, int step, Action<int> action)
         {
@@ -152,5 +152,13 @@ namespace FlowSharp
                 action(item);
             }
         }
-    }
+
+		public static void Fire<TEventArgs>(this EventHandler<TEventArgs> theEvent, object sender, TEventArgs e = null) where TEventArgs : EventArgs
+		{
+			if (theEvent != null)
+			{
+				theEvent(sender, e);
+			}
+		}
+	}
 }

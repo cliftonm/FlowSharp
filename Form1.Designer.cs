@@ -28,20 +28,69 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // Form1
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(626, 449);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            this.ResumeLayout(false);
+			this.pnlElements = new System.Windows.Forms.Panel();
+			this.pnlProperties = new System.Windows.Forms.Panel();
+			this.pgElement = new System.Windows.Forms.PropertyGrid();
+			this.pnlCanvas = new System.Windows.Forms.Panel();
+			this.pnlProperties.SuspendLayout();
+			this.SuspendLayout();
+			// 
+			// pnlElements
+			// 
+			this.pnlElements.Dock = System.Windows.Forms.DockStyle.Left;
+			this.pnlElements.Location = new System.Drawing.Point(0, 0);
+			this.pnlElements.Name = "pnlElements";
+			this.pnlElements.Size = new System.Drawing.Size(200, 584);
+			this.pnlElements.TabIndex = 0;
+			// 
+			// pnlProperties
+			// 
+			this.pnlProperties.Controls.Add(this.pgElement);
+			this.pnlProperties.Dock = System.Windows.Forms.DockStyle.Right;
+			this.pnlProperties.Location = new System.Drawing.Point(710, 0);
+			this.pnlProperties.Name = "pnlProperties";
+			this.pnlProperties.Size = new System.Drawing.Size(200, 584);
+			this.pnlProperties.TabIndex = 1;
+			// 
+			// pgElement
+			// 
+			this.pgElement.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pgElement.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.150944F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.pgElement.Location = new System.Drawing.Point(0, 0);
+			this.pgElement.Name = "pgElement";
+			this.pgElement.Size = new System.Drawing.Size(200, 584);
+			this.pgElement.TabIndex = 0;
+			this.pgElement.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.pgElement_PropertyValueChanged);
+			// 
+			// pnlCanvas
+			// 
+			this.pnlCanvas.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pnlCanvas.Location = new System.Drawing.Point(200, 0);
+			this.pnlCanvas.Name = "pnlCanvas";
+			this.pnlCanvas.Size = new System.Drawing.Size(510, 584);
+			this.pnlCanvas.TabIndex = 2;
+			// 
+			// Form1
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.ClientSize = new System.Drawing.Size(910, 584);
+			this.Controls.Add(this.pnlCanvas);
+			this.Controls.Add(this.pnlProperties);
+			this.Controls.Add(this.pnlElements);
+			this.Name = "Form1";
+			this.Text = "Form1";
+			this.pnlProperties.ResumeLayout(false);
+			this.ResumeLayout(false);
 
         }
 
-        #endregion
-    }
+		#endregion
+
+		private System.Windows.Forms.Panel pnlElements;
+		private System.Windows.Forms.Panel pnlProperties;
+		private System.Windows.Forms.PropertyGrid pgElement;
+		private System.Windows.Forms.Panel pnlCanvas;
+	}
 }
 

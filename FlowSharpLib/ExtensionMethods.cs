@@ -37,6 +37,11 @@ namespace FlowSharpLib
             return Math.Abs(n);
         }
 
+		public static int Sign(this int n)
+		{
+			return Math.Sign(n);
+		}
+
         public static int Min(this int a, int max)
         {
             return (a > max) ? max : a;
@@ -54,6 +59,16 @@ namespace FlowSharpLib
 
             return ret;
         }
+
+		public static Point Center(this Rectangle r)
+		{
+			return new Point(r.X + r.Width / 2, r.Y + r.Height / 2);
+		}
+
+		public static bool IsNear(this Point p1, Point p2, int range)
+		{
+			return (p1.X - p2.X).Abs() <= range && (p1.Y - p2.Y).Abs() <= range;
+		}
 
         public static Rectangle Grow(this Rectangle r, float x, float y)
         {

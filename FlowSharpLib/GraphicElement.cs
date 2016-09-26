@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace FlowSharpLib
 {
     public static class GraphicElementHelpers
     {
-        public static void Erase(this Bitmap background, Canvas canvas, System.Drawing.Rectangle r)
+        public static void Erase(this Bitmap background, Canvas canvas, Rectangle r)
         {
             canvas.DrawImage(background, r);
             background.Dispose();
@@ -29,7 +30,7 @@ namespace FlowSharpLib
 		protected bool HasTopBottomAnchors { get; set; }
 
 		protected Bitmap background;
-        protected System.Drawing.Rectangle backgroundRectangle;
+        protected Rectangle backgroundRectangle;
         protected Pen selectionPen;
 		protected Pen anchorPen = new Pen(Color.Black);
 		protected SolidBrush anchorBrush = new SolidBrush(Color.White);
@@ -101,7 +102,7 @@ namespace FlowSharpLib
 			return el;
 		}
 
-		public bool OnScreen(System.Drawing.Rectangle r)
+		public bool OnScreen(Rectangle r)
 		{
 			return canvas.OnScreen(r);
 		}
@@ -116,13 +117,11 @@ namespace FlowSharpLib
 			return canvas.OnScreen(UpdateRectangle.Grow(dx, dy));
 		}
 
-		public virtual void UpdatePath()
-		{
-		}
+		public virtual void UpdatePath() { }
 
-        public virtual void Move(Point p)
+        public virtual void Move(Point delta)
         {
-            DisplayRectangle = DisplayRectangle.Move(p);
+            DisplayRectangle = DisplayRectangle.Move(delta);
         }
 
         public virtual void GetBackground()
@@ -168,7 +167,7 @@ namespace FlowSharpLib
 
 		public virtual void UpdateScreen(int ix = 0, int iy = 0)
 		{
-			System.Drawing.Rectangle r = canvas.Clip((System.Drawing.Rectangle)ExtensionMethods.Grow(UpdateRectangle, (float)ix, (float)iy));
+			Rectangle r = canvas.Clip(UpdateRectangle.Grow((float)ix, (float)iy));
 
 			if (canvas.OnScreen(r))
 			{
@@ -179,44 +178,72 @@ namespace FlowSharpLib
 		public virtual List<Anchor> GetAnchors()
 		{
 			List<Anchor> anchors = new List<Anchor>();
-			System.Drawing.Rectangle r;
+			Rectangle r;
 
 			if (HasCornerAnchors)
 			{
-				r = new System.Drawing.Rectangle(ExtensionMethods.TopLeftCorner(DisplayRectangle), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.TopLeftCorner(), new Size(anchorSize, anchorSize));
 				anchors.Add(new Anchor(AnchorPosition.TopLeft, r));
-				r = new System.Drawing.Rectangle(ExtensionMethods.TopRightCorner(DisplayRectangle).Move(-anchorSize, 0), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.TopRightCorner().Move(-anchorSize, 0), new Size(anchorSize, anchorSize));
 				anchors.Add(new Anchor(AnchorPosition.TopRight, r));
-				r = new System.Drawing.Rectangle(ExtensionMethods.BottomLeftCorner(DisplayRectangle).Move(0, -anchorSize), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.BottomLeftCorner().Move(0, -anchorSize), new Size(anchorSize, anchorSize));
 				anchors.Add(new Anchor(AnchorPosition.BottomLeft, r));
-				r = new System.Drawing.Rectangle(ExtensionMethods.BottomRightCorner(DisplayRectangle).Move(-anchorSize, -anchorSize), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.BottomRightCorner().Move(-anchorSize, -anchorSize), new Size(anchorSize, anchorSize));
 				anchors.Add(new Anchor(AnchorPosition.BottomRight, r));
 			}
 
 			if (HasCenterAnchors || HasLeftRightAnchors)
 			{
-				r = new System.Drawing.Rectangle(ExtensionMethods.LeftMiddle(DisplayRectangle).Move(0, -anchorSize / 2), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.LeftMiddle().Move(0, -anchorSize / 2), new Size(anchorSize, anchorSize));
 				anchors.Add(new Anchor(AnchorPosition.LeftMiddle, r));
-				r = new System.Drawing.Rectangle(ExtensionMethods.RightMiddle(DisplayRectangle).Move(-anchorSize, -anchorSize / 2), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.RightMiddle().Move(-anchorSize, -anchorSize / 2), new Size(anchorSize, anchorSize));
 				anchors.Add(new Anchor(AnchorPosition.RightMiddle, r));
 			}
 
 			if (HasCenterAnchors || HasTopBottomAnchors)
 			{ 
-				r = new System.Drawing.Rectangle(ExtensionMethods.TopMiddle(DisplayRectangle).Move(-anchorSize / 2, 0), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.TopMiddle().Move(-anchorSize / 2, 0), new Size(anchorSize, anchorSize));
 				anchors.Add(new Anchor(AnchorPosition.TopMiddle, r));
-				r = new System.Drawing.Rectangle(ExtensionMethods.BottomMiddle(DisplayRectangle).Move(-anchorSize / 2, -anchorSize), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.BottomMiddle().Move(-anchorSize / 2, -anchorSize), new Size(anchorSize, anchorSize));
 				anchors.Add(new Anchor(AnchorPosition.BottomMiddle, r));
 			}
 
 			return anchors;
 		}
 
+		public virtual List<Point> GetConnectionPoints()
+		{
+			List<Point> connectionPoints = new List<Point>();
+			Rectangle r;
+
+			if (HasCornerAnchors)
+			{
+				connectionPoints.Add(DisplayRectangle.TopLeftCorner());
+				connectionPoints.Add(DisplayRectangle.TopRightCorner());
+				connectionPoints.Add(DisplayRectangle.BottomLeftCorner());
+				connectionPoints.Add(DisplayRectangle.BottomRightCorner());
+			}
+
+			if (HasCenterAnchors || HasLeftRightAnchors)
+			{
+				connectionPoints.Add(DisplayRectangle.LeftMiddle());
+				connectionPoints.Add(DisplayRectangle.RightMiddle());
+			}
+
+			if (HasCenterAnchors || HasTopBottomAnchors)
+			{
+				connectionPoints.Add(DisplayRectangle.TopMiddle());
+				connectionPoints.Add(DisplayRectangle.BottomMiddle());
+			}
+
+			return connectionPoints;
+		}
+
 		protected virtual void Draw(Graphics gr)
         {
             if (Selected)
             {
-				System.Drawing.Rectangle r = DisplayRectangle;
+				Rectangle r = DisplayRectangle;
                 gr.DrawRectangle(selectionPen, r);
             }
         }
@@ -225,8 +252,8 @@ namespace FlowSharpLib
 		{
 			GetAnchors().ForEach((Action<Anchor>)(a =>
 			{
-				canvas.Graphics.DrawRectangle(anchorPen, (System.Drawing.Rectangle)a.Rectangle);
-				canvas.Graphics.FillRectangle(anchorBrush, (System.Drawing.Rectangle)ExtensionMethods.Grow(a.Rectangle, (float)-1));
+				canvas.Graphics.DrawRectangle(anchorPen, (Rectangle)a.Rectangle);
+				canvas.Graphics.FillRectangle(anchorBrush, (Rectangle)ExtensionMethods.Grow(a.Rectangle, (float)-1));
 			}));
 		}
     }

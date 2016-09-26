@@ -10,7 +10,7 @@ namespace FlowSharpLib
 		Arrow,
 	};
 
-	public class HorizontalLine : GraphicElement
+	public class HorizontalLine : GraphicElement, ILine
 	{
 		public AvailableLineCap StartCap { get; set; }
 		public AvailableLineCap EndCap { get; set; }

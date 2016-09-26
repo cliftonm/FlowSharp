@@ -4,12 +4,16 @@ using System.Drawing.Drawing2D;
 
 namespace FlowSharpLib
 {
-	public class VerticalLine : GraphicElement, ILine
+	/// <summary>
+	/// Currently, this is a "poor-man's" connector, consisting of only (at most) two lines at right angles.
+	/// Routing around shapes is ignored.
+	/// </summary>
+	public class DynamicConnector : GraphicElement, ILine
 	{
 		public AvailableLineCap StartCap { get; set; }
 		public AvailableLineCap EndCap { get; set; }
 
-		public VerticalLine(Canvas canvas) : base(canvas)
+		public DynamicConnector(Canvas canvas) : base(canvas)
 		{
 			FillBrush = new SolidBrush(Color.White);
 			BorderPen = new Pen(Color.Black);
@@ -26,21 +30,15 @@ namespace FlowSharpLib
 
 		public override GraphicElement Clone(Canvas canvas)
 		{
-			VerticalLine line = (VerticalLine)base.Clone(canvas);
+			DynamicConnector line = (DynamicConnector)base.Clone(canvas);
 			line.StartCap = StartCap;
 			line.EndCap = EndCap;
 
 			return line;
 		}
 
-		public override Rectangle DefaultRectangle()
-		{
-			return new Rectangle(20, 20, 20, 40);
-		}
-
 		protected override void Draw(Graphics gr)
 		{
-			// See CustomLineCap for creating other possible endcaps besides arrows.
 			// https://msdn.microsoft.com/en-us/library/system.drawing.drawing2d.customlinecap(v=vs.110).aspx
 
 			AdjustableArrowCap adjCap = new AdjustableArrowCap(5, 5, true);

@@ -21,7 +21,7 @@ namespace FlowSharpLib
 		public AnchorPosition Type { get; protected set; }
 		public Rectangle Rectangle { get; protected set; }
 
-		public Anchor(AnchorPosition pos, System.Drawing.Rectangle r)
+		public Anchor(AnchorPosition pos, Rectangle r)
 		{
 			Type = pos;
 			Rectangle = r;
@@ -71,36 +71,36 @@ namespace FlowSharpLib
 			return ad;
 		}
 
-		public Rectangle Resize(System.Drawing.Rectangle r, Point p)
+		public Rectangle Resize(Rectangle r, Point p)
 		{
 			int rx = r.X + r.Width;
 			int ry = r.Y + r.Height;
 			switch (Type)
 			{
 				case AnchorPosition.TopLeft:
-					r = new System.Drawing.Rectangle(r.X + p.X, r.Y + p.Y, rx - r.X - p.X, ry - r.Y - p.Y);
+					r = new Rectangle(r.X + p.X, r.Y + p.Y, rx - r.X - p.X, ry - r.Y - p.Y);
 					break;
 				case AnchorPosition.TopRight:
-					r = new System.Drawing.Rectangle(r.X, r.Y + p.Y, rx - r.X + p.X, ry - r.Y - p.Y);
+					r = new Rectangle(r.X, r.Y + p.Y, rx - r.X + p.X, ry - r.Y - p.Y);
 					break;
 				case AnchorPosition.BottomLeft:
-					r = new System.Drawing.Rectangle(r.X + p.X, r.Y, rx - r.X - p.X, ry - r.Y + p.Y);
+					r = new Rectangle(r.X + p.X, r.Y, rx - r.X - p.X, ry - r.Y + p.Y);
 					break;
 				case AnchorPosition.BottomRight:
-					r = new System.Drawing.Rectangle(r.X, r.Y, rx - r.X + p.X, ry - r.Y + p.Y);
+					r = new Rectangle(r.X, r.Y, rx - r.X + p.X, ry - r.Y + p.Y);
 					break;
 
 				case AnchorPosition.LeftMiddle:
-					r = new System.Drawing.Rectangle(r.X + p.X, r.Y, rx - r.X - p.X, r.Height);
+					r = new Rectangle(r.X + p.X, r.Y, rx - r.X - p.X, r.Height);
 					break;
 				case AnchorPosition.RightMiddle:
-					r = new System.Drawing.Rectangle(r.X, r.Y, rx - r.X + p.X, r.Height);
+					r = new Rectangle(r.X, r.Y, rx - r.X + p.X, r.Height);
 					break;
 				case AnchorPosition.TopMiddle:
-					r = new System.Drawing.Rectangle(r.X, r.Y + p.Y, r.Width, ry - r.Y - p.Y);
+					r = new Rectangle(r.X, r.Y + p.Y, r.Width, ry - r.Y - p.Y);
 					break;
 				case AnchorPosition.BottomMiddle:
-					r = new System.Drawing.Rectangle(r.X, r.Y, r.Width, ry - r.Y + p.Y);
+					r = new Rectangle(r.X, r.Y, r.Width, ry - r.Y + p.Y);
 					break;
 			}
 

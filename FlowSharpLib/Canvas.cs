@@ -48,24 +48,24 @@ namespace FlowSharpLib
             };
         }
 
-        public void DrawImage(Bitmap img, System.Drawing.Rectangle r)
+        public void DrawImage(Bitmap img, Rectangle r)
         {
             Graphics.DrawImage(img, r);
         }
 
-        public Bitmap GetImage(System.Drawing.Rectangle r)
+        public Bitmap GetImage(Rectangle r)
         {
             return bitmap.Clone(r, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
         }
 
-        public void CopyToScreen(System.Drawing.Rectangle r)
+        public void CopyToScreen(Rectangle r)
         {
 			Bitmap b = bitmap.Clone(r, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			CreateGraphics().DrawImage(b, r);
 			b.Dispose();
         }
 
-        public bool OnScreen(System.Drawing.Rectangle r)
+        public bool OnScreen(Rectangle r)
         {
             return r.X < bitmap.Width && r.Y < bitmap.Height && r.Location.X + r.Width >= 0 && r.Location.Y + r.Height >= 0 && r.Width > 0 && r.Height > 0;
         }
@@ -75,7 +75,7 @@ namespace FlowSharpLib
             dragOffset = new Point((dragOffset.X + p.X) % gridSpacing.Width, (dragOffset.Y + p.Y) % gridSpacing.Height);
         }
 
-        public Rectangle Clip(System.Drawing.Rectangle r)
+        public Rectangle Clip(Rectangle r)
         {
             int x = r.X.Max(0);
             int y = r.Y.Max(0);
@@ -85,7 +85,7 @@ namespace FlowSharpLib
             width += r.X - x;
             height += r.Y - y;
 
-            return new System.Drawing.Rectangle(x, y, width, height);
+            return new Rectangle(x, y, width, height);
         }
 
         protected void CreateBitmap()

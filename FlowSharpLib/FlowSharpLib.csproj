@@ -50,13 +50,16 @@
     </Compile>
     <Compile Include="CanvasController.cs" />
     <Compile Include="Diamond.cs" />
+    <Compile Include="DynamicConnector.cs" />
     <Compile Include="ElementProperties.cs" />
     <Compile Include="Ellipse.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GraphicElement.cs" />
     <Compile Include="HorizontalLine.cs" />
+    <Compile Include="ILine.cs" />
     <Compile Include="LineProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ToolboxDynamicConnector.cs" />
     <Compile Include="VerticalLine.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

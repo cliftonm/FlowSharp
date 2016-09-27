@@ -91,25 +91,43 @@ namespace FlowSharpLib
 
 		public override void UpdatePath()
 		{
-			// TODO: Figure out whether we're doing H-V-H, or V-H-V, or H-V or V-H
+			// TODO: Figure out whether we're doing H-V-H, or V-H-V, or H-V or V-H, or something even more complicated if we are avoiding shape boundaries.
 
 			lines[0].StartCap = StartCap;
 			lines[2].EndCap = EndCap;
 
-			lines[0].DisplayRectangle = new Rectangle(startPoint.X, startPoint.Y - BaseController.MIN_WIDTH / 2, (endPoint.X - startPoint.X)/2, BaseController.MIN_HEIGHT);
-			lines[1].DisplayRectangle = new Rectangle(startPoint.X + (endPoint.X - startPoint.X) / 2 - BaseController.MIN_WIDTH / 2, startPoint.Y, BaseController.MIN_WIDTH, endPoint.Y - startPoint.Y);
-			lines[2].DisplayRectangle = new Rectangle(startPoint.X + (endPoint.X - startPoint.X) / 2, endPoint.Y - BaseController.MIN_HEIGHT / 2, (endPoint.X - startPoint.X) / 2, BaseController.MIN_HEIGHT);
+			if (startPoint.X < endPoint.X)
+			{
+				lines[0].DisplayRectangle = new Rectangle(startPoint.X, startPoint.Y - BaseController.MIN_WIDTH / 2, (endPoint.X - startPoint.X) / 2, BaseController.MIN_HEIGHT);
+			}
+			else
+			{
+				lines[0].DisplayRectangle = new Rectangle(endPoint.X + (startPoint.X - endPoint.X)/2, startPoint.Y - BaseController.MIN_WIDTH / 2, (startPoint.X - endPoint.X) / 2, BaseController.MIN_HEIGHT);
+			}
+
+			if (startPoint.Y < endPoint.Y)
+			{
+				lines[1].DisplayRectangle = new Rectangle(startPoint.X + (endPoint.X - startPoint.X) / 2 - BaseController.MIN_WIDTH / 2, startPoint.Y, BaseController.MIN_WIDTH, endPoint.Y - startPoint.Y);
+			}
+			else
+			{
+				lines[1].DisplayRectangle = new Rectangle(endPoint.X + (startPoint.X - endPoint.X) / 2 - BaseController.MIN_WIDTH / 2, endPoint.Y, BaseController.MIN_WIDTH, startPoint.Y - endPoint.Y);
+			}
+
+			if (startPoint.X < endPoint.X)
+			{
+				lines[2].DisplayRectangle = new Rectangle(startPoint.X + (endPoint.X - startPoint.X) / 2, endPoint.Y - BaseController.MIN_HEIGHT / 2, (endPoint.X - startPoint.X) / 2, BaseController.MIN_HEIGHT);
+			}
+			else
+			{
+				lines[2].DisplayRectangle = new Rectangle(endPoint.X, endPoint.Y - BaseController.MIN_WIDTH / 2, (startPoint.X - endPoint.X) / 2, BaseController.MIN_HEIGHT);
+			}
 
 			lines.ForEach(l => ((GraphicElement)l).UpdatePath());
 		}
 
 		protected virtual Rectangle RecalcDisplayRectangle()
 		{
-			//int x1 = lines.Min(l => l.X1);
-			//int y1 = lines.Min(l => l.Y1);
-			//int x2 = lines.Max(l => l.X2);
-			//int y2 = lines.Max(l => l.Y2);
-
 			int x1 = startPoint.X.Min(endPoint.X);
 			int y1 = startPoint.Y.Min(endPoint.Y);
 			int x2 = startPoint.X.Max(endPoint.X);

@@ -2,32 +2,14 @@
 
 namespace FlowSharpLib
 {
-	public enum AnchorPosition
-	{
-		TopLeft,
-		TopRight,
-		BottomLeft,
-		BottomRight,
-		LeftMiddle,
-		RightMiddle,
-		TopMiddle,
-		BottomMiddle,
-
-		// For dynamic connector:
-		Start,
-		End,
-
-		None,
-	};
-
 	public class ShapeAnchor
 	{
 		public const int PROXIMITY = 6;
 
-		public AnchorPosition Type { get; protected set; }
+		public GripType Type { get; protected set; }
 		public Rectangle Rectangle { get; protected set; }
 
-		public ShapeAnchor(AnchorPosition pos, Rectangle r)
+		public ShapeAnchor(GripType pos, Rectangle r)
 		{
 			Type = pos;
 			Rectangle = r;
@@ -47,25 +29,25 @@ namespace FlowSharpLib
 
 			switch (Type)
 			{
-				case AnchorPosition.TopLeft:
-				case AnchorPosition.TopRight:
-				case AnchorPosition.BottomLeft:
-				case AnchorPosition.BottomRight:
-				case AnchorPosition.Start:
-				case AnchorPosition.End:
+				case GripType.TopLeft:
+				case GripType.TopRight:
+				case GripType.BottomLeft:
+				case GripType.BottomRight:
+				case GripType.Start:
+				case GripType.End:
 					ad = delta;
 					break;
 
-				case AnchorPosition.LeftMiddle:
+				case GripType.LeftMiddle:
 					ad = new Point(delta.X, 0);
 					break;
-				case AnchorPosition.RightMiddle:
+				case GripType.RightMiddle:
 					ad = new Point(delta.X, 0);
 					break;
-				case AnchorPosition.TopMiddle:
+				case GripType.TopMiddle:
 					ad = new Point(0, delta.Y);
 					break;
-				case AnchorPosition.BottomMiddle:
+				case GripType.BottomMiddle:
 					ad = new Point(0, delta.Y);
 					break;
 			}
@@ -80,7 +62,7 @@ namespace FlowSharpLib
 
 			switch (Type)
 			{
-				case AnchorPosition.TopLeft:
+				case GripType.TopLeft:
 					{
 						// This here and in other cases prevents "shoving" when mins are reached.
 						int w = (rx - r.X - p.X).Max(BaseController.MIN_WIDTH);
@@ -90,49 +72,49 @@ namespace FlowSharpLib
 						r = new Rectangle(r.X + p.X, r.Y + p.Y, w, h);
 						break;
 					}
-				case AnchorPosition.TopRight:
+				case GripType.TopRight:
 					{
 						int h = (ry - r.Y - p.Y).Max(BaseController.MIN_HEIGHT);
 						if (h == BaseController.MIN_HEIGHT) p.Y = 0;
 						r = new Rectangle(r.X, r.Y + p.Y, (rx - r.X + p.X).Max(BaseController.MIN_WIDTH), h);
 						break;
 					}
-				case AnchorPosition.BottomLeft:
+				case GripType.BottomLeft:
 					{
 						int w = (rx - r.X - p.X).Max(BaseController.MIN_WIDTH);
 						if (w == BaseController.MIN_WIDTH) p.X = 0;
 						r = new Rectangle(r.X + p.X, r.Y, w, (ry - r.Y + p.Y).Max(BaseController.MIN_HEIGHT));
 						break;
 					}
-				case AnchorPosition.BottomRight:
+				case GripType.BottomRight:
 					r = new Rectangle(r.X, r.Y, (rx - r.X + p.X).Max(BaseController.MIN_WIDTH), (ry - r.Y + p.Y).Max(BaseController.MIN_HEIGHT));
 					break;
 
-				case AnchorPosition.LeftMiddle:
+				case GripType.LeftMiddle:
 					{
 						int w = (rx - r.X - p.X).Max(BaseController.MIN_WIDTH);
 						if (w == BaseController.MIN_WIDTH) p.X = 0;
 						r = new Rectangle(r.X + p.X, r.Y, w, r.Height);
 						break;
 					}
-				case AnchorPosition.RightMiddle:
+				case GripType.RightMiddle:
 					r = new Rectangle(r.X, r.Y, (rx - r.X + p.X).Max(BaseController.MIN_WIDTH), r.Height);
 					break;
-				case AnchorPosition.TopMiddle:
+				case GripType.TopMiddle:
 					{
 						int h = (ry - r.Y - p.Y).Max(BaseController.MIN_HEIGHT);
 						if (h == BaseController.MIN_HEIGHT) p.Y = 0;
 						r = new Rectangle(r.X, r.Y + p.Y, r.Width, h);
 						break;
 					}
-				case AnchorPosition.BottomMiddle:
+				case GripType.BottomMiddle:
 					r = new Rectangle(r.X, r.Y, r.Width, (ry - r.Y + p.Y).Max(BaseController.MIN_HEIGHT));
 					break;
 
-				case AnchorPosition.Start:
+				case GripType.Start:
 					r = new Rectangle(r.X + p.X, r.Y + p.Y, r.Width - p.X, r.Height - p.Y);
 					break;
-				case AnchorPosition.End:
+				case GripType.End:
 					r = new Rectangle(r.X, r.Y, r.Width + p.X, r.Height + p.Y);
 					break;
 			}

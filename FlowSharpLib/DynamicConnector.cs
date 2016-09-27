@@ -61,16 +61,16 @@ namespace FlowSharpLib
 			int endxOffset = startPoint.X < endPoint.X ? -anchorSize : 0;
 
 			return new List<ShapeAnchor>() {
-				new ShapeAnchor(AnchorPosition.Start, new Rectangle(startPoint.Move(startxOffset, -anchorSize/2), szAnchor)),
-				new ShapeAnchor(AnchorPosition.End, new Rectangle(endPoint.Move(endxOffset, -anchorSize/2), szAnchor)),
+				new ShapeAnchor(GripType.Start, new Rectangle(startPoint.Move(startxOffset, -anchorSize/2), szAnchor)),
+				new ShapeAnchor(GripType.End, new Rectangle(endPoint.Move(endxOffset, -anchorSize/2), szAnchor)),
 			};
 		}
 
 		public override List<ConnectionPoint> GetConnectionPoints()
 		{
 			return new List<ConnectionPoint>() {
-				new ConnectionPoint(ConnectionPosition.Start, startPoint),
-				new ConnectionPoint(ConnectionPosition.End, endPoint),
+				new ConnectionPoint(GripType.Start, startPoint),
+				new ConnectionPoint(GripType.End, endPoint),
 			};
 		}
 
@@ -101,7 +101,7 @@ namespace FlowSharpLib
 
 		public override void UpdateSize(ShapeAnchor anchor, Point delta)
 		{
-			if (anchor.Type == AnchorPosition.Start)
+			if (anchor.Type == GripType.Start)
 			{
 				startPoint = startPoint.Move(delta);
 			}

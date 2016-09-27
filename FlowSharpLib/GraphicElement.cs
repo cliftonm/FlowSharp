@@ -28,8 +28,9 @@ namespace FlowSharpLib
     {
 		public bool Selected { get; set; }
 		public bool ShowConnectionPoints { get; set; }
+		public bool HideConnectionPoints { get; set; }
 		public bool ShowAnchors { get; set; }
-        public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + (ShowConnectionPoints ? 3 : 0)); } }
+        public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + ((ShowConnectionPoints || HideConnectionPoints) ? 3 : 0)); } }
 		public List<Connection> Connections = new List<Connection>();
 
 		public Rectangle DisplayRectangle { get; set; }
@@ -204,6 +205,10 @@ namespace FlowSharpLib
 			{
 				canvas.CopyToScreen(r);
 			}
+
+			// We can now revert back to a smaller update rectangle if we are hiding connection points as a result
+			// of an anchor moving out of range of the element.
+			HideConnectionPoints = false;
 		}
 
 		public virtual List<ShapeAnchor> GetAnchors()
@@ -214,29 +219,29 @@ namespace FlowSharpLib
 			if (HasCornerAnchors)
 			{
 				r = new Rectangle(DisplayRectangle.TopLeftCorner(), new Size(anchorSize, anchorSize));
-				anchors.Add(new ShapeAnchor(AnchorPosition.TopLeft, r));
+				anchors.Add(new ShapeAnchor(GripType.TopLeft, r));
 				r = new Rectangle(DisplayRectangle.TopRightCorner().Move(-anchorSize, 0), new Size(anchorSize, anchorSize));
-				anchors.Add(new ShapeAnchor(AnchorPosition.TopRight, r));
+				anchors.Add(new ShapeAnchor(GripType.TopRight, r));
 				r = new Rectangle(DisplayRectangle.BottomLeftCorner().Move(0, -anchorSize), new Size(anchorSize, anchorSize));
-				anchors.Add(new ShapeAnchor(AnchorPosition.BottomLeft, r));
+				anchors.Add(new ShapeAnchor(GripType.BottomLeft, r));
 				r = new Rectangle(DisplayRectangle.BottomRightCorner().Move(-anchorSize, -anchorSize), new Size(anchorSize, anchorSize));
-				anchors.Add(new ShapeAnchor(AnchorPosition.BottomRight, r));
+				anchors.Add(new ShapeAnchor(GripType.BottomRight, r));
 			}
 
 			if (HasCenterAnchors || HasLeftRightAnchors)
 			{
 				r = new Rectangle(DisplayRectangle.LeftMiddle().Move(0, -anchorSize / 2), new Size(anchorSize, anchorSize));
-				anchors.Add(new ShapeAnchor(AnchorPosition.LeftMiddle, r));
+				anchors.Add(new ShapeAnchor(GripType.LeftMiddle, r));
 				r = new Rectangle(DisplayRectangle.RightMiddle().Move(-anchorSize, -anchorSize / 2), new Size(anchorSize, anchorSize));
-				anchors.Add(new ShapeAnchor(AnchorPosition.RightMiddle, r));
+				anchors.Add(new ShapeAnchor(GripType.RightMiddle, r));
 			}
 
 			if (HasCenterAnchors || HasTopBottomAnchors)
 			{ 
 				r = new Rectangle(DisplayRectangle.TopMiddle().Move(-anchorSize / 2, 0), new Size(anchorSize, anchorSize));
-				anchors.Add(new ShapeAnchor(AnchorPosition.TopMiddle, r));
+				anchors.Add(new ShapeAnchor(GripType.TopMiddle, r));
 				r = new Rectangle(DisplayRectangle.BottomMiddle().Move(-anchorSize / 2, -anchorSize), new Size(anchorSize, anchorSize));
-				anchors.Add(new ShapeAnchor(AnchorPosition.BottomMiddle, r));
+				anchors.Add(new ShapeAnchor(GripType.BottomMiddle, r));
 			}
 
 			return anchors;
@@ -248,30 +253,30 @@ namespace FlowSharpLib
 
 			if (HasCornerAnchors)
 			{
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.TopLeft, DisplayRectangle.TopLeftCorner()));
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.TopRight, DisplayRectangle.TopRightCorner()));
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.BottomLeft, DisplayRectangle.BottomLeftCorner()));
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.BottomRight, DisplayRectangle.BottomRightCorner()));
+				connectionPoints.Add(new ConnectionPoint(GripType.TopLeft, DisplayRectangle.TopLeftCorner()));
+				connectionPoints.Add(new ConnectionPoint(GripType.TopRight, DisplayRectangle.TopRightCorner()));
+				connectionPoints.Add(new ConnectionPoint(GripType.BottomLeft, DisplayRectangle.BottomLeftCorner()));
+				connectionPoints.Add(new ConnectionPoint(GripType.BottomRight, DisplayRectangle.BottomRightCorner()));
 			}
 
 			if (HasCenterAnchors)
 			{
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.LeftMiddle, DisplayRectangle.LeftMiddle()));
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.RightMiddle, DisplayRectangle.RightMiddle()));
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.TopMiddle, DisplayRectangle.TopMiddle()));
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.BottomMiddle, DisplayRectangle.BottomMiddle()));
+				connectionPoints.Add(new ConnectionPoint(GripType.LeftMiddle, DisplayRectangle.LeftMiddle()));
+				connectionPoints.Add(new ConnectionPoint(GripType.RightMiddle, DisplayRectangle.RightMiddle()));
+				connectionPoints.Add(new ConnectionPoint(GripType.TopMiddle, DisplayRectangle.TopMiddle()));
+				connectionPoints.Add(new ConnectionPoint(GripType.BottomMiddle, DisplayRectangle.BottomMiddle()));
 			}
 
 			if (HasLeftRightAnchors)
 			{
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.Start, DisplayRectangle.LeftMiddle()));
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.End, DisplayRectangle.RightMiddle()));
+				connectionPoints.Add(new ConnectionPoint(GripType.Start, DisplayRectangle.LeftMiddle()));
+				connectionPoints.Add(new ConnectionPoint(GripType.End, DisplayRectangle.RightMiddle()));
 			}
 
 			if (HasTopBottomAnchors)
 			{
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.Start, DisplayRectangle.TopMiddle()));
-				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.End, DisplayRectangle.BottomMiddle()));
+				connectionPoints.Add(new ConnectionPoint(GripType.Start, DisplayRectangle.TopMiddle()));
+				connectionPoints.Add(new ConnectionPoint(GripType.End, DisplayRectangle.BottomMiddle()));
 			}
 
 			return connectionPoints;

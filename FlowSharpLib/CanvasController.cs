@@ -76,9 +76,7 @@ namespace FlowSharpLib
 				{
 					if (selectedElement is DynamicConnector || SelectedElement is ILine)
 					{
-						// We can snap an endpoint
-
-						if (Snap(ref delta))
+						if (Snap(selectedAnchor.Type, ref delta))
 						{
 							selectedElement.Move(delta);
 						}
@@ -99,7 +97,7 @@ namespace FlowSharpLib
 					// We can snap a line if moving.
 					if (selectedElement is ILine)
 					{
-						Snap(ref delta);
+						Snap(GripType.None, ref delta);
 					}
 
 					MoveElement(selectedElement, delta);
@@ -146,7 +144,7 @@ namespace FlowSharpLib
 			}
 		}
 
-		protected virtual bool Snap(ref Point delta)
+		protected virtual bool Snap(GripType type, ref Point delta)
 		{
 			bool snapped = false;
 
@@ -155,7 +153,9 @@ namespace FlowSharpLib
 			// Look for connection points on nearby elements.
 			// If a connection point is nearby, and the delta is moving toward that connection point, then snap to that connection point.
 
-			List<ConnectionPoint> connectionPoints = selectedElement.GetConnectionPoints();
+			// So, it seems odd that we're using the connection points of the line, rather than the anchors.
+			// However, this is actually simpler, and a line's connection points should at least include the endpoint anchors.
+			IEnumerable<ConnectionPoint> connectionPoints = selectedElement.GetConnectionPoints().Where(p => type == GripType.None || p.Type == type);
 			List<SnapInfo> nearElements = GetNearbyElements(connectionPoints);
 			ShowConnectionPoints(nearElements.Select(e=>e.NearElement), true);
 			ShowConnectionPoints(currentlyNear.Where(e => !nearElements.Any(e2 => e.NearElement == e2.NearElement)).Select(e=>e.NearElement), false);
@@ -203,7 +203,7 @@ namespace FlowSharpLib
 			return snapped;
 		}
 
-		protected virtual List<SnapInfo> GetNearbyElements(List<ConnectionPoint> connectionPoints)
+		protected virtual List<SnapInfo> GetNearbyElements(IEnumerable<ConnectionPoint> connectionPoints)
 		{
 			List<SnapInfo> nearElements = new List<SnapInfo>();
 
@@ -228,6 +228,7 @@ namespace FlowSharpLib
 			elements.ForEach(e =>
 			{
 				e.ShowConnectionPoints = state;
+				e.HideConnectionPoints = !state;
 				Redraw(e, CONNECTION_POINT_SIZE, CONNECTION_POINT_SIZE);
 			});
 		}

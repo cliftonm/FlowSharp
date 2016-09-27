@@ -2,8 +2,9 @@
 
 namespace FlowSharpLib
 {
-	public enum ConnectionPosition
+	public enum GripType
 	{
+		None,
 		TopLeft,
 		TopRight,
 		BottomLeft,
@@ -20,10 +21,10 @@ namespace FlowSharpLib
 
 	public class ConnectionPoint
 	{
-		public ConnectionPosition Type { get; protected set; }
+		public GripType Type { get; protected set; }
 		public Point Point { get; protected set; }
 
-		public ConnectionPoint(ConnectionPosition pos, Point p)
+		public ConnectionPoint(GripType pos, Point p)
 		{
 			Type = pos;
 			Point = p;

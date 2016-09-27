@@ -11,16 +11,14 @@ namespace FlowSharpLib
 	{
 		public ToolboxDynamicConnector(Canvas canvas) : base(canvas)
 		{
-			FillBrush = new SolidBrush(Color.White);
-			BorderPen = new Pen(Color.Black);
-			BorderPen.Width = 1;
 		}
 
 		public override GraphicElement Clone(Canvas canvas)
 		{
-			DynamicConnector line = (DynamicConnector)base.Clone(canvas);
+			// Create an actual dynamic connector as this is being cloned from the toolbox.
+			DynamicConnector dc = new DynamicConnector(canvas, new Point(20, 20), new Point(60, 60));
 
-			return line;
+			return dc;
 		}
 
 		protected override void Draw(Graphics gr)

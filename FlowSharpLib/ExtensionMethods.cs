@@ -170,10 +170,7 @@ namespace FlowSharpLib
 
 		public static void Fire<TEventArgs>(this EventHandler<TEventArgs> theEvent, object sender, TEventArgs e = null) where TEventArgs : EventArgs
 		{
-			if (theEvent != null)
-			{
-				theEvent(sender, e);
-			}
+			theEvent?.Invoke(sender, e);
 		}
 	}
 }

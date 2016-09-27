@@ -14,6 +14,8 @@ namespace FlowSharpLib
 		public const int SNAP_CONNECTION_POINT_RANGE = 10;
 		public const int SNAP_DETACH_VELOCITY = 5;
 
+		public const int CONNECTION_POINT_SIZE = 3;		// this is actually the length from center.
+
 		public Canvas Canvas { get { return canvas; } }
 
 		protected Canvas canvas;
@@ -25,11 +27,11 @@ namespace FlowSharpLib
 			this.elements = elements;
 		}
 
-		public void Redraw(GraphicElement el)
+		public void Redraw(GraphicElement el, int dx=0, int dy=0)
 		{
-			var els = EraseTopToBottom(el);
-			DrawBottomToTop(els);
-			UpdateScreen(els);
+			var els = EraseTopToBottom(el, dx, dy);
+			DrawBottomToTop(els, dx, dy);
+			UpdateScreen(els, dx, dy);
 		}
 
 		public void Redraw(GraphicElement el, Action<GraphicElement> afterErase)
@@ -45,6 +47,24 @@ namespace FlowSharpLib
 		{
 			elements.Insert(0, el);
 			Redraw(el);
+		}
+
+		public void UpdateSize(GraphicElement el, ShapeAnchor anchor, Point delta)
+		{
+			Point adjustedDelta = anchor.AdjustedDelta(delta);
+			Rectangle newRect = anchor.Resize(el.DisplayRectangle, adjustedDelta);
+			UpdateDisplayRectangle(el, newRect, adjustedDelta);
+		}
+
+		public void UpdateDisplayRectangle(GraphicElement el, Rectangle newRect, Point adjustedDelta)
+		{
+			int dx = adjustedDelta.X.Abs();
+			int dy = adjustedDelta.Y.Abs();
+			List<GraphicElement> els = EraseTopToBottom(el, dx, dy);
+			el.DisplayRectangle = newRect;
+			el.UpdatePath();
+			DrawBottomToTop(els, dx, dy);
+			UpdateScreen(els, dx, dy);
 		}
 
 		protected void MoveElement(GraphicElement el, Point delta)
@@ -63,24 +83,6 @@ namespace FlowSharpLib
 			{
 				el.CancelBackground();
 				el.Move(delta);
-			}
-		}
-
-		protected void UpdateSize(GraphicElement el, Anchor anchor, Point delta)
-		{
-			Point adjustedDelta = anchor.AdjustedDelta(delta);
-			System.Drawing.Rectangle newRect = anchor.Resize((System.Drawing.Rectangle)el.DisplayRectangle, adjustedDelta);
-
-			// Don't get too small, but growing from something that is too small is OK (safety check if we create an object that is too small.)
-			if ( (newRect.Width >= MIN_WIDTH && newRect.Height >= MIN_HEIGHT) || (delta.X > 0 || delta.Y > 0) )
-			{
-				List<GraphicElement> els = EraseTopToBottom(el, adjustedDelta.X.Abs(), adjustedDelta.Y.Abs());
-				el.DisplayRectangle = newRect;
-				el.UpdatePath();
-				int dx = delta.X.Abs();
-				int dy = delta.Y.Abs();
-				DrawBottomToTop(els, dx, dy);
-				UpdateScreen(els, dx, dy);
 			}
 		}
 

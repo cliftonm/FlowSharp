@@ -14,7 +14,7 @@ namespace FlowSharpLib
 	public class SnapInfo
 	{
 		public GraphicElement NearElement { get; set; }
-		public Anchor SourceAnchor { get; set; }
+		public ConnectionPoint LineConnectionPoint { get; set; }
 	}
 
 	public class CanvasController : BaseController
@@ -27,13 +27,14 @@ namespace FlowSharpLib
 		protected bool dragging;
 		protected bool leftMouseDown;
 		protected GraphicElement selectedElement;
-		protected Anchor selectedAnchor;
+		protected ShapeAnchor selectedAnchor;
 		protected GraphicElement showingAnchorsElement;
 		protected Point mousePosition;
 		protected List<SnapInfo> currentlyNear = new List<SnapInfo>();
 		
 		public CanvasController(Canvas canvas, List<GraphicElement> elements) : base(canvas, elements)
 		{
+			canvas.Controller = this;
 			canvas.PaintComplete = CanvasPaintComplete;
 			canvas.MouseDown += (sndr, args) =>
 			{
@@ -56,7 +57,7 @@ namespace FlowSharpLib
 					selectedAnchor = null;
 					leftMouseDown = false;
 					dragging = !(args.Button == MouseButtons.Left);
-					ShowAnchors(currentlyNear.Select(e => e.NearElement), false);
+					ShowConnectionPoints(currentlyNear.Select(e => e.NearElement), false);
 					currentlyNear.Clear();
 				}
 			};
@@ -73,23 +74,19 @@ namespace FlowSharpLib
 			{
 				if (selectedAnchor != null)
 				{
-					if (selectedElement is ILine)
+					if (selectedElement is DynamicConnector)
 					{
 						// We can snap an endpoint
-						if (Snap(ref delta))
+						//if (Snap(ref delta))
+						//{
+						//	selectedElement.Move(delta);
+						//}
+						//else
 						{
-							selectedElement.Move(delta);
 						}
-						else
-						{
-							UpdateSize(selectedElement, selectedAnchor, delta);
-						}
-					}
-					else
-					{
-						UpdateSize(selectedElement, selectedAnchor, delta);
 					}
 
+					selectedElement.UpdateSize(selectedAnchor, delta);
 					UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
 				}
 				else
@@ -101,6 +98,8 @@ namespace FlowSharpLib
 					}
 
 					MoveElement(selectedElement, delta);
+					// TODO: For connections terminating on another element, move only the connection point, not the whole line.
+					selectedElement.Connections.ForEach(c => MoveElement(c.ToElement, delta));
 					UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
 				}
 			}
@@ -120,7 +119,7 @@ namespace FlowSharpLib
 			}
 			else
 			{
-				GraphicElement el = elements.FirstOrDefault(e => e.DisplayRectangle.Contains(args.Location));
+				GraphicElement el = elements.FirstOrDefault(e => e.UpdateRectangle.Contains(args.Location));
 
 				// Remove anchors from current object being moused over and show, if an element selected on new object.
 				if (el != showingAnchorsElement)
@@ -150,23 +149,21 @@ namespace FlowSharpLib
 			// Look for connection points on nearby elements.
 			// If a connection point is nearby, and the delta is moving toward that connection point, then snap to that connection point.
 
-			// TODO: Right now we'll use anchors for testing, but we should create connection points for each element.
-			List<Anchor> anchors = selectedElement.GetAnchors();
-			List<SnapInfo> nearElements = GetNearbyElements(anchors);
-			ShowAnchors(nearElements.Select(e=>e.NearElement), true);
-			ShowAnchors(currentlyNear.Where(e => !nearElements.Any(e2 => e.NearElement == e2.NearElement)).Select(e=>e.NearElement), false);
+			List<ConnectionPoint> connectionPoints = selectedElement.GetConnectionPoints();
+			List<SnapInfo> nearElements = GetNearbyElements(connectionPoints);
+			ShowConnectionPoints(nearElements.Select(e=>e.NearElement), true);
+			ShowConnectionPoints(currentlyNear.Where(e => !nearElements.Any(e2 => e.NearElement == e2.NearElement)).Select(e=>e.NearElement), false);
 			currentlyNear = nearElements;
 			
 			foreach (SnapInfo si in nearElements)
 			{
-				Anchor nearElementAnchor = si.NearElement.GetAnchors().FirstOrDefault(a => a.Rectangle.Center().IsNear(si.SourceAnchor.Rectangle.Center(), SNAP_CONNECTION_POINT_RANGE));
+				ConnectionPoint nearConnectionPoint = si.NearElement.GetConnectionPoints().FirstOrDefault(cp => cp.Point.IsNear(si.LineConnectionPoint.Point, SNAP_CONNECTION_POINT_RANGE));
 
-				if (nearElementAnchor != null)
+				if (nearConnectionPoint != null)
 				{
-					Point sourceAnchorCenter = si.SourceAnchor.Rectangle.Center();
-					Point nearAnchorCenter = nearElementAnchor.Rectangle.Center();
-					int neardx = nearAnchorCenter.X - sourceAnchorCenter.X;     // calculate to match possible delta sign
-					int neardy = nearAnchorCenter.Y - sourceAnchorCenter.Y;
+					Point sourceConnectionPoint = si.LineConnectionPoint.Point;
+					int neardx = nearConnectionPoint.Point.X - sourceConnectionPoint.X;     // calculate to match possible delta sign
+					int neardy = nearConnectionPoint.Point.Y - sourceConnectionPoint.Y;
 					int neardxsign = neardx.Sign();
 					int neardysign = neardy.Sign();
 					int deltaxsign = delta.X.Sign();
@@ -176,8 +173,19 @@ namespace FlowSharpLib
 							(neardysign == 0 || deltaysign == 0 || neardysign == deltaysign))
 					{
 						// Possible detach?
-						if (!(neardxsign == 0 && neardxsign == 0 && (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY)))
-						{ 
+						if (neardxsign == 0 && neardxsign == 0 && (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY))
+						{
+							// TODO: Bug if both endpoints of the line are connected to the same selected element.  See (A) below.
+							si.NearElement.Connections.RemoveAll(c => c.ToElement == selectedElement);
+						}
+						else
+						{
+							// (A) If not already connected...
+							if (!si.NearElement.Connections.Any(c => c.ToElement == selectedElement))
+							{
+								si.NearElement.Connections.Add(new Connection() { ToElement = selectedElement, ToConnectionPoint = si.LineConnectionPoint, ElementConnectionPoint = nearConnectionPoint });
+							}
+
 							delta = new Point(neardx, neardy);
 							snapped = true;
 						}
@@ -188,19 +196,19 @@ namespace FlowSharpLib
 			return snapped;
 		}
 
-		protected virtual List<SnapInfo> GetNearbyElements(List<Anchor> anchors)
+		protected virtual List<SnapInfo> GetNearbyElements(List<ConnectionPoint> connectionPoints)
 		{
 			List<SnapInfo> nearElements = new List<SnapInfo>();
 
-			elements.Where(e=>e != selectedElement).ForEach(e =>
+			elements.Where(e=>e != selectedElement && e.OnScreen()).ForEach(e =>
 			{
 				Rectangle checkRange = e.DisplayRectangle.Grow(SNAP_ELEMENT_RANGE);
 
-				anchors.ForEach(a =>
+				connectionPoints.ForEach(cp =>
 				{
-					if (checkRange.Contains(a.Rectangle.Center()))
+					if (checkRange.Contains(cp.Point))
 					{
-						nearElements.Add(new SnapInfo() { NearElement = e, SourceAnchor = a });
+						nearElements.Add(new SnapInfo() { NearElement = e, LineConnectionPoint = cp });
 					}
 				});
 			});
@@ -208,12 +216,13 @@ namespace FlowSharpLib
 			return nearElements;
 		}
 
-		protected virtual void ShowAnchors(IEnumerable<GraphicElement> elements, bool state)
+		protected virtual void ShowConnectionPoints(IEnumerable<GraphicElement> elements, bool state)
 		{ 
 			elements.ForEach(e =>
 			{
-				e.ShowAnchors = state;
-				Redraw(e);
+				e.ShowConnectionPoints = state;
+				e.HideConnectionPoints = !state;
+				Redraw(e, CONNECTION_POINT_SIZE, CONNECTION_POINT_SIZE);
 			});
 		}
 
@@ -231,7 +240,7 @@ namespace FlowSharpLib
 
 		protected bool SelectElement(Point p)
 		{
-			GraphicElement el = elements.FirstOrDefault(e => e.DisplayRectangle.Contains(p));
+			GraphicElement el = elements.FirstOrDefault(e => e.UpdateRectangle.Contains(p));
 
 			if (el != null)
 			{

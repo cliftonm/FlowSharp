@@ -14,11 +14,24 @@ namespace FlowSharpLib
         }
 	}
 
+	/// <summary>
+	/// Used for non-line shapes connecting to lines.
+	/// </summary>
+	public class Connection
+	{
+		public GraphicElement ToElement { get; set; }
+		public ConnectionPoint ToConnectionPoint { get; set; }
+		public ConnectionPoint ElementConnectionPoint { get; set; }
+	}
+
 	public class GraphicElement : IDisposable
     {
 		public bool Selected { get; set; }
+		public bool ShowConnectionPoints { get; set; }
+		public bool HideConnectionPoints { get; set; }
 		public bool ShowAnchors { get; set; }
-        public Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width); } }
+        public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width); } }
+		public List<Connection> Connections = new List<Connection>();
 
 		public Rectangle DisplayRectangle { get; set; }
 		public Pen BorderPen { get; set; }
@@ -33,8 +46,9 @@ namespace FlowSharpLib
         protected Rectangle backgroundRectangle;
         protected Pen selectionPen;
 		protected Pen anchorPen = new Pen(Color.Black);
+		protected Pen connectionPointPen = new Pen(Color.Blue);
 		protected SolidBrush anchorBrush = new SolidBrush(Color.White);
-		protected int anchorSize = 6;
+		protected int anchorSize = 6;		// TODO: Make const?
 		protected Canvas canvas;
 
 		protected bool disposed;
@@ -47,7 +61,10 @@ namespace FlowSharpLib
 			HasCornerAnchors = true;
 			HasLeftRightAnchors = false;
 			HasTopBottomAnchors = false;
-        }
+			FillBrush = new SolidBrush(Color.White);
+			BorderPen = new Pen(Color.Black);
+			BorderPen.Width = 1;
+		}
 
 		public void Dispose()
 		{
@@ -80,7 +97,7 @@ namespace FlowSharpLib
 
 		public virtual Rectangle DefaultRectangle()
 		{
-			return DisplayRectangle;
+			return new Rectangle(20, 20, 60, 60);
 		}
 
 		/// <summary>
@@ -124,6 +141,11 @@ namespace FlowSharpLib
             DisplayRectangle = DisplayRectangle.Move(delta);
         }
 
+		public virtual void UpdateSize(ShapeAnchor anchor, Point delta)
+		{
+			canvas.Controller.UpdateSize(this, anchor, delta);
+		}
+
         public virtual void GetBackground()
         {
             background?.Dispose();
@@ -163,11 +185,22 @@ namespace FlowSharpLib
 			{
 				DrawAnchors();
 			}
+
+			if (ShowConnectionPoints)
+			{
+				DrawConnectionPoints();
+			}
+
+			if (HideConnectionPoints)
+			{
+				UndrawConnectionPoints();
+				HideConnectionPoints = false;
+			}
         }
 
 		public virtual void UpdateScreen(int ix = 0, int iy = 0)
 		{
-			Rectangle r = canvas.Clip(UpdateRectangle.Grow((float)ix, (float)iy));
+			Rectangle r = canvas.Clip(UpdateRectangle.Grow(ix, iy));
 
 			if (canvas.OnScreen(r))
 			{
@@ -175,65 +208,72 @@ namespace FlowSharpLib
 			}
 		}
 
-		public virtual List<Anchor> GetAnchors()
+		public virtual List<ShapeAnchor> GetAnchors()
 		{
-			List<Anchor> anchors = new List<Anchor>();
+			List<ShapeAnchor> anchors = new List<ShapeAnchor>();
 			Rectangle r;
 
 			if (HasCornerAnchors)
 			{
 				r = new Rectangle(DisplayRectangle.TopLeftCorner(), new Size(anchorSize, anchorSize));
-				anchors.Add(new Anchor(AnchorPosition.TopLeft, r));
+				anchors.Add(new ShapeAnchor(AnchorPosition.TopLeft, r));
 				r = new Rectangle(DisplayRectangle.TopRightCorner().Move(-anchorSize, 0), new Size(anchorSize, anchorSize));
-				anchors.Add(new Anchor(AnchorPosition.TopRight, r));
+				anchors.Add(new ShapeAnchor(AnchorPosition.TopRight, r));
 				r = new Rectangle(DisplayRectangle.BottomLeftCorner().Move(0, -anchorSize), new Size(anchorSize, anchorSize));
-				anchors.Add(new Anchor(AnchorPosition.BottomLeft, r));
+				anchors.Add(new ShapeAnchor(AnchorPosition.BottomLeft, r));
 				r = new Rectangle(DisplayRectangle.BottomRightCorner().Move(-anchorSize, -anchorSize), new Size(anchorSize, anchorSize));
-				anchors.Add(new Anchor(AnchorPosition.BottomRight, r));
+				anchors.Add(new ShapeAnchor(AnchorPosition.BottomRight, r));
 			}
 
 			if (HasCenterAnchors || HasLeftRightAnchors)
 			{
 				r = new Rectangle(DisplayRectangle.LeftMiddle().Move(0, -anchorSize / 2), new Size(anchorSize, anchorSize));
-				anchors.Add(new Anchor(AnchorPosition.LeftMiddle, r));
+				anchors.Add(new ShapeAnchor(AnchorPosition.LeftMiddle, r));
 				r = new Rectangle(DisplayRectangle.RightMiddle().Move(-anchorSize, -anchorSize / 2), new Size(anchorSize, anchorSize));
-				anchors.Add(new Anchor(AnchorPosition.RightMiddle, r));
+				anchors.Add(new ShapeAnchor(AnchorPosition.RightMiddle, r));
 			}
 
 			if (HasCenterAnchors || HasTopBottomAnchors)
 			{ 
 				r = new Rectangle(DisplayRectangle.TopMiddle().Move(-anchorSize / 2, 0), new Size(anchorSize, anchorSize));
-				anchors.Add(new Anchor(AnchorPosition.TopMiddle, r));
+				anchors.Add(new ShapeAnchor(AnchorPosition.TopMiddle, r));
 				r = new Rectangle(DisplayRectangle.BottomMiddle().Move(-anchorSize / 2, -anchorSize), new Size(anchorSize, anchorSize));
-				anchors.Add(new Anchor(AnchorPosition.BottomMiddle, r));
+				anchors.Add(new ShapeAnchor(AnchorPosition.BottomMiddle, r));
 			}
 
 			return anchors;
 		}
 
-		public virtual List<Point> GetConnectionPoints()
+		public virtual List<ConnectionPoint> GetConnectionPoints()
 		{
-			List<Point> connectionPoints = new List<Point>();
-			Rectangle r;
+			List<ConnectionPoint> connectionPoints = new List<ConnectionPoint>();
 
 			if (HasCornerAnchors)
 			{
-				connectionPoints.Add(DisplayRectangle.TopLeftCorner());
-				connectionPoints.Add(DisplayRectangle.TopRightCorner());
-				connectionPoints.Add(DisplayRectangle.BottomLeftCorner());
-				connectionPoints.Add(DisplayRectangle.BottomRightCorner());
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.TopLeft, DisplayRectangle.TopLeftCorner()));
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.TopRight, DisplayRectangle.TopRightCorner()));
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.BottomLeft, DisplayRectangle.BottomLeftCorner()));
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.BottomRight, DisplayRectangle.BottomRightCorner()));
 			}
 
-			if (HasCenterAnchors || HasLeftRightAnchors)
+			if (HasCenterAnchors)
 			{
-				connectionPoints.Add(DisplayRectangle.LeftMiddle());
-				connectionPoints.Add(DisplayRectangle.RightMiddle());
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.LeftMiddle, DisplayRectangle.LeftMiddle()));
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.RightMiddle, DisplayRectangle.RightMiddle()));
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.TopMiddle, DisplayRectangle.TopMiddle()));
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.BottomMiddle, DisplayRectangle.BottomMiddle()));
 			}
 
-			if (HasCenterAnchors || HasTopBottomAnchors)
+			if (HasLeftRightAnchors)
 			{
-				connectionPoints.Add(DisplayRectangle.TopMiddle());
-				connectionPoints.Add(DisplayRectangle.BottomMiddle());
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.Start, DisplayRectangle.LeftMiddle()));
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.End, DisplayRectangle.RightMiddle()));
+			}
+
+			if (HasTopBottomAnchors)
+			{
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.Start, DisplayRectangle.TopMiddle()));
+				connectionPoints.Add(new ConnectionPoint(ConnectionPosition.End, DisplayRectangle.BottomMiddle()));
 			}
 
 			return connectionPoints;
@@ -243,6 +283,7 @@ namespace FlowSharpLib
         {
             if (Selected)
             {
+				// TODO: Visually, a box or a default dynamic connector's lines are obscured by the selection rectangle.
 				Rectangle r = DisplayRectangle;
                 gr.DrawRectangle(selectionPen, r);
             }
@@ -250,11 +291,43 @@ namespace FlowSharpLib
 
 		protected virtual void DrawAnchors()
 		{
-			GetAnchors().ForEach((Action<Anchor>)(a =>
+			GetAnchors().ForEach((a =>
 			{
-				canvas.Graphics.DrawRectangle(anchorPen, (Rectangle)a.Rectangle);
-				canvas.Graphics.FillRectangle(anchorBrush, (Rectangle)ExtensionMethods.Grow(a.Rectangle, (float)-1));
+				canvas.Graphics.DrawRectangle(anchorPen, a.Rectangle);
+				canvas.Graphics.FillRectangle(anchorBrush, a.Rectangle.Grow(-1));
 			}));
 		}
-    }
+
+		protected virtual void DrawConnectionPoints()
+		{
+			// We specifically do NOT use the anti-aliasing graphics so that when we undraw the connection points, we don't leave residual smoothing pixels.
+			// This problem will go away when the TODO in the UndrawConnectionPoints is resolved.
+			GetConnectionPoints().ForEach(cp =>
+			{
+				canvas.Graphics.FillRectangle(anchorBrush, new Rectangle(cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, 10, 10));
+				canvas.Graphics.DrawLine(connectionPointPen, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
+				canvas.Graphics.DrawLine(connectionPointPen, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
+			});
+		}
+
+		// TODO: This is a workaround dealing with the fact that connection points exceed the element boundaries, and we aren't
+		// handling dealing with removing them with a background image that is larger than the element size.  So currently, this will
+		// lead to possible "holes" and other artifacts at the pixel level.
+		protected virtual void UndrawConnectionPoints()
+		{
+			GetConnectionPoints().ForEach(cp =>
+			{
+				Pen pen = new Pen(canvas.BackgroundColor);
+				// diagonal down-right:
+				canvas.Graphics.DrawLine(pen, cp.Point.X + 1, cp.Point.Y + 1, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
+				// diagonal up-right:
+				canvas.Graphics.DrawLine(pen, cp.Point.X + 1, cp.Point.Y - 1, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE);
+				// diaganal up-left:
+				canvas.Graphics.DrawLine(pen, cp.Point.X - 1, cp.Point.Y - 1, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE);
+				// diagonal down-left:
+				canvas.Graphics.DrawLine(pen, cp.Point.X - 1, cp.Point.Y + 1, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
+				pen.Dispose();
+			});
+		}
+	}
 }

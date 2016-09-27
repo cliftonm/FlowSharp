@@ -8,10 +8,6 @@ namespace FlowSharpLib
 
 		public Diamond(Canvas canvas) : base(canvas)
 		{
-			FillBrush = new SolidBrush(Color.White);
-			BorderPen = new Pen(Color.Black);
-			BorderPen.Width = 1;
-			// HasCornerAnchors = false;
 		}
 
 		public override void UpdatePath()

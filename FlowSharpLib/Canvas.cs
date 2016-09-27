@@ -7,6 +7,9 @@ namespace FlowSharpLib
     public class Canvas : Panel
     {
 		public Action<Canvas> PaintComplete { get; set; }
+		public Color BackgroundColor { get { return canvasBrush.Color; } }
+		public BaseController Controller { get; set; }
+
 		protected SolidBrush canvasBrush;
         protected Pen gridPen;
         protected Size gridSpacing;

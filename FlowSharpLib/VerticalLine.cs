@@ -9,11 +9,13 @@ namespace FlowSharpLib
 		public AvailableLineCap StartCap { get; set; }
 		public AvailableLineCap EndCap { get; set; }
 
+		public int X1 { get { return DisplayRectangle.X + BaseController.MIN_WIDTH/2; } }
+		public int Y1 { get { return DisplayRectangle.Y; } }
+		public int X2 { get { return DisplayRectangle.X + BaseController.MIN_WIDTH / 2; } }
+		public int Y2 { get { return DisplayRectangle.Y + DisplayRectangle.Height; } }
+
 		public VerticalLine(Canvas canvas) : base(canvas)
 		{
-			FillBrush = new SolidBrush(Color.White);
-			BorderPen = new Pen(Color.Black);
-			BorderPen.Width = 1;
 			HasCornerAnchors = false;
 			HasCenterAnchors = false;
 			HasTopBottomAnchors = true;

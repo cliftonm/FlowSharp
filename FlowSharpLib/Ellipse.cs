@@ -6,10 +6,7 @@ namespace FlowSharpLib
     {
         public Ellipse(Canvas canvas) : base(canvas)
         {
-            FillBrush = new SolidBrush(Color.White);
-            BorderPen = new Pen(Color.Black);
         }
-
 
         protected override void Draw(Graphics gr)
         {

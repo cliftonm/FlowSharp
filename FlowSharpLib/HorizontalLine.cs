@@ -15,11 +15,13 @@ namespace FlowSharpLib
 		public AvailableLineCap StartCap { get; set; }
 		public AvailableLineCap EndCap { get; set; }
 
+		public int X1 { get { return DisplayRectangle.X; } }
+		public int Y1 { get { return DisplayRectangle.Y + BaseController.MIN_HEIGHT / 2; } }
+		public int X2 { get { return DisplayRectangle.X + DisplayRectangle.Width; } }
+		public int Y2 { get { return DisplayRectangle.Y + BaseController.MIN_HEIGHT / 2; } }
+
 		public HorizontalLine(Canvas canvas) : base(canvas)
 		{
-			FillBrush = new SolidBrush(Color.White);
-			BorderPen = new Pen(Color.Black);
-			BorderPen.Width = 1;
 			HasCornerAnchors = false;
 			HasCenterAnchors = false;
 			HasLeftRightAnchors = true;
@@ -47,6 +49,7 @@ namespace FlowSharpLib
 		protected override void Draw(Graphics gr)
 		{
 			// See CustomLineCap for creating other possible endcaps besides arrows.
+			// Note that AdjustableArrowCap derives from CustomLineCap!
 			// https://msdn.microsoft.com/en-us/library/system.drawing.drawing2d.customlinecap(v=vs.110).aspx
 
 			AdjustableArrowCap adjCap = new AdjustableArrowCap(5, 5, true);
@@ -64,6 +67,7 @@ namespace FlowSharpLib
 
 			gr.DrawLine(pen, DisplayRectangle.LeftMiddle(), DisplayRectangle.RightMiddle());
 			pen.Dispose();
+			adjCap.Dispose();
 
 			base.Draw(gr);
 		}

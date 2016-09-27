@@ -6,9 +6,6 @@ namespace FlowSharpLib
     {
         public Box(Canvas canvas) : base(canvas)
 		{
-            FillBrush = new SolidBrush(Color.White);
-            BorderPen = new Pen(Color.Black);
-            BorderPen.Width = 1;
         }
 
         protected override void Draw(Graphics gr)

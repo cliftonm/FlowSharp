@@ -29,7 +29,7 @@ namespace FlowSharp
 			InitializeCanvas();
 			InitializeToolbox();
 			InitializeControllers();
-			CreateSampleElements();
+			// CreateSampleElements();
 		}
 
 		protected void InitializeCanvas()

@@ -100,6 +100,11 @@ namespace FlowSharpLib
 			return new Rectangle(20, 20, 60, 60);
 		}
 
+		public virtual bool IsSelectable(Point p)
+		{
+			return UpdateRectangle.Contains(p);
+		}
+
 		/// <summary>
 		/// Clone onto the specified canvas.
 		/// </summary>

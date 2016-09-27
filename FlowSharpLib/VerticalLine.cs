@@ -9,6 +9,9 @@ namespace FlowSharpLib
 		public AvailableLineCap StartCap { get; set; }
 		public AvailableLineCap EndCap { get; set; }
 
+		// Fixes background erase issues with dynamic connector.
+		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize + 1 + BorderPen.Width); } }
+
 		public int X1 { get { return DisplayRectangle.X + BaseController.MIN_WIDTH/2; } }
 		public int Y1 { get { return DisplayRectangle.Y; } }
 		public int X2 { get { return DisplayRectangle.X + BaseController.MIN_WIDTH / 2; } }

@@ -119,7 +119,7 @@ namespace FlowSharpLib
 			}
 			else
 			{
-				GraphicElement el = elements.FirstOrDefault(e => e.UpdateRectangle.Contains(args.Location));
+				GraphicElement el = elements.FirstOrDefault(e => e.IsSelectable(mousePosition));
 
 				// Remove anchors from current object being moused over and show, if an element selected on new object.
 				if (el != showingAnchorsElement)
@@ -240,7 +240,7 @@ namespace FlowSharpLib
 
 		protected bool SelectElement(Point p)
 		{
-			GraphicElement el = elements.FirstOrDefault(e => e.UpdateRectangle.Contains(p));
+			GraphicElement el = elements.FirstOrDefault(e => e.IsSelectable(p));
 
 			if (el != null)
 			{

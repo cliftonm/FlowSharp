@@ -14,7 +14,7 @@ namespace FlowSharpLib
 		public AvailableLineCap StartCap { get; set; }
 		public AvailableLineCap EndCap { get; set; }
 
-		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize); } }
+		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize + 1 + BorderPen.Width); } }
 
 		protected List<ILine> lines = new List<ILine>();
 
@@ -43,6 +43,11 @@ namespace FlowSharpLib
 			endPoint = end;
 		}
 
+		public override bool IsSelectable(Point p)
+		{
+			return lines.Any(l => ((GraphicElement)l).IsSelectable(p));
+		}
+
 		public override Rectangle DefaultRectangle()
 		{
 			return new Rectangle(startPoint, new Size(endPoint.X - startPoint.X, endPoint.Y - startPoint.Y));
@@ -52,9 +57,12 @@ namespace FlowSharpLib
 		{
 			Size szAnchor = new Size(anchorSize, anchorSize);
 
+			int startxOffset = startPoint.X < endPoint.X ? 0 : -anchorSize;
+			int endxOffset = startPoint.X < endPoint.X ? -anchorSize : 0;
+
 			return new List<ShapeAnchor>() {
-				new ShapeAnchor(AnchorPosition.Start, new Rectangle(startPoint.Move(0, -anchorSize/2), szAnchor)),
-				new ShapeAnchor(AnchorPosition.End, new Rectangle(endPoint.Move(-anchorSize/2, -anchorSize/2), szAnchor)),
+				new ShapeAnchor(AnchorPosition.Start, new Rectangle(startPoint.Move(startxOffset, -anchorSize/2), szAnchor)),
+				new ShapeAnchor(AnchorPosition.End, new Rectangle(endPoint.Move(endxOffset, -anchorSize/2), szAnchor)),
 			};
 		}
 
@@ -72,29 +80,78 @@ namespace FlowSharpLib
 			return line;
 		}
 
+		public override void Move(Point delta)
+		{
+			startPoint = startPoint.Move(delta);
+			endPoint = endPoint.Move(delta);
+			DisplayRectangle = RecalcDisplayRectangle();
+		}
+
 		public override void UpdateSize(ShapeAnchor anchor, Point delta)
 		{
 			if (anchor.Type == AnchorPosition.Start)
 			{
 				startPoint = startPoint.Move(delta);
-				UpdatePath();
+				// UpdatePath();
 			}
 			else
 			{
 				endPoint = endPoint.Move(delta);
-				UpdatePath();
+				// UpdatePath();
 			}
 
 			Rectangle newRect = RecalcDisplayRectangle();
 			canvas.Controller.UpdateDisplayRectangle(this, newRect, delta);
 		}
 
+		public override void GetBackground()
+		{
+			lines.ForEach(l => ((GraphicElement)l).GetBackground());
+		}
+
+		public override void CancelBackground()
+		{
+			lines.ForEach(l => ((GraphicElement)l).CancelBackground());
+		}
+
+		public override void Erase()
+		{
+			lines.ForEach(l => ((GraphicElement)l).Erase());
+		}
+
+		public override void UpdateScreen(int ix = 0, int iy = 0)
+		{
+			lines.ForEach(l => ((GraphicElement)l).UpdateScreen(ix, iy));
+		}
+
 		public override void UpdatePath()
 		{
 			// TODO: Figure out whether we're doing H-V-H, or V-H-V, or H-V or V-H, or something even more complicated if we are avoiding shape boundaries.
 
-			lines[0].StartCap = StartCap;
-			lines[2].EndCap = EndCap;
+			if ((startPoint.X - endPoint.X).Abs() <= 20)
+			{
+				lines[0].StartCap = AvailableLineCap.None;
+				lines[0].EndCap = AvailableLineCap.None;
+				lines[2].StartCap = AvailableLineCap.None;
+				lines[2].EndCap = AvailableLineCap.None;
+			}
+			else
+			{
+				if (startPoint.X < endPoint.X)
+				{
+					lines[0].EndCap = AvailableLineCap.None;
+					lines[2].StartCap = AvailableLineCap.None;
+					lines[0].StartCap = StartCap;
+					lines[2].EndCap = EndCap;
+				}
+				else
+				{
+					lines[0].StartCap = AvailableLineCap.None;
+					lines[2].EndCap = AvailableLineCap.None;
+					lines[0].EndCap = StartCap;
+					lines[2].StartCap = EndCap;
+				}
+			}
 
 			if (startPoint.X < endPoint.X)
 			{
@@ -139,8 +196,6 @@ namespace FlowSharpLib
 		protected override void Draw(Graphics gr)
 		{
 			lines.ForEach(l => ((GraphicElement)l).Draw());
-			//canvas.Controller.Redraw(hline);
-			//canvas.Controller.Redraw(vline);
 
 			// No selection box!
 			// base.Draw(gr);

@@ -56,10 +56,13 @@ namespace FlowSharpLib
 			UpdateDisplayRectangle(el, newRect, adjustedDelta);
 		}
 
-		public void UpdateDisplayRectangle(GraphicElement el, Rectangle newRect, Point adjustedDelta)
+		/// <summary>
+		/// Direct update of display rectangle, used in DynamicConnector.
+		/// </summary>
+		public void UpdateDisplayRectangle(GraphicElement el, Rectangle newRect, Point delta)
 		{
-			int dx = adjustedDelta.X.Abs();
-			int dy = adjustedDelta.Y.Abs();
+			int dx = delta.X.Abs();
+			int dy = delta.Y.Abs();
 			List<GraphicElement> els = EraseTopToBottom(el, dx, dy);
 			el.DisplayRectangle = newRect;
 			el.UpdatePath();
@@ -83,6 +86,7 @@ namespace FlowSharpLib
 			{
 				el.CancelBackground();
 				el.Move(delta);
+				// TODO: Display element if moved back on screen at this point?
 			}
 		}
 

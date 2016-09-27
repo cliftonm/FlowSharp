@@ -28,9 +28,12 @@ namespace FlowSharpLib
     {
 		public bool Selected { get; set; }
 		public bool ShowConnectionPoints { get; set; }
-		public bool HideConnectionPoints { get; set; }
+		// public bool HideConnectionPoints { get; set; }
 		public bool ShowAnchors { get; set; }
-        public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + ((ShowConnectionPoints || HideConnectionPoints) ? 3 : 0)); } }
+
+		// This is probably a ridiculous optimization -- should just grow pen width + connection point size / 2
+		// public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + ((ShowConnectionPoints || HideConnectionPoints) ? 3 : 0)); } }
+		public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + BaseController.CONNECTION_POINT_SIZE); } }
 		public List<Connection> Connections = new List<Connection>();
 
 		public Rectangle DisplayRectangle { get; set; }
@@ -41,6 +44,11 @@ namespace FlowSharpLib
 		protected bool HasCenterAnchors { get; set; }
 		protected bool HasLeftRightAnchors { get; set; }
 		protected bool HasTopBottomAnchors { get; set; }
+
+		protected bool HasCornerConnections { get; set; }
+		protected bool HasCenterConnections { get; set; }
+		protected bool HasLeftRightConnections { get; set; }
+		protected bool HasTopBottomConnections { get; set; }
 
 		protected Bitmap background;
         protected Rectangle backgroundRectangle;
@@ -61,6 +69,10 @@ namespace FlowSharpLib
 			HasCornerAnchors = true;
 			HasLeftRightAnchors = false;
 			HasTopBottomAnchors = false;
+			HasCenterConnections = true;
+			HasCornerConnections = true;
+			HasLeftRightConnections = false;
+			HasTopBottomConnections = false;
 			FillBrush = new SolidBrush(Color.White);
 			BorderPen = new Pen(Color.Black);
 			BorderPen.Width = 1;
@@ -208,7 +220,7 @@ namespace FlowSharpLib
 
 			// We can now revert back to a smaller update rectangle if we are hiding connection points as a result
 			// of an anchor moving out of range of the element.
-			HideConnectionPoints = false;
+			// HideConnectionPoints = false;
 		}
 
 		public virtual List<ShapeAnchor> GetAnchors()
@@ -251,7 +263,7 @@ namespace FlowSharpLib
 		{
 			List<ConnectionPoint> connectionPoints = new List<ConnectionPoint>();
 
-			if (HasCornerAnchors)
+			if (HasCornerConnections)
 			{
 				connectionPoints.Add(new ConnectionPoint(GripType.TopLeft, DisplayRectangle.TopLeftCorner()));
 				connectionPoints.Add(new ConnectionPoint(GripType.TopRight, DisplayRectangle.TopRightCorner()));
@@ -259,7 +271,7 @@ namespace FlowSharpLib
 				connectionPoints.Add(new ConnectionPoint(GripType.BottomRight, DisplayRectangle.BottomRightCorner()));
 			}
 
-			if (HasCenterAnchors)
+			if (HasCenterConnections)
 			{
 				connectionPoints.Add(new ConnectionPoint(GripType.LeftMiddle, DisplayRectangle.LeftMiddle()));
 				connectionPoints.Add(new ConnectionPoint(GripType.RightMiddle, DisplayRectangle.RightMiddle()));
@@ -267,13 +279,13 @@ namespace FlowSharpLib
 				connectionPoints.Add(new ConnectionPoint(GripType.BottomMiddle, DisplayRectangle.BottomMiddle()));
 			}
 
-			if (HasLeftRightAnchors)
+			if (HasLeftRightConnections)
 			{
 				connectionPoints.Add(new ConnectionPoint(GripType.Start, DisplayRectangle.LeftMiddle()));
 				connectionPoints.Add(new ConnectionPoint(GripType.End, DisplayRectangle.RightMiddle()));
 			}
 
-			if (HasTopBottomAnchors)
+			if (HasTopBottomConnections)
 			{
 				connectionPoints.Add(new ConnectionPoint(GripType.Start, DisplayRectangle.TopMiddle()));
 				connectionPoints.Add(new ConnectionPoint(GripType.End, DisplayRectangle.BottomMiddle()));
@@ -305,7 +317,7 @@ namespace FlowSharpLib
 		{
 			GetConnectionPoints().ForEach(cp =>
 			{
-				canvas.AntiAliasGraphics.FillRectangle(anchorBrush, new Rectangle(cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, 10, 10));
+				canvas.AntiAliasGraphics.FillRectangle(anchorBrush, new Rectangle(cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, BaseController.CONNECTION_POINT_SIZE*2, BaseController.CONNECTION_POINT_SIZE*2));
 				canvas.AntiAliasGraphics.DrawLine(connectionPointPen, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
 				canvas.AntiAliasGraphics.DrawLine(connectionPointPen, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
 			});

@@ -28,6 +28,9 @@ namespace FlowSharpLib
 			HasCornerAnchors = false;
 			HasCenterAnchors = false;
 			HasLeftRightAnchors = true;
+			HasCornerConnections = false;
+			HasCenterConnections = false;
+			HasLeftRightConnections = true;
 		}
 
 		public override ElementProperties CreateProperties()

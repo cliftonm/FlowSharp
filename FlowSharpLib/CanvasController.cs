@@ -78,6 +78,9 @@ namespace FlowSharpLib
 					{
 						if (Snap(selectedAnchor.Type, ref delta))
 						{
+							// If the other endpoint is attached to something, don't move the whole line, move only the endpoint.
+							// In some ways, this "move the whole line" thing is to handle horizontal and vertical lines, which
+							// actually causes it's own set of problems when the other end is already attached to a shape.
 							selectedElement.Move(delta);
 						}
 						else
@@ -228,7 +231,7 @@ namespace FlowSharpLib
 			elements.ForEach(e =>
 			{
 				e.ShowConnectionPoints = state;
-				e.HideConnectionPoints = !state;
+				// e.HideConnectionPoints = !state;
 				Redraw(e, CONNECTION_POINT_SIZE, CONNECTION_POINT_SIZE);
 			});
 		}

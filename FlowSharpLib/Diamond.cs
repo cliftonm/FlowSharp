@@ -8,6 +8,7 @@ namespace FlowSharpLib
 
 		public Diamond(Canvas canvas) : base(canvas)
 		{
+			HasCornerConnections = false;
 		}
 
 		public override void UpdatePath()

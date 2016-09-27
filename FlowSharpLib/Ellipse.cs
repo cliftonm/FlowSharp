@@ -6,9 +6,10 @@ namespace FlowSharpLib
     {
         public Ellipse(Canvas canvas) : base(canvas)
         {
-        }
+			HasCornerConnections = false;
+		}
 
-        protected override void Draw(Graphics gr)
+		protected override void Draw(Graphics gr)
         {
             gr.FillEllipse(FillBrush, DisplayRectangle);
             gr.DrawEllipse(BorderPen, DisplayRectangle);

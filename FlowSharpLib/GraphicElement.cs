@@ -28,9 +28,8 @@ namespace FlowSharpLib
     {
 		public bool Selected { get; set; }
 		public bool ShowConnectionPoints { get; set; }
-		public bool HideConnectionPoints { get; set; }
 		public bool ShowAnchors { get; set; }
-        public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width); } }
+        public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + (ShowConnectionPoints ? 3 : 0)); } }
 		public List<Connection> Connections = new List<Connection>();
 
 		public Rectangle DisplayRectangle { get; set; }
@@ -195,12 +194,6 @@ namespace FlowSharpLib
 			{
 				DrawConnectionPoints();
 			}
-
-			if (HideConnectionPoints)
-			{
-				UndrawConnectionPoints();
-				HideConnectionPoints = false;
-			}
         }
 
 		public virtual void UpdateScreen(int ix = 0, int iy = 0)
@@ -305,33 +298,11 @@ namespace FlowSharpLib
 
 		protected virtual void DrawConnectionPoints()
 		{
-			// We specifically do NOT use the anti-aliasing graphics so that when we undraw the connection points, we don't leave residual smoothing pixels.
-			// This problem will go away when the TODO in the UndrawConnectionPoints is resolved.
 			GetConnectionPoints().ForEach(cp =>
 			{
-				canvas.Graphics.FillRectangle(anchorBrush, new Rectangle(cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, 10, 10));
-				canvas.Graphics.DrawLine(connectionPointPen, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
-				canvas.Graphics.DrawLine(connectionPointPen, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
-			});
-		}
-
-		// TODO: This is a workaround dealing with the fact that connection points exceed the element boundaries, and we aren't
-		// handling dealing with removing them with a background image that is larger than the element size.  So currently, this will
-		// lead to possible "holes" and other artifacts at the pixel level.
-		protected virtual void UndrawConnectionPoints()
-		{
-			GetConnectionPoints().ForEach(cp =>
-			{
-				Pen pen = new Pen(canvas.BackgroundColor);
-				// diagonal down-right:
-				canvas.Graphics.DrawLine(pen, cp.Point.X + 1, cp.Point.Y + 1, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
-				// diagonal up-right:
-				canvas.Graphics.DrawLine(pen, cp.Point.X + 1, cp.Point.Y - 1, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE);
-				// diaganal up-left:
-				canvas.Graphics.DrawLine(pen, cp.Point.X - 1, cp.Point.Y - 1, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE);
-				// diagonal down-left:
-				canvas.Graphics.DrawLine(pen, cp.Point.X - 1, cp.Point.Y + 1, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
-				pen.Dispose();
+				canvas.AntiAliasGraphics.FillRectangle(anchorBrush, new Rectangle(cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, 10, 10));
+				canvas.AntiAliasGraphics.DrawLine(connectionPointPen, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
+				canvas.AntiAliasGraphics.DrawLine(connectionPointPen, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
 			});
 		}
 	}

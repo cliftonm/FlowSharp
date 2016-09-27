@@ -74,20 +74,25 @@ namespace FlowSharpLib
 			{
 				if (selectedAnchor != null)
 				{
-					if (selectedElement is DynamicConnector)
+					if (selectedElement is DynamicConnector || SelectedElement is ILine)
 					{
 						// We can snap an endpoint
-						//if (Snap(ref delta))
-						//{
-						//	selectedElement.Move(delta);
-						//}
-						//else
+
+						if (Snap(ref delta))
 						{
+							selectedElement.Move(delta);
+						}
+						else
+						{
+							selectedElement.UpdateSize(selectedAnchor, delta);
+							UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
 						}
 					}
-
-					selectedElement.UpdateSize(selectedAnchor, delta);
-					UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
+					else
+					{
+						selectedElement.UpdateSize(selectedAnchor, delta);
+						UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
+					}
 				}
 				else
 				{
@@ -143,8 +148,9 @@ namespace FlowSharpLib
 
 		protected virtual bool Snap(ref Point delta)
 		{
-			if (delta.X == 0 && delta.Y == 0) return false;
 			bool snapped = false;
+
+			if (delta.X == 0 && delta.Y == 0) return false;
 
 			// Look for connection points on nearby elements.
 			// If a connection point is nearby, and the delta is moving toward that connection point, then snap to that connection point.
@@ -188,6 +194,7 @@ namespace FlowSharpLib
 
 							delta = new Point(neardx, neardy);
 							snapped = true;
+							break;
 						}
 					}
 				}
@@ -200,7 +207,7 @@ namespace FlowSharpLib
 		{
 			List<SnapInfo> nearElements = new List<SnapInfo>();
 
-			elements.Where(e=>e != selectedElement && e.OnScreen()).ForEach(e =>
+			elements.Where(e=>e != selectedElement && e.OnScreen() && (!(e is ILine || e is DynamicConnector))).ForEach(e =>
 			{
 				Rectangle checkRange = e.DisplayRectangle.Grow(SNAP_ELEMENT_RANGE);
 
@@ -221,7 +228,6 @@ namespace FlowSharpLib
 			elements.ForEach(e =>
 			{
 				e.ShowConnectionPoints = state;
-				e.HideConnectionPoints = !state;
 				Redraw(e, CONNECTION_POINT_SIZE, CONNECTION_POINT_SIZE);
 			});
 		}

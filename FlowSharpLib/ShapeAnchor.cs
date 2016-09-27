@@ -16,6 +16,8 @@ namespace FlowSharpLib
 		// For dynamic connector:
 		Start,
 		End,
+
+		None,
 	};
 
 	public class ShapeAnchor

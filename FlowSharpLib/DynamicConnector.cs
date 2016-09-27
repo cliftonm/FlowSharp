@@ -66,6 +66,14 @@ namespace FlowSharpLib
 			};
 		}
 
+		public override List<ConnectionPoint> GetConnectionPoints()
+		{
+			return new List<ConnectionPoint>() {
+				new ConnectionPoint(ConnectionPosition.Start, startPoint),
+				new ConnectionPoint(ConnectionPosition.End, endPoint),
+			};
+		}
+
 		public override ElementProperties CreateProperties()
 		{
 			return new DynamicConnectorProperties(this);
@@ -80,11 +88,15 @@ namespace FlowSharpLib
 			return line;
 		}
 
+		/// <summary>
+		/// Custom move operation of start/end points.
+		/// </summary>
 		public override void Move(Point delta)
 		{
 			startPoint = startPoint.Move(delta);
 			endPoint = endPoint.Move(delta);
-			DisplayRectangle = RecalcDisplayRectangle();
+			UpdatePath();
+			base.Move(delta);
 		}
 
 		public override void UpdateSize(ShapeAnchor anchor, Point delta)
@@ -92,17 +104,17 @@ namespace FlowSharpLib
 			if (anchor.Type == AnchorPosition.Start)
 			{
 				startPoint = startPoint.Move(delta);
-				// UpdatePath();
 			}
 			else
 			{
 				endPoint = endPoint.Move(delta);
-				// UpdatePath();
 			}
 
 			Rectangle newRect = RecalcDisplayRectangle();
 			canvas.Controller.UpdateDisplayRectangle(this, newRect, delta);
 		}
+
+		// *** Override all dynamic connector drawing so that the backgrounds are optimized to the line segments, not the entire region. ***
 
 		public override void GetBackground()
 		{
@@ -123,6 +135,8 @@ namespace FlowSharpLib
 		{
 			lines.ForEach(l => ((GraphicElement)l).UpdateScreen(ix, iy));
 		}
+
+		// ******************
 
 		public override void UpdatePath()
 		{

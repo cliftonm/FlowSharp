@@ -185,7 +185,13 @@ namespace FlowSharpLib
             background = null;
         }
 
-        public virtual void Erase()
+		public virtual void SnapCheck(ShapeAnchor anchor, Point delta)
+		{
+			UpdateSize(anchor, delta);
+			canvas.Controller.UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = this });
+		}
+
+		public virtual void Erase()
         {
             if (canvas.OnScreen(backgroundRectangle))
             {

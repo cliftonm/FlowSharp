@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace FlowSharpLib
 {
-	public class BaseController
+	public abstract class BaseController
 	{
 		public const int MIN_WIDTH = 20;
 		public const int MIN_HEIGHT = 20;
@@ -18,14 +18,23 @@ namespace FlowSharpLib
 
 		public Canvas Canvas { get { return canvas; } }
 
-		protected Canvas canvas;
 		protected List<GraphicElement> elements;
+		public EventHandler<ElementEventArgs> ElementSelected;
+		public EventHandler<ElementEventArgs> UpdateSelectedElement;
+
+		public GraphicElement SelectedElement { get { return selectedElement; } }
+
+		protected Canvas canvas;
+		protected GraphicElement selectedElement;
+		protected ShapeAnchor selectedAnchor;
 
 		public BaseController(Canvas canvas, List<GraphicElement> elements)
 		{
 			this.canvas = canvas;
 			this.elements = elements;
 		}
+
+		public virtual bool Snap(GripType type, ref Point delta) { return false; }
 
 		public void Redraw(GraphicElement el, int dx=0, int dy=0)
 		{

@@ -10,14 +10,11 @@ namespace FlowSharpLib
 	/// Up-Down dynamic connector.
 	/// Routing around shapes is ignored, which means that the best route may include going inside a connected shape.
 	/// </summary>
-	public class DynamicConnectorUD : GraphicElement, IDynamicConnector
+	public class DynamicConnectorUD : DynamicConnector//, IDynamicConnector
 	{
-		public AvailableLineCap StartCap { get; set; }
-		public AvailableLineCap EndCap { get; set; }
-
 		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize + 1 + BorderPen.Width); } }
 
-		protected List<ILine> lines = new List<ILine>();
+		protected List<Line> lines = new List<Line>();
 
 		protected Point startPoint;
 		protected Point endPoint;

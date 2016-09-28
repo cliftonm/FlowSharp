@@ -10,7 +10,6 @@ namespace FlowSharp
 	public class ToolboxController : BaseController
 	{
 		// protected bool dragging;
-		protected GraphicElement selectedElement;
 		protected CanvasController canvasController;
 
 		public ToolboxController(Canvas canvas, List<GraphicElement> elements, CanvasController canvasController) : base(canvas, elements)

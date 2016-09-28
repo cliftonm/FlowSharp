@@ -42,9 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamicConnector.cs" />
     <Compile Include="DynamicConnectorProperties.cs" />
     <Compile Include="DynamicConnectorUD.cs" />
-    <Compile Include="IDynamicConnector.cs" />
+    <Compile Include="Line.cs" />
     <Compile Include="ShapeAnchor.cs" />
     <Compile Include="BaseController.cs" />
     <Compile Include="Box.cs" />

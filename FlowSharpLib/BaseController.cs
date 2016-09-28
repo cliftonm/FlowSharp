@@ -54,6 +54,7 @@ namespace FlowSharpLib
 			Point adjustedDelta = anchor.AdjustedDelta(delta);
 			Rectangle newRect = anchor.Resize(el.DisplayRectangle, adjustedDelta);
 			UpdateDisplayRectangle(el, newRect, adjustedDelta);
+			UpdateConnections(el);
 		}
 
 		/// <summary>
@@ -68,6 +69,16 @@ namespace FlowSharpLib
 			el.UpdatePath();
 			DrawBottomToTop(els, dx, dy);
 			UpdateScreen(els, dx, dy);
+		}
+
+		protected void UpdateConnections(GraphicElement el)
+		{
+			el.Connections.ForEach(c =>
+			{
+				// Connection point on shape.
+				ConnectionPoint cp = el.GetConnectionPoints().Single(cp2 => cp2.Type == c.ElementConnectionPoint.Type);
+				c.ToElement.MoveAnchor(cp, c.ToConnectionPoint);
+			});
 		}
 
 		protected void MoveElement(GraphicElement el, Point delta)

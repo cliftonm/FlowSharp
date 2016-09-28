@@ -139,6 +139,13 @@ namespace FlowSharpLib
 			return r;
 		}
 
+		public static Point Move(this Point r, Size sz)
+		{
+			r.Offset(sz.Width, sz.Height);
+
+			return r;
+		}
+
 		public static Point Move(this Point r, int x, int y)
 		{
 			r.Offset(x, y);

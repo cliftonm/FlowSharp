@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamicConnectorProperties.cs" />
+    <Compile Include="DynamicConnectorUD.cs" />
+    <Compile Include="IDynamicConnector.cs" />
     <Compile Include="ShapeAnchor.cs" />
     <Compile Include="BaseController.cs" />
     <Compile Include="Box.cs" />
@@ -51,7 +53,7 @@
     </Compile>
     <Compile Include="CanvasController.cs" />
     <Compile Include="Diamond.cs" />
-    <Compile Include="DynamicConnector.cs" />
+    <Compile Include="DynamicConnectorLR.cs" />
     <Compile Include="ElementProperties.cs" />
     <Compile Include="Ellipse.cs" />
     <Compile Include="ExtensionMethods.cs" />

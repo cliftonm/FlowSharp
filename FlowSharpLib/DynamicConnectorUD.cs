@@ -7,9 +7,10 @@ using System.Linq;
 namespace FlowSharpLib
 {
 	/// <summary>
+	/// Up-Down dynamic connector.
 	/// Routing around shapes is ignored, which means that the best route may include going inside a connected shape.
 	/// </summary>
-	public class DynamicConnector : GraphicElement// , ILine
+	public class DynamicConnectorUD : GraphicElement, IDynamicConnector
 	{
 		public AvailableLineCap StartCap { get; set; }
 		public AvailableLineCap EndCap { get; set; }
@@ -21,7 +22,7 @@ namespace FlowSharpLib
 		protected Point startPoint;
 		protected Point endPoint;
 
-		public DynamicConnector(Canvas canvas) : base(canvas)
+		public DynamicConnectorUD(Canvas canvas) : base(canvas)
 		{
 			HasCornerAnchors = false;
 			HasCenterAnchors = false;
@@ -29,16 +30,16 @@ namespace FlowSharpLib
 			HasLeftRightAnchors = false;
 		}
 
-		public DynamicConnector(Canvas canvas, Point start, Point end): base(canvas)
+		public DynamicConnectorUD(Canvas canvas, Point start, Point end) : base(canvas)
 		{
 			// Dummy rectangle for dynamic connector.
 			HasCornerAnchors = false;
 			HasCenterAnchors = false;
 			HasTopBottomAnchors = false;
 			HasLeftRightAnchors = false;
-			lines.Add(new HorizontalLine(canvas));
 			lines.Add(new VerticalLine(canvas));
 			lines.Add(new HorizontalLine(canvas));
+			lines.Add(new VerticalLine(canvas));
 			startPoint = start;
 			endPoint = end;
 		}
@@ -57,12 +58,12 @@ namespace FlowSharpLib
 		{
 			Size szAnchor = new Size(anchorSize, anchorSize);
 
-			int startxOffset = startPoint.X < endPoint.X ? 0 : -anchorSize;
-			int endxOffset = startPoint.X < endPoint.X ? -anchorSize : 0;
+			int startyOffset = startPoint.Y < endPoint.Y ? 0 : -anchorSize;
+			int endyOffset = startPoint.Y < endPoint.Y ? -anchorSize : 0;
 
 			return new List<ShapeAnchor>() {
-				new ShapeAnchor(GripType.Start, new Rectangle(startPoint.Move(startxOffset, -anchorSize/2), szAnchor)),
-				new ShapeAnchor(GripType.End, new Rectangle(endPoint.Move(endxOffset, -anchorSize/2), szAnchor)),
+				new ShapeAnchor(GripType.Start, new Rectangle(startPoint.Move(-anchorSize/2, startyOffset), szAnchor)),
+				new ShapeAnchor(GripType.End, new Rectangle(endPoint.Move(-anchorSize/2, endyOffset), szAnchor)),
 			};
 		}
 
@@ -81,7 +82,7 @@ namespace FlowSharpLib
 
 		public override GraphicElement Clone(Canvas canvas)
 		{
-			DynamicConnector line = (DynamicConnector)base.Clone(canvas);
+			DynamicConnectorUD line = (DynamicConnectorUD)base.Clone(canvas);
 			line.StartCap = StartCap;
 			line.EndCap = EndCap;
 
@@ -95,8 +96,44 @@ namespace FlowSharpLib
 		{
 			startPoint = startPoint.Move(delta);
 			endPoint = endPoint.Move(delta);
+
+			// UpdatePath();
+			DisplayRectangle = RecalcDisplayRectangle();
+
+			// Rectangle newRect = RecalcDisplayRectangle();
+			// canvas.Controller.UpdateDisplayRectangle(this, newRect, delta);
+
+			// base.Move(delta);
+		}
+
+		public override void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint cp)
+		{
+			if (cp.Type == GripType.Start)
+			{
+				startPoint = new Point(cpShape.Point.X, cpShape.Point.Y);
+			}
+			else
+			{
+				endPoint = new Point(cpShape.Point.X, cpShape.Point.Y);
+			}
+
 			UpdatePath();
-			base.Move(delta);
+			DisplayRectangle = RecalcDisplayRectangle();
+		}
+
+		public override void MoveAnchor(GripType type, Point delta)
+		{
+			if (type == GripType.Start)
+			{
+				startPoint = startPoint.Move(delta);
+			}
+			else
+			{
+				endPoint = endPoint.Move(delta);
+			}
+
+			UpdatePath();
+			DisplayRectangle = RecalcDisplayRectangle();
 		}
 
 		public override void UpdateSize(ShapeAnchor anchor, Point delta)
@@ -110,6 +147,7 @@ namespace FlowSharpLib
 				endPoint = endPoint.Move(delta);
 			}
 
+			UpdatePath();
 			Rectangle newRect = RecalcDisplayRectangle();
 			canvas.Controller.UpdateDisplayRectangle(this, newRect, delta);
 		}
@@ -128,12 +166,21 @@ namespace FlowSharpLib
 
 		public override void Erase()
 		{
-			lines.ForEach(l => ((GraphicElement)l).Erase());
+			// Is reversing necessary?
+			lines.AsEnumerable().Reverse().ForEach(l => ((GraphicElement)l).Erase());
 		}
 
 		public override void UpdateScreen(int ix = 0, int iy = 0)
 		{
 			lines.ForEach(l => ((GraphicElement)l).UpdateScreen(ix, iy));
+		}
+
+		protected override void Draw(Graphics gr)
+		{
+			lines.ForEach(l => ((GraphicElement)l).Draw());
+
+			// No selection box!
+			// base.Draw(gr);
 		}
 
 		// ******************
@@ -142,7 +189,7 @@ namespace FlowSharpLib
 		{
 			// TODO: Figure out whether we're doing H-V-H, or V-H-V, or H-V or V-H, or something even more complicated if we are avoiding shape boundaries.
 
-			if ((startPoint.X - endPoint.X).Abs() <= 20)
+			if ((startPoint.Y - endPoint.Y).Abs() <= 20)
 			{
 				lines[0].StartCap = AvailableLineCap.None;
 				lines[0].EndCap = AvailableLineCap.None;
@@ -167,31 +214,31 @@ namespace FlowSharpLib
 				}
 			}
 
-			if (startPoint.X < endPoint.X)
+			if (startPoint.Y < endPoint.Y)
 			{
-				lines[0].DisplayRectangle = new Rectangle(startPoint.X, startPoint.Y - BaseController.MIN_WIDTH / 2, (endPoint.X - startPoint.X) / 2, BaseController.MIN_HEIGHT);
+				lines[0].DisplayRectangle = new Rectangle(startPoint.X-BaseController.MIN_WIDTH/2, startPoint.Y, BaseController.MIN_WIDTH, (endPoint.Y - startPoint.Y) / 2);
 			}
 			else
 			{
-				lines[0].DisplayRectangle = new Rectangle(endPoint.X + (startPoint.X - endPoint.X)/2, startPoint.Y - BaseController.MIN_WIDTH / 2, (startPoint.X - endPoint.X) / 2, BaseController.MIN_HEIGHT);
+				lines[0].DisplayRectangle = new Rectangle(startPoint.X - BaseController.MIN_WIDTH / 2, startPoint.Y - (startPoint.Y - endPoint.Y)/2, BaseController.MIN_WIDTH, (startPoint.Y - endPoint.Y) / 2);
+			}
+
+			if (startPoint.X < endPoint.X)
+			{
+				lines[1].DisplayRectangle = new Rectangle(startPoint.X, startPoint.Y + (endPoint.Y - startPoint.Y)/2 - BaseController.MIN_HEIGHT/2, (endPoint.X - startPoint.X), BaseController.MIN_HEIGHT);
+			}
+			else
+			{
+				lines[1].DisplayRectangle = new Rectangle(endPoint.X, startPoint.Y + (endPoint.Y - startPoint.Y)/2 - BaseController.MIN_HEIGHT/2, startPoint.X - endPoint.X, BaseController.MIN_HEIGHT);
 			}
 
 			if (startPoint.Y < endPoint.Y)
 			{
-				lines[1].DisplayRectangle = new Rectangle(startPoint.X + (endPoint.X - startPoint.X) / 2 - BaseController.MIN_WIDTH / 2, startPoint.Y, BaseController.MIN_WIDTH, endPoint.Y - startPoint.Y);
+				lines[2].DisplayRectangle = new Rectangle(endPoint.X - BaseController.MIN_WIDTH / 2, startPoint.Y + (endPoint.Y - startPoint.Y) / 2, BaseController.MIN_WIDTH, (endPoint.Y - startPoint.Y) /2);
 			}
 			else
 			{
-				lines[1].DisplayRectangle = new Rectangle(endPoint.X + (startPoint.X - endPoint.X) / 2 - BaseController.MIN_WIDTH / 2, endPoint.Y, BaseController.MIN_WIDTH, startPoint.Y - endPoint.Y);
-			}
-
-			if (startPoint.X < endPoint.X)
-			{
-				lines[2].DisplayRectangle = new Rectangle(startPoint.X + (endPoint.X - startPoint.X) / 2, endPoint.Y - BaseController.MIN_HEIGHT / 2, (endPoint.X - startPoint.X) / 2, BaseController.MIN_HEIGHT);
-			}
-			else
-			{
-				lines[2].DisplayRectangle = new Rectangle(endPoint.X, endPoint.Y - BaseController.MIN_WIDTH / 2, (startPoint.X - endPoint.X) / 2, BaseController.MIN_HEIGHT);
+				lines[2].DisplayRectangle = new Rectangle(endPoint.X - BaseController.MIN_WIDTH/2, endPoint.Y, BaseController.MIN_WIDTH, (startPoint.Y - endPoint.Y) / 2);
 			}
 
 			lines.ForEach(l => ((GraphicElement)l).UpdatePath());
@@ -205,14 +252,6 @@ namespace FlowSharpLib
 			int y2 = startPoint.Y.Max(endPoint.Y);
 
 			return new Rectangle(x1, y1, x2 - x1, y2 - y1);
-		}
-
-		protected override void Draw(Graphics gr)
-		{
-			lines.ForEach(l => ((GraphicElement)l).Draw());
-
-			// No selection box!
-			// base.Draw(gr);
 		}
 	}
 }

@@ -102,6 +102,10 @@ namespace FlowSharpLib
 			}
 		}
 
+		// TODO: Unify these into the second form at the call site.
+		public virtual void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint tocp) { }
+		public virtual void MoveAnchor(GripType type, Point delta) { }
+
 		public virtual ElementProperties CreateProperties()
 		{
 			return new ElementProperties(this);

@@ -7,16 +7,16 @@ namespace FlowSharpLib
 	/// <summary>
 	/// Special rendering for this element in the toolbox only.
 	/// </summary>
-	public class ToolboxDynamicConnector : GraphicElement
+	public class ToolboxDynamicConnectorLR : GraphicElement
 	{
-		public ToolboxDynamicConnector(Canvas canvas) : base(canvas)
+		public ToolboxDynamicConnectorLR(Canvas canvas) : base(canvas)
 		{
 		}
 
 		public override GraphicElement Clone(Canvas canvas)
 		{
 			// Create an actual dynamic connector as this is being cloned from the toolbox.
-			DynamicConnector dc = new DynamicConnector(canvas, new Point(20, 20), new Point(60, 60));
+			DynamicConnectorLR dc = new DynamicConnectorLR(canvas, new Point(20, 20), new Point(60, 60));
 
 			return dc;
 		}
@@ -30,4 +30,32 @@ namespace FlowSharpLib
 			base.Draw(gr);
 		}
 	}
+
+	/// <summary>
+	/// Special rendering for this element in the toolbox only.
+	/// </summary>
+	public class ToolboxDynamicConnectorUD : GraphicElement
+	{
+		public ToolboxDynamicConnectorUD(Canvas canvas) : base(canvas)
+		{
+		}
+
+		public override GraphicElement Clone(Canvas canvas)
+		{
+			// Create an actual dynamic connector as this is being cloned from the toolbox.
+			DynamicConnectorUD dc = new DynamicConnectorUD(canvas, new Point(20, 20), new Point(60, 60));
+
+			return dc;
+		}
+
+		protected override void Draw(Graphics gr)
+		{
+			gr.DrawLine(BorderPen, DisplayRectangle.TopLeftCorner(), DisplayRectangle.LeftMiddle());
+			gr.DrawLine(BorderPen, DisplayRectangle.LeftMiddle(), DisplayRectangle.RightMiddle());
+			gr.DrawLine(BorderPen, DisplayRectangle.RightMiddle(), DisplayRectangle.BottomRightCorner());
+
+			base.Draw(gr);
+		}
+	}
+
 }

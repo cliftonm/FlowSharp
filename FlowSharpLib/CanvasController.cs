@@ -72,16 +72,30 @@ namespace FlowSharpLib
 
 			if (dragging)
 			{
+				// TODO: Clean up this mess of nested if-else and the "is type" checks.
+
 				if (selectedAnchor != null)
 				{
-					if (selectedElement is DynamicConnector || SelectedElement is ILine)
+					if (selectedElement is IDynamicConnector || SelectedElement is ILine)
 					{
 						if (Snap(selectedAnchor.Type, ref delta))
 						{
 							// If the other endpoint is attached to something, don't move the whole line, move only the endpoint.
 							// In some ways, this "move the whole line" thing is to handle horizontal and vertical lines, which
 							// actually causes it's own set of problems when the other end is already attached to a shape.
-							selectedElement.Move(delta);
+
+							if (selectedElement is ILine)
+							{
+								// Always move the line because it can never be diagonal.
+								// BUG: If the line happens to be attached exactly to another shape, this will disconnect the shape.
+								// To fix, one the V/H line is attached to one shape, it cannot be attached to another until detached.
+								selectedElement.Move(delta);
+							}
+							else
+							{
+								// Move just the anchor point on the dynamic connector we're snapping.
+								selectedElement.MoveAnchor(selectedAnchor.Type, delta);
+							}
 						}
 						else
 						{
@@ -97,15 +111,24 @@ namespace FlowSharpLib
 				}
 				else
 				{
+					bool snapped = false;
 					// We can snap a line if moving.
+					// TODO: Moving a dynamic connector should snap as well, but the process has a bug - it snaps too soon and the line disappears!
 					if (selectedElement is ILine)
 					{
-						Snap(GripType.None, ref delta);
+						snapped = Snap(GripType.None, ref delta);
 					}
 
+					if (!snapped)
+					{
+						DetachFromAllShapes(selectedElement);
+					}
+
+					// TODO: GROSS!
+					selectedElement.Connections.Where(c=>c.ToElement is ILine).ForEach(c => MoveElement(c.ToElement, delta));
+					selectedElement.Connections.Where(c => c.ToElement is IDynamicConnector).ForEach(c => c.ToElement.MoveAnchor(c.ToConnectionPoint.Type, delta));
 					MoveElement(selectedElement, delta);
-					// TODO: For connections terminating on another element, move only the connection point, not the whole line.
-					selectedElement.Connections.ForEach(c => MoveElement(c.ToElement, delta));
+
 					UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
 				}
 			}
@@ -145,6 +168,12 @@ namespace FlowSharpLib
 					}
 				}
 			}
+		}
+
+		protected void DetachFromAllShapes(GraphicElement el)
+		{
+			// Expensive:
+			elements.ForEach(e => e.Connections.RemoveAll(c => c.ToElement == el));
 		}
 
 		protected virtual bool Snap(GripType type, ref Point delta)
@@ -210,7 +239,7 @@ namespace FlowSharpLib
 		{
 			List<SnapInfo> nearElements = new List<SnapInfo>();
 
-			elements.Where(e=>e != selectedElement && e.OnScreen() && (!(e is ILine || e is DynamicConnector))).ForEach(e =>
+			elements.Where(e=>e != selectedElement && e.OnScreen() && (!(e is ILine || e is IDynamicConnector))).ForEach(e =>
 			{
 				Rectangle checkRange = e.DisplayRectangle.Grow(SNAP_ELEMENT_RANGE);
 

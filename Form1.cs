@@ -29,7 +29,7 @@ namespace FlowSharp
 			InitializeCanvas();
 			InitializeToolbox();
 			InitializeControllers();
-			// CreateSampleElements();
+			CreateSampleElements();
 		}
 
 		protected void InitializeCanvas()
@@ -48,7 +48,8 @@ namespace FlowSharp
 		protected void CreateSampleElements()
 		{
 			elements.Add(new Box(canvas) { DisplayRectangle = new Rectangle(25, 50, 200, 100) });
-			elements.Add(new HorizontalLine(canvas) { DisplayRectangle = new Rectangle(325, 100, 75, 20) });
+			// elements.Add(new HorizontalLine(canvas) { DisplayRectangle = new Rectangle(325, 100, 75, 20) });
+			elements.Add(new DynamicConnectorLR(canvas, new Point(325, 100), new Point(325 + 75, 100 + 20)));
 			elements.ForEach(el => el.UpdatePath());
 		}
 
@@ -60,9 +61,10 @@ namespace FlowSharp
 			toolboxElements.Add(new Box(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 15, 25, 25) });
 			toolboxElements.Add(new Ellipse(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 60, 25, 25) });
 			toolboxElements.Add(new Diamond(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 105, 25, 25) });
-			toolboxElements.Add(new HorizontalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 150, 30, 20) });
-			toolboxElements.Add(new VerticalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x+50, 145, 20, 30) });
-			toolboxElements.Add(new ToolboxDynamicConnector(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 185, 25, 25)});
+			toolboxElements.Add(new HorizontalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 25, 150, 30, 20) });
+			toolboxElements.Add(new VerticalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x+25, 145, 20, 30) });
+			toolboxElements.Add(new ToolboxDynamicConnectorLR(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 25, 185, 25, 25)});
+			toolboxElements.Add(new ToolboxDynamicConnectorUD(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 25, 185, 25, 25) });
 			toolboxElements.ForEach(el => el.UpdatePath());
 		}
 	}

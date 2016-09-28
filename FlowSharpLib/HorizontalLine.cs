@@ -52,6 +52,21 @@ namespace FlowSharpLib
 			return new Rectangle(20, 20, 40, 20);
 		}
 
+		public override void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint cp)
+		{
+			if (cp.Type == GripType.Start)
+			{
+				DisplayRectangle = new Rectangle(cpShape.Point.X, cpShape.Point.Y -BaseController.MIN_HEIGHT/2, DisplayRectangle.Size.Width, DisplayRectangle.Size.Height);
+			}
+			else
+			{
+				DisplayRectangle = new Rectangle(cpShape.Point.X-DisplayRectangle.Size.Width, cpShape.Point.Y - BaseController.MIN_HEIGHT/2, DisplayRectangle.Size.Width, DisplayRectangle.Size.Height);
+			}
+
+			// TODO: Redraw is updating too much in this case -- causes jerky motion of attached shape.
+			canvas.Controller.Redraw(this, (cpShape.Point.X - cp.Point.X).Abs() + BaseController.MIN_WIDTH, (cpShape.Point.Y - cp.Point.Y).Abs() + BaseController.MIN_HEIGHT);
+		}
+
 		protected override void Draw(Graphics gr)
 		{
 			// See CustomLineCap for creating other possible endcaps besides arrows.

@@ -65,34 +65,34 @@ namespace FlowSharpLib
 
 			if (dragging)
 			{
-				// TODO: Clean up this mess of nested if-else and the "is type" checks.
-
 				if (selectedAnchor != null)
 				{
-					selectedElement.SnapCheck(selectedAnchor, delta);
+					// Snap the anchor?
+					bool connectorAttached = selectedElement.SnapCheck(selectedAnchor, delta);
+
+					if (!connectorAttached)
+					{
+						selectedElement.DisconnectShapeFromConnector(selectedAnchor.Type);
+						selectedElement.RemoveConnection(selectedAnchor.Type);
+					}
 				}
 				else
 				{
-					bool snapped = false;
 					// We can snap a line if moving.
 					// TODO: Moving a dynamic connector should snap as well, but the process has a bug - it snaps too soon and the line disappears!
-					if (selectedElement is Line)
-					{
-						snapped = Snap(GripType.None, ref delta);
-					}
+					// Implementation in DynamicConnector is currently missing.
+					bool connectorAttached = selectedElement.SnapCheck(GripType.Start, ref delta) || selectedElement.SnapCheck(GripType.End, ref delta);
 
-					if (!snapped)
+					selectedElement.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
+					MoveElement(selectedElement, delta);
+					UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
+
+					if (!connectorAttached)
 					{
 						DetachFromAllShapes(selectedElement);
 					}
-
-					// TODO: GROSS!
-					selectedElement.Connections.Where(c=>c.ToElement is Line).ForEach(c => MoveElement(c.ToElement, delta));
-					selectedElement.Connections.Where(c => c.ToElement is DynamicConnector).ForEach(c => c.ToElement.MoveAnchor(c.ToConnectionPoint.Type, delta));
-					MoveElement(selectedElement, delta);
-
-					UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
 				}
+
 			}
 			else if (leftMouseDown)
 			{
@@ -134,18 +134,15 @@ namespace FlowSharpLib
 
 		protected void DetachFromAllShapes(GraphicElement el)
 		{
-			// TODO Expensive and GROSS!
-			if (el is Line || el is DynamicConnector)
-			{
-				elements.ForEach(e => e.Connections.RemoveAll(c => c.ToElement == el));
-			}
+			el.DisconnectShapeFromConnector(GripType.Start);
+			el.DisconnectShapeFromConnector(GripType.End);
+			el.RemoveConnection(GripType.Start);
+			el.RemoveConnection(GripType.End);
 		}
 
 		public override bool Snap(GripType type, ref Point delta)
 		{
 			bool snapped = false;
-
-			if (delta.X == 0 && delta.Y == 0) return false;
 
 			// Look for connection points on nearby elements.
 			// If a connection point is nearby, and the delta is moving toward that connection point, then snap to that connection point.
@@ -178,8 +175,10 @@ namespace FlowSharpLib
 						// Possible detach?
 						if (neardxsign == 0 && neardxsign == 0 && (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY))
 						{
-							// TODO: Bug if both endpoints of the line are connected to the same selected element.  See (A) below.
-							si.NearElement.Connections.RemoveAll(c => c.ToElement == selectedElement);
+							//si.NearElement.Connections.RemoveAll(c => c.ToElement == selectedElement);
+							//selectedElement.RemoveConnection(si.LineConnectionPoint.Type);
+							selectedElement.DisconnectShapeFromConnector(type);
+							selectedElement.RemoveConnection(type);
 						}
 						else
 						{
@@ -187,6 +186,7 @@ namespace FlowSharpLib
 							if (!si.NearElement.Connections.Any(c => c.ToElement == selectedElement))
 							{
 								si.NearElement.Connections.Add(new Connection() { ToElement = selectedElement, ToConnectionPoint = si.LineConnectionPoint, ElementConnectionPoint = nearConnectionPoint });
+								selectedElement.SetConnection(si.LineConnectionPoint.Type, si.NearElement);
 							}
 
 							delta = new Point(neardx, neardy);

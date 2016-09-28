@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Connector.cs" />
     <Compile Include="DynamicConnector.cs" />
     <Compile Include="DynamicConnectorProperties.cs" />
     <Compile Include="DynamicConnectorUD.cs" />
@@ -60,7 +61,6 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GraphicElement.cs" />
     <Compile Include="HorizontalLine.cs" />
-    <Compile Include="ILine.cs" />
     <Compile Include="ConnectionPoint.cs" />
     <Compile Include="LineProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

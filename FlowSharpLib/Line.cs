@@ -2,11 +2,8 @@
 
 namespace FlowSharpLib
 {
-	public abstract class Line : GraphicElement
+	public abstract class Line : Connector
 	{
-		public AvailableLineCap StartCap { get; set; }
-		public AvailableLineCap EndCap { get; set; }
-
 		public abstract int X1 { get; }
 		public abstract int Y1 { get; }
 		public abstract int X2 { get; }
@@ -16,16 +13,30 @@ namespace FlowSharpLib
 		{
 		}
 
-		public override void SnapCheck(ShapeAnchor anchor, Point delta)
+		public override bool SnapCheck(ShapeAnchor anchor, Point delta)
 		{
-			if (canvas.Controller.Snap(anchor.Type, ref delta))
+			bool ret = canvas.Controller.Snap(anchor.Type, ref delta);
+
+			if (ret)
 			{
 				Move(delta);
 			}
 			else
 			{
-				base.SnapCheck(anchor, delta);
+				ret = base.SnapCheck(anchor, delta);
 			}
+
+			return ret;
+		}
+
+		public override bool SnapCheck(GripType gt, ref Point delta)
+		{
+			return canvas.Controller.Snap(GripType.None, ref delta);
+		}
+
+		public override void MoveElementOrAnchor(GripType gt, Point delta)
+		{
+			canvas.Controller.MoveElement(this, delta);
 		}
 	}
 }

@@ -2,25 +2,32 @@
 
 namespace FlowSharpLib
 {
-	public abstract class DynamicConnector : GraphicElement
+	public abstract class DynamicConnector : Connector
 	{
-		public AvailableLineCap StartCap { get; set; }
-		public AvailableLineCap EndCap { get; set; }
-
 		public DynamicConnector(Canvas canvas) : base(canvas)
 		{
 		}
 
-		public override void SnapCheck(ShapeAnchor anchor, Point delta)
+		public override bool SnapCheck(ShapeAnchor anchor, Point delta)
 		{
-			if (canvas.Controller.Snap(anchor.Type, ref delta))
+			bool ret = canvas.Controller.Snap(anchor.Type, ref delta);
+
+			if (ret)
 			{
 				MoveAnchor(anchor.Type, delta);
 			}
 			else
 			{
-				base.SnapCheck(anchor, delta);
+				ret = base.SnapCheck(anchor, delta);
 			}
+
+			return ret;
+		}
+
+
+		public override void MoveElementOrAnchor(GripType gt, Point delta)
+		{
+			MoveAnchor(gt, delta);
 		}
 	}
 }

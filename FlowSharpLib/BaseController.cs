@@ -90,7 +90,7 @@ namespace FlowSharpLib
 			});
 		}
 
-		protected void MoveElement(GraphicElement el, Point delta)
+		public void MoveElement(GraphicElement el, Point delta)
 		{
 			if (el.OnScreen())
 			{

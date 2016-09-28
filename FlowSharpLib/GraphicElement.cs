@@ -185,11 +185,22 @@ namespace FlowSharpLib
             background = null;
         }
 
-		public virtual void SnapCheck(ShapeAnchor anchor, Point delta)
+		public virtual bool SnapCheck(ShapeAnchor anchor, Point delta)
 		{
 			UpdateSize(anchor, delta);
 			canvas.Controller.UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = this });
+
+			return false;
 		}
+
+		// Default returns true so we don't detach a shape's connectors when moving a shape.
+		public virtual bool SnapCheck(GripType gt, ref Point delta) { return false; }
+
+		// Placeholders:
+		public virtual void MoveElementOrAnchor(GripType gt, Point delta) { }
+		public virtual void SetConnection(GripType gt, GraphicElement shape) { }
+		public virtual void RemoveConnection(GripType gt) { }
+		public virtual void DisconnectShapeFromConnector(GripType gt) { }
 
 		public virtual void Erase()
         {

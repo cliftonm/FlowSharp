@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace FlowSharpLib
 {
@@ -178,6 +179,44 @@ namespace FlowSharpLib
 		public static void Fire<TEventArgs>(this EventHandler<TEventArgs> theEvent, object sender, TEventArgs e = null) where TEventArgs : EventArgs
 		{
 			theEvent?.Invoke(sender, e);
+		}
+
+		// Logic helpers
+
+		public static bool If(this bool b, Action action)
+		{
+			if (b)
+			{
+				action();
+			}
+
+			return b;
+		}
+
+		public static void IfElse(this bool b, Action ifTrue, Action ifFalse)
+		{
+			if (b) ifTrue(); else ifFalse();
+		}
+
+		/// <summary>
+		/// If the boolean is false, performs the specified action and returns the complement of the original state.
+		/// </summary>
+		public static void Else(this bool b, Action f)
+		{
+			if (!b) { f(); }
+		}
+
+		public static void IfNotNull<T>(this T obj, Action<T> f)
+		{
+			if (obj != null)
+			{
+				f(obj);
+			}
+		}
+
+		public static bool In<T>(this T item, T[] options)
+		{
+			return options.Contains(item);
 		}
 	}
 }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace FlowSharpLib
@@ -21,19 +19,10 @@ namespace FlowSharpLib
 
 		public DynamicConnectorUD(Canvas canvas) : base(canvas)
 		{
-			HasCornerAnchors = false;
-			HasCenterAnchors = false;
-			HasTopBottomAnchors = false;
-			HasLeftRightAnchors = false;
 		}
 
 		public DynamicConnectorUD(Canvas canvas, Point start, Point end) : base(canvas)
 		{
-			// Dummy rectangle for dynamic connector.
-			HasCornerAnchors = false;
-			HasCenterAnchors = false;
-			HasTopBottomAnchors = false;
-			HasLeftRightAnchors = false;
 			lines.Add(new VerticalLine(canvas));
 			lines.Add(new HorizontalLine(canvas));
 			lines.Add(new VerticalLine(canvas));
@@ -72,11 +61,6 @@ namespace FlowSharpLib
 			};
 		}
 
-		public override ElementProperties CreateProperties()
-		{
-			return new DynamicConnectorProperties(this);
-		}
-
 		public override GraphicElement Clone(Canvas canvas)
 		{
 			DynamicConnectorUD line = (DynamicConnectorUD)base.Clone(canvas);
@@ -93,14 +77,7 @@ namespace FlowSharpLib
 		{
 			startPoint = startPoint.Move(delta);
 			endPoint = endPoint.Move(delta);
-
-			// UpdatePath();
 			DisplayRectangle = RecalcDisplayRectangle();
-
-			// Rectangle newRect = RecalcDisplayRectangle();
-			// canvas.Controller.UpdateDisplayRectangle(this, newRect, delta);
-
-			// base.Move(delta);
 		}
 
 		public override void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint cp)
@@ -153,28 +130,28 @@ namespace FlowSharpLib
 
 		public override void GetBackground()
 		{
-			lines.ForEach(l => ((GraphicElement)l).GetBackground());
+			lines.ForEach(l => GetBackground());
 		}
 
 		public override void CancelBackground()
 		{
-			lines.ForEach(l => ((GraphicElement)l).CancelBackground());
+			lines.ForEach(l => CancelBackground());
 		}
 
 		public override void Erase()
 		{
 			// Is reversing necessary?
-			lines.AsEnumerable().Reverse().ForEach(l => ((GraphicElement)l).Erase());
+			lines.AsEnumerable().Reverse().ForEach(l => l.Erase());
 		}
 
 		public override void UpdateScreen(int ix = 0, int iy = 0)
 		{
-			lines.ForEach(l => ((GraphicElement)l).UpdateScreen(ix, iy));
+			lines.ForEach(l => l.UpdateScreen(ix, iy));
 		}
 
 		protected override void Draw(Graphics gr)
 		{
-			lines.ForEach(l => ((GraphicElement)l).Draw());
+			lines.ForEach(l => l.Draw());
 
 			// No selection box!
 			// base.Draw(gr);
@@ -238,7 +215,7 @@ namespace FlowSharpLib
 				lines[2].DisplayRectangle = new Rectangle(endPoint.X - BaseController.MIN_WIDTH/2, endPoint.Y, BaseController.MIN_WIDTH, (startPoint.Y - endPoint.Y) / 2);
 			}
 
-			lines.ForEach(l => ((GraphicElement)l).UpdatePath());
+			lines.ForEach(l => l.UpdatePath());
 		}
 
 		protected virtual Rectangle RecalcDisplayRectangle()

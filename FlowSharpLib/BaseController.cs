@@ -36,6 +36,71 @@ namespace FlowSharpLib
 
 		public virtual bool Snap(GripType type, ref Point delta) { return false; }
 
+		public void Topmost()
+		{
+			if (selectedElement != null) 
+			{
+				Reorder(0);
+			}
+		}
+
+		public void Bottommost()
+		{
+			if (selectedElement != null)
+			{
+				Reorder(elements.Count - 1);
+			}
+		}
+
+		public void MoveUp()
+		{
+			if (selectedElement != null)
+			{
+				int idx = elements.IndexOf(selectedElement);
+
+				if (idx > 0)
+				{
+					Reorder(idx - 1);
+				}
+			}
+		}
+
+		public void MoveDown()
+		{
+			if (selectedElement != null)
+			{
+				int idx = elements.IndexOf(selectedElement);
+
+				if (idx < elements.Count - 1)
+				{
+					Reorder(idx + 1);
+				}
+			}
+		}
+
+		public void DeleteElement()
+		{
+			if (selectedElement != null)
+			{
+				selectedElement.DetachAll();
+				EraseTopToBottom(elements);
+				elements.Remove(selectedElement);
+				selectedElement = null;
+				selectedAnchor = null;
+				DrawBottomToTop(elements);
+				// Need to refresh the entire screen to remove the element from the screen itself.
+				canvas.Invalidate();
+			}
+		}
+
+		protected void Reorder(int n)
+		{
+			EraseTopToBottom(elements);
+			elements.Swap(n, elements.IndexOf(selectedElement));
+			DrawBottomToTop(elements);
+			UpdateScreen(elements);
+		}
+
 		public void Redraw(GraphicElement el, int dx=0, int dy=0)
 		{
 			var els = EraseTopToBottom(el, dx, dy);
@@ -132,6 +197,11 @@ namespace FlowSharpLib
 			els.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.Erase());
 
 			return els;
+		}
+
+		protected void EraseTopToBottom(List<GraphicElement> els)
+		{
+			els.Where(e => e.OnScreen()).ForEach(e => e.Erase());
 		}
 
 		protected void DrawBottomToTop(List<GraphicElement> els, int dx = 0, int dy = 0)

@@ -64,7 +64,10 @@
     <Compile Include="ConnectionPoint.cs" />
     <Compile Include="LineProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShapeProperties.cs" />
+    <Compile Include="TextShape.cs" />
     <Compile Include="ToolboxDynamicConnector.cs" />
+    <Compile Include="ToolboxText.cs" />
     <Compile Include="VerticalLine.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

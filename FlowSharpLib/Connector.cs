@@ -32,6 +32,12 @@ namespace FlowSharpLib
 				() => StartConnectedShape.IfNotNull(el => el.Connections.RemoveAll(c => c.ToElement == this)),
 				() => EndConnectedShape.IfNotNull(el => el.Connections.RemoveAll(c => c.ToElement == this)));
 		}
+
+		public override void DetachAll()
+		{
+			StartConnectedShape.IfNotNull(el => el.Connections.RemoveAll(c => c.ToElement == this));
+			EndConnectedShape.IfNotNull(el => el.Connections.RemoveAll(c => c.ToElement == this));
+		}
 	}
 }
 

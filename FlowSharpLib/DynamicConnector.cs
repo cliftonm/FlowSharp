@@ -6,6 +6,15 @@ namespace FlowSharpLib
 	{
 		public DynamicConnector(Canvas canvas) : base(canvas)
 		{
+			HasCornerAnchors = false;
+			HasCenterAnchors = false;
+			HasTopBottomAnchors = false;
+			HasLeftRightAnchors = false;
+		}
+
+		public override ElementProperties CreateProperties()
+		{
+			return new DynamicConnectorProperties(this);
 		}
 
 		public override bool SnapCheck(ShapeAnchor anchor, Point delta)

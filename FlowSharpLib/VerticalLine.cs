@@ -24,11 +24,6 @@ namespace FlowSharpLib
 			HasTopBottomConnections = true;
 		}
 
-		public override ElementProperties CreateProperties()
-		{
-			return new LineProperties(this);
-		}
-
 		public override GraphicElement Clone(Canvas canvas)
 		{
 			VerticalLine line = (VerticalLine)base.Clone(canvas);

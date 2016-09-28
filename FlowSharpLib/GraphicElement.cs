@@ -5,13 +5,13 @@ using System.Linq;
 
 namespace FlowSharpLib
 {
-    public static class GraphicElementHelpers
-    {
-        public static void Erase(this Bitmap background, Canvas canvas, Rectangle r)
-        {
-            canvas.DrawImage(background, r);
-            background.Dispose();
-        }
+	public static class GraphicElementHelpers
+	{
+		public static void Erase(this Bitmap background, Canvas canvas, Rectangle r)
+		{
+			canvas.DrawImage(background, r);
+			background.Dispose();
+		}
 	}
 
 	/// <summary>
@@ -24,8 +24,21 @@ namespace FlowSharpLib
 		public ConnectionPoint ElementConnectionPoint { get; set; }
 	}
 
+	public class PropertiesChangedEventArgs : EventArgs
+	{
+		public GraphicElement GraphicElement { get; protected set; }
+
+		public PropertiesChangedEventArgs(GraphicElement el)
+		{
+			GraphicElement = el;
+		}
+	}
+
 	public class GraphicElement : IDisposable
     {
+		public EventHandler<PropertiesChangedEventArgs> PropertiesChanged;
+
+		public Guid Id { get; set; }
 		public bool Selected { get; set; }
 		public bool ShowConnectionPoints { get; set; }
 		// public bool HideConnectionPoints { get; set; }
@@ -39,6 +52,11 @@ namespace FlowSharpLib
 		public Rectangle DisplayRectangle { get; set; }
 		public Pen BorderPen { get; set; }
         public SolidBrush FillBrush { get; set; }
+
+		public string Text { get; set; }
+		public Font TextFont { get; set; }
+		public Color TextColor { get; set; }
+		// TODO: Text location - left, top, right, middle, bottom
 
 		protected bool HasCornerAnchors { get; set; }
 		protected bool HasCenterAnchors { get; set; }
@@ -63,6 +81,7 @@ namespace FlowSharpLib
 
         public GraphicElement(Canvas canvas)
         {
+			Id = Guid.NewGuid();
 			this.canvas = canvas;
             selectionPen = new Pen(Color.Red);
 			HasCenterAnchors = true;
@@ -76,6 +95,8 @@ namespace FlowSharpLib
 			FillBrush = new SolidBrush(Color.White);
 			BorderPen = new Pen(Color.Black);
 			BorderPen.Width = 1;
+			TextFont = new Font(FontFamily.GenericSansSerif, 10);
+			TextColor = Color.Black;
 		}
 
 		public void Dispose()
@@ -98,6 +119,7 @@ namespace FlowSharpLib
 					selectionPen.Dispose();
 					anchorPen.Dispose();
 					anchorBrush.Dispose();
+					TextFont.Dispose();
 				}
 			}
 		}
@@ -108,7 +130,7 @@ namespace FlowSharpLib
 
 		public virtual ElementProperties CreateProperties()
 		{
-			return new ElementProperties(this);
+			return new ShapeProperties(this);
 		}
 
 		public virtual Rectangle DefaultRectangle()
@@ -201,6 +223,7 @@ namespace FlowSharpLib
 		public virtual void SetConnection(GripType gt, GraphicElement shape) { }
 		public virtual void RemoveConnection(GripType gt) { }
 		public virtual void DisconnectShapeFromConnector(GripType gt) { }
+		public virtual void DetachAll() { }
 
 		public virtual void Erase()
         {
@@ -228,6 +251,9 @@ namespace FlowSharpLib
 			{
 				DrawConnectionPoints();
 			}
+
+			if (!String.IsNullOrEmpty(Text))
+				DrawText();
         }
 
 		public virtual void UpdateScreen(int ix = 0, int iy = 0)
@@ -342,6 +368,16 @@ namespace FlowSharpLib
 				canvas.AntiAliasGraphics.DrawLine(connectionPointPen, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
 				canvas.AntiAliasGraphics.DrawLine(connectionPointPen, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
 			});
+		}
+
+		protected virtual void DrawText()
+		{
+			Graphics gr = canvas.AntiAliasGraphics;
+			SizeF size = gr.MeasureString(Text, TextFont);
+			Point textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
+			Brush brush = new SolidBrush(TextColor);
+			gr.DrawString(Text, TextFont, brush, textpos);
+			brush.Dispose();
 		}
 	}
 }

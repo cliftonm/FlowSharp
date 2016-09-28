@@ -21,19 +21,10 @@ namespace FlowSharpLib
 
 		public DynamicConnectorLR(Canvas canvas) : base(canvas)
 		{
-			HasCornerAnchors = false;
-			HasCenterAnchors = false;
-			HasTopBottomAnchors = false;
-			HasLeftRightAnchors = false;
 		}
 
 		public DynamicConnectorLR(Canvas canvas, Point start, Point end): base(canvas)
 		{
-			// Dummy rectangle for dynamic connector.
-			HasCornerAnchors = false;
-			HasCenterAnchors = false;
-			HasTopBottomAnchors = false;
-			HasLeftRightAnchors = false;
 			lines.Add(new HorizontalLine(canvas));
 			lines.Add(new VerticalLine(canvas));
 			lines.Add(new HorizontalLine(canvas));
@@ -70,11 +61,6 @@ namespace FlowSharpLib
 				new ConnectionPoint(GripType.Start, startPoint),
 				new ConnectionPoint(GripType.End, endPoint),
 			};
-		}
-
-		public override ElementProperties CreateProperties()
-		{
-			return new DynamicConnectorProperties(this);
 		}
 
 		public override GraphicElement Clone(Canvas canvas)

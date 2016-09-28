@@ -30,11 +30,6 @@ namespace FlowSharpLib
 			HasLeftRightConnections = true;
 		}
 
-		public override ElementProperties CreateProperties()
-		{
-			return new LineProperties(this);
-		}
-
 		public override GraphicElement Clone(Canvas canvas)
 		{
 			HorizontalLine line = (HorizontalLine)base.Clone(canvas);

@@ -13,6 +13,11 @@ namespace FlowSharpLib
 		{
 		}
 
+		public override ElementProperties CreateProperties()
+		{
+			return new LineProperties(this);
+		}
+
 		public override bool SnapCheck(ShapeAnchor anchor, Point delta)
 		{
 			bool ret = canvas.Controller.Snap(anchor.Type, ref delta);

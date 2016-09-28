@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 
 namespace FlowSharpLib
 {
-	public class ElementProperties
+	public abstract class ElementProperties
 	{
 		protected GraphicElement element;
 
@@ -31,7 +30,7 @@ namespace FlowSharpLib
 
 		public virtual void UpdateFrom(GraphicElement el)
 		{
-			// The only thing that can change.
+			// The only property that can change.
 			Rectangle = el.DisplayRectangle;
 		}
 
@@ -41,6 +40,7 @@ namespace FlowSharpLib
 			el.BorderPen.Color = BorderColor;
 			el.BorderPen.Width = BorderWidth;
 			el.FillBrush.Color = FillColor;
+			el.PropertiesChanged.Fire(this, new PropertiesChangedEventArgs(el));
 		}
 	}
 }

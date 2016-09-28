@@ -7,7 +7,7 @@ using FlowSharpLib;
 
 namespace FlowSharp
 {
-    public partial class Form1 : Form
+    public partial class FlowSharpUI : Form
     {
 		protected CanvasController canvasController;
 		protected ToolboxController toolboxController;
@@ -18,13 +18,13 @@ namespace FlowSharp
 		protected Canvas toolboxCanvas;
 		protected List<GraphicElement> toolboxElements = new List<GraphicElement>();
 
-		public Form1()
+		public FlowSharpUI()
         {
             InitializeComponent();
             Shown += OnShown;
         }
 
-        public void OnShown(object sender, EventArgs e)
+		public void OnShown(object sender, EventArgs e)
         {
 			InitializeCanvas();
 			InitializeToolbox();
@@ -65,7 +65,75 @@ namespace FlowSharp
 			toolboxElements.Add(new VerticalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x+25, 145, 20, 30) });
 			toolboxElements.Add(new ToolboxDynamicConnectorLR(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 25, 185, 25, 25)});
 			toolboxElements.Add(new ToolboxDynamicConnectorUD(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 25, 185, 25, 25) });
+			toolboxElements.Add(new ToolboxText(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 240, 25, 25) });
 			toolboxElements.ForEach(el => el.UpdatePath());
 		}
+
+		// Menus
+
+		private void mnuTopmost_Click(object sender, EventArgs e)
+		{
+			canvasController.Topmost();
+		}
+
+		private void mnuBottommost_Click(object sender, EventArgs e)
+		{
+			canvasController.Bottommost();
+		}
+
+		private void mnuMoveUp_Click(object sender, EventArgs e)
+		{
+			canvasController.MoveUp();
+		}
+
+		private void mnuMoveDown_Click(object sender, EventArgs e)
+		{
+			canvasController.MoveDown();
+		}
+
+		private void mnuCopy_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void mnuPaste_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void mnuDelete_Click(object sender, EventArgs e)
+		{
+			canvasController.DeleteElement();
+		}
+
+		private void mnuNew_Click(object sender, EventArgs e)
+		{
+			// TODO: Check for changes before closing.
+			elements.Clear();
+			canvas.Invalidate();
+		}
+
+		private void mnuOpen_Click(object sender, EventArgs e)
+		{
+			// TODO: Check for changes before closing.
+
+		}
+
+		private void mnuSave_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void mnuSaveAs_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void mnuExit_Click(object sender, EventArgs e)
+		{
+			// TODO: Check for changes before closing.
+			Close();
+		}
+
 	}
 }

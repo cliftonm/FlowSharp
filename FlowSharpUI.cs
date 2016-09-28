@@ -121,7 +121,7 @@ namespace FlowSharp
 
 		private void mnuSave_Click(object sender, EventArgs e)
 		{
-
+			Persist.Serialize(elements);
 		}
 
 		private void mnuSaveAs_Click(object sender, EventArgs e)

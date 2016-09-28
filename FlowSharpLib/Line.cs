@@ -4,11 +4,6 @@ namespace FlowSharpLib
 {
 	public abstract class Line : Connector
 	{
-		public abstract int X1 { get; }
-		public abstract int Y1 { get; }
-		public abstract int X2 { get; }
-		public abstract int Y2 { get; }
-
 		public Line(Canvas canvas) : base(canvas)
 		{
 		}

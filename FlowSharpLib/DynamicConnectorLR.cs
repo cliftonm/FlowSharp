@@ -14,11 +14,6 @@ namespace FlowSharpLib
 	{
 		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize + 1 + BorderPen.Width); } }
 
-		protected List<Line> lines = new List<Line>();
-
-		protected Point startPoint;
-		protected Point endPoint;
-
 		public DynamicConnectorLR(Canvas canvas) : base(canvas)
 		{
 		}

@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using System;
 
 namespace FlowSharpLib
 {
@@ -14,6 +14,15 @@ namespace FlowSharpLib
 
 		public Connector(Canvas canvas) : base(canvas)
 		{
+		}
+
+		public override void Serialize(ElementPropertyBag epb)
+		{
+			base.Serialize(epb);
+			epb.StartCap = StartCap;
+			epb.EndCap = EndCap;
+			epb.StartConnectedShapeId = StartConnectedShape?.Id ?? Guid.Empty;
+			epb.EndConnectedShapeId = EndConnectedShape?.Id ?? Guid.Empty;
 		}
 
 		public override void SetConnection(GripType gt, GraphicElement shape)

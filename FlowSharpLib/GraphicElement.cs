@@ -162,7 +162,34 @@ namespace FlowSharpLib
 			return el;
 		}
 
-		public bool OnScreen(Rectangle r)
+		public virtual void Serialize(ElementPropertyBag epb)
+		{
+			epb.ElementName = GetType().Name;
+			epb.Id = Id;
+			epb.DisplayRectangle = DisplayRectangle;
+			epb.BorderPenColor = BorderPen.Color;
+			epb.BorderPenWidth = (int)BorderPen.Width;
+			epb.FillBrushColor = FillBrush.Color;
+			epb.Text = Text;
+			epb.TextColor = TextColor;
+			epb.TextFontFamily = TextFont.FontFamily.Name;
+			epb.TextFontSize = TextFont.Size;
+			epb.TextFontUnderline = TextFont.Underline;
+			epb.TextFontStrikeout = TextFont.Strikeout;
+			epb.TextFontItalic = TextFont.Italic;
+
+			epb.HasCornerAnchors = HasCornerAnchors;
+			epb.HasCenterAnchors = HasCenterAnchors;
+			epb.HasLeftRightAnchors = HasLeftRightAnchors;
+			epb.HasTopBottomAnchors = HasTopBottomAnchors;
+
+			epb.HasCornerConnections = HasCornerConnections;
+			epb.HasCenterConnections = HasCenterConnections;
+			epb.HasLeftRightConnections = HasLeftRightConnections;
+			epb.HasTopBottomConnections = HasTopBottomConnections;
+	}
+
+	public bool OnScreen(Rectangle r)
 		{
 			return canvas.OnScreen(r);
 		}

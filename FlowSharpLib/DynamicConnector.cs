@@ -1,15 +1,27 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 
 namespace FlowSharpLib
 {
 	public abstract class DynamicConnector : Connector
 	{
+		protected List<Line> lines = new List<Line>();
+		protected Point startPoint;
+		protected Point endPoint;
+
 		public DynamicConnector(Canvas canvas) : base(canvas)
 		{
 			HasCornerAnchors = false;
 			HasCenterAnchors = false;
 			HasTopBottomAnchors = false;
 			HasLeftRightAnchors = false;
+		}
+
+		public override void Serialize(ElementPropertyBag epb)
+		{
+			base.Serialize(epb);
+			epb.StartPoint = startPoint;
+			epb.EndPoint = endPoint;
 		}
 
 		public override ElementProperties CreateProperties()

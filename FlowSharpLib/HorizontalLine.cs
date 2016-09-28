@@ -15,11 +15,6 @@ namespace FlowSharpLib
 		// Fixes background erase issues with dynamic connector.
 		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize + 1 + BorderPen.Width); } }
 
-		public override int X1 { get { return DisplayRectangle.X; } }
-		public override int Y1 { get { return DisplayRectangle.Y + BaseController.MIN_HEIGHT / 2; } }
-		public override int X2 { get { return DisplayRectangle.X + DisplayRectangle.Width; } }
-		public override int Y2 { get { return DisplayRectangle.Y + BaseController.MIN_HEIGHT / 2; } }
-
 		public HorizontalLine(Canvas canvas) : base(canvas)
 		{
 			HasCornerAnchors = false;

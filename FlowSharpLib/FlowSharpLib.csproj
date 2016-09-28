@@ -47,6 +47,7 @@
     <Compile Include="DynamicConnectorProperties.cs" />
     <Compile Include="DynamicConnectorUD.cs" />
     <Compile Include="Line.cs" />
+    <Compile Include="Persist.cs" />
     <Compile Include="ShapeAnchor.cs" />
     <Compile Include="BaseController.cs" />
     <Compile Include="Box.cs" />

@@ -33,17 +33,20 @@ namespace FlowSharp
 
 		private void mnuCopy_Click(object sender, EventArgs e)
 		{
-
+			if (canvasController.SelectedElement != null)
+			{
+				Copy();
+			}
 		}
 
 		private void mnuPaste_Click(object sender, EventArgs e)
 		{
-
+			Paste();
 		}
 
 		private void mnuDelete_Click(object sender, EventArgs e)
 		{
-			canvasController.DeleteElement();
+			Delete();
 		}
 
 		private void mnuNew_Click(object sender, EventArgs e)

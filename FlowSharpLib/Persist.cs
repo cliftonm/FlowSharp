@@ -119,9 +119,21 @@ namespace FlowSharpLib
 			return sb.ToString();
 		}
 
+		public static string Serialize(GraphicElement el)
+		{
+			ElementPropertyBag epb = new ElementPropertyBag();
+			el.Serialize(epb);
+			XmlSerializer xs = new XmlSerializer(typeof(ElementPropertyBag));
+			StringBuilder sb = new StringBuilder();
+			TextWriter tw = new StringWriter(sb);
+			xs.Serialize(tw, epb);
+
+			return sb.ToString();
+		}
+
 		public static List<GraphicElement> Deserialize(Canvas canvas, string data)
 		{
-			List<GraphicElement> elements = new List<FlowSharpLib.GraphicElement>();
+			List<GraphicElement> elements = new List<GraphicElement>();
 			XmlSerializer xs = new XmlSerializer(typeof(List<ElementPropertyBag>));
 			TextReader tr = new StringReader(data);
 			List<ElementPropertyBag> sps = (List<ElementPropertyBag>)xs.Deserialize(tr);
@@ -152,6 +164,20 @@ namespace FlowSharpLib
 			}
 
 			return elements;
+		}
+
+		public static GraphicElement DeserializeElement(Canvas canvas, string data)
+		{
+			XmlSerializer xs = new XmlSerializer(typeof(ElementPropertyBag));
+			TextReader tr = new StringReader(data);
+			ElementPropertyBag epb = (ElementPropertyBag)xs.Deserialize(tr);
+			Type t = Type.GetType(epb.ElementName);
+			GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { canvas });
+			el.Id = Guid.NewGuid();		// We get a new GUID when deserializing a specific element.
+			el.Deserialize(epb);
+			// A specific deserialization does not preserve connections.
+
+			return el;
 		}
 	}
 }

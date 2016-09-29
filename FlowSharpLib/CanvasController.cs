@@ -19,9 +19,6 @@ namespace FlowSharpLib
 
 	public class CanvasController : BaseController
 	{
-		protected bool dragging;
-		protected bool leftMouseDown;
-		protected GraphicElement showingAnchorsElement;
 		protected Point mousePosition;
 		protected List<SnapInfo> currentlyNear = new List<SnapInfo>();
 		
@@ -235,7 +232,7 @@ namespace FlowSharpLib
 			});
 		}
 
-		protected void DeselectCurrentSelectedElement()
+		public void DeselectCurrentSelectedElement()
 		{
 			if (selectedElement != null)
 			{
@@ -253,15 +250,19 @@ namespace FlowSharpLib
 
 			if (el != null)
 			{
-				var els = EraseTopToBottom(el);
-				el.Selected = true;
-				DrawBottomToTop(els);
-				UpdateScreen(els);
+				SelectElement(el);
 			}
 
-			selectedElement = el;
-
 			return el != null;
+		}
+
+		public void SelectElement(GraphicElement el)
+		{
+			var els = EraseTopToBottom(el);
+			el.Selected = true;
+			DrawBottomToTop(els);
+			UpdateScreen(els);
+			selectedElement = el;
 		}
 	}
 }

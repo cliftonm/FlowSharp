@@ -27,6 +27,10 @@ namespace FlowSharpLib
 		protected Canvas canvas;
 		protected GraphicElement selectedElement;
 		protected ShapeAnchor selectedAnchor;
+		protected GraphicElement showingAnchorsElement;
+
+		protected bool dragging;
+		protected bool leftMouseDown;
 
 		public BaseController(Canvas canvas, List<GraphicElement> elements)
 		{
@@ -88,7 +92,10 @@ namespace FlowSharpLib
 				selectedElement.Dispose();
 				selectedElement = null;
 				selectedAnchor = null;
+				showingAnchorsElement = null;
+				dragging = false;
 				DrawBottomToTop(elements);
+				ElementSelected.Fire(this, new ElementEventArgs());
 				// Need to refresh the entire screen to remove the element from the screen itself.
 				canvas.Invalidate();
 			}

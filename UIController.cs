@@ -29,6 +29,7 @@ namespace FlowSharp
 			}
 
 			pgElement.SelectedObject = elementProperties;
+			canvasController.Canvas.Focus();
 		}
 
 		protected void UpdateSelectedElement(object controller, ElementEventArgs args)

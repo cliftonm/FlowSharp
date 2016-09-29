@@ -18,9 +18,18 @@ namespace FlowSharp
 		protected Canvas toolboxCanvas;
 		protected List<GraphicElement> toolboxElements = new List<GraphicElement>();
 
+		protected Dictionary<Keys, Point> keyVector = new Dictionary<Keys, Point>()
+		{
+			{Keys.Up, new Point(0, -1) },
+			{Keys.Down, new Point(0, 1) },
+			{Keys.Left, new Point(-1, 0) },
+			{Keys.Right, new Point(1, 0) },
+		};
+
 		public FlowSharpUI()
         {
             InitializeComponent();
+			KeyPreview = true;
             Shown += OnShown;
 
 			// We have to initialize the menu event handlers here, rather than in the designer,
@@ -46,6 +55,18 @@ namespace FlowSharp
 			InitializeToolbox();
 			InitializeControllers();
 			// CreateSampleElements();
+		}
+
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			Point dir;
+
+			if ( (canvas.Focused) && (canvasController.SelectedElement != null) && (keyVector.TryGetValue(keyData, out dir) ))
+			{
+				canvasController.DragSelectedElement(dir);
+			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
 		protected void InitializeCanvas()

@@ -78,19 +78,7 @@ namespace FlowSharpLib
 				}
 				else
 				{
-					// We can snap a line if moving.
-					// TODO: Moving a dynamic connector should snap as well, but the process has a bug - it snaps too soon and the line disappears!
-					// Implementation in DynamicConnector is currently missing.
-					bool connectorAttached = selectedElement.SnapCheck(GripType.Start, ref delta) || selectedElement.SnapCheck(GripType.End, ref delta);
-
-					selectedElement.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
-					MoveElement(selectedElement, delta);
-					UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
-
-					if (!connectorAttached)
-					{
-						DetachFromAllShapes(selectedElement);
-					}
+					DragSelectedElement(delta);
 				}
 
 			}
@@ -129,6 +117,23 @@ namespace FlowSharpLib
 						showingAnchorsElement = el;
 					}
 				}
+			}
+		}
+
+		public void DragSelectedElement(Point delta)
+		{
+			// We can snap a line if moving.
+			// TODO: Moving a dynamic connector should snap as well, but the process has a bug - it snaps too soon and the line disappears!
+			// Implementation in DynamicConnector is currently missing.
+			bool connectorAttached = selectedElement.SnapCheck(GripType.Start, ref delta) || selectedElement.SnapCheck(GripType.End, ref delta);
+
+			selectedElement.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
+			MoveElement(selectedElement, delta);
+			UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
+
+			if (!connectorAttached)
+			{
+				DetachFromAllShapes(selectedElement);
 			}
 		}
 

@@ -36,6 +36,7 @@ namespace FlowSharpLib
 		public bool ShowConnectionPoints { get; set; }
 		// public bool HideConnectionPoints { get; set; }
 		public bool ShowAnchors { get; set; }
+		public Canvas Canvas { get { return canvas; } }
 
 		// This is probably a ridiculous optimization -- should just grow pen width + connection point size / 2
 		// public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + ((ShowConnectionPoints || HideConnectionPoints) ? 3 : 0)); } }
@@ -278,6 +279,11 @@ namespace FlowSharpLib
 		public virtual void DetachAll() { }
 		public virtual void UpdateProperties() { }
 
+		public virtual void SetCanvas(Canvas canvas)
+		{
+			this.canvas = canvas;
+		}
+
 		public virtual void Erase()
         {
             if (canvas.OnScreen(backgroundRectangle))
@@ -290,23 +296,27 @@ namespace FlowSharpLib
 
         public virtual void Draw()
         {
+			Graphics gr = canvas.AntiAliasGraphics;
+
             if (canvas.OnScreen(UpdateRectangle))
             {
-                Draw(canvas.AntiAliasGraphics);
+                Draw(gr);
             }
 
 			if (ShowAnchors)
 			{
-				DrawAnchors();
+				DrawAnchors(gr);
 			}
 
 			if (ShowConnectionPoints)
 			{
-				DrawConnectionPoints();
+				DrawConnectionPoints(gr);
 			}
 
 			if (!String.IsNullOrEmpty(Text))
-				DrawText();
+			{
+				DrawText(gr);
+			}
         }
 
 		public virtual void UpdateScreen(int ix = 0, int iy = 0)
@@ -394,12 +404,15 @@ namespace FlowSharpLib
 			return connectionPoints;
 		}
 
-		protected virtual void Draw(Graphics gr)
+		public virtual void Draw(Graphics gr)
         {
             if (Selected)
             {
 				DrawSelection(gr);
             }
+
+			// For illustration / debugging of what's being updated.
+			// DrawUpdateRectangle(gr);
         }
 
 		protected virtual void DrawSelection(Graphics gr)
@@ -416,28 +429,36 @@ namespace FlowSharpLib
 			}
 		}
 
-		protected virtual void DrawAnchors()
+		// For illustration / debugging of what's being updated.
+		protected virtual void DrawUpdateRectangle(Graphics gr)
+		{
+			Pen pen = new Pen(Color.Gray);
+			Rectangle r = UpdateRectangle.Grow(-1);
+			gr.DrawRectangle(pen, r);
+			pen.Dispose();
+		}
+
+		protected virtual void DrawAnchors(Graphics gr)
 		{
 			GetAnchors().ForEach((a =>
 			{
-				canvas.Graphics.DrawRectangle(anchorPen, a.Rectangle);
-				canvas.Graphics.FillRectangle(anchorBrush, a.Rectangle.Grow(-1));
+				gr.DrawRectangle(anchorPen, a.Rectangle);
+				gr.FillRectangle(anchorBrush, a.Rectangle.Grow(-1));
 			}));
 		}
 
-		protected virtual void DrawConnectionPoints()
+		protected virtual void DrawConnectionPoints(Graphics gr)
 		{
 			GetConnectionPoints().ForEach(cp =>
 			{
-				canvas.AntiAliasGraphics.FillRectangle(anchorBrush, new Rectangle(cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, BaseController.CONNECTION_POINT_SIZE*2, BaseController.CONNECTION_POINT_SIZE*2));
-				canvas.AntiAliasGraphics.DrawLine(connectionPointPen, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
-				canvas.AntiAliasGraphics.DrawLine(connectionPointPen, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
+				gr.FillRectangle(anchorBrush, new Rectangle(cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, BaseController.CONNECTION_POINT_SIZE*2, BaseController.CONNECTION_POINT_SIZE*2));
+				gr.DrawLine(connectionPointPen, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
+				gr.DrawLine(connectionPointPen, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
 			});
 		}
 
-		protected virtual void DrawText()
+		public virtual void DrawText(Graphics gr)
 		{
-			Graphics gr = canvas.AntiAliasGraphics;
 			SizeF size = gr.MeasureString(Text, TextFont);
 			Point textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
 			Brush brush = new SolidBrush(TextColor);

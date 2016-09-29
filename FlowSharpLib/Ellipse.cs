@@ -9,7 +9,7 @@ namespace FlowSharpLib
 			HasCornerConnections = false;
 		}
 
-		protected override void Draw(Graphics gr)
+		public override void Draw(Graphics gr)
         {
             gr.FillEllipse(FillBrush, DisplayRectangle);
             gr.DrawEllipse(BorderPen, DisplayRectangle);

@@ -89,5 +89,14 @@ namespace FlowSharpLib
 		{
 			MoveAnchor(gt, delta);
 		}
+
+		public override void SetCanvas(Canvas canvas)
+		{
+			lines.ForEach(l => l.SetCanvas(canvas));
+			base.SetCanvas(canvas);
+		}
+
+		// Dynamic connector does not update it's region, only the lines composing the connector do.
+		protected override void DrawUpdateRectangle(Graphics gr) { }
 	}
 }

@@ -21,7 +21,7 @@ namespace FlowSharpLib
 			return dc;
 		}
 
-		protected override void Draw(Graphics gr)
+		public override void Draw(Graphics gr)
 		{
 			gr.DrawLine(BorderPen, DisplayRectangle.TopLeftCorner(), DisplayRectangle.TopMiddle());
 			gr.DrawLine(BorderPen, DisplayRectangle.TopMiddle(), DisplayRectangle.BottomMiddle());
@@ -48,7 +48,7 @@ namespace FlowSharpLib
 			return dc;
 		}
 
-		protected override void Draw(Graphics gr)
+		public override void Draw(Graphics gr)
 		{
 			gr.DrawLine(BorderPen, DisplayRectangle.TopLeftCorner(), DisplayRectangle.LeftMiddle());
 			gr.DrawLine(BorderPen, DisplayRectangle.LeftMiddle(), DisplayRectangle.RightMiddle());
@@ -75,7 +75,7 @@ namespace FlowSharpLib
 			return dc;
 		}
 
-		protected override void Draw(Graphics gr)
+		public override void Draw(Graphics gr)
 		{
 			gr.DrawLine(BorderPen, DisplayRectangle.TopLeftCorner(), DisplayRectangle.TopRightCorner());
 			gr.DrawLine(BorderPen, DisplayRectangle.TopRightCorner(), DisplayRectangle.BottomRightCorner());

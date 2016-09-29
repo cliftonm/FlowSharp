@@ -62,6 +62,7 @@ namespace FlowSharp
 		{
 			// TODO: Check for changes before closing.
 			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.Filter = "FlowSharp (*.fsd)|*.fsd";
 			DialogResult res = ofd.ShowDialog();
 
 			if (res == DialogResult.OK)
@@ -84,33 +85,55 @@ namespace FlowSharp
 
 		private void mnuSave_Click(object sender, EventArgs e)
 		{
-			if (String.IsNullOrEmpty(filename))
+			if (elements.Count > 0)
 			{
-				mnuSaveAs_Click(sender, e);
-			}
+				if (String.IsNullOrEmpty(filename))
+				{
+					mnuSaveAs_Click(sender, e);
+				}
 
-			string data = Persist.Serialize(elements);
-			File.WriteAllText(filename, data);
-			UpdateCaption();
+				string data = Persist.Serialize(elements);
+				File.WriteAllText(filename, data);
+				UpdateCaption();
+			}
+			else
+			{
+				MessageBox.Show("Nothing to save.", "Empty Canvas", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
 		}
 
 		private void mnuSaveAs_Click(object sender, EventArgs e)
 		{
-			SaveFileDialog ofd = new SaveFileDialog();
-			DialogResult res = ofd.ShowDialog();
-
-			if (res == DialogResult.OK)
+			if (elements.Count > 0)
 			{
-				filename = ofd.FileName;
+				SaveFileDialog sfd = new SaveFileDialog();
+				sfd.Filter = "FlowSharp (*.fsd)|*.fsd|PNG (*.png)|*.png";
+				DialogResult res = sfd.ShowDialog();
+
+				if (res == DialogResult.OK)
+				{
+					if (Path.GetExtension(sfd.FileName).ToLower() == ".png")
+					{
+						canvasController.SaveAsPng(sfd.FileName);
+					}
+					else
+					{
+						filename = sfd.FileName;
+					}
+				}
+				else
+				{
+					return;
+				}
+
+				string data = Persist.Serialize(elements);
+				File.WriteAllText(filename, data);
+				UpdateCaption();
 			}
 			else
 			{
-				return;
+				MessageBox.Show("Nothing to save.", "Empty Canvas", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
-
-			string data = Persist.Serialize(elements);
-			File.WriteAllText(filename, data);
-			UpdateCaption();
 		}
 
 		private void mnuExit_Click(object sender, EventArgs e)

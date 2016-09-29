@@ -27,7 +27,7 @@ namespace FlowSharpLib
 			return dc;
 		}
 
-		protected override void Draw(Graphics gr)
+		public override void Draw(Graphics gr)
 		{
 			SizeF size = gr.MeasureString(TOOLBOX_TEXT, TextFont);
 			Point textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));

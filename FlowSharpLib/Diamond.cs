@@ -25,7 +25,7 @@ namespace FlowSharpLib
 			};
 		}
 
-		protected override void Draw(Graphics gr)
+		public override void Draw(Graphics gr)
 		{
 			gr.FillPolygon(FillBrush, path);
 			gr.DrawPolygon(BorderPen, path);

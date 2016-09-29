@@ -48,7 +48,7 @@ namespace FlowSharpLib
 			// canvas.Controller.Redraw(this, (cpShape.Point.X - cp.Point.X).Abs() + BaseController.MIN_WIDTH, (cpShape.Point.Y - cp.Point.Y).Abs() + BaseController.MIN_HEIGHT);
 		}
 
-		protected override void Draw(Graphics gr)
+		public override void Draw(Graphics gr)
 		{
 			// See CustomLineCap for creating other possible endcaps besides arrows.
 			// https://msdn.microsoft.com/en-us/library/system.drawing.drawing2d.customlinecap(v=vs.110).aspx

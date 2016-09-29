@@ -9,6 +9,7 @@ namespace FlowSharpLib
 		public Action<Canvas> PaintComplete { get; set; }
 		public Color BackgroundColor { get { return canvasBrush.Color; } }
 		public BaseController Controller { get; set; }
+		public Bitmap Bitmap { get { return bitmap; } }
 
 		protected SolidBrush canvasBrush;
         protected Pen gridPen;
@@ -91,7 +92,12 @@ namespace FlowSharpLib
             return new Rectangle(x, y, width, height);
         }
 
-        protected void CreateBitmap()
+		public void CreateBitmap(int w, int h)
+		{
+			bitmap = new Bitmap(w, h);
+		}
+
+		protected void CreateBitmap()
         {
             bitmap = new Bitmap(ClientSize.Width, ClientSize.Height);
         }

@@ -183,6 +183,40 @@ namespace FlowSharpLib
 			}
 		}
 
+		public void SaveAsPng(string filename)
+		{
+			// Get boundaries of of all elements.
+			int x1 = elements.Min(e => e.DisplayRectangle.X);
+			int y1 = elements.Min(e => e.DisplayRectangle.Y);
+			int x2 = elements.Max(e => e.DisplayRectangle.X + e.DisplayRectangle.Width);
+			int y2 = elements.Max(e => e.DisplayRectangle.Y + e.DisplayRectangle.Height);
+			int w = x2 - x1 + 10;
+			int h = y2 - y1 + 10;
+			Canvas pngCanvas = new Canvas();                                      
+			pngCanvas.CreateBitmap(w, h);
+			Graphics gr = pngCanvas.AntiAliasGraphics;
+
+			gr.Clear(Color.White);
+			Point offset = new Point(-(x1-5), -(y1-5));
+			Point restore = new Point(x1-5, y1-5);
+
+			elements.AsEnumerable().Reverse().ForEach(e =>
+			{
+				e.Move(offset);
+				e.UpdatePath();
+				e.SetCanvas(pngCanvas);
+				e.Draw(gr);
+				e.DrawText(gr);
+				e.SetCanvas(canvas);
+				e.Move(restore);
+				e.UpdatePath();
+			});
+
+			pngCanvas.Bitmap.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+			pngCanvas.Bitmap.Dispose();
+			gr.Dispose();
+		}
+
 		/// <summary>
 		/// Recursive loop to get all intersecting rectangles, including intersectors of the intersectees, so that all elements that
 		/// are affected by an overlap redraw are erased and redrawn, otherwise we get artifacts of some intersecting elements when intersection count > 2.

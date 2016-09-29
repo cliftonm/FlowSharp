@@ -8,7 +8,7 @@ namespace FlowSharpLib
 		{
         }
 
-        protected override void Draw(Graphics gr)
+        public override void Draw(Graphics gr)
         {
             gr.FillRectangle(FillBrush, DisplayRectangle);
             gr.DrawRectangle(BorderPen, DisplayRectangle);

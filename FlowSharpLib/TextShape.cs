@@ -11,13 +11,20 @@ namespace FlowSharpLib
 			HasCenterAnchors = false;
 			HasTopBottomAnchors = false;
 			HasLeftRightAnchors = false;
-			// PropertiesChanged += (sndr, args) => Erase();
 		}
 
-		protected override void Draw(Graphics gr)
+		// Handle large font changes by calculating the new dimensions.
+		public override void GetBackground()
+		{
+			UpdateDisplayRectangle(canvas.AntiAliasGraphics);
+			base.GetBackground();
+		}
+
+		public override void Draw(Graphics gr)
 		{
 			UpdateDisplayRectangle(gr);
-			GetBackground();		// Update the background before we draw so font size changes capture the new background first.
+			gr.FillRectangle(FillBrush, DisplayRectangle);
+			gr.DrawRectangle(BorderPen, DisplayRectangle);
 			base.Draw(gr);
 		}
 

@@ -58,6 +58,11 @@ namespace FlowSharpLib
 		protected void OnMouseMove(object sender, MouseEventArgs args)
 		{
 			Point delta = args.Location.Delta(mousePosition);
+
+			// Weird - on click, the mouse move event appears to fire as well, so we need to check
+			// for no movement in order to prevent detaching connectors!
+			if (delta == Point.Empty) return;
+
 			mousePosition = args.Location;
 
 			if (dragging)

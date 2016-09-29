@@ -150,7 +150,7 @@ namespace FlowSharpLib
 			lines.ForEach(l => l.UpdateScreen(ix, iy));
 		}
 
-		protected override void Draw(Graphics gr)
+		public override void Draw(Graphics gr)
 		{
 			lines.ForEach(l => l.Draw());
 

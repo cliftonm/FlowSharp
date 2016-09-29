@@ -14,16 +14,6 @@ namespace FlowSharpLib
 		}
 	}
 
-	/// <summary>
-	/// Used for non-line shapes connecting to lines.
-	/// </summary>
-	public class Connection
-	{
-		public GraphicElement ToElement { get; set; }
-		public ConnectionPoint ToConnectionPoint { get; set; }
-		public ConnectionPoint ElementConnectionPoint { get; set; }
-	}
-
 	public class PropertiesChangedEventArgs : EventArgs
 	{
 		public GraphicElement GraphicElement { get; protected set; }
@@ -164,7 +154,7 @@ namespace FlowSharpLib
 
 		public virtual void Serialize(ElementPropertyBag epb)
 		{
-			epb.ElementName = GetType().Name;
+			epb.ElementName = GetType().AssemblyQualifiedName;
 			epb.Id = Id;
 			epb.DisplayRectangle = DisplayRectangle;
 			epb.BorderPenColor = BorderPen.Color;
@@ -187,9 +177,38 @@ namespace FlowSharpLib
 			epb.HasCenterConnections = HasCenterConnections;
 			epb.HasLeftRightConnections = HasLeftRightConnections;
 			epb.HasTopBottomConnections = HasTopBottomConnections;
-	}
 
-	public bool OnScreen(Rectangle r)
+			Connections.ForEach(c => c.Serialize(epb));
+		}
+
+		public virtual void Deserialize(ElementPropertyBag epb)
+		{
+			Id = epb.Id;
+			DisplayRectangle = epb.DisplayRectangle;
+			BorderPen.Dispose();
+			BorderPen = new Pen(epb.BorderPenColor, epb.BorderPenWidth);
+			FillBrush.Dispose();
+			FillBrush = new SolidBrush(epb.FillBrushColor);
+			Text = epb.Text;
+			TextColor = epb.TextColor;
+			TextFont.Dispose();
+			FontStyle fontStyle = (epb.TextFontUnderline ? FontStyle.Underline : FontStyle.Regular) | (epb.TextFontItalic ? FontStyle.Italic : FontStyle.Regular) | (epb.TextFontStrikeout ? FontStyle.Strikeout : FontStyle.Regular);
+			TextFont = new Font(epb.TextFontFamily, epb.TextFontSize, fontStyle);
+
+			HasCornerAnchors = epb.HasCornerAnchors;
+			HasCenterAnchors = epb.HasCenterAnchors;
+			HasLeftRightAnchors = epb.HasLeftRightAnchors;
+			HasTopBottomAnchors = epb.HasTopBottomAnchors;
+
+			HasCornerConnections = epb.HasCornerConnections;
+			HasCenterConnections = epb.HasCenterConnections;
+			HasLeftRightConnections = epb.HasLeftRightConnections;
+			HasTopBottomConnections = epb.HasTopBottomConnections;
+		}
+
+		public virtual void FinalFixup(List<GraphicElement> elements, ElementPropertyBag epb) { }
+
+		public bool OnScreen(Rectangle r)
 		{
 			return canvas.OnScreen(r);
 		}

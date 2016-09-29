@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FlowSharpLib
 {
@@ -23,6 +25,20 @@ namespace FlowSharpLib
 			epb.EndCap = EndCap;
 			epb.StartConnectedShapeId = StartConnectedShape?.Id ?? Guid.Empty;
 			epb.EndConnectedShapeId = EndConnectedShape?.Id ?? Guid.Empty;
+		}
+
+		public override void Deserialize(ElementPropertyBag epb)
+		{
+			base.Deserialize(epb);
+			StartCap = epb.StartCap;
+			EndCap = epb.EndCap;
+		}
+
+		public override void FinalFixup(List<GraphicElement> elements, ElementPropertyBag epb)
+		{
+			base.FinalFixup(elements, epb);
+			StartConnectedShape = elements.SingleOrDefault(e => e.Id == epb.StartConnectedShapeId);
+			EndConnectedShape = elements.SingleOrDefault(e => e.Id == epb.EndConnectedShapeId);
 		}
 
 		public override void SetConnection(GripType gt, GraphicElement shape)

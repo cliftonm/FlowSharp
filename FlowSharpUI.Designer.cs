@@ -135,28 +135,24 @@
 			this.mnuNew.Name = "mnuNew";
 			this.mnuNew.Size = new System.Drawing.Size(115, 24);
 			this.mnuNew.Text = "&New";
-			this.mnuNew.Click += new System.EventHandler(this.mnuNew_Click);
 			// 
 			// mnuOpen
 			// 
 			this.mnuOpen.Name = "mnuOpen";
 			this.mnuOpen.Size = new System.Drawing.Size(115, 24);
 			this.mnuOpen.Text = "&Open...";
-			this.mnuOpen.Click += new System.EventHandler(this.mnuOpen_Click);
 			// 
 			// mnuSave
 			// 
 			this.mnuSave.Name = "mnuSave";
 			this.mnuSave.Size = new System.Drawing.Size(115, 24);
 			this.mnuSave.Text = "&Save";
-			this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
 			// 
 			// mnuSaveAs
 			// 
 			this.mnuSaveAs.Name = "mnuSaveAs";
 			this.mnuSaveAs.Size = new System.Drawing.Size(115, 24);
 			this.mnuSaveAs.Text = "Save &as";
-			this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
 			// 
 			// toolStripMenuItem1
 			// 
@@ -168,7 +164,6 @@
 			this.mnuExit.Name = "mnuExit";
 			this.mnuExit.Size = new System.Drawing.Size(115, 24);
 			this.mnuExit.Text = "E&xit";
-			this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
 			// 
 			// editToolStripMenuItem
 			// 
@@ -185,21 +180,18 @@
 			this.mnuCopy.Name = "mnuCopy";
 			this.mnuCopy.Size = new System.Drawing.Size(110, 24);
 			this.mnuCopy.Text = "&Copy";
-			this.mnuCopy.Click += new System.EventHandler(this.mnuCopy_Click);
 			// 
 			// mnuPaste
 			// 
 			this.mnuPaste.Name = "mnuPaste";
 			this.mnuPaste.Size = new System.Drawing.Size(110, 24);
 			this.mnuPaste.Text = "&Paste";
-			this.mnuPaste.Click += new System.EventHandler(this.mnuPaste_Click);
 			// 
 			// mnuDelete
 			// 
 			this.mnuDelete.Name = "mnuDelete";
 			this.mnuDelete.Size = new System.Drawing.Size(110, 24);
 			this.mnuDelete.Text = "&Delete";
-			this.mnuDelete.Click += new System.EventHandler(this.mnuDelete_Click);
 			// 
 			// orderToolStripMenuItem
 			// 
@@ -217,28 +209,24 @@
 			this.mnuTopmost.Name = "mnuTopmost";
 			this.mnuTopmost.Size = new System.Drawing.Size(141, 24);
 			this.mnuTopmost.Text = "To &Top";
-			this.mnuTopmost.Click += new System.EventHandler(this.mnuTopmost_Click);
 			// 
 			// mnuBottommost
 			// 
 			this.mnuBottommost.Name = "mnuBottommost";
 			this.mnuBottommost.Size = new System.Drawing.Size(141, 24);
 			this.mnuBottommost.Text = "To &Bottom";
-			this.mnuBottommost.Click += new System.EventHandler(this.mnuBottommost_Click);
 			// 
 			// mnuMoveUp
 			// 
 			this.mnuMoveUp.Name = "mnuMoveUp";
 			this.mnuMoveUp.Size = new System.Drawing.Size(141, 24);
 			this.mnuMoveUp.Text = "Move &Up";
-			this.mnuMoveUp.Click += new System.EventHandler(this.mnuMoveUp_Click);
 			// 
 			// mnuMoveDown
 			// 
 			this.mnuMoveDown.Name = "mnuMoveDown";
 			this.mnuMoveDown.Size = new System.Drawing.Size(141, 24);
 			this.mnuMoveDown.Text = "Move &Down";
-			this.mnuMoveDown.Click += new System.EventHandler(this.mnuMoveDown_Click);
 			// 
 			// Form1
 			// 

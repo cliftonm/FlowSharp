@@ -16,6 +16,9 @@ namespace FlowSharpLib
 
 		public DynamicConnectorLR(Canvas canvas) : base(canvas)
 		{
+			lines.Add(new HorizontalLine(canvas));
+			lines.Add(new VerticalLine(canvas));
+			lines.Add(new HorizontalLine(canvas));
 		}
 
 		public DynamicConnectorLR(Canvas canvas, Point start, Point end): base(canvas)

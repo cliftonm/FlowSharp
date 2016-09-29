@@ -14,15 +14,21 @@ namespace FlowSharpLib
 
 		public DynamicConnectorUD(Canvas canvas) : base(canvas)
 		{
+			Initialize();
 		}
 
 		public DynamicConnectorUD(Canvas canvas, Point start, Point end) : base(canvas)
 		{
+			Initialize();
+			startPoint = start;
+			endPoint = end;
+		}
+
+		protected void Initialize()
+		{
 			lines.Add(new VerticalLine(canvas));
 			lines.Add(new HorizontalLine(canvas));
 			lines.Add(new VerticalLine(canvas));
-			startPoint = start;
-			endPoint = end;
 		}
 
 		public override bool IsSelectable(Point p)

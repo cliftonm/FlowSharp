@@ -24,6 +24,13 @@ namespace FlowSharpLib
 			epb.EndPoint = endPoint;
 		}
 
+		public override void Deserialize(ElementPropertyBag epb)
+		{
+			base.Deserialize(epb);
+			startPoint = epb.StartPoint;
+			endPoint = epb.EndPoint;
+		}
+
 		public override ElementProperties CreateProperties()
 		{
 			return new DynamicConnectorProperties(this);

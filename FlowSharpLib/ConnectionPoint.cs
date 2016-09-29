@@ -21,8 +21,14 @@ namespace FlowSharpLib
 
 	public class ConnectionPoint
 	{
-		public GripType Type { get; protected set; }
-		public Point Point { get; protected set; }
+		// Setters should be protected, but serializer requires them to be public.
+		public GripType Type { get; set; }
+		public Point Point { get; set; }
+
+		// Solely for serializer.
+		public ConnectionPoint()
+		{
+		}
 
 		public ConnectionPoint(GripType pos, Point p)
 		{

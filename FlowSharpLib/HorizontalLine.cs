@@ -63,6 +63,11 @@ namespace FlowSharpLib
 			AdjustableArrowCap adjCap = new AdjustableArrowCap(5, 5, true);
 			Pen pen = (Pen)BorderPen.Clone();
 
+			if (ShowLineAsSelected)
+			{
+				pen.Color = pen.Color.ToArgb() == Color.Red.ToArgb() ? Color.Blue : Color.Red;
+			}
+
 			if (StartCap == AvailableLineCap.Arrow)
 			{
 				pen.CustomStartCap = adjCap;

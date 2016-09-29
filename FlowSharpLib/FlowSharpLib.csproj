@@ -46,6 +46,7 @@
     <Compile Include="Connection.cs" />
     <Compile Include="Connector.cs" />
     <Compile Include="DynamicConnector.cs" />
+    <Compile Include="DynamicConnectorLD.cs" />
     <Compile Include="DynamicConnectorProperties.cs" />
     <Compile Include="DynamicConnectorUD.cs" />
     <Compile Include="Line.cs" />

@@ -4,6 +4,8 @@ namespace FlowSharpLib
 {
 	public abstract class Line : Connector
 	{
+		public bool ShowLineAsSelected { get; set; }
+
 		public Line(Canvas canvas) : base(canvas)
 		{
 		}

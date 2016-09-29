@@ -51,6 +51,8 @@ namespace FlowSharp
 			// TODO: Check for changes before closing.
 			elements.Clear();
 			canvas.Invalidate();
+			filename = String.Empty;
+			UpdateCaption();
 		}
 
 		private void mnuOpen_Click(object sender, EventArgs e)
@@ -74,6 +76,7 @@ namespace FlowSharp
 			elements.AddRange(els);
 			elements.ForEach(el => el.UpdatePath());
 			canvas.Invalidate();
+			UpdateCaption();
 		}
 
 		private void mnuSave_Click(object sender, EventArgs e)
@@ -85,6 +88,7 @@ namespace FlowSharp
 
 			string data = Persist.Serialize(elements);
 			File.WriteAllText(filename, data);
+			UpdateCaption();
 		}
 
 		private void mnuSaveAs_Click(object sender, EventArgs e)
@@ -103,6 +107,7 @@ namespace FlowSharp
 
 			string data = Persist.Serialize(elements);
 			File.WriteAllText(filename, data);
+			UpdateCaption();
 		}
 
 		private void mnuExit_Click(object sender, EventArgs e)

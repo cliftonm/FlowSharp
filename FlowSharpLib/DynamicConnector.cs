@@ -9,12 +9,35 @@ namespace FlowSharpLib
 		protected Point startPoint;
 		protected Point endPoint;
 
+		public override bool Selected
+		{
+			get { return base.Selected; }
+			set
+			{
+				base.Selected = value;
+				lines.ForEach(l => l.ShowLineAsSelected = value);
+			}
+		}
+
 		public DynamicConnector(Canvas canvas) : base(canvas)
 		{
 			HasCornerAnchors = false;
 			HasCenterAnchors = false;
 			HasTopBottomAnchors = false;
 			HasLeftRightAnchors = false;
+		}
+
+		public override void Dispose(bool disposing)
+		{
+			if (!disposed)
+			{
+				if (disposing)
+				{
+					lines.ForEach(l => l.Dispose());
+				}
+			}
+
+			base.Dispose(disposing);
 		}
 
 		public override void Serialize(ElementPropertyBag epb)
@@ -34,6 +57,15 @@ namespace FlowSharpLib
 		public override ElementProperties CreateProperties()
 		{
 			return new DynamicConnectorProperties(this);
+		}
+
+		public override void UpdateProperties()
+		{
+			lines.ForEach(l =>
+			{
+				l.BorderPen.Dispose();
+				l.BorderPen = new Pen(BorderPen.Color, BorderPen.Width);
+			});
 		}
 
 		public override bool SnapCheck(ShapeAnchor anchor, Point delta)

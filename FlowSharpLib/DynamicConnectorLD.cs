@@ -7,19 +7,19 @@ using System.Linq;
 namespace FlowSharpLib
 {
 	/// <summary>
-	/// Left-right dynamic connector.
+	/// Left-down dynamic connector. (horizontal line, vertical line at right.)
 	/// Routing around shapes is ignored, which means that the best route may include going inside a connected shape.
 	/// </summary>
-	public class DynamicConnectorLR : DynamicConnector
+	public class DynamicConnectorLD : DynamicConnector
 	{
 		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize + 1 + BorderPen.Width); } }
 
-		public DynamicConnectorLR(Canvas canvas) : base(canvas)
+		public DynamicConnectorLD(Canvas canvas) : base(canvas)
 		{
 			Initialize();
 		}
 
-		public DynamicConnectorLR(Canvas canvas, Point start, Point end): base(canvas)
+		public DynamicConnectorLD(Canvas canvas, Point start, Point end) : base(canvas)
 		{
 			Initialize();
 			startPoint = start;
@@ -30,7 +30,6 @@ namespace FlowSharpLib
 		{
 			lines.Add(new HorizontalLine(canvas));
 			lines.Add(new VerticalLine(canvas));
-			lines.Add(new HorizontalLine(canvas));
 		}
 
 		public override bool IsSelectable(Point p)
@@ -48,11 +47,11 @@ namespace FlowSharpLib
 			Size szAnchor = new Size(anchorSize, anchorSize);
 
 			int startxOffset = startPoint.X < endPoint.X ? 0 : -anchorSize;
-			int endxOffset = startPoint.X < endPoint.X ? -anchorSize : 0;
+			int endyOffset = startPoint.Y < endPoint.Y ? -anchorSize : 0;
 
 			return new List<ShapeAnchor>() {
 				new ShapeAnchor(GripType.Start, new Rectangle(startPoint.Move(startxOffset, -anchorSize/2), szAnchor)),
-				new ShapeAnchor(GripType.End, new Rectangle(endPoint.Move(endxOffset, -anchorSize/2), szAnchor)),
+				new ShapeAnchor(GripType.End, new Rectangle(endPoint.Move(-anchorSize/2, endyOffset), szAnchor)),
 			};
 		}
 
@@ -167,48 +166,44 @@ namespace FlowSharpLib
 
 		public override void UpdatePath()
 		{
-			// TODO: Figure out whether we're doing H-V-H, or V-H-V, or H-V or V-H, or something even more complicated if we are avoiding shape boundaries.
-
 			if (startPoint.X < endPoint.X)
 			{
-				lines[0].EndCap = AvailableLineCap.None;
-				lines[2].StartCap = AvailableLineCap.None;
 				lines[0].StartCap = StartCap;
-				lines[2].EndCap = EndCap;
+				lines[0].EndCap = AvailableLineCap.None;
 			}
 			else
 			{
 				lines[0].StartCap = AvailableLineCap.None;
-				lines[2].EndCap = AvailableLineCap.None;
 				lines[0].EndCap = StartCap;
-				lines[2].StartCap = EndCap;
-			}
-
-			if (startPoint.X < endPoint.X)
-			{
-				lines[0].DisplayRectangle = new Rectangle(startPoint.X, startPoint.Y - BaseController.MIN_HEIGHT / 2, (endPoint.X - startPoint.X) / 2, BaseController.MIN_HEIGHT);
-			}
-			else
-			{
-				lines[0].DisplayRectangle = new Rectangle(endPoint.X + (startPoint.X - endPoint.X)/2, startPoint.Y - BaseController.MIN_HEIGHT / 2, (startPoint.X - endPoint.X) / 2, BaseController.MIN_HEIGHT);
 			}
 
 			if (startPoint.Y < endPoint.Y)
 			{
-				lines[1].DisplayRectangle = new Rectangle(startPoint.X + (endPoint.X - startPoint.X) / 2 - BaseController.MIN_WIDTH / 2, startPoint.Y, BaseController.MIN_WIDTH, endPoint.Y - startPoint.Y);
+				lines[1].StartCap = AvailableLineCap.None;
+				lines[1].EndCap = EndCap;
 			}
 			else
 			{
-				lines[1].DisplayRectangle = new Rectangle(endPoint.X + (startPoint.X - endPoint.X) / 2 - BaseController.MIN_WIDTH / 2, endPoint.Y, BaseController.MIN_WIDTH, startPoint.Y - endPoint.Y);
+				lines[1].StartCap = EndCap;
+				lines[1].EndCap = AvailableLineCap.None;
 			}
 
 			if (startPoint.X < endPoint.X)
 			{
-				lines[2].DisplayRectangle = new Rectangle(startPoint.X + (endPoint.X - startPoint.X) / 2, endPoint.Y - BaseController.MIN_HEIGHT / 2, (endPoint.X - startPoint.X) / 2, BaseController.MIN_HEIGHT);
+				lines[0].DisplayRectangle = new Rectangle(startPoint.X, startPoint.Y - BaseController.MIN_HEIGHT / 2, endPoint.X - startPoint.X, BaseController.MIN_HEIGHT);
 			}
 			else
 			{
-				lines[2].DisplayRectangle = new Rectangle(endPoint.X, endPoint.Y - BaseController.MIN_HEIGHT / 2, (startPoint.X - endPoint.X) / 2, BaseController.MIN_HEIGHT);
+				lines[0].DisplayRectangle = new Rectangle(endPoint.X, startPoint.Y - BaseController.MIN_HEIGHT / 2, startPoint.X - endPoint.X, BaseController.MIN_HEIGHT);
+			}
+
+			if (startPoint.Y < endPoint.Y)
+			{
+				lines[1].DisplayRectangle = new Rectangle(endPoint.X - BaseController.MIN_WIDTH / 2, startPoint.Y, BaseController.MIN_WIDTH, endPoint.Y - startPoint.Y);
+			}
+			else
+			{
+				lines[1].DisplayRectangle = new Rectangle(endPoint.X - BaseController.MIN_WIDTH / 2, endPoint.Y, BaseController.MIN_WIDTH, startPoint.Y - endPoint.Y);
 			}
 
 			lines.ForEach(l => ((GraphicElement)l).UpdatePath());

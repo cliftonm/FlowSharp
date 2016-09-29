@@ -85,6 +85,7 @@ namespace FlowSharpLib
 				selectedElement.DetachAll();
 				EraseTopToBottom(elements);
 				elements.Remove(selectedElement);
+				selectedElement.Dispose();
 				selectedElement = null;
 				selectedAnchor = null;
 				DrawBottomToTop(elements);

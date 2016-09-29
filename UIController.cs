@@ -42,6 +42,7 @@ namespace FlowSharp
 			canvasController.Redraw(canvasController.SelectedElement, el =>
 			{
 				elementProperties.Update(el);
+				el.UpdateProperties();
 				el.UpdatePath();
 			});
 		}

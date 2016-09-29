@@ -14,6 +14,7 @@ namespace FlowSharpLib
 		}
 	}
 
+	/*
 	public class PropertiesChangedEventArgs : EventArgs
 	{
 		public GraphicElement GraphicElement { get; protected set; }
@@ -23,13 +24,15 @@ namespace FlowSharpLib
 			GraphicElement = el;
 		}
 	}
+	*/
 
 	public class GraphicElement : IDisposable
     {
-		public EventHandler<PropertiesChangedEventArgs> PropertiesChanged;
+		// We never use this, but I'm leaving in it commented out if we ever do need it.
+		// public EventHandler<PropertiesChangedEventArgs> PropertiesChanged;
 
 		public Guid Id { get; set; }
-		public bool Selected { get; set; }
+		public virtual bool Selected { get; set; }
 		public bool ShowConnectionPoints { get; set; }
 		// public bool HideConnectionPoints { get; set; }
 		public bool ShowAnchors { get; set; }
@@ -61,6 +64,7 @@ namespace FlowSharpLib
 		protected Bitmap background;
         protected Rectangle backgroundRectangle;
         protected Pen selectionPen;
+		protected Pen altSelectionPen;
 		protected Pen anchorPen = new Pen(Color.Black);
 		protected Pen connectionPointPen = new Pen(Color.Blue);
 		protected SolidBrush anchorBrush = new SolidBrush(Color.White);
@@ -74,6 +78,7 @@ namespace FlowSharpLib
 			Id = Guid.NewGuid();
 			this.canvas = canvas;
             selectionPen = new Pen(Color.Red);
+			altSelectionPen = new Pen(Color.Blue);
 			HasCenterAnchors = true;
 			HasCornerAnchors = true;
 			HasLeftRightAnchors = false;
@@ -107,6 +112,7 @@ namespace FlowSharpLib
 					FillBrush.Dispose();
 					background?.Dispose();
 					selectionPen.Dispose();
+					altSelectionPen.Dispose();
 					anchorPen.Dispose();
 					anchorBrush.Dispose();
 					TextFont.Dispose();
@@ -270,6 +276,7 @@ namespace FlowSharpLib
 		public virtual void RemoveConnection(GripType gt) { }
 		public virtual void DisconnectShapeFromConnector(GripType gt) { }
 		public virtual void DetachAll() { }
+		public virtual void UpdateProperties() { }
 
 		public virtual void Erase()
         {
@@ -391,11 +398,23 @@ namespace FlowSharpLib
         {
             if (Selected)
             {
-				// TODO: Visually, a box or a default dynamic connector's lines are obscured by the selection rectangle.
-				Rectangle r = DisplayRectangle;
-                gr.DrawRectangle(selectionPen, r);
+				DrawSelection(gr);
             }
         }
+
+		protected virtual void DrawSelection(Graphics gr)
+		{
+			if (BorderPen.Color.ToArgb() == selectionPen.Color.ToArgb())
+			{
+				Rectangle r = DisplayRectangle;
+				gr.DrawRectangle(altSelectionPen, r);
+			}
+			else
+			{
+				Rectangle r = DisplayRectangle;
+				gr.DrawRectangle(selectionPen, r);
+			}
+		}
 
 		protected virtual void DrawAnchors()
 		{

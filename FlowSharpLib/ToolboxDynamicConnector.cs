@@ -58,4 +58,29 @@ namespace FlowSharpLib
 		}
 	}
 
+	/// <summary>
+	/// Special rendering for this element in the toolbox only.
+	/// </summary>
+	public class ToolboxDynamicConnectorLD : GraphicElement
+	{
+		public ToolboxDynamicConnectorLD(Canvas canvas) : base(canvas)
+		{
+		}
+
+		public override GraphicElement Clone(Canvas canvas)
+		{
+			// Create an actual dynamic connector as this is being cloned from the toolbox.
+			DynamicConnectorLD dc = new DynamicConnectorLD(canvas, new Point(20, 20), new Point(60, 60));
+
+			return dc;
+		}
+
+		protected override void Draw(Graphics gr)
+		{
+			gr.DrawLine(BorderPen, DisplayRectangle.TopLeftCorner(), DisplayRectangle.TopRightCorner());
+			gr.DrawLine(BorderPen, DisplayRectangle.TopRightCorner(), DisplayRectangle.BottomRightCorner());
+
+			base.Draw(gr);
+		}
+	}
 }

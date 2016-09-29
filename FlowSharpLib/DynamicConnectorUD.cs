@@ -131,12 +131,12 @@ namespace FlowSharpLib
 
 		public override void GetBackground()
 		{
-			lines.ForEach(l => GetBackground());
+			lines.ForEach(l => l.GetBackground());
 		}
 
 		public override void CancelBackground()
 		{
-			lines.ForEach(l => CancelBackground());
+			lines.ForEach(l => l.CancelBackground());
 		}
 
 		public override void Erase()
@@ -164,29 +164,19 @@ namespace FlowSharpLib
 		{
 			// TODO: Figure out whether we're doing H-V-H, or V-H-V, or H-V or V-H, or something even more complicated if we are avoiding shape boundaries.
 
-			if ((startPoint.Y - endPoint.Y).Abs() <= 20)
+			if (startPoint.Y < endPoint.Y)
 			{
-				lines[0].StartCap = AvailableLineCap.None;
 				lines[0].EndCap = AvailableLineCap.None;
 				lines[2].StartCap = AvailableLineCap.None;
-				lines[2].EndCap = AvailableLineCap.None;
+				lines[0].StartCap = StartCap;
+				lines[2].EndCap = EndCap;
 			}
 			else
 			{
-				if (startPoint.X < endPoint.X)
-				{
-					lines[0].EndCap = AvailableLineCap.None;
-					lines[2].StartCap = AvailableLineCap.None;
-					lines[0].StartCap = StartCap;
-					lines[2].EndCap = EndCap;
-				}
-				else
-				{
-					lines[0].StartCap = AvailableLineCap.None;
-					lines[2].EndCap = AvailableLineCap.None;
-					lines[0].EndCap = StartCap;
-					lines[2].StartCap = EndCap;
-				}
+				lines[0].StartCap = AvailableLineCap.None;
+				lines[2].EndCap = AvailableLineCap.None;
+				lines[0].EndCap = StartCap;
+				lines[2].StartCap = EndCap;
 			}
 
 			if (startPoint.Y < endPoint.Y)

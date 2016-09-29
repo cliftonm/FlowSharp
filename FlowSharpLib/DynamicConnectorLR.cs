@@ -10,7 +10,7 @@ namespace FlowSharpLib
 	/// Left-right dynamic connector.
 	/// Routing around shapes is ignored, which means that the best route may include going inside a connected shape.
 	/// </summary>
-	public class DynamicConnectorLR : DynamicConnector// , IDynamicConnector
+	public class DynamicConnectorLR : DynamicConnector
 	{
 		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize + 1 + BorderPen.Width); } }
 
@@ -32,7 +32,7 @@ namespace FlowSharpLib
 
 		public override bool IsSelectable(Point p)
 		{
-			return lines.Any(l => ((GraphicElement)l).IsSelectable(p));
+			return lines.Any(l => l.IsSelectable(p));
 		}
 
 		public override Rectangle DefaultRectangle()
@@ -77,14 +77,7 @@ namespace FlowSharpLib
 		{
 			startPoint = startPoint.Move(delta);
 			endPoint = endPoint.Move(delta);
-			
-			// UpdatePath();
 			DisplayRectangle = RecalcDisplayRectangle();
-
-			// Rectangle newRect = RecalcDisplayRectangle();
-			// canvas.Controller.UpdateDisplayRectangle(this, newRect, delta);
-
-			// base.Move(delta);
 		}
 
 		public override void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint cp)
@@ -137,28 +130,28 @@ namespace FlowSharpLib
 
 		public override void GetBackground()
 		{
-			lines.ForEach(l => ((GraphicElement)l).GetBackground());
+			lines.ForEach(l => l.GetBackground());
 		}
 
 		public override void CancelBackground()
 		{
-			lines.ForEach(l => ((GraphicElement)l).CancelBackground());
+			lines.ForEach(l => l.CancelBackground());
 		}
 
 		public override void Erase()
 		{
 			// Is reversing necessary?
-			lines.AsEnumerable().Reverse().ForEach(l => ((GraphicElement)l).Erase());
+			lines.AsEnumerable().Reverse().ForEach(l => l.Erase());
 		}
 
 		public override void UpdateScreen(int ix = 0, int iy = 0)
 		{
-			lines.ForEach(l => ((GraphicElement)l).UpdateScreen(ix, iy));
+			lines.ForEach(l => l.UpdateScreen(ix, iy));
 		}
 
 		protected override void Draw(Graphics gr)
 		{
-			lines.ForEach(l => ((GraphicElement)l).Draw());
+			lines.ForEach(l => l.Draw());
 
 			// No selection box!
 			// base.Draw(gr);

@@ -8,7 +8,7 @@ namespace FlowSharpLib
 	/// Up-Down dynamic connector.
 	/// Routing around shapes is ignored, which means that the best route may include going inside a connected shape.
 	/// </summary>
-	public class DynamicConnectorUD : DynamicConnector//, IDynamicConnector
+	public class DynamicConnectorUD : DynamicConnector
 	{
 		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize + 1 + BorderPen.Width); } }
 
@@ -33,7 +33,7 @@ namespace FlowSharpLib
 
 		public override bool IsSelectable(Point p)
 		{
-			return lines.Any(l => ((GraphicElement)l).IsSelectable(p));
+			return lines.Any(l => l.IsSelectable(p));
 		}
 
 		public override Rectangle DefaultRectangle()

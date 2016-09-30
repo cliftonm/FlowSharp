@@ -254,11 +254,13 @@ namespace FlowSharpLib
 
 		public void SelectElement(GraphicElement el)
 		{
-			var els = EraseTopToBottom(el);
+            DeselectCurrentSelectedElement();
+            var els = EraseTopToBottom(el);
 			el.Selected = true;
 			DrawBottomToTop(els);
 			UpdateScreen(els);
 			selectedElement = el;
-		}
+            ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
+        }
 	}
 }

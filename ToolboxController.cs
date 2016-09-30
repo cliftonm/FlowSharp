@@ -31,6 +31,7 @@ namespace FlowSharp
 					el.DisplayRectangle = el.DefaultRectangle();
 					el.UpdatePath();
 					canvasController.Insert(el);
+                    canvasController.SelectElement(el);
 				}
 				// dragging = selectedElement != null;
 			}

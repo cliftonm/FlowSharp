@@ -19,10 +19,9 @@ namespace FlowSharpLib
 
 		public override GraphicElement Clone(Canvas canvas)
 		{
-			// TextShape dc = new TextShape(canvas, new Point(20, 20), new Point(60, 60));
-			TextShape dc = new TextShape(canvas);
+			TextShape shape = new TextShape(canvas);
 
-			return dc;
+			return shape;
 		}
 
 		public override void Draw(Graphics gr)

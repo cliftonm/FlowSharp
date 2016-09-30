@@ -11,6 +11,7 @@ namespace FlowSharpLib
 			HasCenterAnchors = false;
 			HasTopBottomAnchors = false;
 			HasLeftRightAnchors = false;
+            BorderPen.Color = Color.White;
 		}
 
 		// Handle large font changes by calculating the new dimensions.

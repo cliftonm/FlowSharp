@@ -173,11 +173,10 @@ namespace FlowSharpLib
 			ElementPropertyBag epb = (ElementPropertyBag)xs.Deserialize(tr);
 			Type t = Type.GetType(epb.ElementName);
 			GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { canvas });
-			el.Id = Guid.NewGuid();		// We get a new GUID when deserializing a specific element.
-			el.Deserialize(epb);
-			// A specific deserialization does not preserve connections.
+			el.Deserialize(epb);        // A specific deserialization does not preserve connections.
+            el.Id = Guid.NewGuid();     // We get a new GUID when deserializing a specific element.
 
-			return el;
+            return el;
 		}
 	}
 }

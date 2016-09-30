@@ -17,8 +17,6 @@ namespace FlowSharp
 			this.canvasController = canvasController;
 			canvas.PaintComplete = CanvasPaintComplete;
 			canvas.MouseDown += OnMouseDown;
-//			canvas.MouseUp += OnMouseUp;
-//			canvas.MouseMove += OnMouseMove;
 		}
 
 		public void OnMouseDown(object sender, MouseEventArgs args)

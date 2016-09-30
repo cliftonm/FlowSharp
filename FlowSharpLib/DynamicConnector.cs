@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace FlowSharpLib
 {
@@ -29,18 +30,35 @@ namespace FlowSharpLib
 
 		public override void Dispose(bool disposing)
 		{
-			if (!disposed)
+            if (!disposed && disposing)
 			{
-				if (disposing)
-				{
-					lines.ForEach(l => l.Dispose());
-				}
+				lines.ForEach(l => l.Dispose());
 			}
 
 			base.Dispose(disposing);
 		}
 
-		public override void Serialize(ElementPropertyBag epb)
+        public override Rectangle DefaultRectangle()
+        {
+            startPoint = new Point(20, 20);
+            endPoint = new Point(60, 60);
+            return base.DefaultRectangle();
+        }
+
+        public override bool IsSelectable(Point p)
+        {
+            return lines.Any(l => l.IsSelectable(p));
+        }
+
+        public override List<ConnectionPoint> GetConnectionPoints()
+        {
+            return new List<ConnectionPoint>() {
+                new ConnectionPoint(GripType.Start, startPoint),
+                new ConnectionPoint(GripType.End, endPoint),
+            };
+        }
+
+        public override void Serialize(ElementPropertyBag epb)
 		{
 			base.Serialize(epb);
 			epb.StartPoint = startPoint;
@@ -85,6 +103,11 @@ namespace FlowSharpLib
 		}
 
 
+		public override bool SnapCheck(GripType gt, ref Point delta)
+		{
+			return canvas.Controller.Snap(GripType.None, ref delta);
+		}
+
 		public override void MoveElementOrAnchor(GripType gt, Point delta)
 		{
 			MoveAnchor(gt, delta);
@@ -98,5 +121,104 @@ namespace FlowSharpLib
 
 		// Dynamic connector does not update it's region, only the lines composing the connector do.
 		protected override void DrawUpdateRectangle(Graphics gr) { }
-	}
+
+        /// <summary>
+        /// Custom move operation of start/end points.
+        /// </summary>
+        public override void Move(Point delta)
+        {
+            startPoint = startPoint.Move(delta);
+            endPoint = endPoint.Move(delta);
+            DisplayRectangle = RecalcDisplayRectangle();
+        }
+
+        public override void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint cp)
+        {
+            if (cp.Type == GripType.Start)
+            {
+                startPoint = new Point(cpShape.Point.X, cpShape.Point.Y);
+            }
+            else
+            {
+                endPoint = new Point(cpShape.Point.X, cpShape.Point.Y);
+            }
+
+            UpdatePath();
+            DisplayRectangle = RecalcDisplayRectangle();
+        }
+
+        public override void MoveAnchor(GripType type, Point delta)
+        {
+            if (type == GripType.Start)
+            {
+                startPoint = startPoint.Move(delta);
+            }
+            else
+            {
+                endPoint = endPoint.Move(delta);
+            }
+
+            UpdatePath();
+            DisplayRectangle = RecalcDisplayRectangle();
+        }
+
+        public override void UpdateSize(ShapeAnchor anchor, Point delta)
+        {
+            if (anchor.Type == GripType.Start)
+            {
+                startPoint = startPoint.Move(delta);
+            }
+            else
+            {
+                endPoint = endPoint.Move(delta);
+            }
+
+            UpdatePath();
+            Rectangle newRect = RecalcDisplayRectangle();
+            canvas.Controller.UpdateDisplayRectangle(this, newRect, delta);
+        }
+
+        // *** Override all dynamic connector drawing so that the backgrounds are optimized to the line segments, not the entire region. ***
+
+        public override void GetBackground()
+        {
+            lines.ForEach(l => l.GetBackground());
+        }
+
+        public override void CancelBackground()
+        {
+            lines.ForEach(l => l.CancelBackground());
+        }
+
+        public override void Erase()
+        {
+            // Is reversing necessary?
+            lines.AsEnumerable().Reverse().ForEach(l => l.Erase());
+        }
+
+        public override void UpdateScreen(int ix = 0, int iy = 0)
+        {
+            lines.ForEach(l => l.UpdateScreen(ix, iy));
+        }
+
+        public override void Draw(Graphics gr)
+        {
+            lines.ForEach(l => l.Draw());
+
+            // No selection box!
+            // base.Draw(gr);
+        }
+
+
+        protected virtual Rectangle RecalcDisplayRectangle()
+        {
+            int x1 = startPoint.X.Min(endPoint.X);
+            int y1 = startPoint.Y.Min(endPoint.Y);
+            int x2 = startPoint.X.Max(endPoint.X);
+            int y2 = startPoint.Y.Max(endPoint.Y);
+
+            return new Rectangle(x1, y1, x2 - x1, y2 - y1);
+        }
+        // ******************
+    }
 }

@@ -10,10 +10,10 @@ namespace FlowSharpLib
 		Arrow,
 	};
 
-	public class HorizontalLine : Line// , ILine
+	public class HorizontalLine : Line
 	{
 		// Fixes background erase issues with dynamic connector.
-		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize + 1 + BorderPen.Width); } }
+		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
 
 		public HorizontalLine(Canvas canvas) : base(canvas)
 		{

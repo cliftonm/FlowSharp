@@ -10,7 +10,7 @@ namespace FlowSharpLib
 	/// </summary>
 	public class DynamicConnectorUD : DynamicConnector
 	{
-		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize + 1 + BorderPen.Width); } }
+		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
 
 		public DynamicConnectorUD(Canvas canvas) : base(canvas)
 		{
@@ -22,43 +22,26 @@ namespace FlowSharpLib
 			Initialize();
 			startPoint = start;
 			endPoint = end;
-		}
+            DisplayRectangle = RecalcDisplayRectangle();
+        }
 
-		protected void Initialize()
+        protected void Initialize()
 		{
 			lines.Add(new VerticalLine(canvas));
 			lines.Add(new HorizontalLine(canvas));
 			lines.Add(new VerticalLine(canvas));
 		}
 
-		public override bool IsSelectable(Point p)
-		{
-			return lines.Any(l => l.IsSelectable(p));
-		}
-
-		public override Rectangle DefaultRectangle()
-		{
-			return new Rectangle(startPoint, new Size(endPoint.X - startPoint.X, endPoint.Y - startPoint.Y));
-		}
-
 		public override List<ShapeAnchor> GetAnchors()
 		{
-			Size szAnchor = new Size(anchorSize, anchorSize);
+			Size szAnchor = new Size(anchorWidthHeight, anchorWidthHeight);
 
-			int startyOffset = startPoint.Y < endPoint.Y ? 0 : -anchorSize;
-			int endyOffset = startPoint.Y < endPoint.Y ? -anchorSize : 0;
+			int startyOffset = startPoint.Y < endPoint.Y ? 0 : -anchorWidthHeight;
+			int endyOffset = startPoint.Y < endPoint.Y ? -anchorWidthHeight : 0;
 
 			return new List<ShapeAnchor>() {
-				new ShapeAnchor(GripType.Start, new Rectangle(startPoint.Move(-anchorSize/2, startyOffset), szAnchor)),
-				new ShapeAnchor(GripType.End, new Rectangle(endPoint.Move(-anchorSize/2, endyOffset), szAnchor)),
-			};
-		}
-
-		public override List<ConnectionPoint> GetConnectionPoints()
-		{
-			return new List<ConnectionPoint>() {
-				new ConnectionPoint(GripType.Start, startPoint),
-				new ConnectionPoint(GripType.End, endPoint),
+				new ShapeAnchor(GripType.Start, new Rectangle(startPoint.Move(-anchorWidthHeight/2, startyOffset), szAnchor)),
+				new ShapeAnchor(GripType.End, new Rectangle(endPoint.Move(-anchorWidthHeight/2, endyOffset), szAnchor)),
 			};
 		}
 
@@ -70,95 +53,6 @@ namespace FlowSharpLib
 
 			return line;
 		}
-
-		/// <summary>
-		/// Custom move operation of start/end points.
-		/// </summary>
-		public override void Move(Point delta)
-		{
-			startPoint = startPoint.Move(delta);
-			endPoint = endPoint.Move(delta);
-			DisplayRectangle = RecalcDisplayRectangle();
-		}
-
-		public override void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint cp)
-		{
-			if (cp.Type == GripType.Start)
-			{
-				startPoint = new Point(cpShape.Point.X, cpShape.Point.Y);
-			}
-			else
-			{
-				endPoint = new Point(cpShape.Point.X, cpShape.Point.Y);
-			}
-
-			UpdatePath();
-			DisplayRectangle = RecalcDisplayRectangle();
-		}
-
-		public override void MoveAnchor(GripType type, Point delta)
-		{
-			if (type == GripType.Start)
-			{
-				startPoint = startPoint.Move(delta);
-			}
-			else
-			{
-				endPoint = endPoint.Move(delta);
-			}
-
-			UpdatePath();
-			DisplayRectangle = RecalcDisplayRectangle();
-		}
-
-		public override void UpdateSize(ShapeAnchor anchor, Point delta)
-		{
-			if (anchor.Type == GripType.Start)
-			{
-				startPoint = startPoint.Move(delta);
-			}
-			else
-			{
-				endPoint = endPoint.Move(delta);
-			}
-
-			UpdatePath();
-			Rectangle newRect = RecalcDisplayRectangle();
-			canvas.Controller.UpdateDisplayRectangle(this, newRect, delta);
-		}
-
-		// *** Override all dynamic connector drawing so that the backgrounds are optimized to the line segments, not the entire region. ***
-
-		public override void GetBackground()
-		{
-			lines.ForEach(l => l.GetBackground());
-		}
-
-		public override void CancelBackground()
-		{
-			lines.ForEach(l => l.CancelBackground());
-		}
-
-		public override void Erase()
-		{
-			// Is reversing necessary?
-			lines.AsEnumerable().Reverse().ForEach(l => l.Erase());
-		}
-
-		public override void UpdateScreen(int ix = 0, int iy = 0)
-		{
-			lines.ForEach(l => l.UpdateScreen(ix, iy));
-		}
-
-		public override void Draw(Graphics gr)
-		{
-			lines.ForEach(l => l.Draw());
-
-			// No selection box!
-			// base.Draw(gr);
-		}
-
-		// ******************
 
 		public override void UpdatePath()
 		{
@@ -207,16 +101,6 @@ namespace FlowSharpLib
 			}
 
 			lines.ForEach(l => l.UpdatePath());
-		}
-
-		protected virtual Rectangle RecalcDisplayRectangle()
-		{
-			int x1 = startPoint.X.Min(endPoint.X);
-			int y1 = startPoint.Y.Min(endPoint.Y);
-			int x2 = startPoint.X.Max(endPoint.X);
-			int y2 = startPoint.Y.Max(endPoint.Y);
-
-			return new Rectangle(x1, y1, x2 - x1, y2 - y1);
 		}
 	}
 }

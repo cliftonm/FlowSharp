@@ -69,7 +69,7 @@ namespace FlowSharpLib
 		protected Pen anchorPen = new Pen(Color.Black);
 		protected Pen connectionPointPen = new Pen(Color.Blue);
 		protected SolidBrush anchorBrush = new SolidBrush(Color.White);
-		protected int anchorSize = 6;		// TODO: Make const?
+		protected int anchorWidthHeight = 6;		// TODO: Make const?
 		protected Canvas canvas;
 
 		protected bool disposed;
@@ -117,6 +117,7 @@ namespace FlowSharpLib
 					anchorPen.Dispose();
 					anchorBrush.Dispose();
 					TextFont.Dispose();
+                    connectionPointPen.Dispose();
 				}
 			}
 		}
@@ -337,32 +338,33 @@ namespace FlowSharpLib
 		{
 			List<ShapeAnchor> anchors = new List<ShapeAnchor>();
 			Rectangle r;
+            Size anchorSize = new Size(anchorWidthHeight, anchorWidthHeight);
 
 			if (HasCornerAnchors)
 			{
-				r = new Rectangle(DisplayRectangle.TopLeftCorner(), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.TopLeftCorner(), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.TopLeft, r));
-				r = new Rectangle(DisplayRectangle.TopRightCorner().Move(-anchorSize, 0), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.TopRightCorner().Move(-anchorWidthHeight, 0), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.TopRight, r));
-				r = new Rectangle(DisplayRectangle.BottomLeftCorner().Move(0, -anchorSize), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.BottomLeftCorner().Move(0, -anchorWidthHeight), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.BottomLeft, r));
-				r = new Rectangle(DisplayRectangle.BottomRightCorner().Move(-anchorSize, -anchorSize), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.BottomRightCorner().Move(-anchorWidthHeight, -anchorWidthHeight), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.BottomRight, r));
 			}
 
 			if (HasCenterAnchors || HasLeftRightAnchors)
 			{
-				r = new Rectangle(DisplayRectangle.LeftMiddle().Move(0, -anchorSize / 2), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.LeftMiddle().Move(0, -anchorWidthHeight / 2), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.LeftMiddle, r));
-				r = new Rectangle(DisplayRectangle.RightMiddle().Move(-anchorSize, -anchorSize / 2), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.RightMiddle().Move(-anchorWidthHeight, -anchorWidthHeight / 2), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.RightMiddle, r));
 			}
 
 			if (HasCenterAnchors || HasTopBottomAnchors)
 			{ 
-				r = new Rectangle(DisplayRectangle.TopMiddle().Move(-anchorSize / 2, 0), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.TopMiddle().Move(-anchorWidthHeight / 2, 0), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.TopMiddle, r));
-				r = new Rectangle(DisplayRectangle.BottomMiddle().Move(-anchorSize / 2, -anchorSize), new Size(anchorSize, anchorSize));
+				r = new Rectangle(DisplayRectangle.BottomMiddle().Move(-anchorWidthHeight / 2, -anchorWidthHeight), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.BottomMiddle, r));
 			}
 

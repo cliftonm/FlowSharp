@@ -104,7 +104,7 @@ namespace FlowSharp
 				try
 				{
 					GraphicElement el = Persist.DeserializeElement(canvas, copyBuffer);
-					el.DisplayRectangle = el.DisplayRectangle.Move(20, 20);
+                    el.Move(new Point(20, 20));
 					el.UpdatePath();
 					canvasController.Insert(el);
 					canvasController.DeselectCurrentSelectedElement();
@@ -165,9 +165,10 @@ namespace FlowSharp
 			toolboxElements.Add(new Diamond(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 105, 25, 25) });
 			toolboxElements.Add(new HorizontalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 25, 150, 30, 20) });
 			toolboxElements.Add(new VerticalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x+25, 145, 20, 30) });
-			toolboxElements.Add(new ToolboxDynamicConnectorLR(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 185, 25, 25)});
-			toolboxElements.Add(new ToolboxDynamicConnectorLD(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 185, 25, 25) });
-			toolboxElements.Add(new ToolboxDynamicConnectorUD(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 50, 185, 25, 25) });
+            // toolboxElements.Add(new ToolboxDynamicConnectorLR(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 185, 25, 25)});
+            toolboxElements.Add(new DynamicConnectorLR(toolboxCanvas, new Point(x - 50, 185), new Point(x - 50 + 25, 185 + 25)));
+            toolboxElements.Add(new DynamicConnectorLD(toolboxCanvas, new Point(x, 185), new Point(x + 25, 185 + 25)));
+            toolboxElements.Add(new DynamicConnectorUD(toolboxCanvas, new Point(x + 50, 185), new Point(x + 50 + 25, 185 + 25)));
 			toolboxElements.Add(new ToolboxText(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 230, 25, 25) });
 			toolboxElements.ForEach(el => el.UpdatePath());
 		}

@@ -18,17 +18,11 @@ namespace FlowSharpLib
         protected Point origin = new Point(0, 0);
         protected Point dragOffset = new Point(0, 0);
 
-        public Graphics Graphics { get { return Graphics.FromImage(bitmap); } }
-        public Graphics AntiAliasGraphics
-        {
-            get
-            {
-                Graphics gr = Graphics.FromImage(bitmap);
-                gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+		protected Graphics graphics;
+		protected Graphics antiAliasGraphics;
 
-                return gr;
-            }
-        }
+        public Graphics Graphics { get { return graphics; } }
+        public Graphics AntiAliasGraphics { get { return antiAliasGraphics; } }
 
         public Canvas()
         {
@@ -39,7 +33,21 @@ namespace FlowSharpLib
             Paint += OnPaint;
         }
 
-        public void Initialize(Control parent)
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+
+			if (disposing)
+			{
+				graphics.Dispose();
+				antiAliasGraphics.Dispose();
+				canvasBrush.Dispose();
+				gridPen.Dispose();
+				bitmap.Dispose();
+			}
+		}
+
+		public void Initialize(Control parent)
         {
             Dock = DockStyle.Fill;
             parent.Controls.Add(this);
@@ -95,14 +103,23 @@ namespace FlowSharpLib
 		public void CreateBitmap(int w, int h)
 		{
 			bitmap = new Bitmap(w, h);
+			CreateGraphicsObjects();
 		}
 
 		protected void CreateBitmap()
         {
             bitmap = new Bitmap(ClientSize.Width, ClientSize.Height);
+			CreateGraphicsObjects();
         }
 
-        protected void OnPaint(object sender, PaintEventArgs e)
+		protected void CreateGraphicsObjects()
+		{
+			graphics = Graphics.FromImage(bitmap);
+			antiAliasGraphics = Graphics.FromImage(bitmap);
+			antiAliasGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+		}
+
+		protected void OnPaint(object sender, PaintEventArgs e)
         {
             Graphics gr = Graphics;
             DrawBackground(gr);

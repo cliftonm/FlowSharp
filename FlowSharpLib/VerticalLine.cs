@@ -4,10 +4,10 @@ using System.Drawing.Drawing2D;
 
 namespace FlowSharpLib
 {
-	public class VerticalLine : Line // , ILine
+	public class VerticalLine : Line
 	{
 		// Fixes background erase issues with dynamic connector.
-		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorSize + 1 + BorderPen.Width); } }
+		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
 
 		public VerticalLine(Canvas canvas) : base(canvas)
 		{

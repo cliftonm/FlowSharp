@@ -7,8 +7,8 @@ namespace FlowSharpLib
 {
 	public abstract class BaseController
 	{
-		public const int MIN_WIDTH = 20;
-		public const int MIN_HEIGHT = 20;
+		public const int MIN_WIDTH = 5;
+		public const int MIN_HEIGHT = 5;
 
 		public const int SNAP_ELEMENT_RANGE = 20;
 		public const int SNAP_CONNECTION_POINT_RANGE = 10;
@@ -183,7 +183,24 @@ namespace FlowSharpLib
 			}
 		}
 
-		public void SaveAsPng(string filename)
+        // "Smart" move, erases everything first, moves all elements, then redraws them.
+        public void MoveAllElements(Point delta)
+        {
+            EraseTopToBottom(elements);
+
+            elements.ForEach(e =>
+            {
+                e.Move(delta);
+                e.UpdatePath();
+            });
+
+            int dx = delta.X.Abs();
+            int dy = delta.Y.Abs();
+            DrawBottomToTop(elements, dx, dy);
+            UpdateScreen(elements, dx, dy);
+        }
+
+        public void SaveAsPng(string filename)
 		{
 			// Get boundaries of of all elements.
 			int x1 = elements.Min(e => e.DisplayRectangle.X);
@@ -213,8 +230,7 @@ namespace FlowSharpLib
 			});
 
 			pngCanvas.Bitmap.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
-			pngCanvas.Bitmap.Dispose();
-			gr.Dispose();
+			pngCanvas.Dispose();
 		}
 
 		/// <summary>

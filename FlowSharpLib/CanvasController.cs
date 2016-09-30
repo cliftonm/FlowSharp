@@ -26,36 +26,38 @@ namespace FlowSharpLib
 		{
 			canvas.Controller = this;
 			canvas.PaintComplete = CanvasPaintComplete;
-			canvas.MouseDown += (sndr, args) =>
-			{
-				if (args.Button == MouseButtons.Left)
-				{
-					leftMouseDown = true;
-					DeselectCurrentSelectedElement();
-					SelectElement(args.Location);
-					selectedAnchor = selectedElement?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
-					ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElement });
-					dragging = selectedElement != null;
-					mousePosition = args.Location;
-				}
-			};
-
-			canvas.MouseUp += (sndr, args) =>
-			{
-				if (args.Button == MouseButtons.Left)
-				{
-					selectedAnchor = null;
-					leftMouseDown = false;
-					dragging = !(args.Button == MouseButtons.Left);
-					ShowConnectionPoints(currentlyNear.Select(e => e.NearElement), false);
-					currentlyNear.Clear();
-				}
-			};
-
+            canvas.MouseDown += OnMouseDown;
+            canvas.MouseUp += OnMouseUp;
 			canvas.MouseMove += OnMouseMove;
 		}
 
-		protected void OnMouseMove(object sender, MouseEventArgs args)
+        protected void OnMouseDown(object sender, MouseEventArgs args)
+        {
+            if (args.Button == MouseButtons.Left)
+            {
+                leftMouseDown = true;
+                DeselectCurrentSelectedElement();
+                SelectElement(args.Location);
+                selectedAnchor = selectedElement?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
+                ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElement });
+                dragging = selectedElement != null;
+                mousePosition = args.Location;
+            }
+        }
+
+        protected void OnMouseUp(object sender, MouseEventArgs args)
+        {
+            if (args.Button == MouseButtons.Left)
+            {
+                selectedAnchor = null;
+                leftMouseDown = false;
+                dragging = !(args.Button == MouseButtons.Left);
+                ShowConnectionPoints(currentlyNear.Select(e => e.NearElement), false);
+                currentlyNear.Clear();
+            }
+        }
+
+        protected void OnMouseMove(object sender, MouseEventArgs args)
 		{
 			Point delta = args.Location.Delta(mousePosition);
 
@@ -86,12 +88,9 @@ namespace FlowSharpLib
 			}
 			else if (leftMouseDown)
 			{
-				// Pick up every object on the canvas and move it.
-				// This does not "move" the grid.
-				elements.ForEach(el =>
-				{
-					MoveElement(el, delta);
-				});
+                // Pick up every object on the canvas and move it.
+                // This does not "move" the grid.
+                MoveAllElements(delta);
 
 				// Conversely, we redraw the grid and invalidate, which forces all the elements to redraw.
 				//canvas.Drag(delta);
@@ -124,11 +123,7 @@ namespace FlowSharpLib
 
 		public void DragSelectedElement(Point delta)
 		{
-			// We can snap a line if moving.
-			// TODO: Moving a dynamic connector should snap as well, but the process has a bug - it snaps too soon and the line disappears!
-			// Implementation in DynamicConnector is currently missing.
 			bool connectorAttached = selectedElement.SnapCheck(GripType.Start, ref delta) || selectedElement.SnapCheck(GripType.End, ref delta);
-
 			selectedElement.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
 			MoveElement(selectedElement, delta);
 			UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
@@ -182,14 +177,11 @@ namespace FlowSharpLib
 						// Possible detach?
 						if (neardxsign == 0 && neardxsign == 0 && (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY))
 						{
-							//si.NearElement.Connections.RemoveAll(c => c.ToElement == selectedElement);
-							//selectedElement.RemoveConnection(si.LineConnectionPoint.Type);
 							selectedElement.DisconnectShapeFromConnector(type);
 							selectedElement.RemoveConnection(type);
 						}
 						else
 						{
-							// (A) If not already connected...
 							if (!si.NearElement.Connections.Any(c => c.ToElement == selectedElement))
 							{
 								si.NearElement.Connections.Add(new Connection() { ToElement = selectedElement, ToConnectionPoint = si.LineConnectionPoint, ElementConnectionPoint = nearConnectionPoint });
@@ -232,7 +224,6 @@ namespace FlowSharpLib
 			elements.ForEach(e =>
 			{
 				e.ShowConnectionPoints = state;
-				// e.HideConnectionPoints = !state;
 				Redraw(e, CONNECTION_POINT_SIZE, CONNECTION_POINT_SIZE);
 			});
 		}

@@ -12,7 +12,9 @@ namespace FlowSharpLib
 		public GraphicElement StartConnectedShape { get; set; }
 		public GraphicElement EndConnectedShape { get; set; }
 
-		protected GripType[] startGrips = new GripType[] { GripType.Start, GripType.TopMiddle, GripType.LeftMiddle };
+        public override bool IsConnector { get { return true; } }
+
+        protected GripType[] startGrips = new GripType[] { GripType.Start, GripType.TopMiddle, GripType.LeftMiddle };
 
 		public Connector(Canvas canvas) : base(canvas)
 		{

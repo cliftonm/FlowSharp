@@ -174,14 +174,15 @@ namespace FlowSharpLib
 					if ((neardxsign == 0 || deltaxsign == 0 || neardxsign == deltaxsign) &&
 							(neardysign == 0 || deltaysign == 0 || neardysign == deltaysign))
 					{
-						// Possible detach?
-						if (neardxsign == 0 && neardxsign == 0 && (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY))
+                        // Possible detach?
+                        if (neardxsign == 0 && neardxsign == 0 && (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY))
 						{
 							selectedElement.DisconnectShapeFromConnector(type);
 							selectedElement.RemoveConnection(type);
 						}
 						else
 						{
+                            // Not already connected?
 							if (!si.NearElement.Connections.Any(c => c.ToElement == selectedElement))
 							{
 								si.NearElement.Connections.Add(new Connection() { ToElement = selectedElement, ToConnectionPoint = si.LineConnectionPoint, ElementConnectionPoint = nearConnectionPoint });
@@ -203,7 +204,7 @@ namespace FlowSharpLib
 		{
 			List<SnapInfo> nearElements = new List<SnapInfo>();
 
-			elements.Where(e=>e != selectedElement && e.OnScreen() && (!(e is Line || e is DynamicConnector))).ForEach(e =>
+			elements.Where(e=>e != selectedElement && e.OnScreen() && !e.IsConnector).ForEach(e =>
 			{
 				Rectangle checkRange = e.DisplayRectangle.Grow(SNAP_ELEMENT_RANGE);
 

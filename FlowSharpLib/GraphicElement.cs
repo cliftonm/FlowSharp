@@ -41,6 +41,7 @@ namespace FlowSharpLib
 		// This is probably a ridiculous optimization -- should just grow pen width + connection point size / 2
 		// public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + ((ShowConnectionPoints || HideConnectionPoints) ? 3 : 0)); } }
 		public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + BaseController.CONNECTION_POINT_SIZE); } }
+        public virtual bool IsConnector { get { return false; } }
 		public List<Connection> Connections = new List<Connection>();
 
 		public Rectangle DisplayRectangle { get; set; }
@@ -328,10 +329,6 @@ namespace FlowSharpLib
 			{
 				canvas.CopyToScreen(r);
 			}
-
-			// We can now revert back to a smaller update rectangle if we are hiding connection points as a result
-			// of an anchor moving out of range of the element.
-			// HideConnectionPoints = false;
 		}
 
 		public virtual List<ShapeAnchor> GetAnchors()

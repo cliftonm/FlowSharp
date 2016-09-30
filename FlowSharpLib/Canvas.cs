@@ -73,8 +73,10 @@ namespace FlowSharpLib
         public void CopyToScreen(Rectangle r)
         {
 			Bitmap b = bitmap.Clone(r, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			CreateGraphics().DrawImage(b, r);
+            Graphics grScreen = CreateGraphics();
+            grScreen.DrawImage(b, r);
 			b.Dispose();
+            grScreen.Dispose();
         }
 
         public bool OnScreen(Rectangle r)

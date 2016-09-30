@@ -146,7 +146,7 @@ namespace FlowSharpLib
 		{
 			int dx = delta.X.Abs();
 			int dy = delta.Y.Abs();
-			List<GraphicElement> els = EraseTopToBottom(el, dx, dy);
+            var els = EraseTopToBottom(el, dx, dy);
 			el.DisplayRectangle = newRect;
 			el.UpdatePath();
 			DrawBottomToTop(els, dx, dy);
@@ -167,11 +167,11 @@ namespace FlowSharpLib
 		{
 			if (el.OnScreen())
 			{
-				List<GraphicElement> els = EraseTopToBottom(el, delta.X.Abs(), delta.Y.Abs());
+                int dx = delta.X.Abs();
+                int dy = delta.Y.Abs();
+                var els = EraseTopToBottom(el, dx, dy);
 				el.Move(delta);
 				el.UpdatePath();
-				int dx = delta.X.Abs();
-				int dy = delta.Y.Abs();
 				DrawBottomToTop(els, dx, dy);
 				UpdateScreen(els, dx, dy);
 			}
@@ -247,32 +247,31 @@ namespace FlowSharpLib
 			});
 		}
 
-		protected List<GraphicElement> EraseTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
+		protected IEnumerable<GraphicElement> EraseTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
 		{
 			List<GraphicElement> intersections = new List<GraphicElement>();
 			FindAllIntersections(intersections, el, dx, dy);
-			List<GraphicElement> els = intersections.OrderBy(e => elements.IndexOf(e)).ToList();
+			IEnumerable<GraphicElement> els = intersections.OrderBy(e => elements.IndexOf(e));
 			els.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.Erase());
 
 			return els;
 		}
 
-		protected void EraseTopToBottom(List<GraphicElement> els)
+		protected void EraseTopToBottom(IEnumerable<GraphicElement> els)
 		{
 			els.Where(e => e.OnScreen()).ForEach(e => e.Erase());
 		}
 
-		protected void DrawBottomToTop(List<GraphicElement> els, int dx = 0, int dy = 0)
+		protected void DrawBottomToTop(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
 		{
-			// Don't modify the original list.
-			els.AsEnumerable().Reverse().Where(e => e.OnScreen(dx, dy)).ForEach(e =>
+			els.Reverse().Where(e => e.OnScreen(dx, dy)).ForEach(e =>
 			{
 				e.GetBackground();
 				e.Draw();
 			});
 		}
 
-		protected void UpdateScreen(List<GraphicElement> els, int dx = 0, int dy = 0)
+		protected void UpdateScreen(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
 		{
 			// Is this faster than creating a unioned rectangle?  Dunno, because the unioned rectangle might include a lot of space not part of the shapes, like something in an "L" pattern.
 			els.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.UpdateScreen(dx, dy));

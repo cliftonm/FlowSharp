@@ -1,4 +1,27 @@
-﻿using System;
+﻿/* The MIT License (MIT)
+* 
+* Copyright (c) 2016 Marc Clifton
+* 
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -51,7 +74,7 @@ namespace FlowSharpLib
             {
                 selectedAnchor = null;
                 leftMouseDown = false;
-                dragging = !(args.Button == MouseButtons.Left);
+                dragging = false;
                 ShowConnectionPoints(currentlyNear.Select(e => e.NearElement), false);
                 currentlyNear.Clear();
             }
@@ -171,10 +194,11 @@ namespace FlowSharpLib
 					int deltaxsign = delta.X.Sign();
 					int deltaysign = delta.Y.Sign();
 
+                    // Are we attached already or moving toward the shape's connection point?
 					if ((neardxsign == 0 || deltaxsign == 0 || neardxsign == deltaxsign) &&
 							(neardysign == 0 || deltaysign == 0 || neardysign == deltaysign))
 					{
-                        // Possible detach?
+                        // If attached, are we moving away from the connection point to detach it?
                         if (neardxsign == 0 && neardxsign == 0 && (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY))
 						{
 							selectedElement.DisconnectShapeFromConnector(type);
@@ -183,7 +207,8 @@ namespace FlowSharpLib
 						else
 						{
                             // Not already connected?
-							if (!si.NearElement.Connections.Any(c => c.ToElement == selectedElement))
+							// if (!si.NearElement.Connections.Any(c => c.ToElement == selectedElement))
+                            if (neardxsign != 0 || neardysign != 0)
 							{
 								si.NearElement.Connections.Add(new Connection() { ToElement = selectedElement, ToConnectionPoint = si.LineConnectionPoint, ElementConnectionPoint = nearConnectionPoint });
 								selectedElement.SetConnection(si.LineConnectionPoint.Type, si.NearElement);

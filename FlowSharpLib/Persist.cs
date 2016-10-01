@@ -156,40 +156,52 @@ namespace FlowSharpLib
 
 		public static List<GraphicElement> Deserialize(Canvas canvas, string data)
 		{
-			List<GraphicElement> elements = new List<GraphicElement>();
-			XmlSerializer xs = new XmlSerializer(typeof(List<ElementPropertyBag>));
-			TextReader tr = new StringReader(data);
-			List<ElementPropertyBag> sps = (List<ElementPropertyBag>)xs.Deserialize(tr);
+            Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections = InternalDeserialize(canvas, data);
+            FixupConnections(collections);
+            FinalFixup(collections);
 
-			foreach (ElementPropertyBag epb in sps)
-			{
-				Type t = Type.GetType(epb.ElementName);
-				GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { canvas });
-				el.Deserialize(epb);
-				elements.Add(el);
-				epb.Element = el;
-			}
-
-			// Fixup Connection
-			foreach (ElementPropertyBag epb in sps)
-			{
-				epb.Connections.Where(c =>c.ToElementId != Guid.Empty).ForEach(c =>
-				{
-					Connection conn = new Connection();
-					conn.Deserialize(elements, c);
-					epb.Element.Connections.Add(conn);
-				});
-			}
-
-			foreach (ElementPropertyBag epb in sps)
-			{
-				epb.Element.FinalFixup(elements, epb);
-			}
-
-			return elements;
+            return collections.Item1;
 		}
 
-		public static GraphicElement DeserializeElement(Canvas canvas, string data)
+        private static Tuple<List<GraphicElement>, List<ElementPropertyBag>> InternalDeserialize(Canvas canvas, string data)
+        {
+            List<GraphicElement> elements = new List<GraphicElement>();
+            XmlSerializer xs = new XmlSerializer(typeof(List<ElementPropertyBag>));
+            TextReader tr = new StringReader(data);
+            List<ElementPropertyBag> sps = (List<ElementPropertyBag>)xs.Deserialize(tr);
+
+            foreach (ElementPropertyBag epb in sps)
+            {
+                Type t = Type.GetType(epb.ElementName);
+                GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { canvas });
+                el.Deserialize(epb);
+                elements.Add(el);
+                epb.Element = el;
+            }
+
+            return new Tuple<List<GraphicElement>, List<ElementPropertyBag>>(elements, sps);
+        }
+
+        private static void FixupConnections(Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections)
+        {
+            // Fixup Connection
+            foreach (ElementPropertyBag epb in collections.Item2)
+            {
+                epb.Connections.Where(c => c.ToElementId != Guid.Empty).ForEach(c =>
+                {
+                    Connection conn = new Connection();
+                    conn.Deserialize(collections.Item1, c);
+                    epb.Element.Connections.Add(conn);
+                });
+            }
+        }
+
+        private static void FinalFixup(Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections)
+        {
+            collections.Item2.ForEach(epb => epb.Element.FinalFixup(collections.Item1, epb));
+        }
+
+        public static GraphicElement DeserializeElement(Canvas canvas, string data)
 		{
 			XmlSerializer xs = new XmlSerializer(typeof(ElementPropertyBag));
 			TextReader tr = new StringReader(data);

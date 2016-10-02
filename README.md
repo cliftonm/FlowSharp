@@ -2,8 +2,7 @@
 
 ![FlowSharp](https://github.com/cliftonm/FlowSharp/blob/master/Article/flowsharp2.png)
 # Documentation
-Open "index.htm" in your browser.
-![Documentation](https://github.com/cliftonm/FlowSharp/tree/master/Article)
+[Open "index.htm" in your browser.](https://github.com/cliftonm/FlowSharp/tree/master/Article)
 # Features
 A short list of some of the features.
 ## Virtual Surface

@@ -24,17 +24,17 @@ A short list of some of the features.
 # What's not implemented:
 Please contribute to working on this list!
 *Shape text:
-..* Currently only centered in the shape.
-..* Boundaries can be easily exceeded.
-..* No justification.
-..* Single line only - no auto-wrap.
+  * Currently only centered in the shape.
+  * Boundaries can be easily exceeded.
+  * No justification.
+  * Single line only - no auto-wrap.
 * Multiple element select.
-..* With click-drag selection rectangle.
-..* Scrollbars for canvas - currently you drag the canvas to move it.
+  * With click-drag selection rectangle.
+  * Scrollbars for canvas - currently you drag the canvas to move it.
 * Zoom.
 * Shape rotation.
 * Custom defined connection points.
-..* Including on connectors.
+  * Including on connectors.
 * Adjust custom connection points intelligently when shape is resized.
 * True dynamic connectors.
 * Other line caps besides an arrow.

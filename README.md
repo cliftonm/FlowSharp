@@ -3,6 +3,9 @@
 ![FlowSharp](https://github.com/cliftonm/FlowSharp/blob/master/Article/flowsharp2.png)
 # Documentation
 [Article describing object model, code, and example usage.](http://htmlpreview.github.io/?https://github.com/cliftonm/FlowSharp/blob/master/Article/index.htm)
+# Requirements to build code
+* Visual Studio 2015 or Better
+* .NET 4.6.1 or higher
 # Features
 A short list of some of the features.
 ## Virtual Surface

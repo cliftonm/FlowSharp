@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ArrayOfElementPropertyBag xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="bd329fec-4231-4151-b971-8143a8500f3a" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>298</X>
+        <Y>236</Y>
+      </Location>
+      <Size>
+        <Width>60</Width>
+        <Height>60</Height>
+      </Size>
+      <X>298</X>
+      <Y>236</Y>
+      <Width>60</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>4</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Connections />
+    <TextColor>-7667712</TextColor>
+    <BorderPenColor>-32768</BorderPenColor>
+    <FillBrushColor>-8388608</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.VerticalLine, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="3ff05c89-4128-4260-a14c-23cd24d1a3d3" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="true" HasCornerConnections="false" HasCenterConnections="false" HasLeftRightConnections="false" HasTopBottomConnections="true">
+    <DisplayRectangle>
+      <Location>
+        <X>380</X>
+        <Y>177</Y>
+      </Location>
+      <Size>
+        <Width>20</Width>
+        <Height>40</Height>
+      </Size>
+      <X>380</X>
+      <Y>177</Y>
+      <Width>20</Width>
+      <Height>40</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>3</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>Arrow</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Connections />
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16776961</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.DynamicConnectorUD, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="687f2a8d-ad70-474b-a217-f26be27fed97" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>265</X>
+        <Y>179</Y>
+      </Location>
+      <Size>
+        <Width>40</Width>
+        <Height>40</Height>
+      </Size>
+      <X>265</X>
+      <Y>179</Y>
+      <Width>40</Width>
+      <Height>40</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>265</X>
+      <Y>179</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>305</X>
+      <Y>219</Y>
+    </EndPoint>
+    <BorderPenWidth>2</BorderPenWidth>
+    <StartCap>Arrow</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Connections />
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-8388608</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+</ArrayOfElementPropertyBag>

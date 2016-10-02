@@ -1,26 +1,27 @@
 # FlowSharp
 
-![alt FlowSharp](https://github.com/cliftonm/FlowSharp/blob/master/Article/flowsharp2.png)
+![FlowSharp](https://github.com/cliftonm/FlowSharp/blob/master/Article/flowsharp2.png)
 # Documentation
-![alt Documentation](https://github.com/cliftonm/FlowSharp/tree/master/Article)
+Open "index.htm" in your browser.
+![Documentation](https://github.com/cliftonm/FlowSharp/tree/master/Article)
 # Features
 A short list of some of the features.
 ## Virtual Surface
-![alt Virtual Surface](https://github.com/cliftonm/FlowSharp/blob/master/Article/img1.png)
+![Virtual Surface](https://github.com/cliftonm/FlowSharp/blob/master/Article/img1.png)
 ## Efficient rendering of shapes
-![alt Rendering](https://github.com/cliftonm/FlowSharp/blob/master/Article/img2.png)
+![Rendering](https://github.com/cliftonm/FlowSharp/blob/master/Article/img2.png)
 ## Z-ordering
-![alt Z-order](https://github.com/cliftonm/FlowSharp/blob/master/Article/img3.png)
+![Z-order](https://github.com/cliftonm/FlowSharp/blob/master/Article/img3.png)
 ## Text for shapes
-![alt Text](https://github.com/cliftonm/FlowSharp/blob/master/Article/img4.png)
+![Text](https://github.com/cliftonm/FlowSharp/blob/master/Article/img4.png)
 ## Export diagram to PNG
-![alt PNG](https://github.com/cliftonm/FlowSharp/blob/master/Article/img5.png)
+![PNG](https://github.com/cliftonm/FlowSharp/blob/master/Article/img5.png)
 ## Connection points and grips
-![alt Virtual Surface](https://github.com/cliftonm/FlowSharp/blob/master/Article/img8.png)
+![Virtual Surface](https://github.com/cliftonm/FlowSharp/blob/master/Article/img8.png)
 ## Copy and paste between diagrams
-![alt Virtual Surface](https://github.com/cliftonm/FlowSharp/blob/master/Article/img11.png)
+![Virtual Surface](https://github.com/cliftonm/FlowSharp/blob/master/Article/img11.png)
 ## Anchor drag snapping
-![alt Virtual Surface](https://github.com/cliftonm/FlowSharp/blob/master/Article/snapping.png)
+![Virtual Surface](https://github.com/cliftonm/FlowSharp/blob/master/Article/snapping.png)
 # What's not implemented:
 Please contribute to working on this list!
 *Shape text:

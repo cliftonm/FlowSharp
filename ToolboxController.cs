@@ -26,9 +26,7 @@ namespace FlowSharp
 
 				if (selectedElement != null)
 				{
-					GraphicElement el = selectedElement.Clone(canvasController.Canvas);
-					el.DisplayRectangle = el.DefaultRectangle();
-					el.UpdatePath();
+					GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas);
 					canvasController.Insert(el);
                     canvasController.SelectElement(el);
 				}

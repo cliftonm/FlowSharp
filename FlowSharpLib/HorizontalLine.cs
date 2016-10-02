@@ -48,9 +48,9 @@ namespace FlowSharpLib
 			HasLeftRightConnections = true;
 		}
 
-		public override GraphicElement Clone(Canvas canvas)
+		public override GraphicElement CloneDefault(Canvas canvas)
 		{
-			HorizontalLine line = (HorizontalLine)base.Clone(canvas);
+			HorizontalLine line = (HorizontalLine)base.CloneDefault(canvas);
 			line.StartCap = StartCap;
 			line.EndCap = EndCap;
 

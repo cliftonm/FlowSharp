@@ -41,9 +41,9 @@ namespace FlowSharpLib
 			HasTopBottomConnections = true;
 		}
 
-		public override GraphicElement Clone(Canvas canvas)
+		public override GraphicElement CloneDefault(Canvas canvas)
 		{
-			VerticalLine line = (VerticalLine)base.Clone(canvas);
+			VerticalLine line = (VerticalLine)base.CloneDefault(canvas);
 			line.StartCap = StartCap;
 			line.EndCap = EndCap;
 

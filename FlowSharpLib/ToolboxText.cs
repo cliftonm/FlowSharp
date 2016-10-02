@@ -40,7 +40,7 @@ namespace FlowSharpLib
 			TextFont = new Font(FontFamily.GenericSansSerif, 20);
 		}
 
-		public override GraphicElement Clone(Canvas canvas)
+		public override GraphicElement CloneDefault(Canvas canvas)
 		{
 			TextShape shape = new TextShape(canvas);
 

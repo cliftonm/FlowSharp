@@ -67,9 +67,9 @@ namespace FlowSharpLib
 			};
 		}
 
-		public override GraphicElement Clone(Canvas canvas)
+		public override GraphicElement CloneDefault(Canvas canvas)
 		{
-			DynamicConnectorUD line = (DynamicConnectorUD)base.Clone(canvas);
+			DynamicConnectorUD line = (DynamicConnectorUD)base.CloneDefault(canvas);
 			line.StartCap = StartCap;
 			line.EndCap = EndCap;
 

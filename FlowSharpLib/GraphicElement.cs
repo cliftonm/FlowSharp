@@ -162,20 +162,14 @@ namespace FlowSharpLib
 		}
 
 		/// <summary>
-		/// Clone onto the specified canvas.
+		/// Clone onto the specified canvas the default shape.
 		/// </summary>
-		public virtual GraphicElement Clone(Canvas canvas)
+		public virtual GraphicElement CloneDefault(Canvas canvas)
 		{
 			GraphicElement el = (GraphicElement)Activator.CreateInstance(GetType(), new object[] { canvas });
-			el.DisplayRectangle = DisplayRectangle;
+            el.DisplayRectangle = el.DefaultRectangle();    // DisplayRectangle;
+            el.UpdateProperties();
 			el.UpdatePath();
-
-			// Remove default because we're replacing with clone of element we're copying from.
-			el.BorderPen.Dispose();
-			el.FillBrush.Dispose();
-
-			el.BorderPen = (Pen)BorderPen.Clone();
-			el.FillBrush = (SolidBrush)FillBrush.Clone();
 
 			return el;
 		}

@@ -36,7 +36,6 @@ namespace FlowSharpLib
 		}
 	}
 
-	/*
 	public class PropertiesChangedEventArgs : EventArgs
 	{
 		public GraphicElement GraphicElement { get; protected set; }
@@ -46,12 +45,10 @@ namespace FlowSharpLib
 			GraphicElement = el;
 		}
 	}
-	*/
 
 	public class GraphicElement : IDisposable
     {
-		// We never use this, but I'm leaving in it commented out if we ever do need it.
-		// public EventHandler<PropertiesChangedEventArgs> PropertiesChanged;
+		public EventHandler<PropertiesChangedEventArgs> PropertiesChanged;
 
 		public Guid Id { get; set; }
 		public virtual bool Selected { get; set; }
@@ -237,7 +234,10 @@ namespace FlowSharpLib
 			HasTopBottomConnections = epb.HasTopBottomConnections;
 		}
 
-		public virtual void FinalFixup(List<GraphicElement> elements, ElementPropertyBag epb) { }
+        public virtual void FinalFixup(List<GraphicElement> elements, ElementPropertyBag epb)
+        {
+            elements.ForEach(el => el.UpdateProperties());
+        }
 
 		public bool OnScreen(Rectangle r)
 		{

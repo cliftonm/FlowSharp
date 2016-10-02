@@ -28,7 +28,7 @@ namespace FlowSharpLib
 {
 	// !!! If this class ends up being subclassed for any reason, the serializer must be updated to account for subclasses !!!
 	/// <summary>
-	/// Used for non-line shapes connecting to lines.
+	/// Used for shapes connecting to lines.
 	/// </summary>
 	public class Connection
 	{

@@ -77,29 +77,9 @@ namespace FlowSharpLib
 
 		public override void UpdatePath()
 		{
-			if (startPoint.X < endPoint.X)
-			{
-				lines[0].StartCap = StartCap;
-				lines[0].EndCap = AvailableLineCap.None;
-			}
-			else
-			{
-				lines[0].StartCap = AvailableLineCap.None;
-				lines[0].EndCap = StartCap;
-			}
+            UpdateCaps();
 
-			if (startPoint.Y < endPoint.Y)
-			{
-				lines[1].StartCap = AvailableLineCap.None;
-				lines[1].EndCap = EndCap;
-			}
-			else
-			{
-				lines[1].StartCap = EndCap;
-				lines[1].EndCap = AvailableLineCap.None;
-			}
-
-			if (startPoint.X < endPoint.X)
+            if (startPoint.X < endPoint.X)
 			{
 				lines[0].DisplayRectangle = new Rectangle(startPoint.X, startPoint.Y - BaseController.MIN_HEIGHT / 2, endPoint.X - startPoint.X, BaseController.MIN_HEIGHT);
 			}
@@ -117,7 +97,35 @@ namespace FlowSharpLib
 				lines[1].DisplayRectangle = new Rectangle(endPoint.X - BaseController.MIN_WIDTH / 2, endPoint.Y, BaseController.MIN_WIDTH, startPoint.Y - endPoint.Y);
 			}
 
-			lines.ForEach(l => ((GraphicElement)l).UpdatePath());
+			lines.ForEach(l => l.UpdatePath());
 		}
-	}
+
+        protected void UpdateCaps()
+        {
+            if (startPoint.X < endPoint.X)
+            {
+                lines[0].StartCap = StartCap;
+                lines[0].EndCap = AvailableLineCap.None;
+            }
+            else
+            {
+                lines[0].StartCap = AvailableLineCap.None;
+                lines[0].EndCap = StartCap;
+            }
+
+            if (startPoint.Y < endPoint.Y)
+            {
+                lines[1].StartCap = AvailableLineCap.None;
+                lines[1].EndCap = EndCap;
+            }
+            else
+            {
+                lines[1].StartCap = EndCap;
+                lines[1].EndCap = AvailableLineCap.None;
+            }
+
+            lines.ForEach(l => l.UpdateProperties());
+
+        }
+    }
 }

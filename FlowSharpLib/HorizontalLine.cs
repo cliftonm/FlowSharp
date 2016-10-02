@@ -78,11 +78,6 @@ namespace FlowSharpLib
 
 		public override void Draw(Graphics gr)
 		{
-			// See CustomLineCap for creating other possible endcaps besides arrows.
-			// Note that AdjustableArrowCap derives from CustomLineCap!
-			// https://msdn.microsoft.com/en-us/library/system.drawing.drawing2d.customlinecap(v=vs.110).aspx
-
-			AdjustableArrowCap adjCap = new AdjustableArrowCap(5, 5, true);
 			Pen pen = (Pen)BorderPen.Clone();
 
 			if (ShowLineAsSelected)
@@ -90,19 +85,8 @@ namespace FlowSharpLib
 				pen.Color = pen.Color.ToArgb() == Color.Red.ToArgb() ? Color.Blue : Color.Red;
 			}
 
-			if (StartCap == AvailableLineCap.Arrow)
-			{
-				pen.CustomStartCap = adjCap;
-			}
-
-			if (EndCap == AvailableLineCap.Arrow)
-			{
-				pen.CustomEndCap = adjCap;
-			}
-
-			gr.DrawLine(pen, DisplayRectangle.LeftMiddle(), DisplayRectangle.RightMiddle());
+            gr.DrawLine(pen, DisplayRectangle.LeftMiddle(), DisplayRectangle.RightMiddle());
 			pen.Dispose();
-			adjCap.Dispose();
 
 			base.Draw(gr);
 		}

@@ -63,8 +63,7 @@ namespace FlowSharpLib
 			el.BorderPen.Color = BorderColor;
 			el.BorderPen.Width = BorderWidth;
 			el.FillBrush.Color = FillColor;
-			// We never use this, but I'm leaving in it commented out if we ever do need it.
-			// el.PropertiesChanged.Fire(this, new PropertiesChangedEventArgs(el));
+			el.PropertiesChanged.Fire(this, new PropertiesChangedEventArgs(el));
 		}
 	}
 }

@@ -87,8 +87,8 @@ namespace FlowSharpLib
 			{
 				case GripType.TopLeft:
 					{
-						// This here and in other cases prevents "shoving" when mins are reached.
-						int w = (rx - r.X - p.X).Max(BaseController.MIN_WIDTH);
+                        // This here and in other cases prevents "shoving" when mins are reached.
+                        int w = (rx - r.X - p.X).Max(BaseController.MIN_WIDTH);
 						int h = (ry - r.Y - p.Y).Max(BaseController.MIN_HEIGHT);
 						if (w == BaseController.MIN_WIDTH) p.X = 0;
 						if (h == BaseController.MIN_HEIGHT) p.Y = 0;

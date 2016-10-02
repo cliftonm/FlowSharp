@@ -30,14 +30,17 @@ namespace FlowSharpLib
 {
 	public abstract class BaseController
 	{
-		public const int MIN_WIDTH = 5;
-		public const int MIN_HEIGHT = 5;
+        public const int MIN_WIDTH = 20;
+        public const int MIN_HEIGHT = 20;
 
 		public const int SNAP_ELEMENT_RANGE = 20;
 		public const int SNAP_CONNECTION_POINT_RANGE = 10;
 		public const int SNAP_DETACH_VELOCITY = 5;
 
 		public const int CONNECTION_POINT_SIZE = 3;		// this is actually the length from center.
+
+        public const int CAP_WIDTH = 5;
+        public const int CAP_HEIGHT = 5;
 
 		public Canvas Canvas { get { return canvas; } }
 

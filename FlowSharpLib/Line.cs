@@ -22,6 +22,7 @@
 */
 
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace FlowSharpLib
 {
@@ -29,7 +30,12 @@ namespace FlowSharpLib
 	{
 		public bool ShowLineAsSelected { get; set; }
 
-		public Line(Canvas canvas) : base(canvas)
+        // See CustomLineCap for creating other possible endcaps besides arrows.
+        // Note that AdjustableArrowCap derives from CustomLineCap!
+        // https://msdn.microsoft.com/en-us/library/system.drawing.drawing2d.customlinecap(v=vs.110).aspx
+        protected AdjustableArrowCap adjCap = new AdjustableArrowCap(BaseController.CAP_WIDTH, BaseController.CAP_HEIGHT, true);
+
+        public Line(Canvas canvas) : base(canvas)
 		{
 		}
 
@@ -38,7 +44,14 @@ namespace FlowSharpLib
 			return new LineProperties(this);
 		}
 
-		public override bool SnapCheck(ShapeAnchor anchor, Point delta)
+        public override void UpdateProperties()
+        {
+            if (StartCap == AvailableLineCap.None) BorderPen.StartCap = LineCap.NoAnchor; else BorderPen.CustomStartCap = adjCap;
+            if (EndCap == AvailableLineCap.None) BorderPen.EndCap = LineCap.NoAnchor; else BorderPen.CustomEndCap = adjCap;
+            base.UpdateProperties();
+        }
+
+        public override bool SnapCheck(ShapeAnchor anchor, Point delta)
 		{
 			bool ret = canvas.Controller.Snap(anchor.Type, ref delta);
 

@@ -64,6 +64,7 @@ namespace FlowSharpLib
 			base.FinalFixup(elements, epb);
 			StartConnectedShape = elements.SingleOrDefault(e => e.Id == epb.StartConnectedShapeId);
 			EndConnectedShape = elements.SingleOrDefault(e => e.Id == epb.EndConnectedShapeId);
+            base.FinalFixup(elements, epb);
 		}
 
 		public override void SetConnection(GripType gt, GraphicElement shape)

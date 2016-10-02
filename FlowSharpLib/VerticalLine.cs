@@ -22,7 +22,6 @@
 */
 
 using System.Drawing;
-using System.Drawing.Drawing2D;
 
 namespace FlowSharpLib
 {
@@ -55,7 +54,7 @@ namespace FlowSharpLib
 			return new Rectangle(20, 20, 20, 40);
 		}
 
-		public override void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint cp)
+        public override void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint cp)
 		{
 			if (cp.Type == GripType.Start)
 			{
@@ -72,25 +71,11 @@ namespace FlowSharpLib
 
 		public override void Draw(Graphics gr)
 		{
-			// See CustomLineCap for creating other possible endcaps besides arrows.
-			// https://msdn.microsoft.com/en-us/library/system.drawing.drawing2d.customlinecap(v=vs.110).aspx
-
-			AdjustableArrowCap adjCap = new AdjustableArrowCap(5, 5, true);
 			Pen pen = (Pen)BorderPen.Clone();
 
 			if (ShowLineAsSelected)
 			{
 				pen.Color = pen.Color.ToArgb() == Color.Red.ToArgb() ? Color.Blue : Color.Red;
-			}
-
-			if (StartCap == AvailableLineCap.Arrow)
-			{
-				pen.CustomStartCap = adjCap;
-			}
-
-			if (EndCap == AvailableLineCap.Arrow)
-			{
-				pen.CustomEndCap = adjCap;
 			}
 
 			gr.DrawLine(pen, DisplayRectangle.TopMiddle(), DisplayRectangle.BottomMiddle());

@@ -18,14 +18,6 @@ namespace FlowSharp
 		protected Canvas toolboxCanvas;
 		protected List<GraphicElement> toolboxElements = new List<GraphicElement>();
 
-		protected Dictionary<Keys, Point> keyVector = new Dictionary<Keys, Point>()
-		{
-			{Keys.Up, new Point(0, -1) },
-			{Keys.Down, new Point(0, 1) },
-			{Keys.Left, new Point(-1, 0) },
-			{Keys.Right, new Point(1, 0) },
-		};
-
 		protected Dictionary<Keys, Action> keyActions = new Dictionary<Keys, Action>();
 
 		public FlowSharpUI()
@@ -52,9 +44,13 @@ namespace FlowSharp
 			keyActions[Keys.Control | Keys.C] = Copy;
 			keyActions[Keys.Control | Keys.V] = Paste;
 			keyActions[Keys.Delete] = Delete;
+            keyActions[Keys.Up] = () => canvasController.DragSelectedElement(new Point(0, -1));
+            keyActions[Keys.Down] = () => canvasController.DragSelectedElement(new Point(0, 1));
+            keyActions[Keys.Left] = () => canvasController.DragSelectedElement(new Point(-1, 0));
+            keyActions[Keys.Right] = () => canvasController.DragSelectedElement(new Point(1, 0));
 		}
 
-		public void OnShown(object sender, EventArgs e)
+        public void OnShown(object sender, EventArgs e)
         {
 			InitializeCanvas();
 			InitializeToolbox();
@@ -64,22 +60,20 @@ namespace FlowSharp
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			Point dir;
 			Action act;
+            bool ret = false;
 
-			if (canvas.Focused)
-			{
-				if ( (canvasController.SelectedElement != null) && keyVector.TryGetValue(keyData, out dir))
-				{
-					canvasController.DragSelectedElement(dir);
-				}
-				else if (keyActions.TryGetValue(keyData, out act))
-				{
-					act();
-				}
+			if (canvas.Focused && canvasController.SelectedElement != null && keyActions.TryGetValue(keyData, out act))
+            {
+				act();
+                ret = true;
 			}
+            else
+            {
+                ret = base.ProcessCmdKey(ref msg, keyData);
+            }
 
-			return base.ProcessCmdKey(ref msg, keyData);
+            return ret;
 		}
 
 		protected void Copy()

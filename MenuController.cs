@@ -119,16 +119,11 @@ namespace FlowSharp
 					else
 					{
 						filename = sfd.FileName;
-					}
-				}
-				else
-				{
-					return;
-				}
-
-				string data = Persist.Serialize(elements);
-				File.WriteAllText(filename, data);
-				UpdateCaption();
+                        string data = Persist.Serialize(elements);
+                        File.WriteAllText(filename, data);
+                        UpdateCaption();
+                    }
+                }
 			}
 			else
 			{

@@ -78,33 +78,18 @@ namespace FlowSharpLib
 
 		public override void UpdatePath()
 		{
-			// TODO: Figure out whether we're doing H-V-H, or V-H-V, or H-V or V-H, or something even more complicated if we are avoiding shape boundaries.
+            UpdateCaps();
 
-			if (startPoint.X < endPoint.X)
-			{
-				lines[0].EndCap = AvailableLineCap.None;
-				lines[2].StartCap = AvailableLineCap.None;
-				lines[0].StartCap = StartCap;
-				lines[2].EndCap = EndCap;
-			}
-			else
-			{
-				lines[0].StartCap = AvailableLineCap.None;
-				lines[2].EndCap = AvailableLineCap.None;
-				lines[0].EndCap = StartCap;
-				lines[2].StartCap = EndCap;
-			}
-
-			if (startPoint.X < endPoint.X)
+            if (startPoint.X < endPoint.X)
 			{
 				lines[0].DisplayRectangle = new Rectangle(startPoint.X, startPoint.Y - BaseController.MIN_HEIGHT / 2, (endPoint.X - startPoint.X) / 2, BaseController.MIN_HEIGHT);
 			}
-			else
-			{
-				lines[0].DisplayRectangle = new Rectangle(endPoint.X + (startPoint.X - endPoint.X)/2, startPoint.Y - BaseController.MIN_HEIGHT / 2, (startPoint.X - endPoint.X) / 2, BaseController.MIN_HEIGHT);
-			}
+            else
+            {
+                lines[0].DisplayRectangle = new Rectangle(endPoint.X + (startPoint.X - endPoint.X) / 2, startPoint.Y - BaseController.MIN_HEIGHT / 2, (startPoint.X - endPoint.X) / 2, BaseController.MIN_HEIGHT);
+            }
 
-			if (startPoint.Y < endPoint.Y)
+            if (startPoint.Y < endPoint.Y)
 			{
 				lines[1].DisplayRectangle = new Rectangle(startPoint.X + (endPoint.X - startPoint.X) / 2 - BaseController.MIN_WIDTH / 2, startPoint.Y, BaseController.MIN_WIDTH, endPoint.Y - startPoint.Y);
 			}
@@ -122,7 +107,28 @@ namespace FlowSharpLib
 				lines[2].DisplayRectangle = new Rectangle(endPoint.X, endPoint.Y - BaseController.MIN_HEIGHT / 2, (startPoint.X - endPoint.X) / 2, BaseController.MIN_HEIGHT);
 			}
 
-			lines.ForEach(l => ((GraphicElement)l).UpdatePath());
+            lines.ForEach(l => l.UpdatePath());
 		}
-	}
+
+        protected void UpdateCaps()
+        {
+            if (startPoint.X < endPoint.X)
+            {
+                lines[0].EndCap = AvailableLineCap.None;
+                lines[2].StartCap = AvailableLineCap.None;
+                lines[0].StartCap = StartCap;
+                lines[2].EndCap = EndCap;
+            }
+            else
+            {
+                lines[0].StartCap = AvailableLineCap.None;
+                lines[2].EndCap = AvailableLineCap.None;
+                lines[0].EndCap = StartCap;
+                lines[2].StartCap = EndCap;
+            }
+
+            lines.ForEach(l => l.UpdateProperties());
+
+        }
+    }
 }

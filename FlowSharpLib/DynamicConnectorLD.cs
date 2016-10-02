@@ -125,7 +125,6 @@ namespace FlowSharpLib
             }
 
             lines.ForEach(l => l.UpdateProperties());
-
         }
     }
 }

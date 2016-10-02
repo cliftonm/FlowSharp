@@ -33,11 +33,15 @@ namespace FlowSharpLib
         // See CustomLineCap for creating other possible endcaps besides arrows.
         // Note that AdjustableArrowCap derives from CustomLineCap!
         // https://msdn.microsoft.com/en-us/library/system.drawing.drawing2d.customlinecap(v=vs.110).aspx
-        protected AdjustableArrowCap adjCap = new AdjustableArrowCap(BaseController.CAP_WIDTH, BaseController.CAP_HEIGHT, true);
+        protected AdjustableArrowCap adjCapArrow;
+        protected AdjustableArrowCap adjCapDiamond;
 
         public Line(Canvas canvas) : base(canvas)
 		{
-		}
+            adjCapArrow = new AdjustableArrowCap(BaseController.CAP_WIDTH, BaseController.CAP_HEIGHT, true);
+            adjCapDiamond = new AdjustableArrowCap(BaseController.CAP_WIDTH, BaseController.CAP_HEIGHT, true);
+            adjCapDiamond.MiddleInset = -BaseController.CAP_WIDTH;
+        }
 
 		public override ElementProperties CreateProperties()
 		{
@@ -46,8 +50,23 @@ namespace FlowSharpLib
 
         public override void UpdateProperties()
         {
-            if (StartCap == AvailableLineCap.None) BorderPen.StartCap = LineCap.NoAnchor; else BorderPen.CustomStartCap = adjCap;
-            if (EndCap == AvailableLineCap.None) BorderPen.EndCap = LineCap.NoAnchor; else BorderPen.CustomEndCap = adjCap;
+            if (StartCap == AvailableLineCap.None)
+            {
+                BorderPen.StartCap = LineCap.NoAnchor;
+            }
+            else
+            {
+                BorderPen.CustomStartCap = StartCap == AvailableLineCap.Arrow ? adjCapArrow : adjCapDiamond;
+            }
+
+            if (EndCap == AvailableLineCap.None)
+            {
+                BorderPen.EndCap = LineCap.NoAnchor;
+            }
+            else
+            {
+                BorderPen.CustomEndCap = EndCap == AvailableLineCap.Arrow ? adjCapArrow : adjCapDiamond;
+            }
             base.UpdateProperties();
         }
 

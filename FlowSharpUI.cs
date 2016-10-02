@@ -154,15 +154,23 @@ namespace FlowSharp
 			toolboxCanvas = new ToolboxCanvas();
 			toolboxCanvas.Initialize(pnlToolbox);
 			int x = pnlToolbox.Width / 2 - 12;
-			toolboxElements.Add(new Box(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 15, 25, 25) });
-			toolboxElements.Add(new Ellipse(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 60, 25, 25) });
-			toolboxElements.Add(new Diamond(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 105, 25, 25) });
-			toolboxElements.Add(new HorizontalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 25, 150, 30, 20) });
-			toolboxElements.Add(new VerticalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x+25, 145, 20, 30) });
+			toolboxElements.Add(new Box(toolboxCanvas) { DisplayRectangle = new Rectangle(x-50, 15, 25, 25) });
+			toolboxElements.Add(new Ellipse(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 15, 25, 25) });
+			toolboxElements.Add(new Diamond(toolboxCanvas) { DisplayRectangle = new Rectangle(x+50, 15, 25, 25) });
+
+            toolboxElements.Add(new LeftTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x -60, 60, 25, 25) });
+            toolboxElements.Add(new RightTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 20, 60, 25, 25) });
+            toolboxElements.Add(new UpTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x+20, 60, 25, 25) });
+            toolboxElements.Add(new DownTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x+60, 60, 25, 25) });
+
+            toolboxElements.Add(new HorizontalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 25, 130, 30, 20) });
+			toolboxElements.Add(new VerticalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x+25, 125, 20, 30) });
+
             // toolboxElements.Add(new ToolboxDynamicConnectorLR(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 185, 25, 25)});
-            toolboxElements.Add(new DynamicConnectorLR(toolboxCanvas, new Point(x - 50, 185), new Point(x - 50 + 25, 185 + 25)));
-            toolboxElements.Add(new DynamicConnectorLD(toolboxCanvas, new Point(x, 185), new Point(x + 25, 185 + 25)));
-            toolboxElements.Add(new DynamicConnectorUD(toolboxCanvas, new Point(x + 50, 185), new Point(x + 50 + 25, 185 + 25)));
+            toolboxElements.Add(new DynamicConnectorLR(toolboxCanvas, new Point(x - 50, 175), new Point(x - 50 + 25, 175 + 25)));
+            toolboxElements.Add(new DynamicConnectorLD(toolboxCanvas, new Point(x, 175), new Point(x + 25, 175 + 25)));
+            toolboxElements.Add(new DynamicConnectorUD(toolboxCanvas, new Point(x + 50, 175), new Point(x + 50 + 25, 175 + 25)));
+
 			toolboxElements.Add(new ToolboxText(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 230, 25, 25) });
 			toolboxElements.ForEach(el => el.UpdatePath());
 		}

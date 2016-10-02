@@ -27,8 +27,9 @@ namespace FlowSharpLib
 {
 	public class VerticalLine : Line
 	{
-		// Fixes background erase issues with dynamic connector.
-		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
+		// Fixes background erase issues with dynamic connector with endcaps.
+        // + 1 needed for arrows, + 2 needed for diamonds.
+		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 2 + BorderPen.Width); } }
 
 		public VerticalLine(Canvas canvas) : base(canvas)
 		{

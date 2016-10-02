@@ -33,7 +33,7 @@ namespace FlowSharpLib
         public const int MIN_WIDTH = 20;
         public const int MIN_HEIGHT = 20;
 
-		public const int SNAP_ELEMENT_RANGE = 20;
+        public const int SNAP_ELEMENT_RANGE = 20;
 		public const int SNAP_CONNECTION_POINT_RANGE = 10;
 		public const int SNAP_DETACH_VELOCITY = 5;
 

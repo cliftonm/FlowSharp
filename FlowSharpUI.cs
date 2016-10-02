@@ -99,6 +99,7 @@ namespace FlowSharp
 				{
 					GraphicElement el = Persist.DeserializeElement(canvas, copyBuffer);
                     el.Move(new Point(20, 20));
+                    el.UpdateProperties();
 					el.UpdatePath();
 					canvasController.Insert(el);
 					canvasController.DeselectCurrentSelectedElement();

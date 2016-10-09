@@ -51,5 +51,5 @@ Please contribute to working on this list!
 * Better property UX - PropertyGrid's are ok for developers, they are awful for users.
 
 # License
-![The Code Project Open License (CPOL) 1.02](http://www.codeproject.com/info/cpol10.aspx)
+![The Code Project Open License (CPOL) 1.02](http://htmlpreview.github.io/?http://www.codeproject.com/info/cpol10.aspx)
 

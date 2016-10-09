@@ -127,7 +127,9 @@ namespace FlowSharp
 		{
 			canvas = new Canvas();
 			canvas.Initialize(pnlCanvas);
-		}
+            // Once the user clicks on the canvas, the displacement for copying elements from the toolbox onto the canvas is reset.
+            canvas.MouseClick += (sndr, args) => toolboxController.ResetDisplacement();
+        }
 
 		protected void InitializeControllers()
 		{ 

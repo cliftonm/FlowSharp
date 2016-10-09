@@ -16,6 +16,7 @@ namespace FlowSharp
 	public class ToolboxController : BaseController
 	{
 		protected CanvasController canvasController;
+        protected int xDisplacement = 0;
 
 		public ToolboxController(Canvas canvas, List<GraphicElement> elements, CanvasController canvasController) : base(canvas, elements)
 		{
@@ -23,6 +24,11 @@ namespace FlowSharp
 			canvas.PaintComplete = CanvasPaintComplete;
 			canvas.MouseDown += OnMouseDown;
 		}
+
+        public void ResetDisplacement()
+        {
+            xDisplacement = 0;
+        }
 
 		public void OnMouseDown(object sender, MouseEventArgs args)
 		{
@@ -32,7 +38,8 @@ namespace FlowSharp
 
 				if (selectedElement != null)
 				{
-					GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas);
+					GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas, new Point(xDisplacement, 0));
+                    xDisplacement += 80;
 					canvasController.Insert(el);
                     canvasController.SelectElement(el);
 				}

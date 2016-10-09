@@ -144,13 +144,18 @@ namespace FlowSharpLib
 			return UpdateRectangle.Contains(p);
 		}
 
-		/// <summary>
-		/// Clone onto the specified canvas the default shape.
-		/// </summary>
-		public virtual GraphicElement CloneDefault(Canvas canvas)
+        public virtual GraphicElement CloneDefault(Canvas canvas)
+        {
+            return CloneDefault(canvas, Point.Empty);
+        }
+
+        /// <summary>
+        /// Clone onto the specified canvas the default shape.
+        /// </summary>
+        public virtual GraphicElement CloneDefault(Canvas canvas, Point offset)
 		{
 			GraphicElement el = (GraphicElement)Activator.CreateInstance(GetType(), new object[] { canvas });
-            el.DisplayRectangle = el.DefaultRectangle();    // DisplayRectangle;
+            el.DisplayRectangle = el.DefaultRectangle().Move(offset);
             el.UpdateProperties();
 			el.UpdatePath();
 

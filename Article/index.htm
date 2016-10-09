@@ -98,6 +98,11 @@
 </ul>
 </ul>
 
+<h2>Build Environment</h2>
+<p>FlowSharp was built with Visual Studio 2015 and references .NET 4.6.1.&nbsp; 
+VS2015 is required, but the code can also be built referencing .NET 4.5.</p>
+<p>Source code is maintained <a href="https://github.com/cliftonm/FlowSharp">
+here</a>.</p>
 <h2><a name="Introduction0">Introduction</a></h2>
 <p>I've been wanting a Visio-like diagramming tool for a long time (for some 
 interesting ideas I have, but that's another story.)&nbsp; While working with 
@@ -361,7 +366,7 @@ anchors is really easy:</p>
     gr.FillRectangle(anchorBrush, a.Rectangle.Grow(-1));
   }));
 }</pre>
-<pNow, granted, the use of extension methods, Linq, and anonymous methods 
+<p>Now, granted, the use of extension methods, Linq, and anonymous methods 
 potentially degrade performance -- it's an interesting tradeoff: code 
 readability vs. performance.&nbsp; Technically, the compiler should optimize the 
 code, but we all know the reality of that.</p>
@@ -385,7 +390,7 @@ practices:</p>
 	</li>
 	<li>Got some code smell?&nbsp; Refactor it now rather than later.</li>
 	<li>Try to remember that all those graphic objects need to be disposed!</li>
-	<liMove duplicate code into its own method.</li>
+	<li>Move duplicate code into its own method.</li>
 	<li>Testing something like this is not easy because you basically have to 
 	play with the UI to test behaviors.&nbsp; Write down basic test scenarios.</li>
 	<li>If you're using <code>if x is [some type]</code> then you're not correctly 
@@ -398,12 +403,12 @@ practices:</p>
 	instead.&nbsp; I have a few lingering violations of that.</li>
 	<li>Use meaningful names for everything.&nbsp; Not necessarily as easy as it 
 	sounds.</li>
-</ul>
-	</li>
-	<li>Naming: In the code, I call things &quot;elements&quot;, but in the article, I 
+	<li>In the code, I call things &quot;elements&quot;, but in the article, I 
 	call them &quot;shapes.&quot;&nbsp; This is an inconsistency that should probably be 
 	rectified.&nbsp; I probably should also refactor the names of the shapes 
 	from things like &quot;Box&quot; to &quot;BoxShape.&quot;&nbsp; Naming is not easy!</li>
+</ul>
+	</li>
 	<li>Code organization:&nbsp; Built in shapes should probably be organized in 
 	sub-folder to keep things clean, but then where do you put base classes?&nbsp; 
 	Should the sub-folder only contain the concrete shape implementation?&nbsp; 

@@ -49,3 +49,6 @@ Please contribute to working on this list!
 * Arrow cursors for grip dragging.
 * Undo/redo.  That'll be fun!
 * Better property UX - PropertyGrid's are ok for developers, they are awful for users.
+# License
+The Code Project Open License (CPOL) 1.02
+![CPOL](http://www.codeproject.com/info/cpol10.aspx)

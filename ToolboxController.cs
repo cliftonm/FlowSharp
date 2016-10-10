@@ -86,10 +86,15 @@ namespace FlowSharp
 
                     GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas);
                     canvasController.Insert(el);
-                    // Point offset = new Point((el.DisplayRectangle.X + el.DisplayRectangle.Width) / -2 - 15, canvasPos.Y + ((el.DisplayRectangle.Y + el.DisplayRectangle.Height) / -2 - 10));
                     Point offset = new Point(-el.DisplayRectangle.X - el.DisplayRectangle.Width/2 - 5, -el.DisplayRectangle.Y + args.Location.Y - el.DisplayRectangle.Height / 2);
+
+                    // TODO: Why this fudge factor for DC's?
+                    if (el is DynamicConnector)
+                    {
+                        offset = offset.Move(8, 6);
+                    }
+
                     canvasController.MoveElement(el, offset);
-                    // canvasController.MoveElement(el, new Point(-55, canvasPos.Y - 50));
                     canvasController.StartDraggingMode(el, canvasPos);
                     canvasController.SelectElement(el);
                 }

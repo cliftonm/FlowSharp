@@ -37,41 +37,131 @@ namespace FlowSharpLib
 			canvas.MouseMove += OnMouseMove;
 		}
 
-        protected void OnMouseDown(object sender, MouseEventArgs args)
+        public void DragSelectedElement(Point delta)
         {
-            if (args.Button == MouseButtons.Left)
+            bool connectorAttached = selectedElement.SnapCheck(GripType.Start, ref delta) || selectedElement.SnapCheck(GripType.End, ref delta);
+            selectedElement.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
+            MoveElement(selectedElement, delta);
+            UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
+
+            if (!connectorAttached)
             {
-                leftMouseDown = true;
-                DeselectCurrentSelectedElement();
-                SelectElement(args.Location);
-                selectedAnchor = selectedElement?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
-                ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElement });
-                dragging = selectedElement != null;
-                mousePosition = args.Location;
+                DetachFromAllShapes(selectedElement);
             }
         }
 
-        protected void OnMouseUp(object sender, MouseEventArgs args)
+        public void DeselectCurrentSelectedElement()
         {
-            if (args.Button == MouseButtons.Left)
+            if (selectedElement != null)
             {
-                selectedAnchor = null;
-                leftMouseDown = false;
-                dragging = false;
-                ShowConnectionPoints(currentlyNear.Select(e => e.NearElement), false);
-                currentlyNear.Clear();
+                var els = EraseTopToBottom(selectedElement);
+                selectedElement.Selected = false;
+                DrawBottomToTop(els);
+                UpdateScreen(els);
+                selectedElement = null;
             }
         }
 
-        protected void OnMouseMove(object sender, MouseEventArgs args)
-		{
-			Point delta = args.Location.Delta(mousePosition);
+        public void SelectElement(GraphicElement el)
+        {
+            DeselectCurrentSelectedElement();
+            var els = EraseTopToBottom(el);
+            el.Selected = true;
+            DrawBottomToTop(els);
+            UpdateScreen(els);
+            selectedElement = el;
+            ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
+        }
+
+        public override bool Snap(GripType type, ref Point delta)
+        {
+            bool snapped = false;
+
+            // Look for connection points on nearby elements.
+            // If a connection point is nearby, and the delta is moving toward that connection point, then snap to that connection point.
+
+            // So, it seems odd that we're using the connection points of the line, rather than the anchors.
+            // However, this is actually simpler, and a line's connection points should at least include the endpoint anchors.
+            IEnumerable<ConnectionPoint> connectionPoints = selectedElement.GetConnectionPoints().Where(p => type == GripType.None || p.Type == type);
+            List<SnapInfo> nearElements = GetNearbyElements(connectionPoints);
+            ShowConnectionPoints(nearElements.Select(e => e.NearElement), true);
+            ShowConnectionPoints(currentlyNear.Where(e => !nearElements.Any(e2 => e.NearElement == e2.NearElement)).Select(e => e.NearElement), false);
+            currentlyNear = nearElements;
+
+            foreach (SnapInfo si in nearElements)
+            {
+                ConnectionPoint nearConnectionPoint = si.NearElement.GetConnectionPoints().FirstOrDefault(cp => cp.Point.IsNear(si.LineConnectionPoint.Point, SNAP_CONNECTION_POINT_RANGE));
+
+                if (nearConnectionPoint != null)
+                {
+                    Point sourceConnectionPoint = si.LineConnectionPoint.Point;
+                    int neardx = nearConnectionPoint.Point.X - sourceConnectionPoint.X;     // calculate to match possible delta sign
+                    int neardy = nearConnectionPoint.Point.Y - sourceConnectionPoint.Y;
+                    int neardxsign = neardx.Sign();
+                    int neardysign = neardy.Sign();
+                    int deltaxsign = delta.X.Sign();
+                    int deltaysign = delta.Y.Sign();
+
+                    // Are we attached already or moving toward the shape's connection point?
+                    if ((neardxsign == 0 || deltaxsign == 0 || neardxsign == deltaxsign) &&
+                            (neardysign == 0 || deltaysign == 0 || neardysign == deltaysign))
+                    {
+                        // If attached, are we moving away from the connection point to detach it?
+                        if (neardxsign == 0 && neardxsign == 0 && (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY))
+                        {
+                            selectedElement.DisconnectShapeFromConnector(type);
+                            selectedElement.RemoveConnection(type);
+                        }
+                        else
+                        {
+                            // Not already connected?
+                            // if (!si.NearElement.Connections.Any(c => c.ToElement == selectedElement))
+                            if (neardxsign != 0 || neardysign != 0)
+                            {
+                                si.NearElement.Connections.Add(new Connection() { ToElement = selectedElement, ToConnectionPoint = si.LineConnectionPoint, ElementConnectionPoint = nearConnectionPoint });
+                                selectedElement.SetConnection(si.LineConnectionPoint.Type, si.NearElement);
+                            }
+
+                            delta = new Point(neardx, neardy);
+                            snapped = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return snapped;
+        }
+
+        public void StartDraggingMode(GraphicElement el, Point mousePos)
+        {
+            mousePosition = mousePos;
+            leftMouseDown = true;
+            dragging = true;
+            DeselectCurrentSelectedElement();
+            selectedElement = el;
+            selectedAnchor = selectedElement?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
+            ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElement });
+        }
+
+        public void EndDraggingMode()
+        {
+            selectedAnchor = null;
+            leftMouseDown = false;
+            dragging = false;
+            ShowConnectionPoints(currentlyNear.Select(e => e.NearElement), false);
+            currentlyNear.Clear();
+        }
+
+        public void DragShape(Point newMousePosition)
+        { 
+			Point delta = newMousePosition.Delta(mousePosition);
 
 			// Weird - on click, the mouse move event appears to fire as well, so we need to check
 			// for no movement in order to prevent detaching connectors!
 			if (delta == Point.Empty) return;
 
-			mousePosition = args.Location;
+			mousePosition = newMousePosition;
 
 			if (dragging)
 			{
@@ -127,85 +217,39 @@ namespace FlowSharpLib
 			}
 		}
 
-		public void DragSelectedElement(Point delta)
-		{
-			bool connectorAttached = selectedElement.SnapCheck(GripType.Start, ref delta) || selectedElement.SnapCheck(GripType.End, ref delta);
-			selectedElement.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
-			MoveElement(selectedElement, delta);
-			UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
+        protected void OnMouseDown(object sender, MouseEventArgs args)
+        {
+            if (args.Button == MouseButtons.Left)
+            {
+                leftMouseDown = true;
+                DeselectCurrentSelectedElement();
+                SelectElement(args.Location);
+                selectedAnchor = selectedElement?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
+                ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElement });
+                dragging = selectedElement != null;
+                mousePosition = args.Location;
+            }
+        }
 
-			if (!connectorAttached)
-			{
-				DetachFromAllShapes(selectedElement);
-			}
-		}
+        protected void OnMouseUp(object sender, MouseEventArgs args)
+        {
+            if (args.Button == MouseButtons.Left)
+            {
+                EndDraggingMode();
+            }
+        }
 
-		protected void DetachFromAllShapes(GraphicElement el)
+        protected void OnMouseMove(object sender, MouseEventArgs args)
+        {
+            DragShape(args.Location);
+        }
+
+        protected void DetachFromAllShapes(GraphicElement el)
 		{
 			el.DisconnectShapeFromConnector(GripType.Start);
 			el.DisconnectShapeFromConnector(GripType.End);
 			el.RemoveConnection(GripType.Start);
 			el.RemoveConnection(GripType.End);
-		}
-
-		public override bool Snap(GripType type, ref Point delta)
-		{
-			bool snapped = false;
-
-			// Look for connection points on nearby elements.
-			// If a connection point is nearby, and the delta is moving toward that connection point, then snap to that connection point.
-
-			// So, it seems odd that we're using the connection points of the line, rather than the anchors.
-			// However, this is actually simpler, and a line's connection points should at least include the endpoint anchors.
-			IEnumerable<ConnectionPoint> connectionPoints = selectedElement.GetConnectionPoints().Where(p => type == GripType.None || p.Type == type);
-			List<SnapInfo> nearElements = GetNearbyElements(connectionPoints);
-			ShowConnectionPoints(nearElements.Select(e=>e.NearElement), true);
-			ShowConnectionPoints(currentlyNear.Where(e => !nearElements.Any(e2 => e.NearElement == e2.NearElement)).Select(e=>e.NearElement), false);
-			currentlyNear = nearElements;
-			
-			foreach (SnapInfo si in nearElements)
-			{
-				ConnectionPoint nearConnectionPoint = si.NearElement.GetConnectionPoints().FirstOrDefault(cp => cp.Point.IsNear(si.LineConnectionPoint.Point, SNAP_CONNECTION_POINT_RANGE));
-
-				if (nearConnectionPoint != null)
-				{
-					Point sourceConnectionPoint = si.LineConnectionPoint.Point;
-					int neardx = nearConnectionPoint.Point.X - sourceConnectionPoint.X;     // calculate to match possible delta sign
-					int neardy = nearConnectionPoint.Point.Y - sourceConnectionPoint.Y;
-					int neardxsign = neardx.Sign();
-					int neardysign = neardy.Sign();
-					int deltaxsign = delta.X.Sign();
-					int deltaysign = delta.Y.Sign();
-
-                    // Are we attached already or moving toward the shape's connection point?
-					if ((neardxsign == 0 || deltaxsign == 0 || neardxsign == deltaxsign) &&
-							(neardysign == 0 || deltaysign == 0 || neardysign == deltaysign))
-					{
-                        // If attached, are we moving away from the connection point to detach it?
-                        if (neardxsign == 0 && neardxsign == 0 && (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY))
-						{
-							selectedElement.DisconnectShapeFromConnector(type);
-							selectedElement.RemoveConnection(type);
-						}
-						else
-						{
-                            // Not already connected?
-							// if (!si.NearElement.Connections.Any(c => c.ToElement == selectedElement))
-                            if (neardxsign != 0 || neardysign != 0)
-							{
-								si.NearElement.Connections.Add(new Connection() { ToElement = selectedElement, ToConnectionPoint = si.LineConnectionPoint, ElementConnectionPoint = nearConnectionPoint });
-								selectedElement.SetConnection(si.LineConnectionPoint.Type, si.NearElement);
-							}
-
-							delta = new Point(neardx, neardy);
-							snapped = true;
-							break;
-						}
-					}
-				}
-			}
-
-			return snapped;
 		}
 
 		protected virtual List<SnapInfo> GetNearbyElements(IEnumerable<ConnectionPoint> connectionPoints)
@@ -237,18 +281,6 @@ namespace FlowSharpLib
 			});
 		}
 
-		public void DeselectCurrentSelectedElement()
-		{
-			if (selectedElement != null)
-			{
-				var els = EraseTopToBottom(selectedElement);
-				selectedElement.Selected = false;
-				DrawBottomToTop(els);
-				UpdateScreen(els);
-				selectedElement = null;
-			}
-		}
-
 		protected bool SelectElement(Point p)
 		{
 			GraphicElement el = elements.FirstOrDefault(e => e.IsSelectable(p));
@@ -260,16 +292,5 @@ namespace FlowSharpLib
 
 			return el != null;
 		}
-
-		public void SelectElement(GraphicElement el)
-		{
-            DeselectCurrentSelectedElement();
-            var els = EraseTopToBottom(el);
-			el.Selected = true;
-			DrawBottomToTop(els);
-			UpdateScreen(els);
-			selectedElement = el;
-            ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
-        }
 	}
 }

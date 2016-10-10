@@ -48,6 +48,7 @@ namespace FlowSharp
                 selectedElement = SelectElement(args.Location);
                 mouseDown = true;
                 mouseDownPosition = args.Location;
+                SelectElement(selectedElement);
             }
         }
 
@@ -67,6 +68,8 @@ namespace FlowSharp
             dragging = false;
             mouseDown = false;
             canvasController.EndDraggingMode();
+            DeselectCurrentSelectedElement();
+            selectedElement = null;
         }
 
         public void OnMouseMove(object sender, MouseEventArgs args)
@@ -116,5 +119,32 @@ namespace FlowSharp
 
 			return el;
 		}
-	}
+
+        protected void DeselectCurrentSelectedElement()
+        {
+            if (selectedElement != null)
+            {
+                var els = EraseTopToBottom(selectedElement);
+                selectedElement.Selected = false;
+                DrawBottomToTop(els);
+                UpdateScreen(els);
+                selectedElement = null;
+            }
+        }
+
+        protected void SelectElement(GraphicElement el)
+        {
+            DeselectCurrentSelectedElement();
+
+            if (el != null)
+            {
+                var els = EraseTopToBottom(el);
+                el.Selected = true;
+                DrawBottomToTop(els);
+                UpdateScreen(els);
+                selectedElement = el;
+                ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
+            }
+        }
+    }
 }

@@ -79,13 +79,16 @@ namespace FlowSharp
                 {
                     dragging = true;
                     ResetDisplacement();
-                    Point screenPos = new Point(canvas.Width, args.Location.Y);
-                    Point canvasPos = new Point(0, args.Location.Y);
-                    Point p = canvas.PointToScreen(screenPos);
+                    Point screenPos = new Point(canvas.Width, args.Location.Y);     // target canvas screen position is the toolbox canvas width, toolbox mouse Y.
+                    Point canvasPos = new Point(0, args.Location.Y);                // target canvas position is left edge, toolbox mouse Y.
+                    Point p = canvas.PointToScreen(screenPos);                      // screen position of mouse cursor, relative to the target canvas.
                     Cursor.Position = p;
 
                     GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas);
                     canvasController.Insert(el);
+                    // Shape is placed so that the center of the shape is at the left edge (X), centered around the toolbox mouse (Y)
+                    // The "-5" accounts for additional pixels between the toolbox end and the canvas start, should be calculable by converting toolbox canvas width to screen coordinate and subtracting
+                    // that from the target canvas left edge screen coordinate.
                     Point offset = new Point(-el.DisplayRectangle.X - el.DisplayRectangle.Width/2 - 5, -el.DisplayRectangle.Y + args.Location.Y - el.DisplayRectangle.Height / 2);
 
                     // TODO: Why this fudge factor for DC's?

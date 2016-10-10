@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace FlowSharpLib
 {
@@ -45,8 +46,8 @@ namespace FlowSharpLib
 			int endyOffset = startPoint.Y < endPoint.Y ? -anchorWidthHeight : 0;
 
 			return new List<ShapeAnchor>() {
-				new ShapeAnchor(GripType.Start, new Rectangle(startPoint.Move(-anchorWidthHeight/2, startyOffset), szAnchor)),
-				new ShapeAnchor(GripType.End, new Rectangle(endPoint.Move(-anchorWidthHeight/2, endyOffset), szAnchor)),
+				new ShapeAnchor(GripType.Start, new Rectangle(startPoint.Move(-anchorWidthHeight/2, startyOffset), szAnchor), Cursors.Arrow),
+				new ShapeAnchor(GripType.End, new Rectangle(endPoint.Move(-anchorWidthHeight/2, endyOffset), szAnchor), Cursors.Arrow),
 			};
 		}
 

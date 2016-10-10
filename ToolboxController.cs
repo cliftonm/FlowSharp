@@ -70,6 +70,7 @@ namespace FlowSharp
             canvasController.EndDraggingMode();
             DeselectCurrentSelectedElement();
             selectedElement = null;
+            canvas.Cursor = Cursors.Arrow;
         }
 
         public void OnMouseMove(object sender, MouseEventArgs args)
@@ -103,6 +104,7 @@ namespace FlowSharp
                     canvasController.MoveElement(el, offset);
                     canvasController.StartDraggingMode(el, canvasPos);
                     canvasController.SelectElement(el);
+                    canvas.Cursor = Cursors.SizeAll;
                 }
             }
             else if (mouseDown && selectedElement != null && dragging)

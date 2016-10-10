@@ -146,6 +146,7 @@ namespace FlowSharpLib
 
         public void EndDraggingMode()
         {
+            canvas.Cursor = Cursors.Arrow;
             selectedAnchor = null;
             leftMouseDown = false;
             dragging = false;
@@ -184,6 +185,7 @@ namespace FlowSharpLib
 			}
 			else if (leftMouseDown)
 			{
+                canvas.Cursor = Cursors.SizeAll;
                 // Pick up every object on the canvas and move it.
                 // This does not "move" the grid.
                 MoveAllElements(delta);
@@ -228,6 +230,15 @@ namespace FlowSharpLib
                 ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElement });
                 dragging = selectedElement != null;
                 mousePosition = args.Location;
+
+                if ((selectedElement != null) && (selectedAnchor == null))
+                {
+                    canvas.Cursor = Cursors.SizeAll;
+                }
+                else if (selectedAnchor != null)
+                {
+                    canvas.Cursor = selectedAnchor.Cursor;
+                }
             }
         }
 

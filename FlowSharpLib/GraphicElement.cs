@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace FlowSharpLib
 {
@@ -344,29 +345,29 @@ namespace FlowSharpLib
 			if (HasCornerAnchors)
 			{
 				r = new Rectangle(DisplayRectangle.TopLeftCorner(), anchorSize);
-				anchors.Add(new ShapeAnchor(GripType.TopLeft, r));
+				anchors.Add(new ShapeAnchor(GripType.TopLeft, r, Cursors.SizeNWSE));
 				r = new Rectangle(DisplayRectangle.TopRightCorner().Move(-anchorWidthHeight, 0), anchorSize);
-				anchors.Add(new ShapeAnchor(GripType.TopRight, r));
+				anchors.Add(new ShapeAnchor(GripType.TopRight, r, Cursors.SizeNESW));
 				r = new Rectangle(DisplayRectangle.BottomLeftCorner().Move(0, -anchorWidthHeight), anchorSize);
-				anchors.Add(new ShapeAnchor(GripType.BottomLeft, r));
+				anchors.Add(new ShapeAnchor(GripType.BottomLeft, r, Cursors.SizeNESW));
 				r = new Rectangle(DisplayRectangle.BottomRightCorner().Move(-anchorWidthHeight, -anchorWidthHeight), anchorSize);
-				anchors.Add(new ShapeAnchor(GripType.BottomRight, r));
+				anchors.Add(new ShapeAnchor(GripType.BottomRight, r, Cursors.SizeNWSE));
 			}
 
 			if (HasCenterAnchors || HasLeftRightAnchors)
 			{
 				r = new Rectangle(DisplayRectangle.LeftMiddle().Move(0, -anchorWidthHeight / 2), anchorSize);
-				anchors.Add(new ShapeAnchor(GripType.LeftMiddle, r));
+				anchors.Add(new ShapeAnchor(GripType.LeftMiddle, r, Cursors.SizeWE));
 				r = new Rectangle(DisplayRectangle.RightMiddle().Move(-anchorWidthHeight, -anchorWidthHeight / 2), anchorSize);
-				anchors.Add(new ShapeAnchor(GripType.RightMiddle, r));
+				anchors.Add(new ShapeAnchor(GripType.RightMiddle, r, Cursors.SizeWE));
 			}
 
 			if (HasCenterAnchors || HasTopBottomAnchors)
 			{ 
 				r = new Rectangle(DisplayRectangle.TopMiddle().Move(-anchorWidthHeight / 2, 0), anchorSize);
-				anchors.Add(new ShapeAnchor(GripType.TopMiddle, r));
+				anchors.Add(new ShapeAnchor(GripType.TopMiddle, r, Cursors.SizeNS));
 				r = new Rectangle(DisplayRectangle.BottomMiddle().Move(-anchorWidthHeight / 2, -anchorWidthHeight), anchorSize);
-				anchors.Add(new ShapeAnchor(GripType.BottomMiddle, r));
+				anchors.Add(new ShapeAnchor(GripType.BottomMiddle, r, Cursors.SizeNS));
 			}
 
 			return anchors;

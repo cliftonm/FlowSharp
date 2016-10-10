@@ -5,6 +5,7 @@
 */
 
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace FlowSharpLib
 {
@@ -14,11 +15,13 @@ namespace FlowSharpLib
 
 		public GripType Type { get; protected set; }
 		public Rectangle Rectangle { get; protected set; }
+        public Cursor Cursor { get; protected set; }
 
-		public ShapeAnchor(GripType pos, Rectangle r)
+		public ShapeAnchor(GripType pos, Rectangle r, Cursor cursor)
 		{
 			Type = pos;
 			Rectangle = r;
+            Cursor = cursor;
 		}
 
 		public bool Near(Point p)

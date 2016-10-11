@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using FlowSharpLib;
@@ -69,7 +70,8 @@ namespace FlowSharp
 			Action act;
             bool ret = false;
 
-            foreach(GraphicElement el in canvasController.SelectedElements)
+            // Separate list, so we can modify the master collection as we progress through the list, particularly for Delete.
+            foreach(GraphicElement el in canvasController.SelectedElements.Relist())
             {
                 if (canvas.Focused && keyActions.TryGetValue(keyData, out act))
                 {

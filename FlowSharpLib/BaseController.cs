@@ -52,12 +52,26 @@ namespace FlowSharpLib
 
 		public void Topmost()
 		{
-            selectedElements.ForEach(el => Reorder(el, 0));
+            selectedElements.ForEach(el =>
+            {
+                EraseTopToBottom(elements);
+                elements.Remove(el);
+                elements.Insert(0, el);
+                DrawBottomToTop(elements);
+                UpdateScreen(elements);
+            });
 		}
 
 		public void Bottommost()
 		{
-            selectedElements.ForEach(el => Reorder(el, elements.Count - 1));
+            selectedElements.ForEach(el =>
+            {
+                EraseTopToBottom(elements);
+                elements.Remove(el);
+                elements.Add(el);
+                DrawBottomToTop(elements);
+                UpdateScreen(elements);
+            });
 		}
 
 		public void MoveUp()

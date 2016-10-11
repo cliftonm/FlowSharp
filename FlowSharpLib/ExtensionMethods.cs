@@ -224,5 +224,13 @@ namespace FlowSharpLib
 		{
 			return options.Contains(item);
 		}
+
+        /// <summary>
+        /// Copies the elements into a new list, useful when an operation modifies the master list.
+        /// </summary>
+        public static List<T> Relist<T>(this List<T> list)
+        {
+            return list.AsEnumerable().ToList();
+        }
 	}
 }

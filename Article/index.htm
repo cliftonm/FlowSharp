@@ -106,6 +106,7 @@
 	</ul>
 	</li>
 	<li><a href="#revisions">Revisions</a><ul>
+	<li><a href="#101216">10/12/16 - Group Select, cursors, import, and bug fixes</a></li>
 	<li><a href="#101016">10/10/16 - Toolbox Drag &amp; Drop and minor stuff</a></li>
 	<li><a href="#100516">10/5/16 - Nothing Exciting</a></li>
 </ul>
@@ -1804,6 +1805,226 @@ canvasController.SelectElement(el);</pre>
 </ul>
 
 <h2><a name="revisions">Revisions</a></h2>
+<p><a name="101216">10/12/2016</a></p>
+<h3>Group Select</h3>
+<p>You can now select multiple shapes and drag them around, using the Shift or 
+Ctrl keys.&nbsp; Hold down Shift or Ctrl when selecting more than one shape, 
+then drag the shapes (holding the left mouse button down.)&nbsp; Once you start 
+dragging, you can release the Shift or Ctrl key.</p>
+<p><img border="0" src="img22.png" width="224" height="219"></p>
+<p>Code wise, it was interesting to see how much was needed to be touched when 
+changing:</p>
+<p>(CanvasController.cs)</p>
+<pre>public GraphicElement SelectedElement {get {return selectedElement;} }</pre>
+<p>to:</p>
+<pre>public List&lt;GraphicElement&gt; SelectedElements { get { return selectedElements; } }</pre>
+<p>It wasn't too bad, I also pluralized relevant methods, so for example, <code>void 
+DragSelectedElement(Point delta)</code> is now void <code>DragSelectedElements(Point delta).</code></p>
+<p>This of course required modifying a bunch of methods to iterate through the 
+selection list for the drag operations.&nbsp; Once that was done, the &quot;magic&quot; 
+took only a few extra lines of code:</p>
+<p>(CanvasController.cs)</p>
+<pre>if ((Control.ModifierKeys &amp; (Keys.Control | Keys.Shift)) == 0)
+{
+  DeselectCurrentSelectedElements();
+}
+
+SelectElement(args.Location);</pre>
+<p>It's very simple -- if the Shift or Ctrl key is not held down, deselect all 
+the currently selected elements.</p>
+<p>One amusing artifact was if I selected the same shape more than once, it 
+would double or triple the movement in the drag operation.&nbsp; Why?&nbsp; 
+Because I kept adding it to the &quot;selected&quot; list.&nbsp; So, selecting an element 
+now tests to see if the element is already selected:</p>
+<p>(CanvasController.cs)</p>
+<pre>public void SelectElement(GraphicElement el)
+{
+  // Add to selected elements only once!
+  if (!selectedElements.Contains(el))</pre>
+<h3>Cursors</h3>
+<p>Hovering over or selecting an anchor point now displays the appropriate 
+cursor arrow for that anchor.&nbsp; This was an easy tweak.&nbsp; First, set the 
+cursor to display when building the anchor list, for example:</p>
+<p>(GraphicElement.cs)</p>
+<pre>anchors.Add(new ShapeAnchor(GripType.TopLeft, r, Cursors.SizeNWSE));</pre>
+<p>Then set the cursor for the anchor we are near or have selected.&nbsp; This 
+is the code for when the mouse is hovering:</p>
+<p>(CanvasController.cs)</p>
+<pre>protected void SetAnchorCursor(GraphicElement el)
+{
+  ShapeAnchor anchor = el.GetAnchors().FirstOrDefault(a =&gt; a.Near(mousePosition));
+  canvas.Cursor = anchor == null ? Cursors.Arrow : anchor.Cursor;
+}</pre>
+<h4>Issues</h4>
+<p>One issue I had was that connectors.&nbsp; Because they are &quot;moved&quot; when 
+group selected, they were detaching from their connected shape.&nbsp; This 
+kludge (violates my &quot;don't do an <code>is</code> test&quot;) works for now:</p>
+<p>(CanvasController.cs)</p>
+<pre>public void DragSelectedElements(Point delta)
+{
+  selectedElements.ForEach(el =&gt;
+  {
+    bool connectorAttached = el.SnapCheck(GripType.Start, ref delta) || el.SnapCheck(GripType.End, ref delta);
+    el.Connections.ForEach(c =&gt; c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
+
+    // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
+    if (el is Connector &amp;&amp; selectedElements.Count == 1)
+    {
+      MoveElement(el, delta);
+    }
+    else if (!(el is Connector))
+    {
+      MoveElement(el, delta);
+    }
+
+    UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = el });
+
+    if (!connectorAttached)
+    {
+      // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
+      // Detach a connector only if it's the only shape being dragged.
+      if (selectedElements.Count == 1)
+      {
+        DetachFromAllShapes(el);
+      }
+    }
+  });
+}</pre>
+<p>I'm not particularly proud of that code.&nbsp; To many <code>if</code> statements!</p>
+<h4>Copy and Paste</h4>
+<p>Copy and paste was easy:</p>
+<p>(FlowSharpUI.cs)</p>
+<p>Copy (was):</p>
+<pre>string copyBuffer = Persist.Serialize(el);
+Clipboard.SetData(&quot;FlowSharp&quot;, copyBuffer);</pre>
+<p>Paste (was):</p>
+<pre>GraphicElement el = Persist.DeserializeElement(canvas, copyBuffer);</pre>
+<p>Now it's:</p>
+<p>Copy (now):</p>
+<pre>protected void Copy()
+{
+  if (canvasController.SelectedElements.Any())
+  {
+    string copyBuffer = Persist.Serialize(canvasController.SelectedElements);
+    Clipboard.SetData(&quot;FlowSharp&quot;, copyBuffer);
+  }
+  else
+  {
+    MessageBox.Show(&quot;Please select one or more shape(s).&quot;, &quot;Nothing to copy.&quot;, MessageBoxButtons.OK, MessageBoxIcon.Information);
+  }
+}</pre>
+<p>I should have tested for a selected shape to begin with.</p>
+<p>Deserialization of a selection list is more complicated now.&nbsp; Recall 
+that in the single element deserializer, the GUID was reassigned:</p>
+<pre>el.Id = Guid.NewGuid(); // We get a new GUID when deserializing a specific element.</pre>
+<p>Easy-peasy.&nbsp; But now, the user can select multiple shapes, possibly 
+connected, and we'd like to preserve the connection information of the pasted 
+shapes, relative to each other.&nbsp; This means we need to create new GUID's 
+for the pasted shapes and remap the GUID's of the connectors so that they 
+reference the newly pasted shapes, not their &quot;source&quot; shapes.</p>
+<p>This affects the persistence code.&nbsp; It now always creates new GUID's 
+when deserializing.&nbsp; This actually is really useful, especially when we 
+want to import a drawing into an existing drawing, we no longer have to worry 
+about importing the same drawing more than once and having duplicate GUID's:</p>
+<p>(Persist.cs)</p>
+<p>The internal deserialization is a bit more complicated, as it always creates 
+a map between the old GUID and the possibly new GUID:</p>
+<pre>private static Tuple&lt;List&lt;GraphicElement&gt;, List&lt;ElementPropertyBag&gt;&gt; InternalDeserialize(Canvas canvas, string data, Dictionary&lt;Guid, Guid&gt; oldNewIdMap)
+{
+  List&lt;GraphicElement&gt; elements = new List&lt;GraphicElement&gt;();
+  XmlSerializer xs = new XmlSerializer(typeof(List&lt;ElementPropertyBag&gt;));
+  TextReader tr = new StringReader(data);
+  List&lt;ElementPropertyBag&gt; sps = (List&lt;ElementPropertyBag&gt;)xs.Deserialize(tr);
+
+  foreach (ElementPropertyBag epb in sps)
+  {
+    Type t = Type.GetType(epb.ElementName);
+    GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { canvas });
+    el.Deserialize(epb);
+    Guid elGuid = el.Id;
+    elGuid = Guid.NewGuid();
+    oldNewIdMap[el.Id] = elGuid;
+    el.Id = elGuid;
+    elements.Add(el);
+    epb.Element = el;
+  }
+
+  return new Tuple&lt;List&lt;GraphicElement&gt;, List&lt;ElementPropertyBag&gt;&gt;(elements, sps);
+}</pre>
+<p>The connector deserialization now uses the map:</p>
+<p>(Connection.cs)</p>
+<pre>public void Deserialize(List&lt;GraphicElement&gt; elements, ConnectionPropertyBag cpb, Dictionary&lt;Guid, Guid&gt; oldNewGuidMap)
+{
+  ToElement = elements.Single(e =&gt; e.Id == oldNewGuidMap[cpb.ToElementId]);
+  ToConnectionPoint = cpb.ToConnectionPoint;
+  ElementConnectionPoint = cpb.ElementConnectionPoint;
+}</pre>
+<p>And finally, the new deserialization code for paste:</p>
+<p>Paste (now):</p>
+<pre>List&lt;GraphicElement&gt; els = Persist.Deserialize(canvas, copyBuffer);
+canvasController.DeselectCurrentSelectedElements();
+els.ForEach(el =&gt;
+{
+  el.Move(new Point(20, 20));
+  el.UpdateProperties();
+  el.UpdatePath();
+  canvasController.Insert(el);
+  canvasController.SelectElement(el);
+});</pre>
+<p>The newly pasted elements are auto-selected.</p>
+<h3>Import</h3>
+<p>Since we've made the deserialization process better, we can now import an 
+existing drawing into the current drawing:</p>
+<pre>private void mnuImport_Click(object sender, EventArgs e)
+{
+  OpenFileDialog ofd = new OpenFileDialog();
+  ofd.Filter = &quot;FlowSharp (*.fsd)|*.fsd&quot;;
+  DialogResult res = ofd.ShowDialog();
+
+  if (res == DialogResult.OK)
+  {
+    string importFilename = ofd.FileName;
+    string data = File.ReadAllText(importFilename);
+    List&lt;GraphicElement&gt; els = Persist.Deserialize(canvas, data);
+    elements.AddRange(els);
+    elements.ForEach(el =&gt; el.UpdatePath());
+    els.ForEach(el =&gt; canvas.Controller.SelectElement(el));
+    canvas.Invalidate();
+  }
+}</pre>
+<p>Note how the elements are selected so they can subsequently be easily dragged 
+around.</p>
+<h3>Bug Fixes</h3>
+<h4>Topmost / Bottommost</h4>
+<p>These operations cannot swap the topmost or bottommost element with the 
+currently selected element, as this changes the z-order of the element currently 
+at the top or the bottom in relation to other elements in the middle.&nbsp; 
+Instead, the element being brought to the top or bottom has to be explicitly 
+placed at the top or bottom:</p>
+<pre>public void Topmost()
+{
+  selectedElements.ForEach(el =&gt;
+  {
+    EraseTopToBottom(elements);
+    elements.Remove(el);
+    elements.Insert(0, el);
+    DrawBottomToTop(elements);
+    UpdateScreen(elements);
+  });
+}
+
+public void Bottommost()
+{
+  selectedElements.ForEach(el =&gt;
+  {
+    EraseTopToBottom(elements);
+    elements.Remove(el);
+    elements.Add(el);
+    DrawBottomToTop(elements);
+    UpdateScreen(elements);
+  });
+}</pre>
+<p>Move up/down was unaffected because they are an adjacent swap.</p>
 <p><a name="101016">10/10/2016</a></p>
 <h3>Toolbox Drag &amp; Drop</h3>
 <p>You can now drag and drop from the toolbox onto the canvas.&nbsp; This was 

@@ -4,6 +4,7 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,9 +29,9 @@ namespace FlowSharpLib
 			epb.Connections.Add(cpb);
 		}
 
-		public void Deserialize(List<GraphicElement> elements, ConnectionPropertyBag cpb)
+		public void Deserialize(List<GraphicElement> elements, ConnectionPropertyBag cpb, Dictionary<Guid, Guid> oldNewGuidMap)
 		{
-			ToElement = elements.Single(e => e.Id == cpb.ToElementId);
+			ToElement = elements.Single(e => e.Id == oldNewGuidMap[cpb.ToElementId]);
 			ToConnectionPoint = cpb.ToConnectionPoint;
 			ElementConnectionPoint = cpb.ElementConnectionPoint;
 		}

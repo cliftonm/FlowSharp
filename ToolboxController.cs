@@ -118,6 +118,21 @@ namespace FlowSharp
             }
         }
 
+        public override void SelectElement(GraphicElement el)
+        {
+            DeselectCurrentSelectedElement();
+
+            if (el != null)
+            {
+                var els = EraseTopToBottom(el);
+                el.Selected = true;
+                DrawBottomToTop(els);
+                UpdateScreen(els);
+                selectedElements.Add(el);
+                ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
+            }
+        }
+
         protected GraphicElement SelectElement(Point p)
 		{
 			GraphicElement el = elements.FirstOrDefault(e => e.DisplayRectangle.Contains(p));
@@ -134,21 +149,6 @@ namespace FlowSharp
                 DrawBottomToTop(els);
                 UpdateScreen(els);
                 selectedElements.Clear();
-            }
-        }
-
-        protected void SelectElement(GraphicElement el)
-        {
-            DeselectCurrentSelectedElement();
-
-            if (el != null)
-            {
-                var els = EraseTopToBottom(el);
-                el.Selected = true;
-                DrawBottomToTop(els);
-                UpdateScreen(els);
-                selectedElements.Add(el);
-                ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
             }
         }
     }

@@ -89,7 +89,25 @@ namespace FlowSharp
 			UpdateCaption();
 		}
 
-		private void mnuSave_Click(object sender, EventArgs e)
+        private void mnuImport_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "FlowSharp (*.fsd)|*.fsd";
+            DialogResult res = ofd.ShowDialog();
+
+            if (res == DialogResult.OK)
+            {
+                string importFilename = ofd.FileName;
+                string data = File.ReadAllText(importFilename);
+                List<GraphicElement> els = Persist.Deserialize(canvas, data);
+                elements.AddRange(els);
+                elements.ForEach(el => el.UpdatePath());
+                els.ForEach(el => canvas.Controller.SelectElement(el));
+                canvas.Invalidate();
+            }
+        }
+
+        private void mnuSave_Click(object sender, EventArgs e)
 		{
 			if (elements.Count > 0)
 			{

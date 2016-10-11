@@ -82,7 +82,7 @@ namespace FlowSharpLib
             selectedElements.Clear();
         }
 
-        public void SelectElement(GraphicElement el)
+        public override void SelectElement(GraphicElement el)
         {
             // Add to selected elements only once!
             if (!selectedElements.Contains(el))
@@ -267,7 +267,7 @@ namespace FlowSharpLib
             {
                 leftMouseDown = true;
 
-                if ((Control.ModifierKeys & Keys.Control) != Keys.Control)
+                if ((Control.ModifierKeys & (Keys.Control | Keys.Shift)) == 0)
                 {
                     DeselectCurrentSelectedElements();
                 }

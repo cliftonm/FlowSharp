@@ -137,16 +137,33 @@ namespace FlowSharpLib
 			return sb.ToString();
 		}
 
+        /// <summary>
+        /// Remap is false when loading from a file, true when copying and pasting.
+        /// </summary>
 		public static List<GraphicElement> Deserialize(Canvas canvas, string data)
 		{
-            Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections = InternalDeserialize(canvas, data);
-            FixupConnections(collections);
+            Dictionary<Guid, Guid> oldNewIdMap = new Dictionary<Guid, Guid>();
+            Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections = InternalDeserialize(canvas, data, oldNewIdMap);
+            FixupConnections(collections, oldNewIdMap);
             FinalFixup(collections);
 
             return collections.Item1;
 		}
 
-        private static Tuple<List<GraphicElement>, List<ElementPropertyBag>> InternalDeserialize(Canvas canvas, string data)
+        public static GraphicElement DeserializeElement(Canvas canvas, string data)
+        {
+            XmlSerializer xs = new XmlSerializer(typeof(ElementPropertyBag));
+            TextReader tr = new StringReader(data);
+            ElementPropertyBag epb = (ElementPropertyBag)xs.Deserialize(tr);
+            Type t = Type.GetType(epb.ElementName);
+            GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { canvas });
+            el.Deserialize(epb);        // A specific deserialization does not preserve connections.
+            el.Id = Guid.NewGuid();     // We get a new GUID when deserializing a specific element.
+
+            return el;
+        }
+
+        private static Tuple<List<GraphicElement>, List<ElementPropertyBag>> InternalDeserialize(Canvas canvas, string data, Dictionary<Guid, Guid> oldNewIdMap)
         {
             List<GraphicElement> elements = new List<GraphicElement>();
             XmlSerializer xs = new XmlSerializer(typeof(List<ElementPropertyBag>));
@@ -158,6 +175,10 @@ namespace FlowSharpLib
                 Type t = Type.GetType(epb.ElementName);
                 GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { canvas });
                 el.Deserialize(epb);
+                Guid elGuid = el.Id;
+                elGuid = Guid.NewGuid();
+                oldNewIdMap[el.Id] = elGuid;
+                el.Id = elGuid;
                 elements.Add(el);
                 epb.Element = el;
             }
@@ -165,15 +186,14 @@ namespace FlowSharpLib
             return new Tuple<List<GraphicElement>, List<ElementPropertyBag>>(elements, sps);
         }
 
-        private static void FixupConnections(Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections)
+        private static void FixupConnections(Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections, Dictionary<Guid, Guid> oldNewGuidMap)
         {
-            // Fixup Connection
             foreach (ElementPropertyBag epb in collections.Item2)
             {
                 epb.Connections.Where(c => c.ToElementId != Guid.Empty).ForEach(c =>
                 {
                     Connection conn = new Connection();
-                    conn.Deserialize(collections.Item1, c);
+                    conn.Deserialize(collections.Item1, c, oldNewGuidMap);
                     epb.Element.Connections.Add(conn);
                 });
             }
@@ -183,18 +203,5 @@ namespace FlowSharpLib
         {
             collections.Item2.ForEach(epb => epb.Element.FinalFixup(collections.Item1, epb));
         }
-
-        public static GraphicElement DeserializeElement(Canvas canvas, string data)
-		{
-			XmlSerializer xs = new XmlSerializer(typeof(ElementPropertyBag));
-			TextReader tr = new StringReader(data);
-			ElementPropertyBag epb = (ElementPropertyBag)xs.Deserialize(tr);
-			Type t = Type.GetType(epb.ElementName);
-			GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { canvas });
-			el.Deserialize(epb);        // A specific deserialization does not preserve connections.
-            el.Id = Guid.NewGuid();     // We get a new GUID when deserializing a specific element.
-
-            return el;
-		}
 	}
 }

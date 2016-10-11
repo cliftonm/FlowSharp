@@ -49,8 +49,9 @@ namespace FlowSharpLib
 		}
 
 		public virtual bool Snap(GripType type, ref Point delta) { return false; }
+        public virtual void SelectElement(GraphicElement el) { }
 
-		public void Topmost()
+        public void Topmost()
 		{
             selectedElements.ForEach(el =>
             {

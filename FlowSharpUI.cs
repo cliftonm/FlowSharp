@@ -33,20 +33,25 @@ namespace FlowSharp
             Shown += OnShown;
 			UpdateMenu(false);
 
-			// We have to initialize the menu event handlers here, rather than in the designer,
-			// so that we can move the menu handlers to the MenuController partial class.
-			mnuNew.Click += new EventHandler(mnuNew_Click);
-			mnuOpen.Click += new EventHandler(mnuOpen_Click);
-			mnuSave.Click += new EventHandler(mnuSave_Click);
-			mnuSaveAs.Click += new EventHandler(mnuSaveAs_Click);
-			mnuExit.Click += new EventHandler(mnuExit_Click);
-			mnuCopy.Click += new EventHandler(mnuCopy_Click);
-			mnuPaste.Click += new EventHandler(mnuPaste_Click);
-			mnuDelete.Click += new EventHandler(mnuDelete_Click);
-			mnuTopmost.Click += new EventHandler(mnuTopmost_Click);
-			mnuBottommost.Click += new EventHandler(mnuBottommost_Click);
-			mnuMoveUp.Click += new EventHandler(mnuMoveUp_Click);
-			mnuMoveDown.Click += new EventHandler(mnuMoveDown_Click);
+            // We have to initialize the menu event handlers here, rather than in the designer,
+            // so that we can move the menu handlers to the MenuController partial class.
+            mnuNew.Click += mnuNew_Click;
+            mnuOpen.Click += mnuOpen_Click;
+            mnuImport.Click += (sndr, args) =>
+            {
+                canvasController.DeselectCurrentSelectedElements();
+                mnuImport_Click(sndr, args);
+            };
+            mnuSave.Click += mnuSave_Click;
+            mnuSaveAs.Click += mnuSaveAs_Click;
+            mnuExit.Click += mnuExit_Click;
+			mnuCopy.Click += mnuCopy_Click;
+			mnuPaste.Click += mnuPaste_Click;
+			mnuDelete.Click += mnuDelete_Click;
+			mnuTopmost.Click += mnuTopmost_Click;
+			mnuBottommost.Click += mnuBottommost_Click;
+			mnuMoveUp.Click += mnuMoveUp_Click;
+			mnuMoveDown.Click += mnuMoveDown_Click;
 
 			keyActions[Keys.Control | Keys.C] = Copy;
 			keyActions[Keys.Control | Keys.V] = Paste;
@@ -62,7 +67,6 @@ namespace FlowSharp
 			InitializeCanvas();
 			InitializeToolbox();
 			InitializeControllers();
-			// CreateSampleElements();
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -70,18 +74,14 @@ namespace FlowSharp
 			Action act;
             bool ret = false;
 
-            // Separate list, so we can modify the master collection as we progress through the list, particularly for Delete.
-            foreach(GraphicElement el in canvasController.SelectedElements.Relist())
+            if (canvas.Focused && keyActions.TryGetValue(keyData, out act))
             {
-                if (canvas.Focused && keyActions.TryGetValue(keyData, out act))
-                {
-                    act();
-                    ret = true;
-                }
-                else
-                {
-                    ret = base.ProcessCmdKey(ref msg, keyData);
-                }
+                act();
+                ret = true;
+            }
+            else
+            {
+                ret = base.ProcessCmdKey(ref msg, keyData);
             }
 
             return ret;
@@ -89,14 +89,18 @@ namespace FlowSharp
 
 		protected void Copy()
 		{
-            canvasController.SelectedElements.ForEach(el =>
+            if (canvasController.SelectedElements.Any())
             {
-                string copyBuffer = Persist.Serialize(el);
+                string copyBuffer = Persist.Serialize(canvasController.SelectedElements);
                 Clipboard.SetData("FlowSharp", copyBuffer);
-            });
-		}
+            }
+            else
+            {
+                MessageBox.Show("Please select one or more shape(s).", "Nothing to copy.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
 
-		protected void Paste()
+        protected void Paste()
 		{
 			string copyBuffer = Clipboard.GetData("FlowSharp")?.ToString();
 
@@ -108,13 +112,16 @@ namespace FlowSharp
 			{
 				try
 				{
-					GraphicElement el = Persist.DeserializeElement(canvas, copyBuffer);
-                    el.Move(new Point(20, 20));
-                    el.UpdateProperties();
-					el.UpdatePath();
-					canvasController.Insert(el);
-					canvasController.DeselectCurrentSelectedElements();
-					canvasController.SelectElement(el);
+					List<GraphicElement> els = Persist.Deserialize(canvas, copyBuffer);
+                    canvasController.DeselectCurrentSelectedElements();
+                    els.ForEach(el =>
+                    {
+                        el.Move(new Point(20, 20));
+                        el.UpdateProperties();
+                        el.UpdatePath();
+                        canvasController.Insert(el);
+                        canvasController.SelectElement(el);
+                    });
 				}
 				catch (Exception ex)
 				{
@@ -153,14 +160,6 @@ namespace FlowSharp
 			mnuMoveDown.Enabled = elementSelected;
 			mnuCopy.Enabled = elementSelected;
 			mnuDelete.Enabled = elementSelected;
-		}
-
-		protected void CreateSampleElements()
-		{
-			elements.Add(new Box(canvas) { DisplayRectangle = new Rectangle(25, 50, 200, 100) });
-			// elements.Add(new HorizontalLine(canvas) { DisplayRectangle = new Rectangle(325, 100, 75, 20) });
-			elements.Add(new DynamicConnectorLR(canvas, new Point(325, 100), new Point(325 + 75, 100 + 20)));
-			elements.ForEach(el => el.UpdatePath());
 		}
 
 		protected void InitializeToolbox()

@@ -69,13 +69,16 @@ namespace FlowSharpLib
 
         public void SelectElement(GraphicElement el)
         {
-            DeselectCurrentSelectedElements();
-            var els = EraseTopToBottom(el);
-            selectedElements.Add(el);
-            el.Selected = true;
-            DrawBottomToTop(els);
-            UpdateScreen(els);
-            ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
+            // Add to selected elements only once!
+            if (!selectedElements.Contains(el))
+            {
+                var els = EraseTopToBottom(el);
+                selectedElements.Add(el);
+                el.Selected = true;
+                DrawBottomToTop(els);
+                UpdateScreen(els);
+                ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
+            }
         }
 
         public override bool Snap(GripType type, ref Point delta)
@@ -248,7 +251,12 @@ namespace FlowSharpLib
             if (args.Button == MouseButtons.Left)
             {
                 leftMouseDown = true;
-                DeselectCurrentSelectedElements();
+
+                if ((Control.ModifierKeys & Keys.Shift) != Keys.Shift)
+                {
+                    DeselectCurrentSelectedElements();
+                }
+
                 SelectElement(args.Location);
                 selectedAnchor = null;
                 

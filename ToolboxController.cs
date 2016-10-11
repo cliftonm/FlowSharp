@@ -61,6 +61,7 @@ namespace FlowSharp
                     GraphicElement el = selectedElements[0].CloneDefault(canvasController.Canvas, new Point(xDisplacement, 0));
                     xDisplacement += 80;
                     canvasController.Insert(el);
+                    canvasController.DeselectCurrentSelectedElements();
                     canvasController.SelectElement(el);
                 }
             }
@@ -81,6 +82,7 @@ namespace FlowSharp
 
                 if ((delta.X.Abs() > MIN_DRAG) || (delta.Y.Abs() > MIN_DRAG))
                 {
+                    canvasController.DeselectCurrentSelectedElements();
                     dragging = true;
                     ResetDisplacement();
                     Point screenPos = new Point(canvas.Width, args.Location.Y);     // target canvas screen position is the toolbox canvas width, toolbox mouse Y.

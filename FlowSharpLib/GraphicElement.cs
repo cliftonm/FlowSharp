@@ -156,7 +156,8 @@ namespace FlowSharpLib
         public virtual GraphicElement CloneDefault(Canvas canvas, Point offset)
 		{
 			GraphicElement el = (GraphicElement)Activator.CreateInstance(GetType(), new object[] { canvas });
-            el.DisplayRectangle = el.DefaultRectangle().Move(offset);
+            el.DisplayRectangle = el.DefaultRectangle();
+            el.Move(offset);
             el.UpdateProperties();
 			el.UpdatePath();
 

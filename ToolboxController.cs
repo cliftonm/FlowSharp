@@ -59,6 +59,7 @@ namespace FlowSharp
                 if (selectedElements.Any())
                 {
                     GraphicElement el = selectedElements[0].CloneDefault(canvasController.Canvas, new Point(xDisplacement, 0));
+                    el.UpdatePath();
                     xDisplacement += 80;
                     canvasController.Insert(el);
                     canvasController.DeselectCurrentSelectedElements();

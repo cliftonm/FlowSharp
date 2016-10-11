@@ -44,12 +44,27 @@ namespace FlowSharpLib
             {
                 bool connectorAttached = el.SnapCheck(GripType.Start, ref delta) || el.SnapCheck(GripType.End, ref delta);
                 el.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
-                MoveElement(el, delta);
+
+                // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
+                if (el is Connector && selectedElements.Count == 1)
+                {
+                    MoveElement(el, delta);
+                }
+                else if (!(el is Connector))
+                {
+                    MoveElement(el, delta);
+                }
+
                 UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = el });
 
                 if (!connectorAttached)
                 {
-                    DetachFromAllShapes(el);
+                    // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
+                    // Detach a connector only if it's the only shape being dragged.
+                    if (selectedElements.Count == 1)
+                    {
+                        DetachFromAllShapes(el);
+                    }
                 }
             });
         }
@@ -252,7 +267,7 @@ namespace FlowSharpLib
             {
                 leftMouseDown = true;
 
-                if ((Control.ModifierKeys & Keys.Shift) != Keys.Shift)
+                if ((Control.ModifierKeys & Keys.Control) != Keys.Control)
                 {
                     DeselectCurrentSelectedElements();
                 }

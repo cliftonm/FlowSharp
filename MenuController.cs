@@ -39,7 +39,7 @@ namespace FlowSharp
 
 		private void mnuCopy_Click(object sender, EventArgs e)
 		{
-			if (canvasController.SelectedElement != null)
+			if (canvasController.SelectedElements.Count > 0)
 			{
 				Copy();
 			}

@@ -50,10 +50,10 @@ namespace FlowSharp
 			keyActions[Keys.Control | Keys.C] = Copy;
 			keyActions[Keys.Control | Keys.V] = Paste;
 			keyActions[Keys.Delete] = Delete;
-            keyActions[Keys.Up] = () => canvasController.DragSelectedElement(new Point(0, -1));
-            keyActions[Keys.Down] = () => canvasController.DragSelectedElement(new Point(0, 1));
-            keyActions[Keys.Left] = () => canvasController.DragSelectedElement(new Point(-1, 0));
-            keyActions[Keys.Right] = () => canvasController.DragSelectedElement(new Point(1, 0));
+            keyActions[Keys.Up] = () => canvasController.DragSelectedElements(new Point(0, -1));
+            keyActions[Keys.Down] = () => canvasController.DragSelectedElements(new Point(0, 1));
+            keyActions[Keys.Left] = () => canvasController.DragSelectedElements(new Point(-1, 0));
+            keyActions[Keys.Right] = () => canvasController.DragSelectedElements(new Point(1, 0));
 		}
 
         public void OnShown(object sender, EventArgs e)
@@ -69,14 +69,17 @@ namespace FlowSharp
 			Action act;
             bool ret = false;
 
-			if (canvas.Focused && canvasController.SelectedElement != null && keyActions.TryGetValue(keyData, out act))
+            foreach(GraphicElement el in canvasController.SelectedElements)
             {
-				act();
-                ret = true;
-			}
-            else
-            {
-                ret = base.ProcessCmdKey(ref msg, keyData);
+                if (canvas.Focused && keyActions.TryGetValue(keyData, out act))
+                {
+                    act();
+                    ret = true;
+                }
+                else
+                {
+                    ret = base.ProcessCmdKey(ref msg, keyData);
+                }
             }
 
             return ret;
@@ -84,11 +87,11 @@ namespace FlowSharp
 
 		protected void Copy()
 		{
-			if (canvasController.SelectedElement != null)
-			{
-				string copyBuffer = Persist.Serialize(canvasController.SelectedElement);
-				Clipboard.SetData("FlowSharp", copyBuffer);
-			}
+            canvasController.SelectedElements.ForEach(el =>
+            {
+                string copyBuffer = Persist.Serialize(el);
+                Clipboard.SetData("FlowSharp", copyBuffer);
+            });
 		}
 
 		protected void Paste()
@@ -108,7 +111,7 @@ namespace FlowSharp
                     el.UpdateProperties();
 					el.UpdatePath();
 					canvasController.Insert(el);
-					canvasController.DeselectCurrentSelectedElement();
+					canvasController.DeselectCurrentSelectedElements();
 					canvasController.SelectElement(el);
 				}
 				catch (Exception ex)

@@ -12,6 +12,7 @@ using System.Windows.Forms;
 
 namespace FlowSharpLib
 {
+    // Test Selected property to determine if the element is selected or de-selected.
 	public class ElementEventArgs : EventArgs
 	{
 		public GraphicElement Element { get; set; }
@@ -37,45 +38,53 @@ namespace FlowSharpLib
 			canvas.MouseMove += OnMouseMove;
 		}
 
-        public void DragSelectedElement(Point delta)
+        public void DragSelectedElements(Point delta)
         {
-            bool connectorAttached = selectedElement.SnapCheck(GripType.Start, ref delta) || selectedElement.SnapCheck(GripType.End, ref delta);
-            selectedElement.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
-            MoveElement(selectedElement, delta);
-            UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = SelectedElement });
-
-            if (!connectorAttached)
+            selectedElements.ForEach(el =>
             {
-                DetachFromAllShapes(selectedElement);
-            }
+                bool connectorAttached = el.SnapCheck(GripType.Start, ref delta) || el.SnapCheck(GripType.End, ref delta);
+                el.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
+                MoveElement(el, delta);
+                UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = el });
+
+                if (!connectorAttached)
+                {
+                    DetachFromAllShapes(el);
+                }
+            });
         }
 
-        public void DeselectCurrentSelectedElement()
+        public void DeselectCurrentSelectedElements()
         {
-            if (selectedElement != null)
+            selectedElements.ForEach(el =>
             {
-                var els = EraseTopToBottom(selectedElement);
-                selectedElement.Selected = false;
+                var els = EraseTopToBottom(el);
+                el.Selected = false;
                 DrawBottomToTop(els);
                 UpdateScreen(els);
-                selectedElement = null;
-            }
+            });
+
+            selectedElements.Clear();
         }
 
         public void SelectElement(GraphicElement el)
         {
-            DeselectCurrentSelectedElement();
+            DeselectCurrentSelectedElements();
             var els = EraseTopToBottom(el);
+            selectedElements.Add(el);
             el.Selected = true;
             DrawBottomToTop(els);
             UpdateScreen(els);
-            selectedElement = el;
             ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
         }
 
         public override bool Snap(GripType type, ref Point delta)
         {
+            // Snapping permitted only when one and only one element is selected.
+            if (selectedElements.Count != 1) return false;
+
             bool snapped = false;
+            GraphicElement selectedElement = selectedElements[0];
 
             // Look for connection points on nearby elements.
             // If a connection point is nearby, and the delta is moving toward that connection point, then snap to that connection point.
@@ -138,10 +147,11 @@ namespace FlowSharpLib
             mousePosition = mousePos;
             leftMouseDown = true;
             dragging = true;
-            DeselectCurrentSelectedElement();
-            selectedElement = el;
-            selectedAnchor = selectedElement?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
-            ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElement });
+
+            //DeselectCurrentSelectedElements();
+            //selectedElement = el;
+            //selectedAnchor = selectedElement?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
+            //ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElement });
         }
 
         public void EndDraggingMode()
@@ -169,17 +179,18 @@ namespace FlowSharpLib
 				if (selectedAnchor != null)
 				{
 					// Snap the anchor?
-					bool connectorAttached = selectedElement.SnapCheck(selectedAnchor, delta);
+                    // Only one element can be selected if moving an anchor.
+					bool connectorAttached = selectedElements[0].SnapCheck(selectedAnchor, delta);
 
 					if (!connectorAttached)
 					{
-						selectedElement.DisconnectShapeFromConnector(selectedAnchor.Type);
-						selectedElement.RemoveConnection(selectedAnchor.Type);
+						selectedElements[0].DisconnectShapeFromConnector(selectedAnchor.Type);
+						selectedElements[0].RemoveConnection(selectedAnchor.Type);
 					}
 				}
 				else
 				{
-					DragSelectedElement(delta);
+					DragSelectedElements(delta);
 				}
 
 			}
@@ -199,45 +210,64 @@ namespace FlowSharpLib
 			{
 				GraphicElement el = elements.FirstOrDefault(e => e.IsSelectable(mousePosition));
 
-				// Remove anchors from current object being moused over and show, if an element selected on new object.
-				if (el != showingAnchorsElement)
-				{
-					if (showingAnchorsElement != null)
-					{
-						showingAnchorsElement.ShowAnchors = false;
-						Redraw(showingAnchorsElement);
-						showingAnchorsElement = null;
-					}
+                // Remove anchors from current object being moused over and show, if an element selected on new object.
+                if (el != showingAnchorsElement)
+                {
+                    if (showingAnchorsElement != null)
+                    {
+                        showingAnchorsElement.ShowAnchors = false;
+                        Redraw(showingAnchorsElement);
+                        showingAnchorsElement = null;
+                        canvas.Cursor = Cursors.Arrow;
+                    }
 
-					if (el != null)
-					{
-						el.ShowAnchors = true;
-						Redraw(el);
-						showingAnchorsElement = el;
-					}
-				}
-			}
+                    if (el != null)
+                    {
+                        el.ShowAnchors = true;
+                        Redraw(el);
+                        showingAnchorsElement = el;
+                        SetAnchorCursor(el);
+                    }
+                }
+                else if (el != null && el == showingAnchorsElement)
+                {
+                    // Same element is still selected, update cursor.
+                    SetAnchorCursor(el);
+                }
+            }
 		}
+
+        protected void SetAnchorCursor(GraphicElement el)
+        {
+            ShapeAnchor anchor = el.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
+            canvas.Cursor = anchor == null ? Cursors.Arrow : anchor.Cursor;
+        }
 
         protected void OnMouseDown(object sender, MouseEventArgs args)
         {
             if (args.Button == MouseButtons.Left)
             {
                 leftMouseDown = true;
-                DeselectCurrentSelectedElement();
+                DeselectCurrentSelectedElements();
                 SelectElement(args.Location);
-                selectedAnchor = selectedElement?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
-                ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElement });
-                dragging = selectedElement != null;
+                selectedAnchor = null;
+                
+                if (selectedElements.Count == 1)
+                {
+                    selectedAnchor = selectedElements.Last()?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
+                    ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElements.Last() });
+                }
+
+                dragging = selectedElements.Any();
                 mousePosition = args.Location;
 
-                if ((selectedElement != null) && (selectedAnchor == null))
+                if ((selectedElements.Any()) && (selectedAnchor == null))
                 {
                     canvas.Cursor = Cursors.SizeAll;
                 }
                 else if (selectedAnchor != null)
                 {
-                    canvas.Cursor = selectedAnchor.Cursor;
+                    SetAnchorCursor(selectedElements[0]);
                 }
             }
         }
@@ -267,7 +297,7 @@ namespace FlowSharpLib
 		{
 			List<SnapInfo> nearElements = new List<SnapInfo>();
 
-			elements.Where(e=>e != selectedElement && e.OnScreen() && !e.IsConnector).ForEach(e =>
+			elements.Where(e=>e != selectedElements[0] && e.OnScreen() && !e.IsConnector).ForEach(e =>
 			{
 				Rectangle checkRange = e.DisplayRectangle.Grow(SNAP_ELEMENT_RANGE);
 

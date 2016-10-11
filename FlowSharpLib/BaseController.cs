@@ -31,10 +31,10 @@ namespace FlowSharpLib
 		public EventHandler<ElementEventArgs> ElementSelected;
 		public EventHandler<ElementEventArgs> UpdateSelectedElement;
 
-		public GraphicElement SelectedElement { get { return selectedElement; } }
+		public List<GraphicElement> SelectedElements { get { return selectedElements; } }
 
 		protected Canvas canvas;
-		protected GraphicElement selectedElement;
+		protected List<GraphicElement> selectedElements;
 		protected ShapeAnchor selectedAnchor;
 		protected GraphicElement showingAnchorsElement;
 
@@ -45,75 +45,71 @@ namespace FlowSharpLib
 		{
 			this.canvas = canvas;
 			this.elements = elements;
+            selectedElements = new List<GraphicElement>();
 		}
 
 		public virtual bool Snap(GripType type, ref Point delta) { return false; }
 
 		public void Topmost()
 		{
-			if (selectedElement != null) 
-			{
-				Reorder(0);
-			}
+            selectedElements.ForEach(el => Reorder(el, 0));
 		}
 
 		public void Bottommost()
 		{
-			if (selectedElement != null)
-			{
-				Reorder(elements.Count - 1);
-			}
+            selectedElements.ForEach(el => Reorder(el, elements.Count - 1));
 		}
 
 		public void MoveUp()
 		{
-			if (selectedElement != null)
-			{
-				int idx = elements.IndexOf(selectedElement);
+            selectedElements.ForEach(el =>
+            {
+                int idx = elements.IndexOf(el);
 
-				if (idx > 0)
-				{
-					Reorder(idx - 1);
-				}
-			}
+                if (idx > 0)
+                {
+                    Reorder(el, idx - 1);
+                }
+            });
 		}
 
 		public void MoveDown()
 		{
-			if (selectedElement != null)
-			{
-				int idx = elements.IndexOf(selectedElement);
+            selectedElements.ForEach(el =>
+            {
+            int idx = elements.IndexOf(el);
 
-				if (idx < elements.Count - 1)
-				{
-					Reorder(idx + 1);
-				}
-			}
+            if (idx < elements.Count - 1)
+            {
+                Reorder(el, idx + 1);
+            }
+            });
 		}
 
 		public void DeleteElement()
 		{
-			if (selectedElement != null)
-			{
-				selectedElement.DetachAll();
-				EraseTopToBottom(elements);
-				elements.Remove(selectedElement);
-				selectedElement.Dispose();
-				selectedElement = null;
-				selectedAnchor = null;
-				showingAnchorsElement = null;
-				dragging = false;
-				DrawBottomToTop(elements);
-				ElementSelected.Fire(this, new ElementEventArgs());
-				// Need to refresh the entire screen to remove the element from the screen itself.
-				canvas.Invalidate();
-			}
+            selectedElements.ForEach(el =>
+            {
+                el.DetachAll();
+                EraseTopToBottom(elements);
+                elements.Remove(el);
+                el.Dispose();
+                selectedAnchor = null;
+                showingAnchorsElement = null;
+                dragging = false;
+                DrawBottomToTop(elements);
+                ElementSelected.Fire(this, new ElementEventArgs());
+                // Need to refresh the entire screen to remove the element from the screen itself.
+                canvas.Invalidate();
+            });
+
+            selectedElements.Clear();
 		}
 
-		protected void Reorder(int n)
+		protected void Reorder(GraphicElement el, int n)
 		{
 			EraseTopToBottom(elements);
-			elements.Swap(n, elements.IndexOf(selectedElement));
+			elements.Swap(n, elements.IndexOf(el));
 			DrawBottomToTop(elements);
 			UpdateScreen(elements);
 		}

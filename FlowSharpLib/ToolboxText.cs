@@ -25,12 +25,20 @@ namespace FlowSharpLib
 
 		public override GraphicElement CloneDefault(Canvas canvas)
 		{
-			TextShape shape = new TextShape(canvas);
-
-			return shape;
+            return CloneDefault(canvas, Point.Empty);
 		}
 
-		public override void Draw(Graphics gr)
+        public override GraphicElement CloneDefault(Canvas canvas, Point offset)
+        {
+            TextShape shape = new TextShape(canvas);
+            shape.DisplayRectangle = shape.DefaultRectangle().Move(offset);
+            shape.UpdateProperties();
+            shape.UpdatePath();
+
+            return shape;
+        }
+
+        public override void Draw(Graphics gr)
 		{
 			SizeF size = gr.MeasureString(TOOLBOX_TEXT, TextFont);
 			Point textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));

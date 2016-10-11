@@ -45,7 +45,7 @@ namespace FlowSharp
         {
             if (args.Button == MouseButtons.Left)
             {
-                selectedElement = SelectElement(args.Location);
+                GraphicElement selectedElement = SelectElement(args.Location);
                 mouseDown = true;
                 mouseDownPosition = args.Location;
                 SelectElement(selectedElement);
@@ -56,9 +56,9 @@ namespace FlowSharp
         {
             if (args.Button == MouseButtons.Left && !dragging)
             {
-                if (selectedElement != null)
+                if (selectedElements.Any())
                 {
-                    GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas, new Point(xDisplacement, 0));
+                    GraphicElement el = selectedElements[0].CloneDefault(canvasController.Canvas, new Point(xDisplacement, 0));
                     xDisplacement += 80;
                     canvasController.Insert(el);
                     canvasController.SelectElement(el);
@@ -69,13 +69,13 @@ namespace FlowSharp
             mouseDown = false;
             canvasController.EndDraggingMode();
             DeselectCurrentSelectedElement();
-            selectedElement = null;
+            selectedElements.Clear();
             canvas.Cursor = Cursors.Arrow;
         }
 
         public void OnMouseMove(object sender, MouseEventArgs args)
         {
-            if (mouseDown && selectedElement != null && !dragging)
+            if (mouseDown && selectedElements[0] != null && !dragging)
             {
                 Point delta = args.Location.Delta(mouseDownPosition);
 
@@ -88,7 +88,7 @@ namespace FlowSharp
                     Point p = canvas.PointToScreen(screenPos);                      // screen position of mouse cursor, relative to the target canvas.
                     Cursor.Position = p;
 
-                    GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas);
+                    GraphicElement el = selectedElements[0].CloneDefault(canvasController.Canvas);
                     canvasController.Insert(el);
                     // Shape is placed so that the center of the shape is at the left edge (X), centered around the toolbox mouse (Y)
                     // The "-5" accounts for additional pixels between the toolbox end and the canvas start, should be calculable by converting toolbox canvas width to screen coordinate and subtracting
@@ -107,7 +107,7 @@ namespace FlowSharp
                     canvas.Cursor = Cursors.SizeAll;
                 }
             }
-            else if (mouseDown && selectedElement != null && dragging)
+            else if (mouseDown && selectedElements.Any() && dragging)
             {
                 // Toolbox controller still has control, so simulate dragging on the canvas.
                 Point p = new Point(args.Location.X - canvas.Width, args.Location.Y);
@@ -124,13 +124,13 @@ namespace FlowSharp
 
         protected void DeselectCurrentSelectedElement()
         {
-            if (selectedElement != null)
+            if (selectedElements.Any())
             {
-                var els = EraseTopToBottom(selectedElement);
-                selectedElement.Selected = false;
+                var els = EraseTopToBottom(selectedElements[0]);
+                selectedElements[0].Selected = false;
                 DrawBottomToTop(els);
                 UpdateScreen(els);
-                selectedElement = null;
+                selectedElements.Clear();
             }
         }
 
@@ -144,7 +144,7 @@ namespace FlowSharp
                 el.Selected = true;
                 DrawBottomToTop(els);
                 UpdateScreen(els);
-                selectedElement = el;
+                selectedElements.Add(el);
                 ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
             }
         }

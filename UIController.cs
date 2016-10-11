@@ -46,12 +46,15 @@ namespace FlowSharp
 
 		protected void OnPropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
-			canvasController.Redraw(canvasController.SelectedElement, el =>
-			{
-				elementProperties.Update(el);
-				el.UpdateProperties();
-				el.UpdatePath();
-			});
+            canvasController.SelectedElements.ForEach(sel =>
+            {
+                canvasController.Redraw(sel, el =>
+                {
+                    elementProperties.Update(el);
+                    el.UpdateProperties();
+                    el.UpdatePath();
+                });
+            });
 		}
 	}
 }

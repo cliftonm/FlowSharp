@@ -337,7 +337,16 @@ namespace FlowSharpLib
 			}
 		}
 
-		public virtual List<ShapeAnchor> GetAnchors()
+        public virtual ShapeAnchor GetBottomRightAnchor()
+        {
+            Size anchorSize = new Size(anchorWidthHeight, anchorWidthHeight);
+            Rectangle r = new Rectangle(DisplayRectangle.BottomRightCorner().Move(-anchorWidthHeight, -anchorWidthHeight), anchorSize);
+            ShapeAnchor anchor = new ShapeAnchor(GripType.BottomRight, r, Cursors.SizeNWSE);
+
+            return anchor;
+        }
+
+        public virtual List<ShapeAnchor> GetAnchors()
 		{
 			List<ShapeAnchor> anchors = new List<ShapeAnchor>();
 			Rectangle r;

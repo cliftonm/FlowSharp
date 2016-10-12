@@ -1841,21 +1841,8 @@ now tests to see if the element is already selected:</p>
 {
   // Add to selected elements only once!
   if (!selectedElements.Contains(el))</pre>
-<h3>Cursors</h3>
-<p>Hovering over or selecting an anchor point now displays the appropriate 
-cursor arrow for that anchor.&nbsp; This was an easy tweak.&nbsp; First, set the 
-cursor to display when building the anchor list, for example:</p>
-<p>(GraphicElement.cs)</p>
-<pre>anchors.Add(new ShapeAnchor(GripType.TopLeft, r, Cursors.SizeNWSE));</pre>
-<p>Then set the cursor for the anchor we are near or have selected.&nbsp; This 
-is the code for when the mouse is hovering:</p>
-<p>(CanvasController.cs)</p>
-<pre>protected void SetAnchorCursor(GraphicElement el)
-{
-  ShapeAnchor anchor = el.GetAnchors().FirstOrDefault(a =&gt; a.Near(mousePosition));
-  canvas.Cursor = anchor == null ? Cursors.Arrow : anchor.Cursor;
-}</pre>
 <h4>Issues</h4>
+<h5>Connectors</h5>
 <p>One issue I had was that connectors.&nbsp; Because they are &quot;moved&quot; when 
 group selected, they were detaching from their connected shape.&nbsp; This 
 kludge (violates my &quot;don't do an <code>is</code> test&quot;) works for now:</p>
@@ -1891,6 +1878,27 @@ kludge (violates my &quot;don't do an <code>is</code> test&quot;) works for now:
   });
 }</pre>
 <p>I'm not particularly proud of that code.&nbsp; To many <code>if</code> statements!</p>
+<h5>Multi-object Dragging Efficiency</h5>
+<p>The performance right now when selecting more than 10 shapes or so is very 
+poor, resulting in jerky motion.&nbsp; This is most likely because, instead of 
+erasing all the selected shapes, moving them, then redrawing them, the code is 
+currently moving each shape one at a time, resulting in a lot of unnecessary 
+erase/redraws.&nbsp; This issue is probably easy to resolve and is on the todo 
+list.</p>
+<h3>Cursors</h3>
+<p>Hovering over or selecting an anchor point now displays the appropriate 
+cursor arrow for that anchor.&nbsp; This was an easy tweak.&nbsp; First, set the 
+cursor to display when building the anchor list, for example:</p>
+<p>(GraphicElement.cs)</p>
+<pre>anchors.Add(new ShapeAnchor(GripType.TopLeft, r, Cursors.SizeNWSE));</pre>
+<p>Then set the cursor for the anchor we are near or have selected.&nbsp; This 
+is the code for when the mouse is hovering:</p>
+<p>(CanvasController.cs)</p>
+<pre>protected void SetAnchorCursor(GraphicElement el)
+{
+  ShapeAnchor anchor = el.GetAnchors().FirstOrDefault(a =&gt; a.Near(mousePosition));
+  canvas.Cursor = anchor == null ? Cursors.Arrow : anchor.Cursor;
+}</pre>
 <h4>Copy and Paste</h4>
 <p>Copy and paste was easy:</p>
 <p>(FlowSharpUI.cs)</p>

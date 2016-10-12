@@ -77,7 +77,7 @@ namespace FlowSharp
 
         public void OnMouseMove(object sender, MouseEventArgs args)
         {
-            if (mouseDown && selectedElements[0] != null && !dragging)
+            if (selectedElements.Count > 0 && mouseDown && selectedElements[0] != null && !dragging)
             {
                 Point delta = args.Location.Delta(mouseDownPosition);
 

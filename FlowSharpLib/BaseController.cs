@@ -40,6 +40,8 @@ namespace FlowSharpLib
 
 		protected bool dragging;
 		protected bool leftMouseDown;
+        protected bool rightMouseDown;
+        protected bool selectionMode;
 
 		public BaseController(Canvas canvas, List<GraphicElement> elements)
 		{
@@ -101,27 +103,31 @@ namespace FlowSharpLib
             });
 		}
 
-		public void DeleteElement()
+		public void DeleteSelectedElements()
 		{
+            selectedAnchor = null;
+            showingAnchorsElement = null;
+            dragging = false;
+
             selectedElements.ForEach(el =>
             {
-                el.DetachAll();
-                EraseTopToBottom(elements);
-                elements.Remove(el);
-                el.Dispose();
-                selectedAnchor = null;
-                showingAnchorsElement = null;
-                dragging = false;
-                DrawBottomToTop(elements);
-                ElementSelected.Fire(this, new ElementEventArgs());
-                // Need to refresh the entire screen to remove the element from the screen itself.
-                canvas.Invalidate();
+                DeleteElement(el);
             });
 
             selectedElements.Clear();
+            canvas.Invalidate();
 		}
 
-		protected void Reorder(GraphicElement el, int n)
+        public void DeleteElement(GraphicElement el)
+        {
+            el.DetachAll();
+            EraseTopToBottom(elements);
+            elements.Remove(el);
+            el.Dispose();
+            DrawBottomToTop(elements);
+        }
+
+        protected void Reorder(GraphicElement el, int n)
 		{
 			EraseTopToBottom(elements);
 			elements.Swap(n, elements.IndexOf(el));

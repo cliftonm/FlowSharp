@@ -26,7 +26,13 @@ namespace FlowSharpLib
 
 	public class CanvasController : BaseController
 	{
+        // Minimum movement to start selection process.
+        public const int SELECTION_MIN = 2;
+
 		protected Point mousePosition;
+        protected Point startSelectionPosition;
+        protected GraphicElement selectionRectangle;
+        protected ShapeAnchor selectionAnchor;
 		protected List<SnapInfo> currentlyNear = new List<SnapInfo>();
 		
 		public CanvasController(Canvas canvas, List<GraphicElement> elements) : base(canvas, elements)
@@ -80,6 +86,11 @@ namespace FlowSharpLib
             });
 
             selectedElements.Clear();
+        }
+
+        public void SelectElements(List<GraphicElement> els)
+        {
+            els.ForEach(el => SelectElement(el));
         }
 
         public override void SelectElement(GraphicElement el)
@@ -224,7 +235,33 @@ namespace FlowSharpLib
 				//elements.ForEach(el => el.Move(delta));
 				//canvas.Invalidate();
 			}
-			else
+            else if (rightMouseDown)
+            {
+                delta = mousePosition.Delta(startSelectionPosition);
+
+                if (!selectionMode)
+                {
+                    if ((delta.X.Abs() > SELECTION_MIN) || (delta.Y.Abs() > SELECTION_MIN))
+                    {
+                        selectionMode = true;
+                        selectionRectangle = new Box(canvas);
+                        selectionRectangle.BorderPen.Color = Color.Gray;
+                        selectionRectangle.FillBrush.Dispose();
+                        selectionRectangle.FillBrush = new SolidBrush(Color.Transparent);
+                        selectionRectangle.DisplayRectangle = new Rectangle(startSelectionPosition, new Size(SELECTION_MIN, SELECTION_MIN));
+                        Insert(selectionRectangle);
+                        selectionAnchor = selectionRectangle.GetBottomRightAnchor();
+                    }
+                }
+                else
+                {
+                    Rectangle dispRect = selectionRectangle.DisplayRectangle;
+                    Rectangle newRect = new Rectangle(dispRect.X, dispRect.Y, dispRect.Width + delta.X, dispRect.Height + delta.Y);
+                    UpdateDisplayRectangle(selectionRectangle, newRect, delta);
+                    startSelectionPosition = mousePosition;
+                }
+            }
+            else
 			{
 				GraphicElement el = elements.FirstOrDefault(e => e.IsSelectable(mousePosition));
 
@@ -265,34 +302,66 @@ namespace FlowSharpLib
         {
             if (args.Button == MouseButtons.Left)
             {
-                leftMouseDown = true;
-
-                if ((Control.ModifierKeys & (Keys.Control | Keys.Shift)) == 0)
-                {
-                    DeselectCurrentSelectedElements();
-                }
-
-                SelectElement(args.Location);
-                selectedAnchor = null;
-                
-                if (selectedElements.Count == 1)
-                {
-                    selectedAnchor = selectedElements.Last()?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
-                    ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElements.Last() });
-                }
-
-                dragging = selectedElements.Any();
-                mousePosition = args.Location;
-
-                if ((selectedElements.Any()) && (selectedAnchor == null))
-                {
-                    canvas.Cursor = Cursors.SizeAll;
-                }
-                else if (selectedAnchor != null)
-                {
-                    SetAnchorCursor(selectedElements[0]);
-                }
+                HandleLeftButtonDown(args.Location);
             }
+            else if (args.Button == MouseButtons.Right)
+            {
+                HandleRightButtonDown(args.Location);
+            }
+        }
+
+        protected bool IsMultiSelect()
+        {
+            return !((Control.ModifierKeys & (Keys.Control | Keys.Shift)) == 0);
+        }
+
+        protected void HandleLeftButtonDown(Point mousePosition)
+        { 
+            leftMouseDown = true;
+
+            if (!IsMultiSelect())
+            {
+                DeselectCurrentSelectedElements();
+            }
+
+            SelectElement(mousePosition);
+            selectedAnchor = null;
+                
+            if (selectedElements.Count == 1)
+            {
+                selectedAnchor = selectedElements.Last()?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
+                ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElements.Last() });
+            }
+
+            dragging = selectedElements.Any();
+
+            if ((selectedElements.Any()) && (selectedAnchor == null))
+            {
+                canvas.Cursor = Cursors.SizeAll;
+            }
+            else if (selectedAnchor != null)
+            {
+                SetAnchorCursor(selectedElements[0]);
+            }
+        }
+
+        protected void HandleRightButtonDown(Point mousePosition)
+        {
+            rightMouseDown = true;
+            startSelectionPosition = mousePosition;
+        }
+
+        protected void EndSelectionMode()
+        {
+            rightMouseDown = false;
+            selectionMode = false;
+            List<GraphicElement> intersections = new List<GraphicElement>();
+            FindAllIntersections(intersections, selectionRectangle);
+            intersections.Remove(selectionRectangle);
+            DeleteElement(selectionRectangle);            
+            DeselectCurrentSelectedElements();
+            SelectElements(intersections);
+            canvas.Invalidate();
         }
 
         protected void OnMouseUp(object sender, MouseEventArgs args)
@@ -300,6 +369,10 @@ namespace FlowSharpLib
             if (args.Button == MouseButtons.Left)
             {
                 EndDraggingMode();
+            }
+            else
+            {
+                EndSelectionMode();
             }
         }
 

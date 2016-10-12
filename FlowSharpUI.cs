@@ -132,7 +132,7 @@ namespace FlowSharp
 
 		protected void Delete()
 		{
-			canvasController.DeleteElement();
+			canvasController.DeleteSelectedElements();
 		}
 
 		protected void InitializeCanvas()

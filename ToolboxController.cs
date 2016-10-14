@@ -21,6 +21,8 @@ namespace FlowSharp
         protected int xDisplacement = 0;
         protected bool mouseDown = false;
         protected Point mouseDownPosition;
+        protected Point currentDragPosition;
+        protected bool setup;
 
 		public ToolboxController(Canvas canvas, List<GraphicElement> elements, CanvasController canvasController) : base(canvas, elements)
 		{
@@ -69,7 +71,6 @@ namespace FlowSharp
 
             dragging = false;
             mouseDown = false;
-            canvasController.EndDraggingMode();
             DeselectCurrentSelectedElement();
             selectedElements.Clear();
             canvas.Cursor = Cursors.Arrow;
@@ -83,8 +84,9 @@ namespace FlowSharp
 
                 if ((delta.X.Abs() > MIN_DRAG) || (delta.Y.Abs() > MIN_DRAG))
                 {
-                    canvasController.DeselectCurrentSelectedElements();
                     dragging = true;
+                    setup = true;
+                    canvasController.DeselectCurrentSelectedElements();
                     ResetDisplacement();
                     Point screenPos = new Point(canvas.Width, args.Location.Y);     // target canvas screen position is the toolbox canvas width, toolbox mouse Y.
                     Point canvasPos = new Point(0, args.Location.Y);                // target canvas position is left edge, toolbox mouse Y.
@@ -102,19 +104,31 @@ namespace FlowSharp
                     if (el is DynamicConnector)
                     {
                         offset = offset.Move(8, 6);
+                        el.ShowAnchors = true;
                     }
 
                     canvasController.MoveElement(el, offset);
-                    canvasController.StartDraggingMode(el, canvasPos);
                     canvasController.SelectElement(el);
                     canvas.Cursor = Cursors.SizeAll;
                 }
             }
             else if (mouseDown && selectedElements.Any() && dragging)
             {
-                // Toolbox controller still has control, so simulate dragging on the canvas.
-                Point p = new Point(args.Location.X - canvas.Width, args.Location.Y);
-                canvasController.DragShape(p);
+                // First time event is because we've changed the mouse position.  Reset the current drag position so
+                // we get the current mouse position, then clear the flag so drag operations continue to move the shape
+                // after our mouse coordinate management is set up correctly.
+                if (setup)
+                {
+                    currentDragPosition = args.Location;
+                    setup = false;
+                }
+                else
+                {
+                    // Toolbox controller still has control, so simulate dragging on the canvas.
+                    Point delta = args.Location.Delta(currentDragPosition);
+                    canvasController.DragSelectedElements(delta);
+                    currentDragPosition = args.Location;
+                }
             }
         }
 

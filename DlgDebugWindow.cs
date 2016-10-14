@@ -28,7 +28,7 @@ namespace FlowSharp
         {
             if (ckTraceEnabled.Checked)
             {
-                tbTrace.Text += msg;
+                tbTrace.AppendText(msg);
             }
         }
 

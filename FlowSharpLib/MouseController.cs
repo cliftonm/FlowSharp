@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -22,6 +23,7 @@ namespace FlowSharpLib
 
     public class MouseRouter
     {
+        public MouseController.RouteName RouteName { get; set; }
         public MouseController.MouseEvent MouseEvent { get; set; }
         public Func<bool> Condition { get; set; }
         public Action Action { get; set; }
@@ -35,8 +37,15 @@ namespace FlowSharpLib
         public MouseButtons CurrentButtons { get; set; }
         public bool DraggingSurface { get; set; }
         public bool DraggingShapes { get; set; }
+        public bool DraggingAnchor { get; set; }
+        public bool DraggingOccurred { get; set; }
+        public bool DraggingSurfaceOccurred { get; set; }
         public bool SelectingShapes { get; set; }
         public GraphicElement HoverShape { get; set; }
+        public ShapeAnchor SelectedAnchor { get; set; }
+        public GraphicElement SelectionBox { get; set; }
+        public bool DraggingSelectionBox { get; set; }
+        public Point StartSelectionPosition { get; set; }
 
         public BaseController Controller { get; protected set; }
 
@@ -47,6 +56,29 @@ namespace FlowSharpLib
             MouseDown,
             MouseUp,
             MouseMove,
+        }
+
+        public enum RouteName
+        {
+            StartDragSurface,
+            EndDragSurface,
+            EndDragSurfaceWithDeselect,
+            DragSurface,
+            StartDragSelectionBox,
+            EndDragSelectionBox,
+            DragSelectionBox,
+            StartShapeDrag,
+            EndShapeDrag,
+            DragShapes,
+            DragAnchor,
+            HoverOverShape,
+            ShowAnchors,
+            ShowAnchorCursor,
+            ClearAnchorCursor,
+            HideAnchors,
+            SelectSingleShape,
+            AddSelectedShape,
+            RemoveSelectedShape,
         }
 
         public MouseController(BaseController controller)
@@ -69,19 +101,40 @@ namespace FlowSharpLib
             // Start drag surface:
             router.Add(new MouseRouter()
             {
+                RouteName = RouteName.StartDragSurface,
                 MouseEvent = MouseEvent.MouseDown,
                 Condition = () => !Controller.IsShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Left,
-                Action = () => DraggingSurface = true
+                Action = () =>
+                {
+                    DraggingSurface = true;
+                    DraggingSurfaceOccurred = false;
+                }
             });
 
-            // End drag surface:
+            // End drag surface with no dragging, which deselects all selected shapes
             router.Add(new MouseRouter()
             {
+                RouteName = RouteName.EndDragSurfaceWithDeselect,
                 MouseEvent = MouseEvent.MouseUp,
-                Condition = () => DraggingSurface,
+                Condition = () => DraggingSurface && !DraggingSurfaceOccurred,
+                Action = () =>
+                {
+                    Controller.DeselectCurrentSelectedElements();
+                    DraggingSurface = false;
+                    Controller.Canvas.Cursor = Cursors.Arrow;
+                }
+            });
+
+            // End drag surface when dragging occurred, selected shapes stay selected.
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.EndDragSurface,
+                MouseEvent = MouseEvent.MouseUp,
+                Condition = () => DraggingSurface && DraggingSurfaceOccurred,
                 Action = () =>
                 {
                     DraggingSurface = false;
+                    DraggingSurfaceOccurred = false;
                     Controller.Canvas.Cursor = Cursors.Arrow;
                 }
             });
@@ -89,9 +142,14 @@ namespace FlowSharpLib
             // Drag surface:
             router.Add(new MouseRouter()
             {
+                RouteName = RouteName.DragSurface,
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => DraggingSurface,
-                Action = () => DragCanvas(),
+                Action = () =>
+                {
+                    DraggingSurfaceOccurred = true;
+                    DragCanvas();
+                }
             });
 
             // SHAPE DRAGGING ROUTES:
@@ -99,19 +157,41 @@ namespace FlowSharpLib
             // Start shape drag:
             router.Add(new MouseRouter()
             {
+                RouteName = RouteName.StartShapeDrag,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Left,
+                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                    CurrentButtons == MouseButtons.Left &&
+                    Controller.GetShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null,
                 Action = () => DraggingShapes = true
             });
 
-            // End shape dragging:
+            // Start anchor drag:
             router.Add(new MouseRouter()
             {
+                RouteName = RouteName.StartShapeDrag,
+                MouseEvent = MouseEvent.MouseDown,
+                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                    CurrentButtons == MouseButtons.Left &&
+                    Controller.GetShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) != null,
+                Action = () =>
+                {
+                    DraggingAnchor = true;
+                    SelectedAnchor = HoverShape.GetAnchors().First(a => a.Near(CurrentMousePosition));
+                },
+            });
+
+            // End shape/anchor dragging:
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.EndShapeDrag,
                 MouseEvent = MouseEvent.MouseUp,
-                Condition = () => DraggingShapes,
+                Condition = () => DraggingShapes || DraggingAnchor,
                 Action = () =>
                 {
                     DraggingShapes = false;
+                    DraggingOccurred = false;
+                    DraggingAnchor = false;
+                    SelectedAnchor = null;
                     Controller.Canvas.Cursor = Cursors.Arrow;
                 }
             });
@@ -119,9 +199,26 @@ namespace FlowSharpLib
             // Drag shapes:
             router.Add(new MouseRouter()
             {
+                RouteName = RouteName.DragShapes,
                 MouseEvent = MouseEvent.MouseMove,
-                Condition = () => DraggingShapes,
-                Action = () => DragShapes(),
+                Condition = () => DraggingShapes && HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null,
+                Action = () =>
+                {
+                    DragShapes();
+                    DraggingOccurred = true;
+                },
+            });
+
+            // Drag anchor:
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.DragAnchor,
+                MouseEvent = MouseEvent.MouseMove,
+                Condition = () => HoverShape != null && DraggingAnchor,
+                Action = () =>
+                {
+                    DragAnchor();
+                },
             });
 
             // HOVER ROUTES
@@ -129,8 +226,10 @@ namespace FlowSharpLib
             // Show anchors when hovering over a shape
             router.Add(new MouseRouter()
             {
+                RouteName = RouteName.HoverOverShape,
                 MouseEvent = MouseEvent.MouseMove,
-                Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape == null && 
+                Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape == null &&
+                    CurrentButtons == MouseButtons.None &&
                     Controller.IsShapeSelectable(CurrentMousePosition),
                 Action = () => ShowAnchors(),
             });
@@ -138,8 +237,10 @@ namespace FlowSharpLib
             // Change anchors when hover shape changes
             router.Add(new MouseRouter()
             {
+                RouteName = RouteName.ShowAnchors,
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape != null &&
+                    CurrentButtons == MouseButtons.None &&
                     Controller.IsShapeSelectable(CurrentMousePosition) &&
                     HoverShape != Controller.GetShapeAt(CurrentMousePosition),
                 Action = () => ChangeAnchors(),
@@ -148,10 +249,32 @@ namespace FlowSharpLib
             // Hide anchors when not hovering over a shape
             router.Add(new MouseRouter()
             {
+                RouteName = RouteName.HideAnchors,
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape != null &&
+                    CurrentButtons == MouseButtons.None &&
                     !Controller.IsShapeSelectable(CurrentMousePosition),
                 Action = () => HideAnchors(),
+            });
+
+            // Show cursor when hovering over an anchor
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.ShowAnchorCursor,
+                MouseEvent = MouseEvent.MouseMove,
+                Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && !DraggingAnchor && HoverShape != null &&
+                    HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) != null,
+                Action = () => SetAnchorCursor(),
+            });
+
+            // Clear cursor when hovering over an anchor
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.ClearAnchorCursor,
+                MouseEvent = MouseEvent.MouseMove,
+                Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape != null &&
+                    HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null,
+                Action = () => ClearAnchorCursor(),
             });
 
             // SHAPE SELECTION
@@ -159,19 +282,102 @@ namespace FlowSharpLib
             // Select a shape
             router.Add(new MouseRouter()
             {
+                RouteName = RouteName.SelectSingleShape,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition),
-                Action = () => SelectShape()
+                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                    !Controller.IsMultiSelect() &&
+                    !Controller.SelectedElements.Contains(Controller.GetShapeAt(CurrentMousePosition)),
+                Action = () => SelectSingleShape()
+            });
+
+            // Select a single shape
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.SelectSingleShape,
+                MouseEvent = MouseEvent.MouseUp,
+                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                    !Controller.IsMultiSelect() &&
+                    !DraggingOccurred && !DraggingSelectionBox,
+                Action = () => SelectSingleShape()
+            });
+
+            // Add another shape to selection list
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.AddSelectedShape,
+                MouseEvent = MouseEvent.MouseUp,
+                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                    Controller.IsMultiSelect() && !DraggingSelectionBox &&
+                    !Controller.SelectedElements.Contains(Controller.GetShapeAt(CurrentMousePosition)),
+                Action = () => AddShape(),
+            });
+
+            // Remove shape from selection list
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.RemoveSelectedShape,
+                MouseEvent = MouseEvent.MouseUp,
+                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                    Controller.IsMultiSelect() && !DraggingSelectionBox &&
+                    Controller.SelectedElements.Contains(Controller.GetShapeAt(CurrentMousePosition)) &&
+                    !DraggingOccurred,
+                Action = () => RemoveShape(),
+            });
+
+            // SELECTION BOX
+
+            // Start selection box
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.StartDragSelectionBox,
+                MouseEvent = MouseEvent.MouseDown,
+                Condition = () => !Controller.IsShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Right,
+                Action = () =>
+                {
+                    DraggingSelectionBox = true;
+                    StartSelectionPosition = CurrentMousePosition;
+                    CreateSelectionBox();                
+                },
+            });
+
+            // End selection box
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.EndDragSelectionBox,
+                MouseEvent = MouseEvent.MouseUp,
+                Condition = () => DraggingSelectionBox,
+                Action = () =>
+                {
+                    DraggingSelectionBox = false;
+                    SelectShapesInSelectionBox();
+                }
+            });
+
+            // Drag selection box
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.DragSelectionBox,
+                MouseEvent = MouseEvent.MouseMove,
+                Condition = () => DraggingSelectionBox,
+                Action = () => DragSelectionBox(),
             });
         }
 
         protected virtual void HandleEvent(MouseAction action)
         {
             CurrentMousePosition = action.MousePosition;
-            CurrentButtons = action.Buttons;
+            CurrentButtons = Control.MouseButtons;
+            // Trace.WriteLine("Buttons = " + CurrentButtons.ToString());
 
-            IEnumerable<MouseRouter> routes = router.Where(r => r.MouseEvent == action.MouseEvent && r.Condition());
-            routes.ForEach(r => r.Action());
+            // Resolve now, otherwise the iterator will find additional routes as actions occur.
+            // A good example is when a shape is added to a selection list, using the enumerator, this
+            // then qualifies the remove shape from selected list!
+            List<MouseRouter> routes = router.Where(r => r.MouseEvent == action.MouseEvent && r.Condition()).ToList();
+            routes.ForEach(r =>
+            {
+                Trace.WriteLine("Route: " + r.RouteName.ToString());
+                r.Action();
+            });
 
             LastMousePosition = CurrentMousePosition;
         }
@@ -217,15 +423,23 @@ namespace FlowSharpLib
             HoverShape = null;
         }
 
-        protected void SelectShape()
+        protected void SelectSingleShape()
         {
-            if (!Controller.IsMultiSelect())
-            {
-                Controller.DeselectCurrentSelectedElements();
-            }
-
+            Controller.DeselectCurrentSelectedElements();
             GraphicElement el = Controller.GetShapeAt(CurrentMousePosition);
             Controller.SelectElement(el);
+        }
+
+        protected void AddShape()
+        {
+            GraphicElement el = Controller.GetShapeAt(CurrentMousePosition);
+            Controller.SelectElement(el);
+        }
+
+        protected void RemoveShape()
+        {
+            GraphicElement el = Controller.GetShapeAt(CurrentMousePosition);
+            Controller.DeselectElement(el);
         }
 
         protected void DragShapes()
@@ -233,6 +447,70 @@ namespace FlowSharpLib
             Point delta = CurrentMousePosition.Delta(LastMousePosition);
             Controller.DragSelectedElements(delta);
             Controller.Canvas.Cursor = Cursors.SizeAll;
+        }
+
+        protected void ClearAnchorCursor()
+        {
+            Controller.Canvas.Cursor = Cursors.Arrow;
+        }
+
+        protected void SetAnchorCursor()
+        {
+            ShapeAnchor anchor = HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition));
+
+            // Hover shape could have changed as we move from a shape to a connector's anchor.
+            if (anchor != null)
+            {
+                Controller.Canvas.Cursor = anchor.Cursor;
+            }
+        }
+
+        protected void DragAnchor()
+        {
+            Point delta = CurrentMousePosition.Delta(LastMousePosition);
+            bool connectorAttached = HoverShape.SnapCheck(SelectedAnchor, delta);
+
+            if (!connectorAttached)
+            {
+                HoverShape.DisconnectShapeFromConnector(SelectedAnchor.Type);
+                HoverShape.RemoveConnection(SelectedAnchor.Type);
+            }
+        }
+
+        protected void CreateSelectionBox()
+        {
+            SelectionBox = new Box(Controller.Canvas);
+            SelectionBox.BorderPen.Color = Color.Gray;
+            SelectionBox.FillBrush.Color = Color.Transparent;
+            SelectionBox.DisplayRectangle = new Rectangle(StartSelectionPosition, new Size(1, 1));
+            Controller.Insert(SelectionBox);
+        }
+
+        protected void SelectShapesInSelectionBox()
+        {
+            Controller.DeleteElement(SelectionBox);
+            List<GraphicElement> selectedElements = new List<GraphicElement>();
+
+            Controller.Elements.Where(e => !selectedElements.Contains(e) && e.UpdateRectangle.IntersectsWith(SelectionBox.DisplayRectangle)).ForEach((e) =>
+            {
+                selectedElements.Add(e);
+            });
+
+            Controller.DeselectCurrentSelectedElements();
+            Controller.SelectElements(selectedElements);
+            Controller.Canvas.Invalidate();
+        }
+
+        protected void DragSelectionBox()
+        {
+            // Normalize the rectangle to a top-left, bottom-right rectangle.
+            int x = CurrentMousePosition.X.Min(StartSelectionPosition.X);
+            int y = CurrentMousePosition.Y.Min(StartSelectionPosition.Y);
+            int w = (CurrentMousePosition.X - StartSelectionPosition.X).Abs();
+            int h = (CurrentMousePosition.Y - StartSelectionPosition.Y).Abs();
+            Rectangle newRect = new Rectangle(x, y, w, h);
+            Point delta = CurrentMousePosition.Delta(LastMousePosition);
+            Controller.UpdateDisplayRectangle(SelectionBox, newRect, delta);
         }
     }
 }

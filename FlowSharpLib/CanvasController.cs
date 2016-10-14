@@ -66,16 +66,6 @@ namespace FlowSharpLib
             }
         }
 
-        public void DeselectElement(GraphicElement el)
-        {
-            IEnumerable<GraphicElement> intersections = FindAllIntersections(el);
-            EraseTopToBottom(intersections);
-            el.Selected = false;
-            selectedElements.Remove(el);
-            DrawBottomToTop(intersections);
-            UpdateScreen(intersections);
-        }
-
         public override void DeselectCurrentSelectedElements()
         {
             selectedElements.ForEach(el =>
@@ -87,11 +77,6 @@ namespace FlowSharpLib
             });
 
             selectedElements.Clear();
-        }
-
-        public void SelectElements(List<GraphicElement> els)
-        {
-            els.ForEach(el => SelectElement(el));
         }
 
         public override void SelectElement(GraphicElement el)
@@ -106,6 +91,16 @@ namespace FlowSharpLib
                 UpdateScreen(els);
                 ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
             }
+        }
+
+        public override void DeselectElement(GraphicElement el)
+        {
+            IEnumerable<GraphicElement> intersections = FindAllIntersections(el);
+            EraseTopToBottom(intersections);
+            el.Selected = false;
+            selectedElements.Remove(el);
+            DrawBottomToTop(intersections);
+            UpdateScreen(intersections);
         }
 
         public override bool Snap(GripType type, ref Point delta)

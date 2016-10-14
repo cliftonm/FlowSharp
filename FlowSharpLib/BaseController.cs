@@ -59,6 +59,7 @@ namespace FlowSharpLib
         public virtual void DragSelectedElements(Point delta) { }
         public virtual bool IsMultiSelect() { return false; }
         public virtual void DeselectCurrentSelectedElements() { }
+        public virtual void DeselectElement(GraphicElement el) { }
 
         public bool IsShapeSelectable(Point p)
         {
@@ -68,6 +69,11 @@ namespace FlowSharpLib
         public GraphicElement GetShapeAt(Point p)
         {
             return elements.FirstOrDefault(e => e.IsSelectable(p));
+        }
+
+        public void SelectElements(List<GraphicElement> els)
+        {
+            els.ForEach(el => SelectElement(el));
         }
 
         public void Topmost()
@@ -359,6 +365,7 @@ namespace FlowSharpLib
 
 		protected IEnumerable<GraphicElement> EraseTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
 		{
+            Trace.WriteLine("EraseTopToBottom");
             IEnumerable<GraphicElement> intersections = FindAllIntersections(el, dx, dy);
 			intersections.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.Erase());
 

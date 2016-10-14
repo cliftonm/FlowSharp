@@ -145,7 +145,7 @@ namespace FlowSharpLib
             Dictionary<Guid, Guid> oldNewIdMap = new Dictionary<Guid, Guid>();
             Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections = InternalDeserialize(canvas, data, oldNewIdMap);
             FixupConnections(collections, oldNewIdMap);
-            FinalFixup(collections);
+            FinalFixup(collections, oldNewIdMap);
 
             return collections.Item1;
 		}
@@ -199,9 +199,9 @@ namespace FlowSharpLib
             }
         }
 
-        private static void FinalFixup(Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections)
+        private static void FinalFixup(Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections, Dictionary<Guid, Guid> oldNewGuidMap)
         {
-            collections.Item2.ForEach(epb => epb.Element.FinalFixup(collections.Item1, epb));
+            collections.Item2.ForEach(epb => epb.Element.FinalFixup(collections.Item1, epb, oldNewGuidMap));
         }
 	}
 }

@@ -106,6 +106,7 @@
 	</ul>
 	</li>
 	<li><a href="#revisions">Revisions</a><ul>
+	<li><a href="#101316">10/13/16 - Debugging</a></li>
 	<li><a href="#101216">10/12/16 - Group Select, cursors, import, and bug fixes</a></li>
 	<li><a href="#101016">10/10/16 - Toolbox Drag &amp; Drop and minor stuff</a></li>
 	<li><a href="#100516">10/5/16 - Nothing Exciting</a></li>
@@ -1805,6 +1806,147 @@ canvasController.SelectElement(el);</pre>
 </ul>
 
 <h2><a name="revisions">Revisions</a></h2>
+<p><a name="101316">10/13/2016</a></p>
+<h3>Debugging</h3>
+<p><img border="0" src="img31.png" width="665" height="567"></p>
+<p>I started noticing some strange behaviors, so I implemented a tree view of 
+the shapes and their connections.&nbsp; This will come in handy as well later 
+when adding grouped shapes and so forth.&nbsp; Here's some examples of a few 
+bugs.</p>
+<h4>Connectors not Setting Connected Shape on Load</h4>
+<p>In this test (actually initially intended to figure out why a multi-select 
+drag operation was leaving trails):</p>
+<p><img border="0" src="img23.png" width="388" height="220"></p>
+<p>Notice the debug tree:</p>
+<p><img border="0" src="img24.png" width="572" height="243"></p>
+<p>Specifically, that the dynamic connector is missing the shapes to which it is 
+connected!</p>
+<p>If I draw these shapes from a clean slate, rather than loading them from a 
+file, notice the dynamic connector has the right references:</p>
+<p><img border="0" src="img25.png" width="433" height="349"></p>
+<p>Oddly, this bug does not usually manifest as problem.&nbsp; The problem was 
+created when I changed the deserializer (see Copy &amp; Paste below) to assign new 
+GUID's.&nbsp; The old GUID's were not being mapped to the new GUID's.&nbsp; The 
+fix is:</p>
+<pre>public override void FinalFixup(List&lt;GraphicElement&gt; elements, ElementPropertyBag epb, Dictionary&lt;Guid, Guid&gt; oldNewGuidMap)
+{
+  base.FinalFixup(elements, epb, oldNewGuidMap);
+  StartConnectedShape = elements.SingleOrDefault(e =&gt; e.Id == oldNewGuidMap[epb.StartConnectedShapeId]);
+  EndConnectedShape = elements.SingleOrDefault(e =&gt; e.Id == oldNewGuidMap[epb.EndConnectedShapeId]);
+}</pre>
+<p>Now, on a load, I get the correct shapes assigned to the connector.&nbsp; 
+This also fixed the bug where connectors were not being detached from shapes, 
+because now the two-way reference is working!</p>
+<h4>Trails Left with Multiple Shape Dragging with Connectors</h4>
+<p><img border="0" src="img26.png" width="469" height="207"></p>
+<p>Notice the trail left on the triangle &quot;3&quot;.&nbsp; This occurs when the 
+selected shapes &quot;1&quot; and &quot;2&quot; are dragged to the right over shape &quot;3&quot;.&nbsp; Why?</p>
+<p>We can see the problem here:</p>
+<p><img border="0" src="img27.png" width="318" height="79"></p>
+<p>Notice that the horizontal and vertical lines comprising the connector are 
+being erased first -- the z-order is not being preserved!&nbsp; The culprit in 
+the code is this:</p>
+<p>(BaseController.cs)</p>
+<pre>protected void EraseTopToBottom(IEnumerable&lt;GraphicElement&gt; els)
+{
+  Trace.WriteLine(&quot;EraseTopToBottom&quot;);
+  els.Where(e =&gt; e.OnScreen()).ForEach(e =&gt; e.Erase());
+}</pre>
+<p>The elements being erased are expected to be in the correct z-order.&nbsp; 
+Should this code assume correct ordering?&nbsp; What about this code:</p>
+<p>(BaseController.cs)</p>
+<pre>public void DrawBottomToTop(IEnumerable&lt;GraphicElement&gt; els, int dx = 0, int dy = 0)
+{
+  Trace.WriteLine(&quot;DrawBottomToTop&quot;);
+  els.Reverse().Where(e =&gt; e.OnScreen(dx, dy)).ForEach(e =&gt;
+  {
+    e.GetBackground();
+    e.Draw();
+  });
+}</pre>
+<p>Here again, the code assumes the list is ordered!&nbsp; How to fix this 
+defensively but without resulting in excessive sorting?</p>
+<p>We can look at the real culprit, which is the call here:</p>
+<pre>List&lt;GraphicElement&gt; intersections = new List&lt;GraphicElement&gt;();
+selectedElements.ForEach(el =&gt; FindAllIntersections(intersections, el, dx, dy));
+...
+EraseTopToBottom(intersections);</pre>
+<p>Notice how ordering is performed here:</p>
+<pre>protected IEnumerable&lt;GraphicElement&gt; EraseTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
+{
+  List&lt;GraphicElement&gt; intersections = new List&lt;GraphicElement&gt;();
+  FindAllIntersections(intersections, el, dx, dy);
+  IEnumerable&lt;GraphicElement&gt; els = intersections.OrderBy(e =&gt; elements.IndexOf(e));
+  els.Where(e =&gt; e.OnScreen(dx, dy)).ForEach(e =&gt; e.Erase());
+
+  return els;
+}</pre>
+<p>This is the one and only time that ordering of elements is ever performed, 
+and from a defensive programming perspective, it would make sense to always 
+return an ordered list of intersecting shapes, given the use case.&nbsp; This 
+requires refactoring the <code>FindAllIntersections</code> into two functions, since the 
+process is recursive:</p>
+<pre>public IEnumerable&lt;GraphicElement&gt; FindAllIntersections(GraphicElement el, int dx = 0, int dy = 0)
+{
+  List&lt;GraphicElement&gt; intersections = new List&lt;FlowSharpLib.GraphicElement&gt;();
+  FindAllIntersections(intersections, el, dx, dy);
+
+  return intersections.OrderBy(e =&gt; elements.IndexOf(e));
+}
+
+/// &lt;summary&gt;
+/// Recursive loop to get all intersecting rectangles, including intersectors of the intersectees, so that all elements that
+/// are affected by an overlap redraw are erased and redrawn, otherwise we get artifacts of some intersecting elements when intersection count &gt; 2.
+/// &lt;/summary&gt;
+private void FindAllIntersections(List&lt;GraphicElement&gt; intersections, GraphicElement el, int dx = 0, int dy = 0)
+{
+  // Cool thing here is that if the element has no intersections, this list still returns that element because it intersects with itself!
+  elements.Where(e =&gt; !intersections.Contains(e) &amp;&amp; e.UpdateRectangle.IntersectsWith(el.UpdateRectangle.Grow(dx, dy))).ForEach((e) =&gt;
+  {
+    intersections.Add(e);
+    FindAllIntersections(intersections, e);
+  });
+}</pre>
+<p>Notice the recursive function is marked as <code>private</code>, so we don't 
+accidentally use it outside of the controller class or in a derived controller 
+class.&nbsp; A good example of why/when to use the <code>private</code> scope.&nbsp; 
+As a result, this broke some code (which is good!) that needed to now call the 
+<code>public FindAllIntersections</code> method, revealing other areas (the 
+paste code) where this bug was 
+potentially affecting the rendering.</p>
+<p>Unfortunately, while this definitely found an issue, it did not fix the 
+problem.&nbsp; Notice the z-order of the shapes:</p>
+<p><img border="0" src="img28.png" width="241" height="160"></p>
+<p>The &quot;left&quot; triangle is underneath the &quot;up&quot; triangle.&nbsp; So why is the 
+&quot;left&quot; triangle being seen as above the &quot;up&quot; triangle?&nbsp; This doesn't happen 
+why I move either of the two triangles individually:</p>
+<p><img border="0" src="img29.png" width="360" height="85"></p>
+<p>Here we have the correct order: up-left.&nbsp; Above (earlier) we have the 
+wrong order (left-up).&nbsp; Why?</p>
+<p>The problem is that the controller is still using the wrong method, from 
+which the private scope doesn't protect us:</p>
+<pre>List&lt;GraphicElement&gt; intersections = new List&lt;GraphicElement&gt;();
+selectedElements.ForEach(el =&gt; FindAllIntersections(intersections, el, dx, dy));</pre>
+<p>It's better to rename the recursive method:</p>
+<pre>private void RecursiveFindAllIntersections(List&lt;GraphicElement&gt; intersections, GraphicElement el, int dx = 0, int dy = 0)</pre>
+<p>Now the compiler identifies the use cases (only one) where the wrong method 
+is being called, and we can fix the problem:</p>
+<pre>List&lt;GraphicElement&gt; intersections = new List&lt;GraphicElement&gt;();
+
+selectedElements.ForEach(el =&gt;
+{
+  intersections.AddRange(FindAllIntersections(el));
+});
+
+IEnumerable&lt;GraphicElement&gt; distinctIntersections = intersections.Distinct();</pre>
+<p>Now the problem is finally fixed!</p>
+<p><img border="0" src="img30.png" width="325" height="83"></p>
+<p>The erasure of the up-triangle, being in front of the left-triangle, is now 
+correct.</p>
+<p><b><i>This really illustrates how adding some tracing and diagnostics can 
+help debug problems, and also is some good guidance on how to refactor code 
+(like renaming method being refactored) so that code that uses those refactored 
+methods can be looked at for wrong use case as well.</i></b></p>
 <p><a name="101216">10/12/2016</a></p>
 <h3>Group Select</h3>
 <p>You can now select multiple shapes and drag them around, using the Shift or 
@@ -1841,6 +1983,134 @@ now tests to see if the element is already selected:</p>
 {
   // Add to selected elements only once!
   if (!selectedElements.Contains(el))</pre>
+<h4>Selecting Shapes in a Region</h4>
+<p><img border="0" src="img32.png" width="297" height="171"></p>
+<p>You can now select group of shapes with a right-click-drag.&nbsp; This 
+presented a minor technical challenge because I wanted the selection box (which 
+is Box element) to work regardless of whether the user drew the selection region 
+from the top-left down and right, or &quot;inverted&quot; in the X, Y, or both axis (for 
+example, starting at the bottom-right and moving to the top-left.)&nbsp; Because 
+negative width/heights are not supported, the selection region has to be 
+&quot;normalized&quot;:</p>
+<p>(CanvasController.cs)</p>
+<pre>currentSelectionPosition = mousePosition;
+// Normalize the rectangle to a top-left, bottom-right rectangle.
+int x = currentSelectionPosition.X.Min(startSelectionPosition.X);
+int y = currentSelectionPosition.Y.Min(startSelectionPosition.Y);
+int w = (currentSelectionPosition.X - startSelectionPosition.X).Abs();
+int h = (currentSelectionPosition.Y - startSelectionPosition.Y).Abs();
+Rectangle newRect = new Rectangle(x, y, w, h);
+UpdateDisplayRectangle(selectionBox, newRect, delta);</pre>
+<p>When the selection mode is started, a top-level transparent box is created 
+(fun use of an existing shape!):</p>
+<p>(CanvasController.cs)</p>
+<pre>selectionMode = true;
+selectionBox = new Box(canvas);
+selectionBox.BorderPen.Color = Color.Gray;
+selectionBox.FillBrush.Color = Color.Transparent;
+selectionBox.DisplayRectangle = new Rectangle(startSelectionPosition, new Size(SELECTION_MIN, SELECTION_MIN));
+Insert(selectionBox);</pre>
+<h4>Group Select User Experience</h4>
+<p>Enabling the group select feature resulted in the discovery of how 
+interesting the user experience needs to be.&nbsp; In my original 
+implementation, shapes were selected by clicking on them while holding down the 
+Ctrl or Shift key.&nbsp; To drag the selected shapes, you had to hold the Ctrl 
+or Shift key, click on one of the shapes, and start dragging.&nbsp; At that 
+point, you could release the Ctrl or Shift key and continue dragging.&nbsp; This 
+is not how group selection / dragging works in Visio (my bible for how things 
+should work).</p>
+<p>The real user experience is as follows:</p>
+<ol>
+	<li>Hold down Ctrl or Shift to select multiple objects</li>
+	<li>A rectangle of selected shapes appears (we're doing it a bit 
+	differently, by showing the selected shapes with their red rectangles)</li>
+	<li>If you click down (without releasing) on any of the selected shapes, 
+	they all stay selected.</li>
+	<li>If you release the mouse button at this point without dragging, the 
+	shape becomes deselected.</li>
+	<li>Conversely, if, after click-down on a selected shape, you start 
+	dragging, all the selected shapes move (again, visually represented slightly 
+	differently - Visio continues to show you their original position)</li>
+	<li>If you continue holding down the Shift key, Visio implements a &quot;snap to 
+	object alignment&quot; feature (something I'd like to do at some point.)</li>
+</ol>
+<p>The salient point is #5 - <i>the shape does not deselect unless you haven't 
+initiated dragging.</i></p>
+<p>Implementing this led me to rework the whole way that mouse events (down, up, 
+motion) are handled.&nbsp; The current implementation was becoming a kludge of 
+&quot;if&quot; statements.&nbsp; Just look at the mouse move event handler (inner code 
+omitted):</p>
+<pre>Point delta = newMousePosition.Delta(mousePosition);
+
+if (delta == Point.Empty) return;
+
+mousePosition = newMousePosition;
+
+if (dragging)
+{
+  if (selectedAnchor != null)
+  {
+    ...
+    if (!connectorAttached)
+    {
+      ...
+    }
+  }
+  else
+  {
+    ...
+  }
+}
+else if (leftMouseDown)
+{
+  ...
+}
+else if (rightMouseDown)
+{
+  delta = mousePosition.Delta(currentSelectionPosition);
+
+  if (!selectionMode)
+  {
+    if ((delta.X.Abs() &gt; SELECTION_MIN) || (delta.Y.Abs() &gt; SELECTION_MIN))
+    {
+      ...
+    }
+  }
+  else
+  {
+    ...
+  }
+}
+else // Mouse Hover!
+{
+  ...
+  if (selectedElements.Count &lt;= 1)
+  {
+    ...
+    if (el != showingAnchorsElement)
+    {
+      if (showingAnchorsElement != null)
+      {
+        ...
+      }
+
+      if (el != null)
+      {
+        ...
+      }
+    }
+    else if (el != null &amp;&amp; el == showingAnchorsElement)
+    {
+      ...
+    }
+  }
+}</pre>
+<p><img border="0" src="img33.png" width="187" height="184"></p>
+<p>What's needed is a mouse event state router!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 <h4>Issues</h4>
 <h5>Connectors</h5>
 <p>One issue I had was that connectors.&nbsp; Because they are &quot;moved&quot; when 
@@ -1883,8 +2153,10 @@ kludge (violates my &quot;don't do an <code>is</code> test&quot;) works for now:
 poor, resulting in jerky motion.&nbsp; This is most likely because, instead of 
 erasing all the selected shapes, moving them, then redrawing them, the code is 
 currently moving each shape one at a time, resulting in a lot of unnecessary 
-erase/redraws.&nbsp; This issue is probably easy to resolve and is on the todo 
-list.</p>
+erase/redraws.&nbsp; </p>
+<p>At least that's what I thought.&nbsp; While that is part of the issue, the 
+real problem was that the property grid was being updated when each selected 
+element was being dragged!</p>
 <h3>Cursors</h3>
 <p>Hovering over or selecting an anchor point now displays the appropriate 
 cursor arrow for that anchor.&nbsp; This was an easy tweak.&nbsp; First, set the 

@@ -47,9 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FlowSharpUI.cs">
+    <Compile Include="DlgDebugWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="DlgDebugWindow.Designer.cs">
+      <DependentUpon>DlgDebugWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FlowSharpUI.cs" />
     <Compile Include="FlowSharpUI.Designer.cs">
       <DependentUpon>FlowSharpUI.cs</DependentUpon>
     </Compile>
@@ -63,6 +67,9 @@
     </Compile>
     <Compile Include="ToolboxController.cs" />
     <Compile Include="UIController.cs" />
+    <EmbeddedResource Include="DlgDebugWindow.resx">
+      <DependentUpon>DlgDebugWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FlowSharpUI.resx">
       <DependentUpon>FlowSharpUI.cs</DependentUpon>
     </EmbeddedResource>

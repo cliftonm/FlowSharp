@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -99,7 +100,12 @@ namespace FlowSharpLib
 			TextColor = Color.Black;
 		}
 
-		public void Dispose()
+        public override string ToString()
+        {
+            return GetType().Name + " (" + Id + ") : " + Text;
+        }
+
+        public void Dispose()
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
@@ -218,7 +224,7 @@ namespace FlowSharpLib
 			HasTopBottomConnections = epb.HasTopBottomConnections;
 		}
 
-        public virtual void FinalFixup(List<GraphicElement> elements, ElementPropertyBag epb)
+        public virtual void FinalFixup(List<GraphicElement> elements, ElementPropertyBag epb, Dictionary<Guid, Guid> oldNewGuidMap)
         {
             elements.ForEach(el => el.UpdateProperties());
         }
@@ -282,12 +288,16 @@ namespace FlowSharpLib
 		// Placeholders:
 		public virtual void MoveElementOrAnchor(GripType gt, Point delta) { }
 		public virtual void SetConnection(GripType gt, GraphicElement shape) { }
-		public virtual void RemoveConnection(GripType gt) { }
 		public virtual void DisconnectShapeFromConnector(GripType gt) { }
 		public virtual void DetachAll() { }
 		public virtual void UpdateProperties() { }
 
-		public virtual void SetCanvas(Canvas canvas)
+        public virtual void RemoveConnection(GripType gt)
+        {
+            // Connections.SingleOrDefault(c=>c.ElementConnectionPoint.Type == gr)
+        }
+
+        public virtual void SetCanvas(Canvas canvas)
 		{
 			this.canvas = canvas;
 		}
@@ -296,6 +306,7 @@ namespace FlowSharpLib
         {
             if (canvas.OnScreen(backgroundRectangle))
             {
+                Trace.WriteLine("Erase " + ToString());
                 background?.Erase(canvas, backgroundRectangle);
                 // canvas.Graphics.DrawRectangle(selectionPen, backgroundRectangle);
                 background = null;
@@ -308,6 +319,7 @@ namespace FlowSharpLib
 
             if (canvas.OnScreen(UpdateRectangle))
             {
+                Trace.WriteLine("Draw " + ToString());
                 Draw(gr);
             }
 

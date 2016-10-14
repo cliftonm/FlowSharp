@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -14,6 +15,19 @@ using FlowSharpLib;
 
 namespace FlowSharp
 {
+    public class TraceListener : ConsoleTraceListener
+    {
+        public DlgDebugWindow DebugWindow { get; set; }
+
+        public override void WriteLine(string msg)
+        {
+            if (DebugWindow != null)
+            {
+                DebugWindow.Trace(msg + "\r\n");
+            }
+        }
+    }
+
     public partial class FlowSharpUI : Form
     {
 		protected CanvasController canvasController;
@@ -24,12 +38,16 @@ namespace FlowSharp
 
 		protected Canvas toolboxCanvas;
 		protected List<GraphicElement> toolboxElements = new List<GraphicElement>();
-
 		protected Dictionary<Keys, Action> keyActions = new Dictionary<Keys, Action>();
+
+        protected DlgDebugWindow debugWindow;
+        protected TraceListener traceListener;
 
 		public FlowSharpUI()
         {
             InitializeComponent();
+            traceListener = new TraceListener();
+            Trace.Listeners.Add(traceListener);
             Shown += OnShown;
 			UpdateMenu(false);
 
@@ -110,20 +128,32 @@ namespace FlowSharp
 			}
 			else
 			{
-				try
-				{
-					List<GraphicElement> els = Persist.Deserialize(canvas, copyBuffer);
+                try
+                {
+                    List<GraphicElement> els = Persist.Deserialize(canvas, copyBuffer);
                     canvasController.DeselectCurrentSelectedElements();
                     els.ForEach(el =>
                     {
                         el.Move(new Point(20, 20));
                         el.UpdateProperties();
                         el.UpdatePath();
-                        canvasController.Insert(el);
-                        canvasController.SelectElement(el);
                     });
-				}
-				catch (Exception ex)
+
+                    List<GraphicElement> intersections = new List<GraphicElement>();
+
+                    els.ForEach(el =>
+                    {
+                        intersections.AddRange(canvasController.FindAllIntersections(el));
+                    });
+
+                    IEnumerable<GraphicElement> distinctIntersections = intersections.Distinct();
+                    canvasController.EraseTopToBottom(distinctIntersections);
+                    els.ForEach(el => elements.Insert(0, el));
+                    canvasController.DrawBottomToTop(distinctIntersections);
+                    canvasController.UpdateScreen(distinctIntersections);
+                    els.ForEach(el => canvasController.SelectElement(el));
+                }
+                catch (Exception ex)
 				{
 					MessageBox.Show("Error pasting shape:\r\n"+ex.Message, "Paste Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
@@ -192,5 +222,20 @@ namespace FlowSharp
 		{
 			Text = "FlowSharp" + (String.IsNullOrEmpty(filename) ? "" : " - ") + filename;
 		}
-	}
+
+        private void mnuDebugWindow_Click(object sender, EventArgs e)
+        {
+            if (debugWindow == null)
+            {
+                debugWindow = new DlgDebugWindow(canvasController);
+                debugWindow.Show();
+                traceListener.DebugWindow = debugWindow;
+                debugWindow.FormClosed += (sndr, args) =>
+                {
+                    debugWindow = null;
+                    traceListener.DebugWindow = null;
+                };
+            }
+        }
+    }
 }

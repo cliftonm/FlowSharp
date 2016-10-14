@@ -31,8 +31,8 @@ namespace FlowSharpLib
 
 		protected Point mousePosition;
         protected Point startSelectionPosition;
-        protected GraphicElement selectionRectangle;
-        protected ShapeAnchor selectionAnchor;
+        protected Point currentSelectionPosition;
+        protected GraphicElement selectionBox;
 		protected List<SnapInfo> currentlyNear = new List<SnapInfo>();
 		
 		public CanvasController(Canvas canvas, List<GraphicElement> elements) : base(canvas, elements)
@@ -46,33 +46,34 @@ namespace FlowSharpLib
 
         public void DragSelectedElements(Point delta)
         {
-            selectedElements.ForEach(el =>
+            if (selectedElements.Count == 1)
             {
+                GraphicElement el = selectedElements[0];
                 bool connectorAttached = el.SnapCheck(GripType.Start, ref delta) || el.SnapCheck(GripType.End, ref delta);
                 el.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
 
-                // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
-                if (el is Connector && selectedElements.Count == 1)
-                {
-                    MoveElement(el, delta);
-                }
-                else if (!(el is Connector))
-                {
-                    MoveElement(el, delta);
-                }
-
-                UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = el });
-
                 if (!connectorAttached)
                 {
-                    // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
-                    // Detach a connector only if it's the only shape being dragged.
-                    if (selectedElements.Count == 1)
-                    {
-                        DetachFromAllShapes(el);
-                    }
+                    DetachFromAllShapes(el);
                 }
-            });
+
+                MoveElement(el, delta);
+                UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = el });
+            }
+            else
+            {
+                MoveSelectedElements(delta);
+            }
+        }
+
+        public void DeselectElement(GraphicElement el)
+        {
+            IEnumerable<GraphicElement> intersections = FindAllIntersections(el);
+            EraseTopToBottom(intersections);
+            el.Selected = false;
+            selectedElements.Remove(el);
+            DrawBottomToTop(intersections);
+            UpdateScreen(intersections);
         }
 
         public void DeselectCurrentSelectedElements()
@@ -237,57 +238,65 @@ namespace FlowSharpLib
 			}
             else if (rightMouseDown)
             {
-                delta = mousePosition.Delta(startSelectionPosition);
+                delta = mousePosition.Delta(currentSelectionPosition);
 
                 if (!selectionMode)
                 {
                     if ((delta.X.Abs() > SELECTION_MIN) || (delta.Y.Abs() > SELECTION_MIN))
                     {
                         selectionMode = true;
-                        selectionRectangle = new Box(canvas);
-                        selectionRectangle.BorderPen.Color = Color.Gray;
-                        selectionRectangle.FillBrush.Dispose();
-                        selectionRectangle.FillBrush = new SolidBrush(Color.Transparent);
-                        selectionRectangle.DisplayRectangle = new Rectangle(startSelectionPosition, new Size(SELECTION_MIN, SELECTION_MIN));
-                        Insert(selectionRectangle);
-                        selectionAnchor = selectionRectangle.GetBottomRightAnchor();
+                        selectionBox = new Box(canvas);
+                        selectionBox.BorderPen.Color = Color.Gray;
+                        selectionBox.FillBrush.Color = Color.Transparent;
+                        selectionBox.DisplayRectangle = new Rectangle(startSelectionPosition, new Size(SELECTION_MIN, SELECTION_MIN));
+                        Insert(selectionBox);
                     }
                 }
                 else
                 {
-                    Rectangle dispRect = selectionRectangle.DisplayRectangle;
-                    Rectangle newRect = new Rectangle(dispRect.X, dispRect.Y, dispRect.Width + delta.X, dispRect.Height + delta.Y);
-                    UpdateDisplayRectangle(selectionRectangle, newRect, delta);
-                    startSelectionPosition = mousePosition;
+                    currentSelectionPosition = mousePosition;
+                    // Normalize the rectangle to a top-left, bottom-right rectangle.
+                    int x = currentSelectionPosition.X.Min(startSelectionPosition.X);
+                    int y = currentSelectionPosition.Y.Min(startSelectionPosition.Y);
+                    int w = (currentSelectionPosition.X - startSelectionPosition.X).Abs();
+                    int h = (currentSelectionPosition.Y - startSelectionPosition.Y).Abs();
+                    Rectangle newRect = new Rectangle(x, y, w, h);
+                    UpdateDisplayRectangle(selectionBox, newRect, delta);
                 }
             }
-            else
+            else    // Mouse Hover!
 			{
-				GraphicElement el = elements.FirstOrDefault(e => e.IsSelectable(mousePosition));
-
-                // Remove anchors from current object being moused over and show, if an element selected on new object.
-                if (el != showingAnchorsElement)
+                // First, showing anchors on a multi-select object doesn't make sense.
+                // Second, this fixes a bug where trails are left on a multi-select when the mouse moves between shapes and
+                // different shape anchors are shown, then the entire selection is moved.
+                // if (selectedElements.Count <= 1)
                 {
-                    if (showingAnchorsElement != null)
-                    {
-                        showingAnchorsElement.ShowAnchors = false;
-                        Redraw(showingAnchorsElement);
-                        showingAnchorsElement = null;
-                        canvas.Cursor = Cursors.Arrow;
-                    }
+                    GraphicElement el = elements.FirstOrDefault(e => e.IsSelectable(mousePosition));
 
-                    if (el != null)
+                    // Remove anchors from current object being moused over and show, if an element selected on new object.
+                    if (el != showingAnchorsElement)
                     {
-                        el.ShowAnchors = true;
-                        Redraw(el);
-                        showingAnchorsElement = el;
+                        if (showingAnchorsElement != null)
+                        {
+                            showingAnchorsElement.ShowAnchors = false;
+                            Redraw(showingAnchorsElement);
+                            showingAnchorsElement = null;
+                            canvas.Cursor = Cursors.Arrow;
+                        }
+
+                        if (el != null)
+                        {
+                            el.ShowAnchors = true;
+                            Redraw(el);
+                            showingAnchorsElement = el;
+                            SetAnchorCursor(el);
+                        }
+                    }
+                    else if (el != null && el == showingAnchorsElement)
+                    {
+                        // Same element is still selected, update cursor.
                         SetAnchorCursor(el);
                     }
-                }
-                else if (el != null && el == showingAnchorsElement)
-                {
-                    // Same element is still selected, update cursor.
-                    SetAnchorCursor(el);
                 }
             }
 		}
@@ -323,13 +332,23 @@ namespace FlowSharpLib
             {
                 DeselectCurrentSelectedElements();
             }
+            else
+            {
+                // If the current element is selected, deselect just that element
+                GraphicElement el = elements.FirstOrDefault(e => e.IsSelectable(mousePosition));
+                if (selectedElements.Contains(el))
+                {
+                    DeselectElement(el);
+                    return;
+                }
+            }
 
             SelectElement(mousePosition);
             selectedAnchor = null;
                 
             if (selectedElements.Count == 1)
             {
-                selectedAnchor = selectedElements.Last()?.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
+                selectedAnchor = selectedElements[0].GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
                 ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElements.Last() });
             }
 
@@ -349,18 +368,22 @@ namespace FlowSharpLib
         {
             rightMouseDown = true;
             startSelectionPosition = mousePosition;
+            currentSelectionPosition = startSelectionPosition;
         }
 
         protected void EndSelectionMode()
         {
             rightMouseDown = false;
             selectionMode = false;
-            List<GraphicElement> intersections = new List<GraphicElement>();
-            FindAllIntersections(intersections, selectionRectangle);
-            intersections.Remove(selectionRectangle);
-            DeleteElement(selectionRectangle);            
+            DeleteElement(selectionBox);
+            List<GraphicElement> selectedElements = new List<GraphicElement>();
+            elements.Where(e => !selectedElements.Contains(e) && e.UpdateRectangle.IntersectsWith(selectionBox.DisplayRectangle)).ForEach((e) =>
+            {
+                selectedElements.Add(e);
+            });
+
             DeselectCurrentSelectedElements();
-            SelectElements(intersections);
+            SelectElements(selectedElements);
             canvas.Invalidate();
         }
 

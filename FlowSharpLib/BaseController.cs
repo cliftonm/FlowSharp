@@ -6,6 +6,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Drawing;
 
@@ -26,6 +28,7 @@ namespace FlowSharpLib
         public const int CAP_HEIGHT = 5;
 
 		public Canvas Canvas { get { return canvas; } }
+        public ReadOnlyCollection<GraphicElement> Elements { get { return elements.AsReadOnly(); } }
 
 		protected List<GraphicElement> elements;
 		public EventHandler<ElementEventArgs> ElementSelected;
@@ -184,12 +187,71 @@ namespace FlowSharpLib
 			el.Connections.ForEach(c =>
 			{
 				// Connection point on shape.
-				ConnectionPoint cp = el.GetConnectionPoints().Single(cp2 => cp2.Type == c.ElementConnectionPoint.Type);
-				c.ToElement.MoveAnchor(cp, c.ToConnectionPoint);
+				var cps = el.GetConnectionPoints().Where(cp2 => cp2.Type == c.ElementConnectionPoint.Type);
+                cps.ForEach(cp => c.ToElement.MoveAnchor(cp, c.ToConnectionPoint));
 			});
 		}
 
-		public void MoveElement(GraphicElement el, Point delta)
+        public void MoveSelectedElements(Point delta)
+        {
+            int dx = delta.X.Abs();
+            int dy = delta.Y.Abs();
+            List<GraphicElement> intersections = new List<GraphicElement>();
+
+            selectedElements.ForEach(el =>
+            {
+                intersections.AddRange(FindAllIntersections(el));
+            });
+
+            IEnumerable<GraphicElement> distinctIntersections = intersections.Distinct();
+
+
+            List<GraphicElement> connectors = new List<GraphicElement>();
+
+            selectedElements.ForEach(el =>
+            {
+                el.Connections.ForEach(c =>
+                {
+                    if (!connectors.Contains(c.ToElement))
+                    {
+                        connectors.Add(c.ToElement);
+                    }
+                });
+            });
+
+            EraseTopToBottom(distinctIntersections);
+
+            connectors.ForEach(c =>
+            {
+                c.Move(delta);
+                c.UpdatePath();
+            });
+
+            selectedElements.ForEach(el =>
+            {
+                // el.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
+                // Move without redraw
+                //el.Connections.ForEach(c =>
+                //{
+                //    c.ToElement.Move(delta);
+                //    c.ToElement.UpdatePath();
+                //});
+
+                // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
+                if (!el.IsConnector)
+                {
+                    el.Move(delta);
+                    el.UpdatePath();
+                }
+
+                // UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = el });
+            });
+
+            DrawBottomToTop(distinctIntersections, dx, dy);
+            UpdateScreen(distinctIntersections, dx, dy);
+        }
+
+        public void MoveElement(GraphicElement el, Point delta)
 		{
 			if (el.OnScreen())
 			{
@@ -259,45 +321,53 @@ namespace FlowSharpLib
 			pngCanvas.Dispose();
 		}
 
-		/// <summary>
-		/// Recursive loop to get all intersecting rectangles, including intersectors of the intersectees, so that all elements that
-		/// are affected by an overlap redraw are erased and redrawn, otherwise we get artifacts of some intersecting elements when intersection count > 2.
-		/// </summary>
-		protected void FindAllIntersections(List<GraphicElement> intersections, GraphicElement el, int dx = 0, int dy = 0)
+        public IEnumerable<GraphicElement> FindAllIntersections(GraphicElement el, int dx = 0, int dy = 0)
+        {
+            List<GraphicElement> intersections = new List<GraphicElement>();
+            RecursiveFindAllIntersections(intersections, el, dx, dy);
+            
+            return intersections.OrderBy(e => elements.IndexOf(e));
+        }
+
+        /// <summary>
+        /// Recursive loop to get all intersecting rectangles, including intersectors of the intersectees, so that all elements that
+        /// are affected by an overlap redraw are erased and redrawn, otherwise we get artifacts of some intersecting elements when intersection count > 2.
+        /// </summary>
+        private void RecursiveFindAllIntersections(List<GraphicElement> intersections, GraphicElement el, int dx = 0, int dy = 0)
 		{
 			// Cool thing here is that if the element has no intersections, this list still returns that element because it intersects with itself!
 			elements.Where(e => !intersections.Contains(e) && e.UpdateRectangle.IntersectsWith(el.UpdateRectangle.Grow(dx, dy))).ForEach((e) =>
 			{
 				intersections.Add(e);
-				FindAllIntersections(intersections, e);
+                RecursiveFindAllIntersections(intersections, e);
 			});
 		}
 
 		protected IEnumerable<GraphicElement> EraseTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
 		{
-			List<GraphicElement> intersections = new List<GraphicElement>();
-			FindAllIntersections(intersections, el, dx, dy);
-			IEnumerable<GraphicElement> els = intersections.OrderBy(e => elements.IndexOf(e));
-			els.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.Erase());
+            IEnumerable<GraphicElement> intersections = FindAllIntersections(el, dx, dy);
+			intersections.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.Erase());
 
-			return els;
+			return intersections;
 		}
 
-		protected void EraseTopToBottom(IEnumerable<GraphicElement> els)
+		public void EraseTopToBottom(IEnumerable<GraphicElement> els)
 		{
+            Trace.WriteLine("EraseTopToBottom");
 			els.Where(e => e.OnScreen()).ForEach(e => e.Erase());
 		}
 
-		protected void DrawBottomToTop(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
+		public void DrawBottomToTop(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
 		{
-			els.Reverse().Where(e => e.OnScreen(dx, dy)).ForEach(e =>
+            Trace.WriteLine("DrawBottomToTop");
+            els.Reverse().Where(e => e.OnScreen(dx, dy)).ForEach(e =>
 			{
 				e.GetBackground();
 				e.Draw();
 			});
 		}
 
-		protected void UpdateScreen(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
+		public void UpdateScreen(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
 		{
 			// Is this faster than creating a unioned rectangle?  Dunno, because the unioned rectangle might include a lot of space not part of the shapes, like something in an "L" pattern.
 			els.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.UpdateScreen(dx, dy));

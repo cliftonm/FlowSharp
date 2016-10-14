@@ -42,12 +42,19 @@ namespace FlowSharpLib
 			EndCap = epb.EndCap;
 		}
 
-		public override void FinalFixup(List<GraphicElement> elements, ElementPropertyBag epb)
+		public override void FinalFixup(List<GraphicElement> elements, ElementPropertyBag epb, Dictionary<Guid, Guid> oldNewGuidMap)
 		{
-			base.FinalFixup(elements, epb);
-			StartConnectedShape = elements.SingleOrDefault(e => e.Id == epb.StartConnectedShapeId);
-			EndConnectedShape = elements.SingleOrDefault(e => e.Id == epb.EndConnectedShapeId);
-            base.FinalFixup(elements, epb);
+			base.FinalFixup(elements, epb, oldNewGuidMap);
+
+            if (epb.StartConnectedShapeId != Guid.Empty)
+            {
+                StartConnectedShape = elements.SingleOrDefault(e => e.Id == oldNewGuidMap[epb.StartConnectedShapeId]);
+            }
+
+            if (epb.EndConnectedShapeId != Guid.Empty)
+            {
+                EndConnectedShape = elements.SingleOrDefault(e => e.Id == oldNewGuidMap[epb.EndConnectedShapeId]);
+            }
 		}
 
 		public override void SetConnection(GripType gt, GraphicElement shape)
@@ -63,8 +70,8 @@ namespace FlowSharpLib
 		public override void DisconnectShapeFromConnector(GripType gt)
 		{
 			(gt.In(startGrips)).IfElse(
-				() => StartConnectedShape.IfNotNull(el => el.Connections.RemoveAll(c => c.ToElement == this)),
-				() => EndConnectedShape.IfNotNull(el => el.Connections.RemoveAll(c => c.ToElement == this)));
+				() => StartConnectedShape.IfNotNull(el => el.Connections.RemoveAll(c => c.ToElement == this)),      // If
+				() => EndConnectedShape.IfNotNull(el => el.Connections.RemoveAll(c => c.ToElement == this)));       // Else
 		}
 
 		public override void DetachAll()

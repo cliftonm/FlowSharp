@@ -19,11 +19,11 @@ namespace FlowSharpLib
         public Point MousePosition { get; }
         public MouseButtons Buttons { get; }
 
-        public MouseAction(MouseController.MouseEvent mouseEvent, Point mousePosition, MouseButtons buttons)
+        public MouseAction(MouseController.MouseEvent mouseEvent, Point mousePosition)
         {
             MouseEvent = mouseEvent;
             MousePosition = mousePosition;
-            Buttons = buttons;
+            // Buttons = buttons;
         }
     }
 
@@ -95,9 +95,9 @@ namespace FlowSharpLib
 
         public void HookMouseEvents()
         {
-            Controller.Canvas.MouseDown += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseDown, args.Location, args.Button));
-            Controller.Canvas.MouseUp += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseUp, args.Location, args.Button));
-            Controller.Canvas.MouseMove += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseMove, args.Location, args.Button));
+            Controller.Canvas.MouseDown += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseDown, args.Location));
+            Controller.Canvas.MouseUp += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseUp, args.Location));
+            Controller.Canvas.MouseMove += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseMove, args.Location));
         }
 
         public virtual void InitializeBehavior()
@@ -373,7 +373,6 @@ namespace FlowSharpLib
         {
             CurrentMousePosition = action.MousePosition;
             CurrentButtons = Control.MouseButtons;
-            // Trace.WriteLine("Buttons = " + CurrentButtons.ToString());
 
             // Resolve now, otherwise the iterator will find additional routes as actions occur.
             // A good example is when a shape is added to a selection list, using the enumerator, this

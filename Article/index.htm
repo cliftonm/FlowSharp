@@ -106,9 +106,23 @@
 	</ul>
 	</li>
 	<li><a href="#revisions">Revisions</a><ul>
-	<li><a href="#101316">10/13/16 - Debugging</a></li>
-	<li><a href="#101216">10/12/16 - Group Select, cursors, import, and bug fixes</a></li>
-	<li><a href="#101016">10/10/16 - Toolbox Drag &amp; Drop and minor stuff</a></li>
+	<li><a href="#101316">10/15/16</a><ul>
+	<li><a href="#debugging">Debugging</a></li>
+	<li><a href="#groupselect">Group Select</a></li>
+	<li><a href="#ux">Group Select User Experience and the Need for a Mouse Router</a></li>
+	<li><a href="#issues1">Issues Encountered</a></li>
+	<li><a href="#cursors">Cursors</a></li>
+	<li><a href="#candp">Copy and Paste</a></li>
+</ul>
+	</li>
+</ul>
+	<ul>
+	<li><a href="#101016">10/10/16</a><ul>
+	<li><a href="#dand">Toolbox Drag &amp; Drop and minor stuff</a></li>
+	<li><a href="#import">Import</a></li>
+</ul>
+
+	</li>
 	<li><a href="#100516">10/5/16 - Nothing Exciting</a></li>
 </ul>
 
@@ -1807,7 +1821,7 @@ canvasController.SelectElement(el);</pre>
 
 <h2><a name="revisions">Revisions</a></h2>
 <p><a name="101316">10/13/2016</a></p>
-<h3>Debugging</h3>
+<h3><a name="debugging">Debugging</a></h3>
 <p><img border="0" src="img31.png" width="665" height="567"></p>
 <p>I started noticing some strange behaviors, so I implemented a tree view of 
 the shapes and their connections.&nbsp; This will come in handy as well later 
@@ -1947,8 +1961,7 @@ correct.</p>
 help debug problems, and also is some good guidance on how to refactor code 
 (like renaming method being refactored) so that code that uses those refactored 
 methods can be looked at for wrong use case as well.</i></b></p>
-<p><a name="101216">10/12/2016</a></p>
-<h3>Group Select</h3>
+<h3><a name="groupselect">Group Select</a></h3>
 <p>You can now select multiple shapes and drag them around, using the Shift or 
 Ctrl keys.&nbsp; Hold down Shift or Ctrl when selecting more than one shape, 
 then drag the shapes (holding the left mouse button down.)&nbsp; Once you start 
@@ -2010,7 +2023,7 @@ selectionBox.BorderPen.Color = Color.Gray;
 selectionBox.FillBrush.Color = Color.Transparent;
 selectionBox.DisplayRectangle = new Rectangle(startSelectionPosition, new Size(SELECTION_MIN, SELECTION_MIN));
 Insert(selectionBox);</pre>
-<h4>Group Select User Experience</h4>
+<h3><a name="ux">Group Select User Experience and the Need for a Mouse Router</a></h3>
 <p>Enabling the group select feature resulted in the discovery of how 
 interesting the user experience needs to be.&nbsp; In my original 
 implementation, shapes were selected by clicking on them while holding down the 
@@ -2106,16 +2119,94 @@ else // Mouse Hover!
   }
 }</pre>
 <p><img border="0" src="img33.png" width="187" height="184"></p>
-<p>What's needed is a mouse event state router!&nbsp; In fact, the whole mouse 
+<p>What's needed is a mouse event router!&nbsp; In fact, the whole mouse 
 handling can be moved out of the <code>CanvasController</code> and into it's own 
-<code>MouseController</code> class.</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<h4>Issues</h4>
-<h5>Connectors</h5>
+<code>MouseController</code> class.&nbsp; The result is this (a major update):</p>
+<p>(MouseController.cs)</p>
+<pre>public class MouseRouter
+{
+  public MouseController.RouteName RouteName { get; set; }
+  public MouseController.MouseEvent MouseEvent { get; set; }
+  public Func&lt;bool&gt; Condition { get; set; }
+  public Action Action { get; set; }
+}</pre>
+<p>This establishes the conditions for performing a particular action.&nbsp; All 
+mouse events now go through a single router call:</p>
+<pre>protected virtual void HandleEvent(MouseAction action)
+{
+  CurrentMousePosition = action.MousePosition;
+  CurrentButtons = Control.MouseButtons;
+
+  // Resolve now, otherwise the iterator will find additional routes as actions occur.
+  // A good example is when a shape is added to a selection list, using the enumerator, this
+  // then qualifies the remove shape route from selected list!
+  List&lt;MouseRouter&gt; routes = router.Where(r =&gt; r.MouseEvent == action.MouseEvent &amp;&amp; r.Condition()).ToList();
+  routes.ForEach(r =&gt;
+  {
+    Trace.WriteLine(&quot;Route: &quot; + r.RouteName.ToString());
+    r.Action();
+  });
+
+  LastMousePosition = CurrentMousePosition;
+}</pre>
+<p>There are 19 routes!</p>
+<pre>public enum RouteName
+{
+  StartDragSurface,
+  EndDragSurface,
+  EndDragSurfaceWithDeselect,
+  DragSurface,
+  StartDragSelectionBox,
+  EndDragSelectionBox,
+  DragSelectionBox,
+  StartShapeDrag,
+  EndShapeDrag,
+  DragShapes,
+  DragAnchor,
+  HoverOverShape,
+  ShowAnchors,
+  ShowAnchorCursor,
+  ClearAnchorCursor,
+  HideAnchors,
+  SelectSingleShape,
+  AddSelectedShape,
+  RemoveSelectedShape,
+}</pre>
+<p>Here is an example of a route, namely the shape dragging route:</p>
+<pre>// Drag shapes:
+router.Add(new MouseRouter()
+{
+  RouteName = RouteName.DragShapes,
+  MouseEvent = MouseEvent.MouseMove,
+  Condition = () =&gt; DraggingShapes &amp;&amp; HoverShape.GetAnchors().FirstOrDefault(a =&gt; a.Near(CurrentMousePosition)) == null,
+  Action = () =&gt;
+  {
+    DragShapes();
+    DraggingOccurred = true;
+  },
+});</pre>
+<p>Notice this checks:</p>
+<ol>
+	<li>The state, that dragging shapes has been enabled (which is set by the 
+	mouse down route on the condition that a shape is selected.)</li>
+	<li>We're not dragging an anchor (the mouse isn't near an anchor.)</li>
+</ol>
+<p>The salient points of the router is that:</p>
+<ol>
+	<li>It manages state flags - a nice separation of concerns between state 
+	management and actions for a given state</li>
+	<li>The actions are all now very concise, doing one thing and one thing 
+	only, and no if statements!</li>
+</ol>
+<p>For example:</p>
+<pre>protected void DragShapes()
+{
+  Point delta = CurrentMousePosition.Delta(LastMousePosition);
+  Controller.DragSelectedElements(delta);
+  Controller.Canvas.Cursor = Cursors.SizeAll;
+}</pre>
+<h3><a name="issues1">Issues Encountered</a></h3>
+<h4>Connectors</h4>
 <p>One issue I had was that connectors.&nbsp; Because they are &quot;moved&quot; when 
 group selected, they were detaching from their connected shape.&nbsp; This 
 kludge (violates my &quot;don't do an <code>is</code> test&quot;) works for now:</p>
@@ -2151,7 +2242,7 @@ kludge (violates my &quot;don't do an <code>is</code> test&quot;) works for now:
   });
 }</pre>
 <p>I'm not particularly proud of that code.&nbsp; To many <code>if</code> statements!</p>
-<h5>Multi-object Dragging Efficiency</h5>
+<h4>Multi-object Dragging Efficiency</h4>
 <p>The performance right now when selecting more than 10 shapes or so is very 
 poor, resulting in jerky motion.&nbsp; This is most likely because, instead of 
 erasing all the selected shapes, moving them, then redrawing them, the code is 
@@ -2160,7 +2251,7 @@ erase/redraws.&nbsp; </p>
 <p>At least that's what I thought.&nbsp; While that is part of the issue, the 
 real problem was that the property grid was being updated when each selected 
 element was being dragged!</p>
-<h3>Cursors</h3>
+<h3><a name="cursors">Cursors</a></h3>
 <p>Hovering over or selecting an anchor point now displays the appropriate 
 cursor arrow for that anchor.&nbsp; This was an easy tweak.&nbsp; First, set the 
 cursor to display when building the anchor list, for example:</p>
@@ -2174,7 +2265,7 @@ is the code for when the mouse is hovering:</p>
   ShapeAnchor anchor = el.GetAnchors().FirstOrDefault(a =&gt; a.Near(mousePosition));
   canvas.Cursor = anchor == null ? Cursors.Arrow : anchor.Cursor;
 }</pre>
-<h4>Copy and Paste</h4>
+<h3><a name="candp">Copy and Paste</a></h3>
 <p>Copy and paste was easy:</p>
 <p>(FlowSharpUI.cs)</p>
 <p>Copy (was):</p>
@@ -2309,7 +2400,7 @@ public void Bottommost()
 }</pre>
 <p>Move up/down was unaffected because they are an adjacent swap.</p>
 <p><a name="101016">10/10/2016</a></p>
-<h3>Toolbox Drag &amp; Drop</h3>
+<h3><a name="dand">Toolbox Drag &amp; Drop</a></h3>
 <p>You can now drag and drop from the toolbox onto the canvas.&nbsp; This was 
 challenging because the when you move the mouse on the toolbox panel, the mouse 
 events come to that panel, even as you cross over to the panel containing the 

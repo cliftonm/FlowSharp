@@ -55,6 +55,20 @@ namespace FlowSharpLib
 
 		public virtual bool Snap(GripType type, ref Point delta) { return false; }
         public virtual void SelectElement(GraphicElement el) { }
+        public virtual void SetAnchorCursor(GraphicElement el) { }
+        public virtual void DragSelectedElements(Point delta) { }
+        public virtual bool IsMultiSelect() { return false; }
+        public virtual void DeselectCurrentSelectedElements() { }
+
+        public bool IsShapeSelectable(Point p)
+        {
+            return elements.Any(e => e.IsSelectable(p));
+        }
+
+        public GraphicElement GetShapeAt(Point p)
+        {
+            return elements.FirstOrDefault(e => e.IsSelectable(p));
+        }
 
         public void Topmost()
 		{

@@ -51,6 +51,7 @@
     <Compile Include="DynamicConnectorProperties.cs" />
     <Compile Include="DynamicConnectorUD.cs" />
     <Compile Include="Line.cs" />
+    <Compile Include="MouseController.cs" />
     <Compile Include="Persist.cs" />
     <Compile Include="RightTriangle.cs" />
     <Compile Include="ShapeAnchor.cs" />

@@ -39,12 +39,12 @@ namespace FlowSharpLib
 		{
 			canvas.Controller = this;
 			canvas.PaintComplete = CanvasPaintComplete;
-            canvas.MouseDown += OnMouseDown;
-            canvas.MouseUp += OnMouseUp;
-			canvas.MouseMove += OnMouseMove;
+//          canvas.MouseDown += OnMouseDown;
+//          canvas.MouseUp += OnMouseUp;
+//			canvas.MouseMove += OnMouseMove;
 		}
 
-        public void DragSelectedElements(Point delta)
+        public override void DragSelectedElements(Point delta)
         {
             if (selectedElements.Count == 1)
             {
@@ -76,7 +76,7 @@ namespace FlowSharpLib
             UpdateScreen(intersections);
         }
 
-        public void DeselectCurrentSelectedElements()
+        public override void DeselectCurrentSelectedElements()
         {
             selectedElements.ForEach(el =>
             {
@@ -301,7 +301,7 @@ namespace FlowSharpLib
             }
 		}
 
-        protected void SetAnchorCursor(GraphicElement el)
+        public override void SetAnchorCursor(GraphicElement el)
         {
             ShapeAnchor anchor = el.GetAnchors().FirstOrDefault(a => a.Near(mousePosition));
             canvas.Cursor = anchor == null ? Cursors.Arrow : anchor.Cursor;
@@ -319,7 +319,7 @@ namespace FlowSharpLib
             }
         }
 
-        protected bool IsMultiSelect()
+        public override bool IsMultiSelect()
         {
             return !((Control.ModifierKeys & (Keys.Control | Keys.Shift)) == 0);
         }

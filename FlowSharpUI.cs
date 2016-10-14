@@ -30,7 +30,8 @@ namespace FlowSharp
 
     public partial class FlowSharpUI : Form
     {
-		protected CanvasController canvasController;
+        protected MouseController mouseController;
+        protected CanvasController canvasController;
 		protected ToolboxController toolboxController;
 		protected UIController uiController;
 		protected Canvas canvas;
@@ -176,11 +177,13 @@ namespace FlowSharp
 		protected void InitializeControllers()
 		{ 
 			canvasController = new CanvasController(canvas, elements);
+            mouseController = new MouseController(canvasController);
 			canvasController.ElementSelected+=(snd, args) => UpdateMenu(args.Element != null);
 			toolboxController = new ToolboxController(toolboxCanvas, toolboxElements, canvasController);
 			uiController = new UIController(pgElement, canvasController);
+            mouseController.HookMouseEvents();
+            mouseController.InitializeBehavior();
 		}
-
 
 		protected void UpdateMenu(bool elementSelected)
 		{

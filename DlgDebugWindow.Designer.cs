@@ -114,6 +114,7 @@
             // ckRoutingEvents
             // 
             this.ckRoutingEvents.AutoSize = true;
+            this.ckRoutingEvents.Enabled = false;
             this.ckRoutingEvents.Location = new System.Drawing.Point(168, 283);
             this.ckRoutingEvents.Name = "ckRoutingEvents";
             this.ckRoutingEvents.Size = new System.Drawing.Size(108, 19);
@@ -124,6 +125,7 @@
             // ckShapeEvents
             // 
             this.ckShapeEvents.AutoSize = true;
+            this.ckShapeEvents.Enabled = false;
             this.ckShapeEvents.Location = new System.Drawing.Point(297, 284);
             this.ckShapeEvents.Name = "ckShapeEvents";
             this.ckShapeEvents.Size = new System.Drawing.Size(101, 19);

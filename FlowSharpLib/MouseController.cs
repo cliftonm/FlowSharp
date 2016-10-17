@@ -102,6 +102,17 @@ namespace FlowSharpLib
 
         public virtual void InitializeBehavior()
         {
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.StartDragSurface,
+                MouseEvent = MouseEvent.MouseDown,
+                Condition = () => true,
+                Action = () =>
+                {
+                    Controller.Canvas.Focus();
+                }
+            });
+
             // DRAG SURFACE ROUTES:
 
             // Start drag surface:

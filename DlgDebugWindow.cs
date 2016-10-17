@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using FlowSharpLib;
@@ -28,7 +22,15 @@ namespace FlowSharp
         {
             if (ckTraceEnabled.Checked)
             {
-                tbTrace.AppendText(msg);
+                if (msg.StartsWith("Route:") && ckRoutingEvents.Checked)
+                {
+                    tbTrace.AppendText(msg);
+                }
+
+                if (msg.StartsWith("Shape:") && ckShapeEvents.Checked)
+                {
+                    tbTrace.AppendText(msg);
+                }
             }
         }
 
@@ -90,6 +92,12 @@ namespace FlowSharp
         private void btnClearTrace_Click(object sender, EventArgs e)
         {
             tbTrace.Text = "";
+        }
+
+        private void ckTraceEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            ckRoutingEvents.Enabled = ckTraceEnabled.Checked;
+            ckShapeEvents.Enabled = ckTraceEnabled.Checked;
         }
     }
 }

@@ -35,6 +35,8 @@
             this.tbTrace = new System.Windows.Forms.TextBox();
             this.btnClearTrace = new System.Windows.Forms.Button();
             this.ckTraceEnabled = new System.Windows.Forms.CheckBox();
+            this.ckRoutingEvents = new System.Windows.Forms.CheckBox();
+            this.ckShapeEvents = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnUpdate
@@ -107,12 +109,35 @@
             this.ckTraceEnabled.TabIndex = 8;
             this.ckTraceEnabled.Text = "Enabled";
             this.ckTraceEnabled.UseVisualStyleBackColor = true;
+            this.ckTraceEnabled.CheckedChanged += new System.EventHandler(this.ckTraceEnabled_CheckedChanged);
+            // 
+            // ckRoutingEvents
+            // 
+            this.ckRoutingEvents.AutoSize = true;
+            this.ckRoutingEvents.Location = new System.Drawing.Point(168, 283);
+            this.ckRoutingEvents.Name = "ckRoutingEvents";
+            this.ckRoutingEvents.Size = new System.Drawing.Size(108, 19);
+            this.ckRoutingEvents.TabIndex = 9;
+            this.ckRoutingEvents.Text = "Routing Events";
+            this.ckRoutingEvents.UseVisualStyleBackColor = true;
+            // 
+            // ckShapeEvents
+            // 
+            this.ckShapeEvents.AutoSize = true;
+            this.ckShapeEvents.Location = new System.Drawing.Point(297, 284);
+            this.ckShapeEvents.Name = "ckShapeEvents";
+            this.ckShapeEvents.Size = new System.Drawing.Size(101, 19);
+            this.ckShapeEvents.TabIndex = 10;
+            this.ckShapeEvents.Text = "Shape Events";
+            this.ckShapeEvents.UseVisualStyleBackColor = true;
             // 
             // DlgDebugWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(649, 554);
+            this.Controls.Add(this.ckShapeEvents);
+            this.Controls.Add(this.ckRoutingEvents);
             this.Controls.Add(this.ckTraceEnabled);
             this.Controls.Add(this.btnClearTrace);
             this.Controls.Add(this.tbTrace);
@@ -135,5 +160,7 @@
         public System.Windows.Forms.TextBox tbTrace;
         private System.Windows.Forms.Button btnClearTrace;
         private System.Windows.Forms.CheckBox ckTraceEnabled;
+        private System.Windows.Forms.CheckBox ckRoutingEvents;
+        private System.Windows.Forms.CheckBox ckShapeEvents;
     }
 }

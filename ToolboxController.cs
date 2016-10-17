@@ -71,6 +71,7 @@ namespace FlowSharp
 
             dragging = false;
             mouseDown = false;
+            canvasController.HideConnectionPoints();
             DeselectCurrentSelectedElement();
             selectedElements.Clear();
             canvas.Cursor = Cursors.Arrow;

@@ -15,19 +15,6 @@ using FlowSharpLib;
 
 namespace FlowSharp
 {
-    public class TraceListener : ConsoleTraceListener
-    {
-        public DlgDebugWindow DebugWindow { get; set; }
-
-        public override void WriteLine(string msg)
-        {
-            if (DebugWindow != null)
-            {
-                DebugWindow.Trace(msg + "\r\n");
-            }
-        }
-    }
-
     public partial class FlowSharpUI : Form
     {
         protected MouseController mouseController;

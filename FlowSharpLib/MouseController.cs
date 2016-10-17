@@ -194,6 +194,7 @@ namespace FlowSharpLib
                 Condition = () => DraggingShapes || DraggingAnchor,
                 Action = () =>
                 {
+                    Controller.HideConnectionPoints();
                     DraggingShapes = false;
                     DraggingOccurred = false;
                     DraggingAnchor = false;
@@ -380,7 +381,7 @@ namespace FlowSharpLib
             List<MouseRouter> routes = router.Where(r => r.MouseEvent == action.MouseEvent && r.Condition()).ToList();
             routes.ForEach(r =>
             {
-                Trace.WriteLine("Route: " + r.RouteName.ToString());
+                Trace.WriteLine("Route:" + r.RouteName.ToString());
                 r.Action();
             });
 

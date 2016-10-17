@@ -60,6 +60,7 @@ namespace FlowSharpLib
         public virtual bool IsMultiSelect() { return false; }
         public virtual void DeselectCurrentSelectedElements() { }
         public virtual void DeselectElement(GraphicElement el) { }
+        public virtual void HideConnectionPoints() { }
 
         public bool IsShapeSelectable(Point p)
         {
@@ -365,7 +366,7 @@ namespace FlowSharpLib
 
 		protected IEnumerable<GraphicElement> EraseTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
 		{
-            Trace.WriteLine("EraseTopToBottom");
+            Trace.WriteLine("Shape:EraseTopToBottom");
             IEnumerable<GraphicElement> intersections = FindAllIntersections(el, dx, dy);
 			intersections.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.Erase());
 
@@ -374,13 +375,13 @@ namespace FlowSharpLib
 
 		public void EraseTopToBottom(IEnumerable<GraphicElement> els)
 		{
-            Trace.WriteLine("EraseTopToBottom");
+            Trace.WriteLine("Shape:EraseTopToBottom");
 			els.Where(e => e.OnScreen()).ForEach(e => e.Erase());
 		}
 
 		public void DrawBottomToTop(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
 		{
-            Trace.WriteLine("DrawBottomToTop");
+            Trace.WriteLine("Shape:DrawBottomToTop");
             els.Reverse().Where(e => e.OnScreen(dx, dy)).ForEach(e =>
 			{
 				e.GetBackground();

@@ -34,11 +34,13 @@ namespace FlowSharpLib
         protected Point currentSelectionPosition;
         protected GraphicElement selectionBox;
 		protected List<SnapInfo> currentlyNear = new List<SnapInfo>();
-		
-		public CanvasController(Canvas canvas, List<GraphicElement> elements) : base(canvas, elements)
+        protected List<SnapInfo> nearElements;
+
+        public CanvasController(Canvas canvas, List<GraphicElement> elements) : base(canvas, elements)
 		{
 			canvas.Controller = this;
 			canvas.PaintComplete = CanvasPaintComplete;
+            nearElements = new List<SnapInfo>();
 		}
 
         public override void DragSelectedElements(Point delta)
@@ -100,6 +102,12 @@ namespace FlowSharpLib
             UpdateScreen(intersections);
         }
 
+        public override void HideConnectionPoints()
+        {
+            ShowConnectionPoints(nearElements.Select(e => e.NearElement), false);
+            nearElements.Clear();
+        }
+
         public override bool Snap(GripType type, ref Point delta)
         {
             // Snapping permitted only when one and only one element is selected.
@@ -114,7 +122,7 @@ namespace FlowSharpLib
             // So, it seems odd that we're using the connection points of the line, rather than the anchors.
             // However, this is actually simpler, and a line's connection points should at least include the endpoint anchors.
             IEnumerable<ConnectionPoint> connectionPoints = selectedElement.GetConnectionPoints().Where(p => type == GripType.None || p.Type == type);
-            List<SnapInfo> nearElements = GetNearbyElements(connectionPoints);
+            nearElements = GetNearbyElements(connectionPoints);
             ShowConnectionPoints(nearElements.Select(e => e.NearElement), true);
             ShowConnectionPoints(currentlyNear.Where(e => !nearElements.Any(e2 => e.NearElement == e2.NearElement)).Select(e => e.NearElement), false);
             currentlyNear = nearElements;

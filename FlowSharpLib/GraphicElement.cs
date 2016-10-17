@@ -170,7 +170,7 @@ namespace FlowSharpLib
 			return el;
 		}
 
-		public virtual void Serialize(ElementPropertyBag epb)
+		public virtual void Serialize(ElementPropertyBag epb, List<GraphicElement> elementsBeingSerialized)
 		{
 			epb.ElementName = GetType().AssemblyQualifiedName;
 			epb.Id = Id;
@@ -196,7 +196,7 @@ namespace FlowSharpLib
 			epb.HasLeftRightConnections = HasLeftRightConnections;
 			epb.HasTopBottomConnections = HasTopBottomConnections;
 
-			Connections.ForEach(c => c.Serialize(epb));
+			Connections.ForEach(c => c.Serialize(epb, elementsBeingSerialized));
 		}
 
 		public virtual void Deserialize(ElementPropertyBag epb)

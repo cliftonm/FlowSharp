@@ -109,6 +109,7 @@ namespace FlowSharpLib
                 Condition = () => true,
                 Action = () =>
                 {
+                    // So Ctrl+V paste works, as keystroke is intercepted only when canvas panel has focus.
                     Controller.Canvas.Focus();
                 }
             });

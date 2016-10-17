@@ -113,7 +113,7 @@ namespace FlowSharpLib
 			elements.ForEach(el =>
 			{
 				ElementPropertyBag epb = new ElementPropertyBag();
-				el.Serialize(epb);
+				el.Serialize(epb, elements);
 				sps.Add(epb);
 			});
 
@@ -128,7 +128,7 @@ namespace FlowSharpLib
 		public static string Serialize(GraphicElement el)
 		{
 			ElementPropertyBag epb = new ElementPropertyBag();
-			el.Serialize(epb);
+			el.Serialize(epb, new List<GraphicElement>() { el });
 			XmlSerializer xs = new XmlSerializer(typeof(ElementPropertyBag));
 			StringBuilder sb = new StringBuilder();
 			TextWriter tw = new StringWriter(sb);

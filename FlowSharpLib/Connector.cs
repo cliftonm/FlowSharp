@@ -26,13 +26,23 @@ namespace FlowSharpLib
 		{
 		}
 
-		public override void Serialize(ElementPropertyBag epb)
+		public override void Serialize(ElementPropertyBag epb, List<GraphicElement> elementsBeingSerialized)
 		{
-			base.Serialize(epb);
+			base.Serialize(epb, elementsBeingSerialized);
 			epb.StartCap = StartCap;
 			epb.EndCap = EndCap;
-			epb.StartConnectedShapeId = StartConnectedShape?.Id ?? Guid.Empty;
-			epb.EndConnectedShapeId = EndConnectedShape?.Id ?? Guid.Empty;
+
+            // Don't assign connected shape ID to partial copy and paste selection where target is not in elements being serialized.
+
+            if (elementsBeingSerialized.Contains(StartConnectedShape))
+            {
+                epb.StartConnectedShapeId = StartConnectedShape?.Id ?? Guid.Empty;
+            }
+
+            if (elementsBeingSerialized.Contains(EndConnectedShape))
+            {
+                epb.EndConnectedShapeId = EndConnectedShape?.Id ?? Guid.Empty;
+            }
 		}
 
 		public override void Deserialize(ElementPropertyBag epb)

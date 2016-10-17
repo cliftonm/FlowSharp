@@ -66,6 +66,7 @@ namespace FlowSharpLib
 
         public enum RouteName
         {
+            CanvasFocus,
             StartDragSurface,
             EndDragSurface,
             EndDragSurfaceWithDeselect,
@@ -100,11 +101,21 @@ namespace FlowSharpLib
             Controller.Canvas.MouseMove += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseMove, args.Location));
         }
 
+        public void ShapeDeleted(GraphicElement el)
+        {
+            if (HoverShape == el)
+            {
+                DraggingSurface = false;
+                HoverShape.ShowAnchors = false;
+                HoverShape = null;
+            }
+        }
+
         public virtual void InitializeBehavior()
         {
             router.Add(new MouseRouter()
             {
-                RouteName = RouteName.StartDragSurface,
+                RouteName = RouteName.CanvasFocus,
                 MouseEvent = MouseEvent.MouseDown,
                 Condition = () => true,
                 Action = () =>

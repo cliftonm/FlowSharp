@@ -150,6 +150,7 @@ namespace FlowSharp
 
 		protected void Delete()
 		{
+            canvasController.SelectedElements.ForEach(el => mouseController.ShapeDeleted(el));
 			canvasController.DeleteSelectedElements();
 		}
 

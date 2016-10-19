@@ -48,13 +48,16 @@
             this.mnuCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuPaste = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuDebugWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.orderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTopmost = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuBottommost = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMoveUp = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMoveDown = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuDebugWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuGroup = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuUngroup = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlProperties.SuspendLayout();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -116,7 +119,8 @@
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
             this.viewToolStripMenuItem,
-            this.orderToolStripMenuItem});
+            this.orderToolStripMenuItem,
+            this.groupToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(943, 25);
@@ -218,6 +222,21 @@
             this.mnuDelete.Size = new System.Drawing.Size(110, 24);
             this.mnuDelete.Text = "&Delete";
             // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuDebugWindow});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.viewToolStripMenuItem.Text = "&View";
+            // 
+            // mnuDebugWindow
+            // 
+            this.mnuDebugWindow.Name = "mnuDebugWindow";
+            this.mnuDebugWindow.Size = new System.Drawing.Size(159, 24);
+            this.mnuDebugWindow.Text = "&Debug Window";
+            this.mnuDebugWindow.Click += new System.EventHandler(this.mnuDebugWindow_Click);
+            // 
             // orderToolStripMenuItem
             // 
             this.orderToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -232,41 +251,47 @@
             // mnuTopmost
             // 
             this.mnuTopmost.Name = "mnuTopmost";
-            this.mnuTopmost.Size = new System.Drawing.Size(165, 24);
+            this.mnuTopmost.Size = new System.Drawing.Size(141, 24);
             this.mnuTopmost.Text = "To &Top";
             // 
             // mnuBottommost
             // 
             this.mnuBottommost.Name = "mnuBottommost";
-            this.mnuBottommost.Size = new System.Drawing.Size(165, 24);
+            this.mnuBottommost.Size = new System.Drawing.Size(141, 24);
             this.mnuBottommost.Text = "To &Bottom";
             // 
             // mnuMoveUp
             // 
             this.mnuMoveUp.Name = "mnuMoveUp";
-            this.mnuMoveUp.Size = new System.Drawing.Size(165, 24);
+            this.mnuMoveUp.Size = new System.Drawing.Size(141, 24);
             this.mnuMoveUp.Text = "Move &Up";
             // 
             // mnuMoveDown
             // 
             this.mnuMoveDown.Name = "mnuMoveDown";
-            this.mnuMoveDown.Size = new System.Drawing.Size(165, 24);
+            this.mnuMoveDown.Size = new System.Drawing.Size(141, 24);
             this.mnuMoveDown.Text = "Move &Down";
             // 
-            // viewToolStripMenuItem
+            // groupToolStripMenuItem
             // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuDebugWindow});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
-            this.viewToolStripMenuItem.Text = "&View";
+            this.groupToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuGroup,
+            this.mnuUngroup});
+            this.groupToolStripMenuItem.Name = "groupToolStripMenuItem";
+            this.groupToolStripMenuItem.Size = new System.Drawing.Size(52, 21);
+            this.groupToolStripMenuItem.Text = "&Group";
             // 
-            // mnuDebugWindow
+            // mnuGroup
             // 
-            this.mnuDebugWindow.Name = "mnuDebugWindow";
-            this.mnuDebugWindow.Size = new System.Drawing.Size(165, 24);
-            this.mnuDebugWindow.Text = "&Debug Window";
-            this.mnuDebugWindow.Click += new System.EventHandler(this.mnuDebugWindow_Click);
+            this.mnuGroup.Name = "mnuGroup";
+            this.mnuGroup.Size = new System.Drawing.Size(165, 24);
+            this.mnuGroup.Text = "&Group";
+            // 
+            // mnuUngroup
+            // 
+            this.mnuUngroup.Name = "mnuUngroup";
+            this.mnuUngroup.Size = new System.Drawing.Size(165, 24);
+            this.mnuUngroup.Text = "&Ungroup";
             // 
             // FlowSharpUI
             // 
@@ -314,6 +339,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mnuDebugWindow;
+        private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuGroup;
+        private System.Windows.Forms.ToolStripMenuItem mnuUngroup;
     }
 }
 

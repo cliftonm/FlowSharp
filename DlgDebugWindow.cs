@@ -47,29 +47,64 @@ namespace FlowSharp
             {
                 TreeNode node = CreateTreeNode(el);
 
-                if (el.Connections.Any())
-                {
-                    TreeNode connectors = new TreeNode("Connectors");
-                    node.Nodes.Add(connectors);
-                    AddConnections(connectors, el);
-                }
-
                 if (el.IsConnector)
                 {
                     Connector c = (Connector)el;
-
-                    if (c.StartConnectedShape != null)
-                    {
-                        node.Nodes.Add(CreateTreeNode(c.StartConnectedShape, "Start: "));
-                    }
-
-                    if (c.EndConnectedShape != null)
-                    {
-                        node.Nodes.Add(CreateTreeNode(c.EndConnectedShape, "End: "));
-                    }
+                    ShowConnectedShapes(node, c);
                 }
 
+                ShowConnectors(node, el);
+                ShowGroupedChildren(node, el);
+
                 tvShapes.Nodes.Add(node);
+            }
+        }
+
+        protected void ShowConnectors(TreeNode node, GraphicElement el)
+        {
+            if (el.Connections.Any())
+            {
+                TreeNode connectors = new TreeNode("Connectors");
+                node.Nodes.Add(connectors);
+                AddConnections(connectors, el);
+            }
+        }
+
+        protected void ShowConnectedShapes(TreeNode node, Connector c)
+        {
+            if (c.StartConnectedShape != null)
+            {
+                node.Nodes.Add(CreateTreeNode(c.StartConnectedShape, "Start: "));
+            }
+
+            if (c.EndConnectedShape != null)
+            {
+                node.Nodes.Add(CreateTreeNode(c.EndConnectedShape, "End: "));
+            }
+        }
+
+        protected void ShowGroupedChildren(TreeNode node, GraphicElement el)
+        {
+            if (el.GroupChildren.Any())
+            {
+                TreeNode children = new TreeNode("Children");
+                node.Nodes.Add(children);
+
+                foreach (GraphicElement child in el.GroupChildren)
+                {
+                    TreeNode childNode = CreateTreeNode(child);
+                    children.Nodes.Add(childNode);
+
+                    // TODO: Same code as in PopulateWithShapes
+                    if (child.IsConnector)
+                    {
+                        Connector c = (Connector)child;
+                        ShowConnectedShapes(childNode, c);
+                    }
+
+                    ShowConnectors(childNode, child);
+                    ShowGroupedChildren(childNode, child);
+                }
             }
         }
 

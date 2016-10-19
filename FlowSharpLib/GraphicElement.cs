@@ -47,6 +47,8 @@ namespace FlowSharpLib
 		public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + BaseController.CONNECTION_POINT_SIZE); } }
         public virtual bool IsConnector { get { return false; } }
 		public List<Connection> Connections = new List<Connection>();
+        public List<GraphicElement> GroupChildren = new List<GraphicElement>();
+        public GraphicElement Parent { get; set; }
 
 		public Rectangle DisplayRectangle { get; set; }
 		public Pen BorderPen { get; set; }
@@ -197,6 +199,7 @@ namespace FlowSharpLib
 			epb.HasTopBottomConnections = HasTopBottomConnections;
 
 			Connections.ForEach(c => c.Serialize(epb, elementsBeingSerialized));
+            GroupChildren.ForEach(c => epb.Children.Add(new ChildPropertyBag() { ChildId = c.Id }));
 		}
 
 		public virtual void Deserialize(ElementPropertyBag epb)

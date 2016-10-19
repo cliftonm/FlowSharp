@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 using FlowSharpLib;
@@ -160,5 +161,21 @@ namespace FlowSharp
 			// TODO: Check for changes before closing.
 			Close();
 		}
-	}
+
+        private void mnuGroup_Click(object sender, EventArgs e)
+        {
+            if (canvasController.SelectedElements.Any())
+            {
+                FlowSharpLib.GroupBox groupBox = canvasController.GroupShapes(canvasController.SelectedElements);
+                canvasController.DeselectCurrentSelectedElements();
+                canvasController.SelectElement(groupBox);
+            }
+        }
+
+        private void mnuUngroup_Click(object sender, EventArgs e)
+        {
+            canvasController.UngroupShapes(canvasController.SelectedElements);
+            canvasController.SelectedElements.Clear();
+        }
+    }
 }

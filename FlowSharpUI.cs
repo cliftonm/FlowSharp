@@ -58,6 +58,8 @@ namespace FlowSharp
 			mnuBottommost.Click += mnuBottommost_Click;
 			mnuMoveUp.Click += mnuMoveUp_Click;
 			mnuMoveDown.Click += mnuMoveDown_Click;
+            mnuGroup.Click += mnuGroup_Click;
+            mnuUngroup.Click += mnuUngroup_Click;
 
 			keyActions[Keys.Control | Keys.C] = Copy;
 			keyActions[Keys.Control | Keys.V] = Paste;
@@ -150,6 +152,7 @@ namespace FlowSharp
 
 		protected void Delete()
 		{
+            // TODO: Better implementation would be for the mouse controller to hook a shape deleted event?
             canvasController.SelectedElements.ForEach(el => mouseController.ShapeDeleted(el));
 			canvasController.DeleteSelectedElements();
 		}

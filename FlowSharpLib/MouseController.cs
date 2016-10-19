@@ -260,7 +260,8 @@ namespace FlowSharpLib
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape == null &&
                     CurrentButtons == MouseButtons.None &&
-                    Controller.IsShapeSelectable(CurrentMousePosition),
+                    Controller.IsShapeSelectable(CurrentMousePosition) &&
+                    Controller.GetShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
                 Action = () => ShowAnchors(),
             });
 
@@ -272,7 +273,8 @@ namespace FlowSharpLib
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape != null &&
                     CurrentButtons == MouseButtons.None &&
                     Controller.IsShapeSelectable(CurrentMousePosition) &&
-                    HoverShape != Controller.GetShapeAt(CurrentMousePosition),
+                    HoverShape != Controller.GetShapeAt(CurrentMousePosition) &&
+                    Controller.GetShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
                 Action = () => ChangeAnchors(),
             });
 
@@ -520,7 +522,7 @@ namespace FlowSharpLib
             Controller.DeleteElement(SelectionBox);
             List<GraphicElement> selectedElements = new List<GraphicElement>();
 
-            Controller.Elements.Where(e => !selectedElements.Contains(e) && e.UpdateRectangle.IntersectsWith(SelectionBox.DisplayRectangle)).ForEach((e) =>
+            Controller.Elements.Where(e => !selectedElements.Contains(e) && e.Parent == null && e.UpdateRectangle.IntersectsWith(SelectionBox.DisplayRectangle)).ForEach((e) =>
             {
                 selectedElements.Add(e);
             });

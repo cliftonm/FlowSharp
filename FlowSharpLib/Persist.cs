@@ -14,7 +14,12 @@ using System.Xml.Serialization;
 
 namespace FlowSharpLib
 {
-	public class ConnectionPropertyBag
+    public class ChildPropertyBag
+    {
+        public Guid ChildId { get; set; }
+    }
+
+    public class ConnectionPropertyBag
 	{
 		public Guid ToElementId { get; set; }
 		public ConnectionPoint ToConnectionPoint { get; set; }
@@ -71,6 +76,7 @@ namespace FlowSharpLib
 		public bool TextFontItalic { get; set; }
 
 		public List<ConnectionPropertyBag> Connections { get; set; }
+        public List<ChildPropertyBag> Children { get; set; }
 
 		[XmlIgnore]
 		public Color TextColor { get; set; }
@@ -102,6 +108,7 @@ namespace FlowSharpLib
 		public ElementPropertyBag()
 		{
 			Connections = new List<ConnectionPropertyBag>();
+            Children = new List<ChildPropertyBag>();
 		}
 	}
 
@@ -145,6 +152,7 @@ namespace FlowSharpLib
             Dictionary<Guid, Guid> oldNewIdMap = new Dictionary<Guid, Guid>();
             Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections = InternalDeserialize(canvas, data, oldNewIdMap);
             FixupConnections(collections, oldNewIdMap);
+            FixupChildren(collections, oldNewIdMap);
             FinalFixup(collections, oldNewIdMap);
 
             return collections.Item1;
@@ -196,6 +204,23 @@ namespace FlowSharpLib
                     conn.Deserialize(collections.Item1, c, oldNewGuidMap);
                     epb.Element.Connections.Add(conn);
                 });
+            }
+        }
+
+        private static void FixupChildren(Tuple<List<GraphicElement>, List<ElementPropertyBag>> collections, Dictionary<Guid, Guid> oldNewGuidMap)
+        {
+            List<GraphicElement> elements = collections.Item1;
+
+            foreach (ElementPropertyBag epb in collections.Item2)
+            {
+                GraphicElement el = elements.Single(e => e.Id == oldNewGuidMap[epb.Id]);
+
+                foreach (ChildPropertyBag cpb in epb.Children)
+                {
+                    GraphicElement child = elements.Single(e => e.Id == oldNewGuidMap[cpb.ChildId]);
+                    el.GroupChildren.Add(child);
+                    child.Parent = el;
+                }
             }
         }
 

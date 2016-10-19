@@ -64,12 +64,12 @@ namespace FlowSharpLib
 
         public bool IsShapeSelectable(Point p)
         {
-            return elements.Any(e => e.IsSelectable(p));
+            return elements.Any(e => e.IsSelectable(p) && e.Parent == null);
         }
 
         public GraphicElement GetShapeAt(Point p)
         {
-            return elements.FirstOrDefault(e => e.IsSelectable(p));
+            return elements.FirstOrDefault(e => e.IsSelectable(p) && e.Parent == null);
         }
 
         public void SelectElements(List<GraphicElement> els)
@@ -133,6 +133,7 @@ namespace FlowSharpLib
             showingAnchorsElement = null;
             dragging = false;
 
+            // TODO: Optimize for redrawing just selected elements (we remove call to DeleteElement when we do this)
             selectedElements.ForEach(el =>
             {
                 DeleteElement(el);
@@ -144,6 +145,8 @@ namespace FlowSharpLib
 
         public void DeleteElement(GraphicElement el)
         {
+            // TODO: don't redraw all the elements, only erase the current element and update the screen!
+            // See how this is done with Ungroup.
             el.DetachAll();
             EraseTopToBottom(elements);
             elements.Remove(el);
@@ -203,15 +206,65 @@ namespace FlowSharpLib
 			UpdateScreen(els, dx, dy);
 		}
 
-		protected void UpdateConnections(GraphicElement el)
-		{
-			el.Connections.ForEach(c =>
-			{
-				// Connection point on shape.
-				var cps = el.GetConnectionPoints().Where(cp2 => cp2.Type == c.ElementConnectionPoint.Type);
-                cps.ForEach(cp => c.ToElement.MoveAnchor(cp, c.ToConnectionPoint));
-			});
-		}
+        public GroupBox GroupShapes(List<GraphicElement> shapesToGroup)
+        {
+            GroupBox groupBox = null;
+
+            groupBox = new GroupBox(canvas);
+            groupBox.GroupChildren.AddRange(shapesToGroup);
+            Rectangle r = GetExtents(shapesToGroup);
+            r.Inflate(5, 5);
+            groupBox.DisplayRectangle = r;
+            shapesToGroup.ForEach(s => s.Parent = groupBox);
+
+            EraseTopToBottom(shapesToGroup);
+
+            shapesToGroup.Add(groupBox);
+            elements.Add(groupBox);
+
+            DrawBottomToTop(shapesToGroup);
+            UpdateScreen(shapesToGroup);
+
+            return groupBox;
+        }
+
+        public void UngroupShapes(List<GraphicElement> shapesToUngroup)
+        {
+            List<GraphicElement> groupBoxesToRemove = new List<GraphicElement>();
+
+            List<GraphicElement> intersections = new List<GraphicElement>();
+
+            shapesToUngroup.ForEach(el =>
+            {
+                intersections.AddRange(FindAllIntersections(el));
+            });
+
+            // Preserve the original list, including the group boxes, for when we update the screen,
+            // So that the erased groupbox region is updated on the screen.
+            List<GraphicElement> originalIntersections = new List<GraphicElement>(intersections);
+
+            foreach (GraphicElement el in shapesToUngroup)
+            {
+                if (el.GroupChildren.Any())
+                {
+                    groupBoxesToRemove.Add(el);
+                    el.GroupChildren.ForEach(c => c.Parent = null);
+                }
+            }
+
+            EraseTopToBottom(intersections.AsEnumerable());
+
+            // Remove from elements collection and remove from intersections so only
+            // the children are redrawn.
+            groupBoxesToRemove.ForEach(gb =>
+            {
+                elements.Remove(gb);
+                intersections.Remove(gb);
+            });
+
+            DrawBottomToTop(intersections.AsEnumerable());
+            UpdateScreen(originalIntersections);        // remember, this updates the screen for the now erased groupbox.
+        }
 
         public void MoveSelectedElements(Point delta)
         {
@@ -225,8 +278,6 @@ namespace FlowSharpLib
             });
 
             IEnumerable<GraphicElement> distinctIntersections = intersections.Distinct();
-
-
             List<GraphicElement> connectors = new List<GraphicElement>();
 
             selectedElements.ForEach(el =>
@@ -250,22 +301,12 @@ namespace FlowSharpLib
 
             selectedElements.ForEach(el =>
             {
-                // el.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
-                // Move without redraw
-                //el.Connections.ForEach(c =>
-                //{
-                //    c.ToElement.Move(delta);
-                //    c.ToElement.UpdatePath();
-                //});
-
                 // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
                 if (!el.IsConnector)
                 {
                     el.Move(delta);
                     el.UpdatePath();
                 }
-
-                // UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = el });
             });
 
             DrawBottomToTop(distinctIntersections, dx, dy);
@@ -297,7 +338,8 @@ namespace FlowSharpLib
         {
             EraseTopToBottom(elements);
 
-            elements.ForEach(e =>
+            // Don't move grouped children, as the groupbox will do this for us when it moves.
+            elements.Where(e=>e.Parent == null).ForEach(e =>
             {
                 e.Move(delta);
                 e.UpdatePath();
@@ -348,6 +390,28 @@ namespace FlowSharpLib
             RecursiveFindAllIntersections(intersections, el, dx, dy);
             
             return intersections.OrderBy(e => elements.IndexOf(e));
+        }
+
+        protected Rectangle GetExtents(List<GraphicElement> elements)
+        {
+            Rectangle r = elements[0].DisplayRectangle;
+
+            elements.Skip(1).ForEach(el =>
+            {
+                r = Rectangle.Union(r, el.DisplayRectangle);
+            });
+
+            return r;
+        }
+
+        protected void UpdateConnections(GraphicElement el)
+        {
+            el.Connections.ForEach(c =>
+            {
+                // Connection point on shape.
+                var cps = el.GetConnectionPoints().Where(cp2 => cp2.Type == c.ElementConnectionPoint.Type);
+                cps.ForEach(cp => c.ToElement.MoveAnchor(cp, c.ToConnectionPoint));
+            });
         }
 
         /// <summary>

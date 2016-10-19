@@ -231,7 +231,9 @@ namespace FlowSharpLib
             {
                 RouteName = RouteName.DragShapes,
                 MouseEvent = MouseEvent.MouseMove,
-                Condition = () => DraggingShapes && HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null,
+                Condition = () => DraggingShapes && 
+                    HoverShape != null && 
+                    HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null,
                 Action = () =>
                 {
                     DragShapes();

@@ -37,7 +37,6 @@ namespace FlowSharp
             traceListener = new TraceListener();
             Trace.Listeners.Add(traceListener);
             Shown += OnShown;
-			UpdateMenu(false);
 
             // We have to initialize the menu event handlers here, rather than in the designer,
             // so that we can move the menu handlers to the MenuController partial class.
@@ -75,9 +74,10 @@ namespace FlowSharp
 			InitializeCanvas();
 			InitializeToolbox();
 			InitializeControllers();
-		}
+            UpdateMenu(false);
+        }
 
-		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
 			Action act;
             bool ret = false;
@@ -184,6 +184,8 @@ namespace FlowSharp
 			mnuMoveDown.Enabled = elementSelected;
 			mnuCopy.Enabled = elementSelected;
 			mnuDelete.Enabled = elementSelected;
+            mnuGroup.Enabled = elementSelected;
+            mnuUngroup.Enabled = canvasController.SelectedElements.Any(e => e.GroupChildren.Any());
 		}
 
 		protected void InitializeToolbox()

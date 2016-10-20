@@ -13,6 +13,7 @@ namespace FlowSharpLib
     {
         public GroupBox(Canvas canvas) : base(canvas)
 		{
+            FillBrush.Color = Color.FromArgb(240, 240, 240);
         }
 
         public override List<ShapeAnchor> GetAnchors()
@@ -29,6 +30,7 @@ namespace FlowSharpLib
             {
                 g.Move(delta);
                 g.UpdatePath();
+                g.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
             });
         }
     }

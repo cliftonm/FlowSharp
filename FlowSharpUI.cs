@@ -99,13 +99,33 @@ namespace FlowSharp
 		{
             if (canvasController.SelectedElements.Any())
             {
-                string copyBuffer = Persist.Serialize(canvasController.SelectedElements);
+                List<GraphicElement> elementsToCopy = new List<GraphicElement>();
+                // Include child elements of any groupbox, otherwise, on deserialization,
+                // the ID's for the child elements aren't found.
+                elementsToCopy.AddRange(canvasController.SelectedElements);
+                elementsToCopy.AddRange(IncludeChildren(elementsToCopy));
+
+                // string copyBuffer = Persist.Serialize(canvasController.SelectedElements);
+                string copyBuffer = Persist.Serialize(elementsToCopy);
                 Clipboard.SetData("FlowSharp", copyBuffer);
             }
             else
             {
                 MessageBox.Show("Please select one or more shape(s).", "Nothing to copy.", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        protected List<GraphicElement> IncludeChildren(List<GraphicElement> parents)
+        {
+            List<GraphicElement> els = new List<GraphicElement>();
+
+            parents.ForEach(p =>
+            {
+                els.AddRange(p.GroupChildren);
+                els.AddRange(IncludeChildren(p.GroupChildren));
+            });
+
+            return els;
         }
 
         protected void Paste()
@@ -122,7 +142,13 @@ namespace FlowSharp
                 {
                     List<GraphicElement> els = Persist.Deserialize(canvas, copyBuffer);
                     canvasController.DeselectCurrentSelectedElements();
-                    els.ForEach(el =>
+
+                    // After deserialization, only move and select elements without parents -
+                    // children of group boxes should not be moved, as their parent will handle this,
+                    // and children of group boxes cannot be selected.
+                    List<GraphicElement> noParentElements = els.Where(e => e.Parent == null).ToList();
+
+                    noParentElements.ForEach(el =>
                     {
                         el.Move(new Point(20, 20));
                         el.UpdateProperties();
@@ -141,7 +167,7 @@ namespace FlowSharp
                     els.ForEach(el => elements.Insert(0, el));
                     canvasController.DrawBottomToTop(distinctIntersections);
                     canvasController.UpdateScreen(distinctIntersections);
-                    els.ForEach(el => canvasController.SelectElement(el));
+                    noParentElements.ForEach(el => canvasController.SelectElement(el));
                 }
                 catch (Exception ex)
 				{

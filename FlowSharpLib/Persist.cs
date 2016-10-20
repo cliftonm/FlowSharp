@@ -132,6 +132,7 @@ namespace FlowSharpLib
 			return sb.ToString();
 		}
 
+        /*
 		public static string Serialize(GraphicElement el)
 		{
 			ElementPropertyBag epb = new ElementPropertyBag();
@@ -143,6 +144,7 @@ namespace FlowSharpLib
 
 			return sb.ToString();
 		}
+        */
 
         /// <summary>
         /// Remap is false when loading from a file, true when copying and pasting.
@@ -158,6 +160,7 @@ namespace FlowSharpLib
             return collections.Item1;
 		}
 
+        /*
         public static GraphicElement DeserializeElement(Canvas canvas, string data)
         {
             XmlSerializer xs = new XmlSerializer(typeof(ElementPropertyBag));
@@ -170,6 +173,7 @@ namespace FlowSharpLib
 
             return el;
         }
+        */
 
         private static Tuple<List<GraphicElement>, List<ElementPropertyBag>> InternalDeserialize(Canvas canvas, string data, Dictionary<Guid, Guid> oldNewIdMap)
         {

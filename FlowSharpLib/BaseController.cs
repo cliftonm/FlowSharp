@@ -81,27 +81,47 @@ namespace FlowSharpLib
 		{
             selectedElements.ForEach(el =>
             {
+                // TODO: Sub-optimal, as we're erasing all elements.
                 EraseTopToBottom(elements);
                 elements.Remove(el);
                 elements.Insert(0, el);
+                // Preserve child order.
+                el.GroupChildren.OrderByDescending(child=>elements.IndexOf(child)).ForEach(child => MoveToTop(child));
                 DrawBottomToTop(elements);
                 UpdateScreen(elements);
             });
 		}
 
-		public void Bottommost()
+        protected void MoveToTop(GraphicElement el)
+        {
+            elements.Remove(el);
+            elements.Insert(0, el);
+            el.GroupChildren.ForEach(child => MoveToTop(child));
+        }
+
+        public void Bottommost()
 		{
             selectedElements.ForEach(el =>
             {
+                // TODO: Sub-optimal, as we're erasing all elements.
                 EraseTopToBottom(elements);
                 elements.Remove(el);
+                // Preserve child order.
+                el.GroupChildren.OrderBy(child=>elements.IndexOf(child)).ForEach(child => MoveToBottom(child));
                 elements.Add(el);
                 DrawBottomToTop(elements);
                 UpdateScreen(elements);
             });
 		}
 
-		public void MoveUp()
+        protected void MoveToBottom(GraphicElement el)
+        {
+            elements.Remove(el);
+            el.GroupChildren.ForEach(child => MoveToBottom(child));
+            elements.Add(el);
+        }
+
+        public void MoveUp()
 		{
             selectedElements.ForEach(el =>
             {
@@ -157,7 +177,8 @@ namespace FlowSharpLib
 
         protected void Reorder(GraphicElement el, int n)
 		{
-			EraseTopToBottom(elements);
+            // TODO: Sub-optimal, as we're erasing all elements.
+            EraseTopToBottom(elements);
 			elements.Swap(n, elements.IndexOf(el));
 			DrawBottomToTop(elements);
 			UpdateScreen(elements);
@@ -219,7 +240,10 @@ namespace FlowSharpLib
             shapesToGroup.ForEach(s => s.Parent = groupBox);
             IEnumerable<GraphicElement> intersections = FindAllIntersections(groupBox);
             EraseTopToBottom(intersections);
-            elements.Add(groupBox);
+
+            // Insert groupbox just after the lowest shape being grouped.
+            int insertionPoint = shapesToGroup.Select(s => elements.IndexOf(s)).OrderBy(n => n).Last() + 1;
+            elements.Insert(insertionPoint, groupBox);
 
             intersections = FindAllIntersections(groupBox);
             DrawBottomToTop(intersections);

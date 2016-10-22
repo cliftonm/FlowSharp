@@ -136,6 +136,7 @@ namespace FlowSharpLib
             // TODO: Optimize for redrawing just selected elements (we remove call to DeleteElement when we do this)
             selectedElements.ForEach(el =>
             {
+                el.GroupChildren.ForEach(child => child.Parent = null);
                 DeleteElement(el);
             });
 

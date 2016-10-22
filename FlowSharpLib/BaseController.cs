@@ -216,14 +216,13 @@ namespace FlowSharpLib
             r.Inflate(5, 5);
             groupBox.DisplayRectangle = r;
             shapesToGroup.ForEach(s => s.Parent = groupBox);
-
-            EraseTopToBottom(shapesToGroup);
-
-            shapesToGroup.Add(groupBox);
+            IEnumerable<GraphicElement> intersections = FindAllIntersections(groupBox);
+            EraseTopToBottom(intersections);
             elements.Add(groupBox);
 
-            DrawBottomToTop(shapesToGroup);
-            UpdateScreen(shapesToGroup);
+            intersections = FindAllIntersections(groupBox);
+            DrawBottomToTop(intersections);
+            UpdateScreen(intersections);
 
             return groupBox;
         }

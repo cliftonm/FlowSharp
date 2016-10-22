@@ -79,7 +79,8 @@ namespace FlowSharpLib
 
         public void Topmost()
 		{
-            selectedElements.ForEach(el =>
+            // In their original z-order, but reversed because we're inserting at the top...
+            selectedElements.OrderByDescending(el => elements.IndexOf(el)).ForEach(el =>
             {
                 // TODO: Sub-optimal, as we're erasing all elements.
                 EraseTopToBottom(elements);
@@ -92,16 +93,10 @@ namespace FlowSharpLib
             });
 		}
 
-        protected void MoveToTop(GraphicElement el)
-        {
-            elements.Remove(el);
-            elements.Insert(0, el);
-            el.GroupChildren.ForEach(child => MoveToTop(child));
-        }
-
         public void Bottommost()
 		{
-            selectedElements.ForEach(el =>
+            // In their original z-oder, since we're appending to the bottom...
+            selectedElements.OrderBy(el => elements.IndexOf(el)).ForEach(el =>
             {
                 // TODO: Sub-optimal, as we're erasing all elements.
                 EraseTopToBottom(elements);
@@ -114,38 +109,43 @@ namespace FlowSharpLib
             });
 		}
 
-        protected void MoveToBottom(GraphicElement el)
-        {
-            elements.Remove(el);
-            el.GroupChildren.ForEach(child => MoveToBottom(child));
-            elements.Add(el);
-        }
-
         public void MoveUp()
 		{
-            selectedElements.ForEach(el =>
+            // If any of the selected elements is already at the top, then nothing to do.
+            // This prevents adjacent z-order shapes in the selection list from swapping when one of them is already at the top.
+            if (selectedElements.Select(el => elements.IndexOf(el)).OrderBy(idx => idx).First() != 0)
             {
-                int idx = elements.IndexOf(el);
+                // Since we're swapping up, order by z-oder so we're always swapping with the element above.
+                selectedElements.OrderBy(e => elements.IndexOf(e)).ForEach(el =>
+                  {
+                      int idx = elements.IndexOf(el);
 
-                if (idx > 0)
-                {
-                    Reorder(el, idx - 1);
-                }
-            });
-		}
-
-		public void MoveDown()
-		{
-            selectedElements.ForEach(el =>
-            {
-            int idx = elements.IndexOf(el);
-
-            if (idx < elements.Count - 1)
-            {
-                Reorder(el, idx + 1);
+                      if (idx > 0)
+                      {
+                          AdjacentSwap(idx, -1);
+                      }
+                  });
             }
-            });
 		}
+
+        public void MoveDown()
+        {
+            // If any of the selected elements is already at the bottom, then nothing to do.
+            // This prevents adjacent z-order shapes in the selection list from swapping when one of them is already at the bottom.
+            if (selectedElements.Select(el => elements.IndexOf(el)).OrderBy(idx => idx).Last() != elements.Count - 1)
+            {
+                // Since we're swapping down, order by z-oder descending so we're always swapping with the element below.
+                selectedElements.OrderByDescending(e => elements.IndexOf(e)).ForEach(el =>
+              {
+                  int idx = elements.IndexOf(el);
+
+                  if (idx < elements.Count - 1)
+                  {
+                      AdjacentSwap(idx, 1);
+                  }
+              });
+            }
+        }
 
 		public void DeleteSelectedElements()
 		{
@@ -174,15 +174,6 @@ namespace FlowSharpLib
             el.Dispose();
             DrawBottomToTop(elements);
         }
-
-        protected void Reorder(GraphicElement el, int n)
-		{
-            // TODO: Sub-optimal, as we're erasing all elements.
-            EraseTopToBottom(elements);
-			elements.Swap(n, elements.IndexOf(el));
-			DrawBottomToTop(elements);
-			UpdateScreen(elements);
-		}
 
 		public void Redraw(GraphicElement el, int dx=0, int dy=0)
 		{
@@ -416,6 +407,51 @@ namespace FlowSharpLib
             return intersections.OrderBy(e => elements.IndexOf(e));
         }
 
+        public void EraseTopToBottom(IEnumerable<GraphicElement> els)
+        {
+            Trace.WriteLine("Shape:EraseTopToBottom");
+            els.Where(e => e.OnScreen()).ForEach(e => e.Erase());
+        }
+
+        public void DrawBottomToTop(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
+        {
+            Trace.WriteLine("Shape:DrawBottomToTop");
+            els.Reverse().Where(e => e.OnScreen(dx, dy)).ForEach(e =>
+            {
+                e.GetBackground();
+                e.Draw();
+            });
+        }
+
+        public void UpdateScreen(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
+        {
+            // Is this faster than creating a unioned rectangle?  Dunno, because the unioned rectangle might include a lot of space not part of the shapes, like something in an "L" pattern.
+            els.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.UpdateScreen(dx, dy));
+        }
+
+        protected void MoveToTop(GraphicElement el)
+        {
+            elements.Remove(el);
+            elements.Insert(0, el);
+            el.GroupChildren.ForEach(child => MoveToTop(child));
+        }
+
+        protected void MoveToBottom(GraphicElement el)
+        {
+            elements.Remove(el);
+            el.GroupChildren.ForEach(child => MoveToBottom(child));
+            elements.Add(el);
+        }
+
+        protected void AdjacentSwap(int idx1, int delta)
+        {
+            // TODO: Sub-optimal, as we're erasing all elements.
+            EraseTopToBottom(elements);
+            elements.Swap(idx1, idx1 + delta);
+            DrawBottomToTop(elements);
+            UpdateScreen(elements);
+        }
+
         protected Rectangle GetExtents(List<GraphicElement> elements)
         {
             Rectangle r = elements[0].DisplayRectangle;
@@ -459,28 +495,6 @@ namespace FlowSharpLib
 			intersections.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.Erase());
 
 			return intersections;
-		}
-
-		public void EraseTopToBottom(IEnumerable<GraphicElement> els)
-		{
-            Trace.WriteLine("Shape:EraseTopToBottom");
-			els.Where(e => e.OnScreen()).ForEach(e => e.Erase());
-		}
-
-		public void DrawBottomToTop(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
-		{
-            Trace.WriteLine("Shape:DrawBottomToTop");
-            els.Reverse().Where(e => e.OnScreen(dx, dy)).ForEach(e =>
-			{
-				e.GetBackground();
-				e.Draw();
-			});
-		}
-
-		public void UpdateScreen(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
-		{
-			// Is this faster than creating a unioned rectangle?  Dunno, because the unioned rectangle might include a lot of space not part of the shapes, like something in an "L" pattern.
-			els.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.UpdateScreen(dx, dy));
 		}
 
 		protected void CanvasPaintComplete(Canvas canvas)

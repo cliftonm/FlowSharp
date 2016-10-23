@@ -423,6 +423,11 @@ namespace FlowSharpLib
             elements.Add(el);
         }
 
+        // The reason for the complexity here in MoveUp/MoveDown is because we're not actually "containing" child elements
+        // of a group box in a sub-list.  All child elements are actually part of the master, flat, z-ordered list of shapes (elements.)
+        // This means we have to go through some interested machinations to properly move nested groupboxes, however the interesting
+        // side effect to this is that, a non-grouped shape, can slide between shapes in a groupbox!
+
         protected void MoveUp(IEnumerable<GraphicElement> els)
         {
             // Since we're swapping up, order by z-order so we're always swapping with the element above,
@@ -444,7 +449,7 @@ namespace FlowSharpLib
                 int idx = elements.IndexOf(el);
                 int targetIdx = idx > 0 ? idx - 1 : idx;
 
-                if (idx > 0)
+                if (targetIdx != idx)
                 {
                     elements.Swap(idx, idx - 1);
                 }
@@ -473,7 +478,7 @@ namespace FlowSharpLib
                 int idx = elements.IndexOf(el);
                 int targetIdx = idx < elements.Count - 1 ? idx + 1 : idx;
 
-                if (idx < elements.Count - 1)
+                if (targetIdx != idx)
                 {
                     elements.Swap(idx, idx + 1);
                 }

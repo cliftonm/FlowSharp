@@ -425,49 +425,68 @@ namespace FlowSharpLib
 
         protected void MoveUp(IEnumerable<GraphicElement> els)
         {
-            // If any of the selected elements is already at the top, then nothing to do.
-            // This prevents adjacent z-order shapes in the selection list from swapping when one of them is already at the top.
-            if (!AnyAtTop(els))
+            // Since we're swapping up, order by z-order so we're always swapping with the element above,
+            // thus preserving z-order of the selected shapes.
+
+            // (from el in els select new { El = el, Idx = elements.IndexOf(el) }).OrderBy(item => item.Idx).ForEach(item =>
+            els.OrderBy(el=>elements.IndexOf(el)).ForEach(el=>
             {
-                // Since we're swapping up, order by z-order so we're always swapping with the element above,
-                // thus preserving z-order of the selected shapes.
-                els.OrderBy(e => elements.IndexOf(e)).ForEach(el =>
+                // To handle groupboxes:
+                // 1. Recursively get the list of all grouped shapes, which including sub-groups
+                List<GraphicElement> childElements = new List<GraphicElement>();
+                RecursiveGetAllGroupedShapes(el.GroupChildren, childElements);
+                childElements = childElements.OrderBy(e => elements.IndexOf(e)).ToList();
+
+                // 2. Delete all those elements, so we are working with root level shapes only.
+                childElements.ForEach(child => elements.Remove(child));
+                
+                // 3. Now see if there's something to do.
+                int idx = elements.IndexOf(el);
+                int targetIdx = idx > 0 ? idx - 1 : idx;
+
+                if (idx > 0)
                 {
-                    if (!AnyAtTop(el.GroupChildren))
-                    {
-                        MoveUp(el.GroupChildren);       // move child elements first, so any groupbox is swapped up last.
-                        int idx = elements.IndexOf(el);
-                        elements.Swap(idx, idx - 1);
-                    }
-                });
-            }
+                    elements.Swap(idx, idx - 1);
+                }
+
+                // 4. Insert the child elements above the element we just moved up, in reverse order.
+                childElements.AsEnumerable().Reverse().ForEach(child => elements.Insert(targetIdx, child));
+            });
         }
 
         protected void MoveDown(IEnumerable<GraphicElement> els)
         {
-            // If any of the selected elements is already at the bottom, then nothing to do.
-            // This prevents adjacent z-order shapes in the selection list from swapping when one of them is already at the bottom.
-            if (!AnyAtBottom(els))
+            // Since we're swapping down, order by z-oder descending so we're always swapping with the element below,
+            // thus preserving z-order of the selected shapes.
+            els.OrderByDescending(e => elements.IndexOf(e)).ForEach(el =>
             {
-                // Since we're swapping down, order by z-oder descending so we're always swapping with the element below,
-                // thus preserving z-order of the selected shapes.
-                els.OrderByDescending(e => elements.IndexOf(e)).ForEach(el =>
+                // To handle groupboxes:
+                // 1. Recursively get the list of all grouped shapes, which including sub-groups
+                List<GraphicElement> childElements = new List<GraphicElement>();
+                RecursiveGetAllGroupedShapes(el.GroupChildren, childElements);
+                childElements = childElements.OrderBy(e => elements.IndexOf(e)).ToList();
+
+                // 2. Delete all those elements, so we are working with root level shapes only.
+                childElements.ForEach(child => elements.Remove(child));
+
+                // 3. Now see if there's something to do.
+                int idx = elements.IndexOf(el);
+                int targetIdx = idx < elements.Count - 1 ? idx + 1 : idx;
+
+                if (idx < elements.Count - 1)
                 {
-                    int idx = elements.IndexOf(el);
                     elements.Swap(idx, idx + 1);
-                    MoveDown(el.GroupChildren);     // move child elements last, so any groupbox is swapped down first.
-                });
-            }
+                }
+
+                // 4. Insert the child elements above the element we just moved down, in reverse order.
+                childElements.AsEnumerable().Reverse().ForEach(child => elements.Insert(targetIdx, child));
+            });
         }
 
-        protected bool AnyAtTop(IEnumerable<GraphicElement> els)
+        protected void RecursiveGetAllGroupedShapes(List<GraphicElement> children, List<GraphicElement> acc)
         {
-            return els.Any(e => elements.IndexOf(e) == 0);
-        }
-
-        protected bool AnyAtBottom(IEnumerable<GraphicElement> els)
-        {
-            return els.Any(e => elements.IndexOf(e) == elements.Count - 1);
+            acc.AddRange(children);
+            children.ForEach(child => RecursiveGetAllGroupedShapes(child.GroupChildren, acc));
         }
 
         protected Rectangle GetExtents(List<GraphicElement> elements)

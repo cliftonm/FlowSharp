@@ -16,6 +16,7 @@ namespace FlowSharp
             InitializeComponent();
             PopulateWithShapes();
             tvShapes.ExpandAll();
+            tvShapes.AfterSelect += OnSelect;
         }
 
         public void Trace(string msg)
@@ -43,7 +44,7 @@ namespace FlowSharp
 
         protected void PopulateWithShapes()
         {
-            foreach (GraphicElement el in controller.Elements)
+            foreach (GraphicElement el in controller.Elements.OrderBy(el=>controller.Elements.IndexOf(el)))
             {
                 TreeNode node = CreateTreeNode(el);
 
@@ -133,6 +134,19 @@ namespace FlowSharp
         {
             ckRoutingEvents.Enabled = ckTraceEnabled.Checked;
             ckShapeEvents.Enabled = ckTraceEnabled.Checked;
+        }
+
+        private void OnSelect(object sender, TreeViewEventArgs e)
+        {
+            GraphicElement elTag = (GraphicElement)e.Node?.Tag;
+
+            if (elTag != null)
+            {
+                controller.Elements.ForEach(el => el.Tagged = false);
+                elTag.Tagged = true;
+                // Cheap and dirty.
+                controller.Canvas.Invalidate();
+            }
         }
     }
 }

@@ -37,6 +37,7 @@ namespace FlowSharpLib
 
 		public Guid Id { get; set; }
 		public virtual bool Selected { get; set; }
+        public bool Tagged { get; set; }
 		public bool ShowConnectionPoints { get; set; }
 		// public bool HideConnectionPoints { get; set; }
 		public bool ShowAnchors { get; set; }
@@ -73,7 +74,9 @@ namespace FlowSharpLib
         protected Rectangle backgroundRectangle;
         protected Pen selectionPen;
 		protected Pen altSelectionPen;
-		protected Pen anchorPen = new Pen(Color.Black);
+        protected Pen tagPen;
+        protected Pen altTagPen;
+        protected Pen anchorPen = new Pen(Color.Black);
 		protected Pen connectionPointPen = new Pen(Color.Blue);
 		protected SolidBrush anchorBrush = new SolidBrush(Color.White);
 		protected int anchorWidthHeight = 6;		// TODO: Make const?
@@ -87,7 +90,9 @@ namespace FlowSharpLib
 			this.canvas = canvas;
             selectionPen = new Pen(Color.Red);
 			altSelectionPen = new Pen(Color.Blue);
-			HasCenterAnchors = true;
+            tagPen = new Pen(Color.Blue, 3);
+            altTagPen = new Pen(Color.LightGreen, 3);
+            HasCenterAnchors = true;
 			HasCornerAnchors = true;
 			HasLeftRightAnchors = false;
 			HasTopBottomAnchors = false;
@@ -440,6 +445,11 @@ namespace FlowSharpLib
 				DrawSelection(gr);
             }
 
+            if (Tagged)
+            {
+                DrawTag(gr);
+            }
+
 			// For illustration / debugging of what's being updated.
 			// DrawUpdateRectangle(gr);
         }
@@ -458,8 +468,22 @@ namespace FlowSharpLib
 			}
 		}
 
-		// For illustration / debugging of what's being updated.
-		protected virtual void DrawUpdateRectangle(Graphics gr)
+        protected virtual void DrawTag(Graphics gr)
+        {
+            if (FillBrush.Color.ToArgb() == tagPen.Color.ToArgb())
+            {
+                Rectangle r = DisplayRectangle.Grow(-2);
+                gr.DrawRectangle(altTagPen, r);
+            }
+            else
+            {
+                Rectangle r = DisplayRectangle.Grow(-2);
+                gr.DrawRectangle(tagPen, r);
+            }
+        }
+
+        // For illustration / debugging of what's being updated.
+        protected virtual void DrawUpdateRectangle(Graphics gr)
 		{
 			Pen pen = new Pen(Color.Gray);
 			Rectangle r = UpdateRectangle.Grow(-1);

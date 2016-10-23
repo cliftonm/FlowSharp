@@ -109,45 +109,25 @@ namespace FlowSharpLib
             });
 		}
 
-        public void MoveUp()
+        public void MoveSelectedElementsUp()
 		{
-            // If any of the selected elements is already at the top, then nothing to do.
-            // This prevents adjacent z-order shapes in the selection list from swapping when one of them is already at the top.
-            if (selectedElements.Select(el => elements.IndexOf(el)).OrderBy(idx => idx).First() != 0)
-            {
-                // Since we're swapping up, order by z-oder so we're always swapping with the element above.
-                selectedElements.OrderBy(e => elements.IndexOf(e)).ForEach(el =>
-                  {
-                      int idx = elements.IndexOf(el);
-
-                      if (idx > 0)
-                      {
-                          AdjacentSwap(idx, -1);
-                      }
-                  });
-            }
-		}
-
-        public void MoveDown()
-        {
-            // If any of the selected elements is already at the bottom, then nothing to do.
-            // This prevents adjacent z-order shapes in the selection list from swapping when one of them is already at the bottom.
-            if (selectedElements.Select(el => elements.IndexOf(el)).OrderBy(idx => idx).Last() != elements.Count - 1)
-            {
-                // Since we're swapping down, order by z-oder descending so we're always swapping with the element below.
-                selectedElements.OrderByDescending(e => elements.IndexOf(e)).ForEach(el =>
-              {
-                  int idx = elements.IndexOf(el);
-
-                  if (idx < elements.Count - 1)
-                  {
-                      AdjacentSwap(idx, 1);
-                  }
-              });
-            }
+            // TODO: Sub-optimal, as we're erasing all elements.
+            EraseTopToBottom(elements);
+            MoveUp(selectedElements);
+            DrawBottomToTop(elements);
+            UpdateScreen(elements);
         }
 
-		public void DeleteSelectedElements()
+        public void MoveSelectedElementsDown()
+        {
+            // TODO: Sub-optimal, as we're erasing all elements.
+            EraseTopToBottom(elements);
+            MoveDown(selectedElements);
+            DrawBottomToTop(elements);
+            UpdateScreen(elements);
+        }
+
+        public void DeleteSelectedElements()
 		{
             selectedAnchor = null;
             showingAnchorsElement = null;
@@ -416,7 +396,7 @@ namespace FlowSharpLib
         public void DrawBottomToTop(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
         {
             Trace.WriteLine("Shape:DrawBottomToTop");
-            els.Reverse().Where(e => e.OnScreen(dx, dy)).ForEach(e =>
+            els.AsEnumerable().Reverse().Where(e => e.OnScreen(dx, dy)).ForEach(e =>
             {
                 e.GetBackground();
                 e.Draw();
@@ -443,13 +423,51 @@ namespace FlowSharpLib
             elements.Add(el);
         }
 
-        protected void AdjacentSwap(int idx1, int delta)
+        protected void MoveUp(IEnumerable<GraphicElement> els)
         {
-            // TODO: Sub-optimal, as we're erasing all elements.
-            EraseTopToBottom(elements);
-            elements.Swap(idx1, idx1 + delta);
-            DrawBottomToTop(elements);
-            UpdateScreen(elements);
+            // If any of the selected elements is already at the top, then nothing to do.
+            // This prevents adjacent z-order shapes in the selection list from swapping when one of them is already at the top.
+            if (!AnyAtTop(els))
+            {
+                // Since we're swapping up, order by z-order so we're always swapping with the element above,
+                // thus preserving z-order of the selected shapes.
+                els.OrderBy(e => elements.IndexOf(e)).ForEach(el =>
+                {
+                    if (!AnyAtTop(el.GroupChildren))
+                    {
+                        MoveUp(el.GroupChildren);       // move child elements first, so any groupbox is swapped up last.
+                        int idx = elements.IndexOf(el);
+                        elements.Swap(idx, idx - 1);
+                    }
+                });
+            }
+        }
+
+        protected void MoveDown(IEnumerable<GraphicElement> els)
+        {
+            // If any of the selected elements is already at the bottom, then nothing to do.
+            // This prevents adjacent z-order shapes in the selection list from swapping when one of them is already at the bottom.
+            if (!AnyAtBottom(els))
+            {
+                // Since we're swapping down, order by z-oder descending so we're always swapping with the element below,
+                // thus preserving z-order of the selected shapes.
+                els.OrderByDescending(e => elements.IndexOf(e)).ForEach(el =>
+                {
+                    int idx = elements.IndexOf(el);
+                    elements.Swap(idx, idx + 1);
+                    MoveDown(el.GroupChildren);     // move child elements last, so any groupbox is swapped down first.
+                });
+            }
+        }
+
+        protected bool AnyAtTop(IEnumerable<GraphicElement> els)
+        {
+            return els.Any(e => elements.IndexOf(e) == 0);
+        }
+
+        protected bool AnyAtBottom(IEnumerable<GraphicElement> els)
+        {
+            return els.Any(e => elements.IndexOf(e) == elements.Count - 1);
         }
 
         protected Rectangle GetExtents(List<GraphicElement> elements)

@@ -30,12 +30,12 @@ namespace FlowSharp
 
 		private void mnuMoveUp_Click(object sender, EventArgs e)
 		{
-			canvasController.MoveUp();
+			canvasController.MoveSelectedElementsUp();
 		}
 
 		private void mnuMoveDown_Click(object sender, EventArgs e)
 		{
-			canvasController.MoveDown();
+			canvasController.MoveSelectedElementsDown();
 		}
 
 		private void mnuCopy_Click(object sender, EventArgs e)

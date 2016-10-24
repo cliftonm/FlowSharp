@@ -25,8 +25,8 @@ A short list of some of the features.
 ![Virtual Surface](https://github.com/cliftonm/FlowSharp/blob/master/Article/img11.png)
 ## Anchor drag snapping
 ![Virtual Surface](https://github.com/cliftonm/FlowSharp/blob/master/Article/snapping.png)
-## Grouping(https://github.com/cliftonm/FlowSharp/blob/master/Article/img36.png)
-![Grouping]
+## Grouping
+![Grouping](https://github.com/cliftonm/FlowSharp/blob/master/Article/img36.png)
 # What's not implemented:
 Please contribute to working on this list!
 *Shape text:

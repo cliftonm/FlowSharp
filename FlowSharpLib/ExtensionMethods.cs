@@ -85,6 +85,11 @@ namespace FlowSharpLib
             return ret;
         }
 
+        public static Rectangle Union(this Rectangle r, Rectangle r2)
+        {
+            return Rectangle.Union(r, r2);
+        }
+
 		public static Point TopLeftCorner(this Rectangle r)
 		{
 			return new Point(r.Left, r.Top);

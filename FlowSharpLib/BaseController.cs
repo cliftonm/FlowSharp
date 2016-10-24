@@ -79,35 +79,39 @@ namespace FlowSharpLib
 
         public void Topmost()
 		{
+            // TODO: Sub-optimal, as we're erasing all elements.
+            EraseTopToBottom(elements);
+
             // In their original z-order, but reversed because we're inserting at the top...
             selectedElements.OrderByDescending(el => elements.IndexOf(el)).ForEach(el =>
             {
-                // TODO: Sub-optimal, as we're erasing all elements.
-                EraseTopToBottom(elements);
                 elements.Remove(el);
                 elements.Insert(0, el);
                 // Preserve child order.
                 el.GroupChildren.OrderByDescending(child=>elements.IndexOf(child)).ForEach(child => MoveToTop(child));
-                DrawBottomToTop(elements);
-                UpdateScreen(elements);
             });
-		}
+
+            DrawBottomToTop(elements);
+            UpdateScreen(elements);
+        }
 
         public void Bottommost()
 		{
+            // TODO: Sub-optimal, as we're erasing all elements.
+            EraseTopToBottom(elements);
+
             // In their original z-oder, since we're appending to the bottom...
             selectedElements.OrderBy(el => elements.IndexOf(el)).ForEach(el =>
             {
-                // TODO: Sub-optimal, as we're erasing all elements.
-                EraseTopToBottom(elements);
                 elements.Remove(el);
                 // Preserve child order.
                 el.GroupChildren.OrderBy(child=>elements.IndexOf(child)).ForEach(child => MoveToBottom(child));
                 elements.Add(el);
-                DrawBottomToTop(elements);
-                UpdateScreen(elements);
             });
-		}
+
+            DrawBottomToTop(elements);
+            UpdateScreen(elements);
+        }
 
         public void MoveSelectedElementsUp()
 		{
@@ -497,11 +501,7 @@ namespace FlowSharpLib
         protected Rectangle GetExtents(List<GraphicElement> elements)
         {
             Rectangle r = elements[0].DisplayRectangle;
-
-            elements.Skip(1).ForEach(el =>
-            {
-                r = Rectangle.Union(r, el.DisplayRectangle);
-            });
+            elements.Skip(1).ForEach(el => r = r.Union(el.DisplayRectangle));
 
             return r;
         }

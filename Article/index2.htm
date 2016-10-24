@@ -8,93 +8,256 @@
 
 <body>
 
-<p align="center"><img border="0" src="flowsharp2.png" width="754" height="400"></p>
+<ul class="download">
+	<li><a href="FlowSharp.zip">Download FlowSharp.zip - 746.7 KB</a></li>
+</ul>
+
+<p><b><a href="#102316">Reason for this update: Grouping / Ungrouping of shapes has been 
+implemented.</a></b></p>
+
+<p align="center"><img border="0" height="400" src="flowsharp2.png" width="754" /></p>
+
 <h2 align="left">Table of Contents</h2>
-<p align="left"></p>
-<!-- INSERT contents -->
-<p>&nbsp;</p>
-<h2>Introduction</h2>
-<p>I've been wanting a Visio-like diagramming tool for a long time (for some 
-interesting ideas I have, but that's another story.)&nbsp; While working with 
-Visio through their COM API's is great, not everyone has Visio, and directly 
-integrating into another application can be a bit overkill, particularly for my 
-purposes.&nbsp; </p>
-<h3>Open Source Options</h3>
-<p>I figured someone must have written a small, usable, documented package.&nbsp; 
-I found these three:&nbsp; </p>
-<p><a href="https://nshape.codeplex.com/">NShape</a> - .Net Diagramming 
-Framework for Industrial Applications</p>
-<p>Pretty good, very comprehensive set of shapes and features, but: connectors 
-act funky though, rotations don't seem to work right, no virtual surface, some 
-visual artifacts when moving large shapes, and very large code base.&nbsp; Code 
-was written for .NET 2.0 and when rebuilding for .NET 4.x, all sorts of 
-&quot;ambiguous reference&quot; errors occurred because there was some implementations 
-between NShape's read only collections and .NET's implementation.&nbsp; Not 
-having a virtual surface was a major show stopper for me.</p>
+
+<ul>
+	<li><a href="#Introduction0">Introduction</a>
+
+	<ul>
+		<li><a href="#OpenSourceOptions1">Open Source Options</a></li>
+	</ul>
+	</li>
+	<li><a href="#FlowSharp2">FlowSharp</a>
+	<ul>
+		<li><a href="#Features3">Features</a>
+		<ul>
+			<li><a href="#Virtualsurface4">Virtual surface</a></li>
+			<li><a href="#Efficientrenderingofshapes5">Efficient rendering of shapes</a></li>
+			<li><a href="#Z-ordering6">Z-ordering</a></li>
+			<li><a href="#TextforShapes7">Text for Shapes</a></li>
+			<li><a href="#EasilyAddedtoanyWinFormApplication8">Easily Added to any WinForm Application</a></li>
+			<li><a href="#ExportDiagramtoPNG9">Export Diagram to PNG</a></li>
+			<li><a href="#GripHandlesforShapeSizing10">Grip Handles for Shape Sizing</a></li>
+			<li><a href="#SeparateConnectionPointsforConnector-ShapeBinding11">Separate Connection Points for Connector-Shape Binding</a></li>
+			<li><a href="#Snapping...12">Snapping...</a></li>
+			<li><a href="#ShapesareEasilyAdded13">Shapes are Easily Added</a></li>
+			<li><a href="#xyzzy">Default Controller Handles all Shape/Connector Features like Moving, Sizing, Connecting</a></li>
+			<li><a href="#CopyandPasteUsingtheClipboard14">Copy and Paste Using the Clipboard</a></li>
+		</ul>
+		</li>
+		<li><a href="#What'sNotImplemented15">What&#39;s Not Implemented</a>
+		<ul>
+			<li><a href="#Contribute16">Contribute!</a></li>
+		</ul>
+		</li>
+		<li><a href="#Code-Wise17">Code-Wise</a>
+		<ul>
+			<li><a href="#ExtensionMethods18">Extension Methods?</a></li>
+			<li><a href="#readability">Readability vs. Performance : Optimize Where it Counts</a></li>
+			<li><a href="#Absolutevs.LocalCoordinateSystem20">Absolute vs. Local Coordinate System</a></li>
+		</ul>
+		</li>
+		<li><a href="#DevelopmentPractices21">Development Practices</a>
+		<ul>
+			<li><a href="#BreakingBadHabits22">Breaking Bad Habits</a></li>
+			<li><a href="#Varvs.ExplicitTypeSpecification23">Var vs. Explicit Type Specification</a></li>
+			<li><a href="#SeparationofSerializationandDesignerMetadata24">Separation of Serialization and Designer Metadata</a></li>
+		</ul>
+		</li>
+		<li><a href="#LotsofKickingandScreaming25">Lots of Kicking and Screaming</a></li>
+		<li><a href="#DynamicConnectors26">Dynamic Connectors</a></li>
+	</ul>
+	</li>
+	<li><a href="#ObjectModel27">Object Model</a></li>
+	<li><a href="#TheStoryofaCoupleBugs28">The Story of a Couple Bugs</a>
+	<ul>
+		<li><a href="#DeserializeIDBug29">Deserialize ID Bug</a></li>
+		<li><a href="#CanvasMoveBug30">Canvas Move Bug</a></li>
+	</ul>
+	</li>
+	<li><a href="#FlowSharpLibCode31">FlowSharpLib Code</a>
+	<ul>
+		<li><a href="#TheBasics32">The Basics</a>
+		<ul>
+			<li><a href="#Initialization33">Initialization</a></li>
+			<li><a href="#CustomToolboxShapes34">Custom Toolbox Shapes</a></li>
+			<li><a href="#FullRedraw35">Full Redraw</a></li>
+			<li><a href="#ErasingandDrawingShapes36">Erasing and Drawing Shapes</a></li>
+			<li><a href="#DoubleBuffering,ManagingtheBitmap,andErasing37">Double Buffering, Managing the Bitmap, and Erasing</a></li>
+			<li><a href="#Clipping38">Clipping</a></li>
+		</ul>
+		</li>
+		<li><a href="#HigherLevelFunctionality39">Higher Level Functionality</a>
+		<ul>
+			<li><a href="#MovingaShape40">Moving a Shape</a></li>
+			<li><a href="#Snapping41">Snapping</a></li>
+			<li><a href="#CreatingaPNG42">Creating a PNG</a></li>
+			<li><a href="#Serialization43">Serialization</a></li>
+			<li><a href="#Deserialization44">Deserialization</a></li>
+			<li><a href="#KeyboardActions45">Keyboard Actions</a></li>
+			<li><a href="#VerticalandHorizontalLines46">Vertical and Horizontal Lines</a></li>
+			<li><a href="#AnchorConstraints47">Anchor Constraints</a></li>
+			<li><a href="#SizeConstraints48">Size Constraints</a></li>
+			<li><a href="#DynamicConnectorLineCaps49">Dynamic Connector Line Caps</a></li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+	<li><a href="#FlowSharpUICode50">FlowSharp UI Code</a>
+	<ul>
+		<li><a href="#UIObjectModel51">UI Object Model</a></li>
+		<li><a href="#TheToolbox52">The Toolbox</a>
+		<ul>
+			<li><a href="#ToolboxCanvas53">ToolboxCanvas</a></li>
+			<li><a href="#ToolboxController54">ToolboxController</a></li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+	<li><a href="#Conclusion55">Conclusion</a>
+	<ul>
+		<li><a href="#KnownBugs56">Known Bugs</a></li>
+	</ul>
+	</li>
+	<li><a href="#revisions">Revisions</a>
+	
+<ul>
+	<li><a href="#102316">10/23/16 - Grouping</a></li>
+	<li><a href="#101816">10/18/16 - Bug Fixes</a></li>
+	<li><a href="#101316">10/15/16</a>
+	<ul>
+		<li><a href="#debugging">Debugging</a></li>
+		<li><a href="#groupselect">Group Select</a></li>
+		<li><a href="#ux">Group Select User Experience and the Need for a <b>Mouse Router</b></a></li>
+		<li><a href="#issues1">Issues Encountered</a></li>
+		<li><a href="#cursors">Cursors</a></li>
+		<li><a href="#candp">Copy and Paste</a></li>
+	</ul></li>
+</ul>
+
+	<ul>
+		<li><a href="#101016">10/10/16</a>
+
+		<ul>
+			<li><a href="#dand">Toolbox Drag &amp; Drop and minor stuff</a></li>
+			<li><a href="#import">Import</a></li>
+		</ul>
+		</li>
+		<li><a href="#100516">10/5/16 - Nothing Exciting</a></li>
+	</ul>
+	</li>
+</ul>
+
+<h2>Build Environment</h2>
+
+<p>FlowSharp was built with Visual Studio 2015 and references .NET 4.6.1.&nbsp; VS2015 is required, but the code can also be built referencing .NET 4.5.</p>
+
+<p>Source code is maintained <a href="https://github.com/cliftonm/FlowSharp"> here</a>.</p>
+
+<h2><a name="Introduction0">Introduction</a></h2>
+
+<p>I&#39;ve been wanting a Visio-like diagramming tool for a long time (for some interesting ideas I have, but that&#39;s another story.)&nbsp; While working with Visio through their COM API&#39;s is great, not everyone has Visio, and directly integrating into another application can be a bit overkill, particularly for my purposes.&nbsp;</p>
+
+<h3><a name="OpenSourceOptions1">Open Source Options</a></h3>
+
+<p>I figured someone must have written a small, usable, documented package.&nbsp; I found these three:&nbsp;</p>
+
+<p><a href="https://nshape.codeplex.com/">NShape</a> - .Net Diagramming Framework for Industrial Applications</p>
+
+<p>Pretty good, very comprehensive set of shapes and features, but: connectors act funky though, rotations don&#39;t seem to work right, no virtual surface, some visual artifacts when moving large shapes, and very large code base.&nbsp; Code was written for .NET 2.0 and when rebuilding for .NET 4.x, all sorts of &quot;ambiguous reference&quot; errors occurred because there was some implementations between NShape&#39;s read only collections and .NET&#39;s implementation.&nbsp; Not having a virtual surface was a major show stopper for me.</p>
+
 <p><a href="https://opendiagram.codeplex.com/">Crainiate / Open Diagram</a></p>
-<p>The one example looks great, but there's a behind-the-scenes architecture 
-that isn't documented and looks complex.&nbsp; I'm not sure it supports a 
-virtual surface, and learning it looked like a significant undertaking.</p>
+
+<p>The one example looks great, but there&#39;s a behind-the-scenes architecture that isn&#39;t documented and looks complex.&nbsp; I&#39;m not sure it supports a virtual surface, and learning it looked like a significant undertaking.</p>
+
 <p><a href="https://github.com/bcrosnier/dot-net-diagram">dot-net-diagram</a></p>
-<p>Not very complete, no virtual surface, I couldn't get connectors to work.</p>
-<p>Given the complexity of the code base, .NET version issues, lack of 
-documentation, and obvious bugs or missing features, it really wasn't worth 
-diving deeper.&nbsp; Thus FlowSharp was born.</p>
-<h2>FlowSharp</h2>
-<p>Thus, FlowSharp was born.&nbsp; Besides, I wanted to have some fun, own and 
-know the code, and implement the user experience the way I wanted it to work.</p>
-<h3>Features</h3>
-<p>Here's the basic list of features:</p>
-<h4>Virtual surface</h4>
-<p><img border="0" src="img1.png" width="143" height="156"></p>
-<p>Drag the surface to move objects around.&nbsp; It's an infinite virtual 
-surface.</p>
-<h4>Efficient rendering of shapes</h4>
-<p><img border="0" src="img2.png" width="273" height="196"></p>
-<p>The light grey rectangles are a fun &quot;switch&quot; you can turn on in the code that 
-shows the region being updated.&nbsp; Regions for the connectors are bigger than 
-necessary.</p>
-<h4>Z-ordering</h4>
-<p><img border="0" src="img3.png" width="144" height="120"></p>
+
+<p>Not very complete, no virtual surface, I couldn&#39;t get connectors to work.</p>
+
+<p>Given the complexity of the code base, .NET version issues, lack of documentation, and obvious bugs or missing features, it really wasn&#39;t worth diving deeper.&nbsp; Thus FlowSharp was born.</p>
+
+<h2><a name="FlowSharp2">FlowSharp</a></h2>
+
+<p>Thus, FlowSharp was born.&nbsp; Besides, I wanted to have some fun, own and know the code, and implement the user experience the way I wanted it to work.</p>
+
+<h3><a name="Features3">Features</a></h3>
+
+<p>Here&#39;s the basic list of features:</p>
+
+<h4><a name="Virtualsurface4">Virtual surface</a></h4>
+
+<p><img border="0" height="156" src="img1.png" width="143" /></p>
+
+<p>Drag the surface to move objects around.&nbsp; It&#39;s an infinite virtual surface.</p>
+
+<h4><a name="Efficientrenderingofshapes5">Efficient rendering of shapes</a></h4>
+
+<p><img border="0" height="196" src="img2.png" width="273" /></p>
+
+<p>The light grey rectangles are a fun &quot;switch&quot; you can turn on in the code that shows the region being updated.&nbsp; Regions for the connectors are bigger than necessary.</p>
+
+<h4><a name="Z-ordering6">Z-ordering</a></h4>
+
+<p><img border="0" height="120" src="img3.png" width="144" /></p>
+
 <p>Z-ordering, with:</p>
+
 <ul>
 	<li>move to top</li>
 	<li>move to bottom</li>
 	<li>move up</li>
 	<li>move down</li>
 </ul>
+
 <p>is supported.</p>
-<h4>Text for Shapes</h4>
-<p><img border="0" src="img4.png" width="362" height="228"></p>
-<p>Shapes can have text (with font and color attributes) and there is a freeform 
-text shape as well.</p>
-<h4>Easily Added to any WinForm Application</h4>
-<pre>canvas = new Canvas();
+
+<h4><a name="TextforShapes7">Text for Shapes</a></h4>
+
+<p><img border="0" height="228" src="img4.png" width="362" /></p>
+
+<p>Shapes can have text (with font and color attributes) and there is a freeform text shape as well.</p>
+
+<h4><a name="EasilyAddedtoanyWinFormApplication8">Easily Added to any WinForm Application</a></h4>
+
+<pre>
+canvas = new Canvas();
 canvas.Initialize(pnlCanvas);</pre>
-<p>And no, this control is not implemented as a true user control that can be 
-dropped into the Windows designer.</p>
-<h4>Export Diagram to PNG</h4>
-<p><img border="0" src="img5.png" width="495" height="326"></p>
+
+<p>And no, this control is not implemented as a true user control that can be dropped into the Windows designer.</p>
+
+<h4><a name="ExportDiagramtoPNG9">Export Diagram to PNG</a></h4>
+
+<p><img border="0" height="326" src="img5.png" width="495" /></p>
+
 <p>Snazzy!</p>
-<h4>Grip Handles for Shape Sizing</h4>
-<p><img border="0" src="img6.png" width="200" height="110"></p>
-<p>Anchors (grip handles) are automatically shown when you mouse over a shape.&nbsp; 
-In this case, the shape is also selected, which is indicated with a red border.</p>
-<h4>Separate Connection Points for Connector-Shape Binding</h4>
+
+<h4><a name="GripHandlesforShapeSizing10">Grip Handles for Shape Sizing</a></h4>
+
+<p><img border="0" height="110" src="img6.png" width="200" /></p>
+
+<p>Anchors (grip handles) are automatically shown when you mouse over a shape.&nbsp; In this case, the shape is also selected, which is indicated with a red border.</p>
+
+<h4><a name="SeparateConnectionPointsforConnector-ShapeBinding11">Separate Connection Points for Connector-Shape Binding</a></h4>
+
 <p>Grips:</p>
-<p><img border="0" src="img7.png" width="141" height="133"></p>
+
+<p><img border="0" height="133" src="img7.png" width="141" /></p>
+
 <p>vs. connection points:</p>
-<p><img border="0" src="img8.png" width="252" height="138"></p>
-<p>The connection points (little blue X's that don't show up well on diamonds) 
-appear when a connector's anchor gets close to a shape.</p>
-<h4>Snapping...</h4>
-<p><img border="0" src="img9.png" width="269" height="187"></p>
-<p>Turtles???&nbsp; No - I mean snapping anchors automatically to a nearby 
-shape's connection point.&nbsp; This gives the user nice positive feedback that the 
-connector is connected.&nbsp; To disconnect, &quot;jerk&quot; the connector or the 
-connector's anchor away from the connection point.</p>
-<h4>Shapes are Easily Added</h4>
-<pre>using System.Drawing;
+
+<p><img border="0" height="138" src="img8.png" width="252" /></p>
+
+<p>The connection points (little blue X&#39;s that don&#39;t show up well on diamonds) appear when a connector&#39;s anchor gets close to a shape.</p>
+
+<h4><a name="Snapping...12">Snapping...</a></h4>
+
+<p><img border="0" height="187" src="img9.png" width="269" /></p>
+
+<p>Turtles???&nbsp; No - I mean snapping anchors automatically to a nearby shape&#39;s connection point.&nbsp; This gives the user nice positive feedback that the connector is connected.&nbsp; To disconnect, &quot;jerk&quot; the connector or the connector&#39;s anchor away from the connection point.</p>
+
+<h4><a name="ShapesareEasilyAdded13">Shapes are Easily Added</a></h4>
+
+<pre>
+using System.Drawing;
 
 namespace FlowSharpLib
 {
@@ -110,11 +273,15 @@ namespace FlowSharpLib
     }
   }
 }</pre>
-<p>That wasn't too hard, was it?</p>
-<h4>Default Controller Handles all Shape/Connector Features like Moving, Sizing, 
-Connecting</h4>
+
+<p>That wasn&#39;t too hard, was it?</p>
+
+<h4><a name="xyzzy">Default Controller Handles all Shape/Connector Features like Moving, Sizing, Connecting</a></h4>
+
 <p>The magic begins here:</p>
-<pre>public CanvasController(Canvas canvas, List&lt;GraphicElement&gt; elements) : base(canvas, elements)
+
+<pre>
+public CanvasController(Canvas canvas, List&lt;GraphicElement&gt; elements) : base(canvas, elements)
 {
   canvas.Controller = this;
   canvas.PaintComplete = CanvasPaintComplete;
@@ -122,9 +289,11 @@ Connecting</h4>
   canvas.MouseUp += OnMouseUp;
   canvas.MouseMove += OnMouseMove;
 }</pre>
-<p>If you don't believe in magic, use the base class (or derive from it for your 
-own special magic):</p>
-<pre>public class ToolboxController : BaseController
+
+<p>If you don&#39;t believe in magic, use the base class (or derive from it for your own special magic):</p>
+
+<pre>
+public class ToolboxController : BaseController
 {
   protected CanvasController canvasController;
 
@@ -135,12 +304,19 @@ own special magic):</p>
     canvas.PaintComplete = CanvasPaintComplete;
     canvas.MouseDown += OnMouseDown;
 }</pre>
+
 <p>In other words, the toolbox is itself a canvas:</p>
-<p><img border="0" src="img10.png" width="152" height="254"></p>
-<h4>Copy and Paste Using the Clipboard</h4>
-<p><img border="0" src="img11.png" width="685" height="315"></p>
+
+<p><img border="0" height="254" src="img10.png" width="152" /></p>
+
+<h4><a name="CopyandPasteUsingtheClipboard14">Copy and Paste Using the Clipboard</a></h4>
+
+<p><img border="0" height="315" src="img11.png" width="685" /></p>
+
 <p>OK, how hard is this really?</p>
-<pre>protected void Paste()
+
+<pre>
+protected void Paste()
 {
   string copyBuffer = Clipboard.GetData(&quot;FlowSharp&quot;)?.ToString();
 
@@ -165,77 +341,111 @@ own special magic):</p>
     }
   }
 }</pre>
-<p>So, <i>obviously</i> you can copy and paste between instances of FlowSharp as 
-well as copy&amp;paste within the same instance.</p>
-<h3>What's Not Implemented</h3>
-<p>There's a variety useful things for the future:</p>
+
+<p>So, <i>obviously</i> you can copy and paste between instances of FlowSharp as well as copy&amp;paste within the same instance.</p>
+
+<h3><a name="What'sNotImplemented15">What&#39;s Not Implemented</a></h3>
+
+<p>There&#39;s a variety useful things for the future:</p>
+
 <ul>
-	<li>Shape text location.<ul>
+	<li>Shape text location.
+	<ul>
 		<li>
-		<p align="left">Currently only centered in the shape.</li>
+		<p align="left">Currently only centered in the shape.</p>
+		</li>
 		<li>
-		<p align="left">Boundaries can be easily exceeded.</li>
+		<p align="left">Boundaries can be easily exceeded.</p>
+		</li>
 		<li>
-		<p align="left">No justification.</li>
+		<p align="left">No justification.</p>
+		</li>
 		<li>
-		<p align="left">Single line only - no auto-wrap.</li>
+		<p align="left">Single line only - no auto-wrap.</p>
+		</li>
 	</ul>
 	</li>
-	<li>Multiple element select.<ul>
-		<li>With click-drag selection rectangle.</li>
+	<li><s>Multiple element select.</s>
+	<ul>
+		<li><s>With click-drag selection rectangle.</s></li>
+		<li><s>Selectable with Ctrl or Shift - click</s></li>
 	</ul>
 	</li>
 	<li>Scrollbars for canvas - currently you drag the canvas to move it.</li>
 	<li>Zoom.</li>
 	<li>Shape rotation.</li>
-	<li>Custom defined connection points.<ul>
-	<li>Including on connectors.</li>
-	<li>Adjust custom connection points intelligently when shape is resized.</li>
-</ul>
+	<li><strike>Grouping / Ungrouping</strike></li>
+	<li>Custom defined connection points.
+	<ul>
+		<li>Including on connectors.</li>
+		<li>Adjust custom connection points intelligently when shape is resized.</li>
+	</ul>
 	</li>
 	<li>True dynamic connectors.</li>
-	<li>Other line caps besides an arrow.</li>
+	<li>Other line caps besides an arrow.
+	<ul>
+		<li>Well, there&#39;s a diamond now too, but not worthy of removing this TODO.</li>
+	</ul>
+	</li>
 	<li>Ruler margins / page boundaries.</li>
 	<li>Snap shapes to centers and edges.</li>
-	<li>Printing (more or less easily implemented, actually)&nbsp; If you want 
-	to print, save the diagram as a PNG and use some other tool!</li>
-	<li>True drag-from-toolbox-onto-surface.</li>
-	<li>Arrow cursors for grip dragging.</li>
-	<li>Undo/redo.&nbsp; That'll be fun!</li>
-	<li>Better property UX - PropertyGrid's are ok for developers, they are 
-	awful for users.</li>
+	<li>Printing (more or less easily implemented, actually)&nbsp; If you want to print, save the diagram as a PNG and use some other tool!</li>
+	<li><s>True drag-from-toolbox-onto-surface.</s></li>
+	<li><strike>Arrow cursors for grip dragging.</strike></li>
+	<li>Undo/redo.&nbsp; That&#39;ll be fun!</li>
+	<li>Better property UX - PropertyGrid&#39;s are ok for developers, they are awful for users.</li>
 </ul>
-<p>For the moment, I can live without these features!</p>
-<h4>Contribute!</h4>
-<p>Contributions are welcome, and if you want to contribute, please fork the 
-GitHub repo <a href="https://github.com/cliftonm/FlowSharp">here</a> and submit 
-pull requests.</p>
-<h3>Code-Wise</h3>
-<p>The goal here was to write some really readable / maintainable code.&nbsp; 
-This meant:</p>
+
+<p>New things I&#39;m adding to the TODO list:</p>
+
 <ul>
-	<li>Small methods (for the most part) with attention to doing only one 
-	thing..</li>
+	<li>grouping / ungrouping shapes</li>
+	<li>combine shapes into a single &quot;drill-into&quot; shape</li>
+	<li>image shape</li>
+	<li>auto-fit / auto-size</li>
+	<li>gradient fills</li>
+	<li>opacity / transparency (beyond just &quot;transparent&quot; fill color)</li>
+</ul>
+
+<p>For the moment, I can live without these features!</p>
+
+<h4><a name="Contribute16">Contribute!</a></h4>
+
+<p>Contributions are welcome, and if you want to contribute, please fork the GitHub repo <a href="https://github.com/cliftonm/FlowSharp">here</a> and submit pull requests.</p>
+
+<h3><a name="Code-Wise17">Code-Wise</a></h3>
+
+<p>The goal here was to write some really readable / maintainable code.&nbsp; This meant:</p>
+
+<ul>
+	<li>Small methods (for the most part) with attention to doing only one thing..</li>
 	<li>Extension methods to clearly state the operation.</li>
-<li>Use of <code>?.</code> safe navigation and <code>??</code> null-coalescing operators (<code>?.</code> requires C# 
-6.0, and therefore VS2015).</li>
-	<li>Lots of Linq and anonymous methods are used, again improving 
-	readability, in my opinion.</li>
-	<li>Good OO design, particularly inversion-of-control, where shapes control 
-	and often override default behaviors.</li>
+	<li>Use of <code>?.</code> safe navigation and <code>??</code> null-coalescing operators (<code>?.</code> requires C# 6.0, and therefore VS2015).</li>
+	<li>Lots of Linq and anonymous methods are used, again improving readability, in my opinion.</li>
+	<li>Good OO design, particularly inversion-of-control, where shapes control and often override default behaviors.</li>
 	<li>Clean separation of controllers and models.</li>
 </ul>
-<h4>Extension Methods?</h4>
+
+<h4><a name="ExtensionMethods18">Extension Methods?</a></h4>
+
 <p>I like extension methods.&nbsp; A lot.&nbsp; For example:</p>
-<pre>DisplayRectangle.TopRightCorner().Move(-anchorSize, 0)</pre>
-<p>This makes is the code quite readable, in my opinion: With the display 
-rectangle, get the top right corner and move it.&nbsp; It's a nice left-to-right 
-progression.&nbsp; Of course, it could have been written something like this:</p>
-<pre>Move(GetTopRightCorner(DisplayRectangle), -anchorSize, 0)</pre>
+
+<pre>
+DisplayRectangle.TopRightCorner().Move(-anchorSize, 0)</pre>
+
+<p>This makes is the code quite readable, in my opinion: With the display rectangle, get the top right corner and move it.&nbsp; It&#39;s a nice left-to-right progression.&nbsp; Of course, it could have been written something like this:</p>
+
+<pre>
+Move(GetTopRightCorner(DisplayRectangle), -anchorSize, 0)</pre>
+
 <p>Which to me is much less readable.</p>
-<h4>Readability vs. Performance : Optimize Where it Counts</h4>
+
+<h4><a name="readability">Readability vs. Performance : Optimize Where it Counts</a></h4>
+
 <p>This is a fragment of code that figures out some anchor points:</p>
-<pre>r = new Rectangle(DisplayRectangle.TopLeftCorner(), anchorSize);
+
+<pre>
+r = new Rectangle(DisplayRectangle.TopLeftCorner(), anchorSize);
 anchors.Add(new ShapeAnchor(GripType.TopLeft, r));
 
 r = new Rectangle(DisplayRectangle.TopRightCorner().Move(-anchorWidthHeight, 0), anchorSize);
@@ -246,29 +456,19 @@ anchors.Add(new ShapeAnchor(GripType.BottomLeft, r));
 
 r = new Rectangle(DisplayRectangle.BottomRightCorner().Move(-anchorWidthHeight, -anchorWidthHeight), anchorSize);
 anchors.Add(new ShapeAnchor(GripType.BottomRight, r));</pre>
-<p>Again, I think this is pretty readable, though of course this code could be a 
-optimized in working with the <code>DisplayRectangle</code> coordinates.&nbsp; 
-But the point here is, that this code is only called when the mouse hovers over 
-a shape.&nbsp; Does it need to be fully optimized?&nbsp; Heck no, and the 
-optimized version is probably less readable.&nbsp; </p>
-<p>There are also tradeoffs in optimization.&nbsp; This code fragment gets 
-called whenever the mouse is hovering over an object, and even when the mouse is 
-moving within an object.&nbsp; Do I care?&nbsp; Not really.&nbsp; Conversely, 
-one might think &quot;let's calculate the anchor points whenever the shape has 
-moved.&quot;&nbsp; That would not be wise because certain operations, like dragging 
-the canvas which moves all shapes, would then recalculate the anchor points even 
-though we don't need them.</p>
-<h4>Absolute vs. Local Coordinate System</h4>
-<p>As the above code illustrates, all shapes and shape components are in 
-absolute coordinates.&nbsp; One might think that shape components, like anchor 
-and connection points, ought to be relative to the shape -- there's a certain 
-logic / elegance to that -- but the problem is that it then requires translation 
-from a local coordinate system to the surface coordinate system for everything 
-from shape rendering to UI controller aspects such as &quot;what shape component did the 
-user click on?&quot;</p>
-<p>Because I use an absolute coordinate system, drawing components like the 
-anchors is really easy:</p>
-<pre>protected virtual void DrawAnchors(Graphics gr)
+
+<p>Again, I think this is pretty readable, though of course this code could be a optimized in working with the <code>DisplayRectangle</code> coordinates.&nbsp; But the point here is, that this code is only called when the mouse hovers over a shape.&nbsp; Does it need to be fully optimized?&nbsp; Heck no, and the optimized version is probably less readable.&nbsp;</p>
+
+<p>There are also tradeoffs in optimization.&nbsp; This code fragment gets called whenever the mouse is hovering over an object, and even when the mouse is moving within an object.&nbsp; Do I care?&nbsp; Not really.&nbsp; Conversely, one might think &quot;let&#39;s calculate the anchor points whenever the shape has moved.&quot;&nbsp; That would not be wise because certain operations, like dragging the canvas which moves all shapes, would then recalculate the anchor points even though we don&#39;t need them.</p>
+
+<h4><a name="Absolutevs.LocalCoordinateSystem20">Absolute vs. Local Coordinate System</a></h4>
+
+<p>As the above code illustrates, all shapes and shape components are in absolute coordinates.&nbsp; One might think that shape components, like anchor and connection points, ought to be relative to the shape -- there&#39;s a certain logic / elegance to that -- but the problem is that it then requires translation from a local coordinate system to the surface coordinate system for everything from shape rendering to UI controller aspects such as &quot;what shape component did the user click on?&quot;</p>
+
+<p>Because I use an absolute coordinate system, drawing components like the anchors is really easy:</p>
+
+<pre>
+protected virtual void DrawAnchors(Graphics gr)
 {
   GetAnchors().ForEach((a =&gt;
   {
@@ -276,226 +476,229 @@ anchors is really easy:</p>
     gr.FillRectangle(anchorBrush, a.Rectangle.Grow(-1));
   }));
 }</pre>
-<pNow, granted, the use of extension methods, Linq, and anonymous methods 
-potentially degrade performance -- it's an interesting tradeoff: code 
-readability vs. performance.&nbsp; Technically, the compiler should optimize the 
-code, but we all know the reality of that.</p>
-<h3>Development Practices</h3>
-<p>Writing this really helped me identify what I consider to be good development 
-practices:</p>
+
+<p>Now, granted, the use of extension methods, Linq, and anonymous methods potentially degrade performance -- it&#39;s an interesting tradeoff: code readability vs. performance.&nbsp; Technically, the compiler should optimize the code, but we all know the reality of that.</p>
+
+<h3><a name="DevelopmentPractices21">Development Practices</a></h3>
+
+<p>Writing this really helped me identify what I consider to be good development practices:</p>
+
 <ul>
-	<li>Start with a basic set of requirements.<ul>
-		<li>Keep a log or journal of must have additional requirements that 
-		evolve from the starting requirements.</li>
+	<li>Start with a basic set of requirements.
+	<ul>
+		<li>Keep a log or journal of must have additional requirements that evolve from the starting requirements.</li>
 		<li>Keep a log of &quot;would be nice to have&quot; features, and prioritize them.</li>
 		<li>Keep a log of known bugs.</li>
 	</ul>
 	</li>
 	<li>Commit the code when a feature works.</li>
-	<li>When a bug is discovered, fix it right away - the code changes can 
-	otherwise be significant if not resolved soon.<ul>
-		<li>If need to take a break from some bug, work on another feature that 
-		is totally unrelated to the bug so you know the code won't interact.</li>
+	<li>When a bug is discovered, fix it right away - the code changes can otherwise be significant if not resolved soon.
+	<ul>
+		<li>If need to take a break from some bug, work on another feature that is totally unrelated to the bug so you know the code won&#39;t interact.</li>
 	</ul>
 	</li>
 	<li>Got some code smell?&nbsp; Refactor it now rather than later.</li>
 	<li>Try to remember that all those graphic objects need to be disposed!</li>
-	<liMove duplicate code into its own method.</li>
-	<li>Testing something like this is not easy because you basically have to 
-	play with the UI to test behaviors.&nbsp; Write down basic test scenarios.</li>
-	<li>If you're using <code>if x is [some type]</code> then you're not correctly 
-	inverting control with a good object design.&nbsp; I had a bunch of those 
-	because they were easy and quick to write, but in the end I refactored them 
-	all out.&nbsp; In one case, a complicated nested if-else piece 40 line long 
-	piece of code got reduced to a single call that the sub-classes handled.</li>
-	<li>Programming 101:<ul>
-	<li>Avoid magic numbers, put them in <code>const</code> variables 
-	instead.&nbsp; I have a few lingering violations of that.</li>
-	<li>Use meaningful names for everything.&nbsp; Not necessarily as easy as it 
-	sounds.</li>
-</ul>
+	<li>Move duplicate code into its own method.</li>
+	<li>Testing something like this is not easy because you basically have to play with the UI to test behaviors.&nbsp; Write down basic test scenarios.</li>
+	<li>If you&#39;re using <code>if x is [some type]</code> then you&#39;re not correctly inverting control with a good object design.&nbsp; I had a bunch of those because they were easy and quick to write, but in the end I refactored them all out.&nbsp; In one case, a complicated nested if-else piece 40 line long piece of code got reduced to a single call that the sub-classes handled.</li>
+	<li>Programming 101:
+	<ul>
+		<li>Avoid magic numbers, put them in <code>const</code> variables instead.&nbsp; I have a few lingering violations of that.</li>
+		<li>Use meaningful names for everything.&nbsp; Not necessarily as easy as it sounds.</li>
+		<li>In the code, I call things &quot;elements&quot;, but in the article, I call them &quot;shapes.&quot;&nbsp; This is an inconsistency that should probably be rectified.&nbsp; I probably should also refactor the names of the shapes from things like &quot;Box&quot; to &quot;BoxShape.&quot;&nbsp; Naming is not easy!</li>
+	</ul>
 	</li>
-	<li>Naming: In the code, I call things &quot;elements&quot;, but in the article, I 
-	call them &quot;shapes.&quot;&nbsp; This is an inconsistency that should probably be 
-	rectified.&nbsp; I probably should also refactor the names of the shapes 
-	from things like &quot;Box&quot; to &quot;BoxShape.&quot;&nbsp; Naming is not easy!</li>
-	<li>Code organization:&nbsp; Built in shapes should probably be organized in 
-	sub-folder to keep things clean, but then where do you put base classes?&nbsp; 
-	Should the sub-folder only contain the concrete shape implementation?&nbsp; 
-	Should base classes be put in a separate folder?&nbsp; Even for a simple 
-	project like this, code organization is an interesting question.</li>
+	<li>Code organization:&nbsp; Built in shapes should probably be organized in sub-folder to keep things clean, but then where do you put base classes?&nbsp; Should the sub-folder only contain the concrete shape implementation?&nbsp; Should base classes be put in a separate folder?&nbsp; Even for a simple project like this, code organization is an interesting question.</li>
 </ul>
-<h4>Breaking Bad Habits</h4>
+
+<h4><a name="BreakingBadHabits22">Breaking Bad Habits</a></h4>
+
 <p>I do this a lot:</p>
-<pre>List&lt;GraphicElement&gt; els = intersections.OrderBy(e =&gt; elements.IndexOf(e)).ToList();</pre>
+
+<pre>
+List&lt;GraphicElement&gt; els = intersections.OrderBy(e =&gt; elements.IndexOf(e)).ToList();</pre>
+
 <p>When this is better:</p>
-<pre>IEnumerable&lt;GraphicElement&gt; els = intersections.OrderBy(e =&gt; elements.IndexOf(e));</pre>
+
+<pre>
+IEnumerable&lt;GraphicElement&gt; els = intersections.OrderBy(e =&gt; elements.IndexOf(e));</pre>
+
 <p>As found on Stack Overflow:</p>
-<p><i>Yes, <code>IEnumerable&lt;T&gt;.ToList()</code> does have a performance impact, it is an O(n) 
-operation though it will likely only require attention in performance critical 
-operations.</i></p>
-<p>One of the advantages of using <code>IEnumerable</code> is that you can <code>Reverse</code> the list 
-without affecting the master list!&nbsp; The code could 
-still be further cleaned up for this bad habit.</p>
-<h4>Var vs. Explicit Type Specification</h4>
+
+<p><i>Yes, <code>IEnumerable&lt;T&gt;.ToList()</code> does have a performance impact, it is an O(n) operation though it will likely only require attention in performance critical operations.</i></p>
+
+<p>One of the advantages of using <code>IEnumerable</code> is that you can <code>Reverse</code> the list without affecting the master list!&nbsp; The code could still be further cleaned up for this bad habit.</p>
+
+<h4><a name="Varvs.ExplicitTypeSpecification23">Var vs. Explicit Type Specification</a></h4>
+
 <p>I like writing code where I know explicitly what the variable type is:</p>
-<pre>IEnumerable&lt;GraphicElement&gt; els = EraseTopToBottom(el, dx, dy);</pre>
-<p>In some cases, where it doesn't really matter because knowing the type 
-doesn't really matter, you'll find some <code>var</code> use cases, like this 
-one:</p>
-<pre>public void Redraw(GraphicElement el, int dx=0, int dy=0)
+
+<pre>
+IEnumerable&lt;GraphicElement&gt; els = EraseTopToBottom(el, dx, dy);</pre>
+
+<p>In some cases, where it doesn&#39;t really matter because knowing the type doesn&#39;t really matter, you&#39;ll find some <code>var</code> use cases, like this one:</p>
+
+<pre>
+public void Redraw(GraphicElement el, int dx=0, int dy=0)
 {
   var els = EraseTopToBottom(el, dx, dy);
   DrawBottomToTop(els, dx, dy);
   UpdateScreen(els, dx, dy);
 }</pre>
-<p>But generally, I like to know what I'm working with, after all, C# is not 
-Python or Ruby!</p>
-<h4>Separation of Serialization and Designer Metadata</h4>
-<p>I also have a particular dislike for decorating my classes with serialization 
-and designer attributes.&nbsp; It just adds a lot of cruft to an otherwise clean 
-model, especially when you need serialization helpers (aka custom properties) for things like brushes, 
-fonts, pens, and colors.&nbsp; For that reason, even though it added to the code 
-complexity, there are separate classes for managing the properties (suitable for 
-a property grid) and for serialization (currently using XML serialization, but JSON should work well too.)</p>
-<h3>Lots of Kicking and Screaming</h3>
-<p><img border="0" src="img12.png" width="673" height="101"></p>
-<p>(In writing this, I improved the object model and removed some custom toolbox 
-handling that was no longer necessary, eliminating 80 lines of code, and adding 
-some code for additional shapes, so the above is just a snapshot of a particular 
-point in time.)</p>
-<p>FlowSharp basically took several full weekend days and most weekday evenings to 
-write.&nbsp; So, say 120 hours.&nbsp; That's about 11.5 lines of working code 
-per hour!&nbsp; 
-During this process, it seemed like everything kicked back at me.&nbsp; Here's 
-some of the more memorable moments:</p>
+
+<p>But generally, I like to know what I&#39;m working with, after all, C# is not Python or Ruby!</p>
+
+<h4><a name="SeparationofSerializationandDesignerMetadata24">Separation of Serialization and Designer Metadata</a></h4>
+
+<p>I also have a particular dislike for decorating my classes with serialization and designer attributes.&nbsp; It just adds a lot of cruft to an otherwise clean model, especially when you need serialization helpers (aka custom properties) for things like brushes, fonts, pens, and colors.&nbsp; For that reason, even though it added to the code complexity, there are separate classes for managing the properties (suitable for a property grid) and for serialization (currently using XML serialization, but JSON should work well too.)</p>
+
+<h3><a name="LotsofKickingandScreaming25">Lots of Kicking and Screaming</a></h3>
+
+<p><img border="0" height="101" src="img12.png" width="673" /></p>
+
+<p>(In writing this, I improved the object model and removed some custom toolbox handling that was no longer necessary, eliminating 80 lines of code, and adding some code for additional shapes, so the above is just a snapshot of a particular point in time.)</p>
+
+<p>FlowSharp basically took several full weekend days and most weekday evenings to write.&nbsp; So, say 120 hours.&nbsp; That&#39;s about 11.5 lines of working code per hour!&nbsp; During this process, it seemed like everything kicked back at me.&nbsp; Here&#39;s some of the more memorable moments:</p>
+
 <ul>
-	<li>Background erasing had to compensate for:<ul>
+	<li>Background erasing had to compensate for:
+	<ul>
 		<li>border pen width</li>
-		<li>the fact that connection points are drawn partially outside of the 
-		shape</li>
+		<li>the fact that connection points are drawn partially outside of the shape</li>
 	</ul>
 	</li>
-	<li>True dynamic connectors are a dissertation in themselves and so I 
-	simplified my life tremendously by not supporting them!</li>
-	<li>Line caps:<ul>
-		<li>The line caps GDI provides are useless -- they're tiny</li>
-		<li>Only one custom line cap (arrow) is provided by .NET.&nbsp; </li>
-		<li>Custom line caps are a PITA.&nbsp; Not currently implemented.&nbsp; 
-		Googling, it seems nobody has implemented others.</li>
-		<li>Line cap orientation as a connector's anchor (it's startpoint/endpoint) is moved 
-		resulted in some ugly code.<ul>
-			<li>Now that I think about it, I might have made it overly 
-			complicated!</li>
-		</ul></li>
-	</ul></li>
-	<li>Connectors and background redraw:<ul>
-		<li>Fun stuff - in an effort to optimize the situation, a connector is 
-		comprised of separate line segments, and the whole shape rectangle is 
-		overridden so only the lines track their background, rather than the 
-		rectangle (which could be quite large!) of the entire shape.</li>
-	</ul></li>
-	<li>Anti-aliasing: 
+	<li>True dynamic connectors are a dissertation in themselves and so I simplified my life tremendously by not supporting them!</li>
+	<li>Line caps:
 	<ul>
-		<li>I thought my PNG writer was not anti-aliasing until I 
-	realized that my viewer was auto-zooming the image to fit the display 
-	window!</li>
-	</ul></li>
-	<li>Object Oriented Programming:<ul>
-		<li>Object model refactoring: Shapes need to have a lot of control over 
-		their destiny.&nbsp; This required almost constant refactoring, and 
-		there were several throw-aways of bad design and the features were 
-		developed.&nbsp; I'm not sure this could have been avoided as a lot of 
-		the design was &quot;learn as you go&quot; with regards to the required 
-		functionality.</li>
-		<li>Annoyingly, there are a handful of methods in a couple base classes 
-		that are just stubs for the sole purpose of &quot;inversion of control&quot; - 
-		allowing the derived class to do something special.&nbsp; Most of these 
-		have to do with how connectors handle some UI behaviors.</li>
-	</ul></li>
-	<li>Comparing pen colors:<ul>
-		<li>No, you can't do <code>Pen.Color == Color.Red</code> because the 
-	structures don't match, and the built-in <code>operator==</code> doesn't work correctly.&nbsp; 
-	So it's <code>pen.Color.ToArgb() == Color.Red.ToArgb()</code> if you want it to work 
-	correctly.</li>
-	</ul></li>
-	<li>Boundary conditions:<ul>
+		<li>The line caps GDI provides are useless -- they&#39;re tiny</li>
+		<li>Only one custom line cap (arrow) is provided by .NET.&nbsp;</li>
+		<li>Custom line caps are a PITA.&nbsp; Not currently implemented.&nbsp; Googling, it seems nobody has implemented others.</li>
+		<li>Line cap orientation as a connector&#39;s anchor (it&#39;s startpoint/endpoint) is moved resulted in some ugly code.
+		<ul>
+			<li>Now that I think about it, I might have made it overly complicated!</li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+	<li>Connectors and background redraw:
+	<ul>
+		<li>Fun stuff - in an effort to optimize the situation, a connector is comprised of separate line segments, and the whole shape rectangle is overridden so only the lines track their background, rather than the rectangle (which could be quite large!) of the entire shape.</li>
+	</ul>
+	</li>
+	<li>Anti-aliasing:
+	<ul>
+		<li>I thought my PNG writer was not anti-aliasing until I realized that my viewer was auto-zooming the image to fit the display window!</li>
+	</ul>
+	</li>
+	<li>Object Oriented Programming:
+	<ul>
+		<li>Object model refactoring: Shapes need to have a lot of control over their destiny.&nbsp; This required almost constant refactoring, and there were several throw-aways of bad design and the features were developed.&nbsp; I&#39;m not sure this could have been avoided as a lot of the design was &quot;learn as you go&quot; with regards to the required functionality.</li>
+		<li>Annoyingly, there are a handful of methods in a couple base classes that are just stubs for the sole purpose of &quot;inversion of control&quot; - allowing the derived class to do something special.&nbsp; Most of these have to do with how connectors handle some UI behaviors.</li>
+	</ul>
+	</li>
+	<li>Comparing pen colors:
+	<ul>
+		<li>No, you can&#39;t do <code>Pen.Color == Color.Red</code> because the structures don&#39;t match, and the built-in <code>operator==</code> doesn&#39;t work correctly.&nbsp; So it&#39;s <code>pen.Color.ToArgb() == Color.Red.ToArgb()</code> if you want it to work correctly.</li>
+	</ul>
+	</li>
+	<li>Boundary conditions:
+	<ul>
 		<li>Shapes partially or fully off screen.</li>
 		<li>Shapes with 0 or negative size.</li>
 		<li>Font size changes that exceed the boundaries of the shape (not handled)</li>
-		<li>Font size changes that make the text shape grow beyond it's original 
-	background (handled)</li>
+		<li>Font size changes that make the text shape grow beyond it&#39;s original background (handled)</li>
 		<li>Border line width (probably handled, not sure)</li>
-	</ul></li>
-	<li>Grid background:<ul>
-		<li>Cool, but performance is sub-optimal if you are dragging the entire 
-	surface and redrawing the entire window every time.</li>
-		<li>Tradeoff (taken) is to just move the shapes.&nbsp; Grid is more just an 
-	aesthetic thing that looks cool.</li>
-	</ul></li>
-	<li>Did I mention background erasing?<ul>
+	</ul>
+	</li>
+	<li>Grid background:
+	<ul>
+		<li>Cool, but performance is sub-optimal if you are dragging the entire surface and redrawing the entire window every time.</li>
+		<li>Tradeoff (taken) is to just move the shapes.&nbsp; Grid is more just an aesthetic thing that looks cool.</li>
+	</ul>
+	</li>
+	<li>Did I mention background erasing?
+	<ul>
 		<li>Shape overlap and z-ordering!</li>
-		<li>This means detecting overlaps so all overlapping shapes can be erased 
-	top-to-bottom and redrawn bottom-to-top.</li>
-	</ul></li>
-	<li>Serialization:<ul>
+		<li>This means detecting overlaps so all overlapping shapes can be erased top-to-bottom and redrawn bottom-to-top.</li>
+	</ul>
+	</li>
+	<li>Serialization:
+	<ul>
 		<li>Shapes maintain a list of connector objects.</li>
 		<li>Connectors maintain who they are connected to.</li>
-		<li>You can't serialize these things directly, so each shape has an ID and 
-	everything has to be wired back up on deserialization.&nbsp; Fun stuff but actually not that complicated.</li>
-	</ul></li>
-	<li>Anchor - connection point snap:<ul>
+		<li>You can&#39;t serialize these things directly, so each shape has an ID and everything has to be wired back up on deserialization.&nbsp; Fun stuff but actually not that complicated.</li>
+	</ul>
+	</li>
+	<li>Anchor - connection point snap:
+	<ul>
 		<li>Cool feature, works great, but how do you disconnect an anchor?</li>
 		<li>This is probably the most complex piece of code.</li>
-	</ul></li>
-	<li>Mouse events:<ul>
-		<li>Sigh.&nbsp; Why does a mouse click also fire a mouse move event with 0 
-	change in location???</li>
-	</ul></li>
-	<li>And a dozen things I've forgotten about by now...</li>
+	</ul>
+	</li>
+	<li>Mouse events:
+	<ul>
+		<li>Sigh.&nbsp; Why does a mouse click also fire a mouse move event with 0 change in location???</li>
+	</ul>
+	</li>
+	<li>And a dozen things I&#39;ve forgotten about by now...</li>
 </ul>
-<h3>Dynamic Connectors</h3>
-<p>Because connectors are so complicated (at least I think they are at the 
-moment) I:</p>
+
+<h3><a name="DynamicConnectors26">Dynamic Connectors</a></h3>
+
+<p>Because connectors are so complicated (at least I think they are at the moment) I:</p>
+
 <ol>
 	<li>Require the user assists by selecting the right general connector shape.</li>
-	<li>Don't route around shapes.&nbsp; Oh well.</li>
-	<li>Connectors cannot connect to each other (if you enable this feature, 
-	you'll notice some weird behavior when dragging a connected connector.)</li>
+	<li>Don&#39;t route around shapes.&nbsp; Oh well.</li>
+	<li>Connectors cannot connect to each other (if you enable this feature, you&#39;ll notice some weird behavior when dragging a connected connector.)</li>
 </ol>
-<p>So that's another development practice: shove algorithm complexity onto the 
-user experience and make the user figure it out!&nbsp; Instead, the user gets to 
-pick the right connector for the job:</p>
-<p><img border="0" src="img13.png" width="537" height="281"></p>
-<p>The three basic connectors can be oriented to make the desired connector.&nbsp; 
-Hitler would have had fun with these.</p>
-<h2>Object Model</h2>
+
+<p>So that&#39;s another development practice: shove algorithm complexity onto the user experience and make the user figure it out!&nbsp; Instead, the user gets to pick the right connector for the job:</p>
+
+<p><img border="0" height="281" src="img13.png" width="537" /></p>
+
+<p>The three basic connectors can be oriented to make the desired connector.&nbsp; Hitler would have had fun with these.</p>
+
+<h2><a name="ObjectModel27">Object Model</a></h2>
+
 <p>Yes, this was created using FlowSharp!</p>
-<p><img border="0" src="objectModel.png" width="995" height="589"></p>
-<h2>The Story of a Couple Bugs</h2>
-<h3>Deserialize ID Bug</h3>
-<p>And of course, what do I find after trying to load this diagram again, but a 
-stupid bug (aren't most bugs stupid?)&nbsp; I was using copy and paste for the 
-rectangles, and this code:</p>
-<pre>el.Id = Guid.NewGuid(); // We get a new GUID when deserializing a specific element.
+
+<p><img border="0" height="589" src="objectModel.png" width="995" /></p>
+
+<h2><a name="TheStoryofaCoupleBugs28">The Story of a Couple Bugs</a></h2>
+
+<h3><a name="DeserializeIDBug29">Deserialize ID Bug</a></h3>
+
+<p>And of course, what do I find after trying to load this diagram again, but a stupid bug (aren&#39;t most bugs stupid?)&nbsp; I was using copy and paste for the rectangles, and this code:</p>
+
+<pre>
+el.Id = Guid.NewGuid(); // We get a new GUID when deserializing a specific element.
 el.Deserialize(epb); // A specific deserialization does not preserve connections.</pre>
-<p>was assigning a new shape ID <i>before</i> the deserialization of the copied 
-shape.</p>
+
+<p>was assigning a new shape ID <i>before</i> the deserialization of the copied shape.</p>
+
 <p>Which broke this code:</p>
-<pre>ToElement = elements.Single(e =&gt; e.Id == cpb.ToElementId);</pre>
-<p>Because more than one shape had the same ID!&nbsp; I'm not sure, even if I 
-had written a unit test, I would have checked for unique ID, which just goes to 
-show you (which we all know, right?) that passing unit tests do not guarantee a 
-bug free application.</p>
-<h3>Canvas Move Bug</h3>
-<p>Here's another one that can't be unit tested.&nbsp; My original &quot;move 
-everything&quot; code, which occurs when you drag the canvas itself, looked like this:</p>
-<pre>elements.ForEach(el =&gt;
+
+<pre>
+ToElement = elements.Single(e =&gt; e.Id == cpb.ToElementId);</pre>
+
+<p>Because more than one shape had the same ID!&nbsp; I&#39;m not sure, even if I had written a unit test, I would have checked for unique ID, which just goes to show you (which we all know, right?) that passing unit tests do not guarantee a bug free application.</p>
+
+<h3><a name="CanvasMoveBug30">Canvas Move Bug</a></h3>
+
+<p>Here&#39;s another one that can&#39;t be unit tested.&nbsp; My original &quot;move everything&quot; code, which occurs when you drag the canvas itself, looked like this:</p>
+
+<pre>
+elements.ForEach(el =&gt;
 {
   MoveElement(el, delta);
 });</pre>
+
 <p>Not bad, but notice what <code>MoveElement</code> does:</p>
-<pre>public void MoveElement(GraphicElement el, Point delta)
+
+<pre>
+public void MoveElement(GraphicElement el, Point delta)
 {
   if (el.OnScreen())
   {
@@ -513,12 +716,13 @@ everything&quot; code, which occurs when you drag the canvas itself, looked like
     el.Move(delta);
   }
 }</pre>
-<p>This is great for moving a single element -- it finds all the intersecting 
-shapes, erases them, moves the desired shape, and then redraws them all.&nbsp; 
-The edge case of the element being off screen is nicely handled too.</p>
-<p>The problem with this code is that, if you're moving everything, this results 
-in a really chunky movement.&nbsp; This code:</p>
-<pre>// &quot;Smart&quot; move, erases everything first, moves all elements, then redraws them.
+
+<p>This is great for moving a single element -- it finds all the intersecting shapes, erases them, moves the desired shape, and then redraws them all.&nbsp; The edge case of the element being off screen is nicely handled too.</p>
+
+<p>The problem with this code is that, if you&#39;re moving everything, this results in a really chunky movement.&nbsp; This code:</p>
+
+<pre>
+// &quot;Smart&quot; move, erases everything first, moves all elements, then redraws them.
 public void MoveAllElements(Point delta)
 {
   EraseTopToBottom(elements);
@@ -534,20 +738,26 @@ public void MoveAllElements(Point delta)
   DrawBottomToTop(elements, dx, dy);
   UpdateScreen(elements, dx, dy);
 }</pre>
-<p>fixes the problem -- when dragging the canvas, the user now experiences a 
-beautifully smooth operation!&nbsp; Again, this something that you just don't 
-discover with unit tests.</p>
-<h2>FlowSharpLib Code</h2>
+
+<p>fixes the problem -- when dragging the canvas, the user now experiences a beautifully smooth operation!&nbsp; Again, this something that you just don&#39;t discover with unit tests.</p>
+
+<h2><a name="FlowSharpLibCode31">FlowSharpLib Code</a></h2>
+
 <p>The code is separated into two projects:</p>
+
 <ul>
 	<li>FlowSharp - the UI itself with the toolbox, canvas, and property grid.</li>
-	<li>FlowSharpLib - all the pieces for drawing shapes on the canvas, 
-	including the canvas controller.</li>
+	<li>FlowSharpLib - all the pieces for drawing shapes on the canvas, including the canvas controller.</li>
 </ul>
-<h3>The Basics</h3>
-<h4>Initialization</h4>
+
+<h3><a name="TheBasics32">The Basics</a></h3>
+
+<h4><a name="Initialization33">Initialization</a></h4>
+
 <p>(FlowSharpUI.cs)</p>
-<pre>protected void InitializeCanvas()
+
+<pre>
+protected void InitializeCanvas()
 {
   canvas = new Canvas();
   canvas.Initialize(pnlCanvas);
@@ -560,15 +770,17 @@ protected void InitializeControllers()
   toolboxController = new ToolboxController(toolboxCanvas, toolboxElements, canvasController);
   uiController = new UIController(pgElement, canvasController);
 }</pre>
-<p>Here the canvas and canvas controller is initialized.&nbsp; The initial set 
-of elements is empty (there's some commented out code for starting with some 
-elements which was helpful for testing.)&nbsp; The UI hooks the <code>ElementSelected</code> 
-to update the menu, and the toolbox controller is also initialized.</p>
-<h4>Custom Toolbox Shapes</h4>
+
+<p>Here the canvas and canvas controller is initialized.&nbsp; The initial set of elements is empty (there&#39;s some commented out code for starting with some elements which was helpful for testing.)&nbsp; The UI hooks the <code>ElementSelected</code> to update the menu, and the toolbox controller is also initialized.</p>
+
+<h4><a name="CustomToolboxShapes34">Custom Toolbox Shapes</a></h4>
+
 <p>(ToolboxText.cs)</p>
-<p>In one instance, the Text shape, I completely override the rendering of the 
-default shape:</p>
-<pre>using System.Drawing;
+
+<p>In one instance, the Text shape, I completely override the rendering of the default shape:</p>
+
+<pre>
+using System.Drawing;
 
 namespace FlowSharpLib
 {
@@ -603,22 +815,29 @@ namespace FlowSharpLib
     }
   }
 }</pre>
-<p><img border="0" src="img14.png" width="261" height="47"></p>
-<p>The difference is that in the toolbox, the element is drawn with a big letter 
-&quot;A&quot;, but the actual element defaults to a smaller font and the text &quot;[enter 
-text]&quot;.</p>
-<h4>Full Redraw</h4>
+
+<p><img border="0" height="47" src="img14.png" width="261" /></p>
+
+<p>The difference is that in the toolbox, the element is drawn with a big letter &quot;A&quot;, but the actual element defaults to a smaller font and the text &quot;[enter text]&quot;.</p>
+
+<h4><a name="FullRedraw35">Full Redraw</a></h4>
+
 <p>(BaseController.cs, CanvasController.cs, ToolboxController.cs)</p>
-<p>The canvas handles its background grid and calls the <code>CanvasPaintComplete 
-Action&lt;&gt;</code> method that the controller must set for the canvas.&nbsp; 
-By default, all it does is this:</p>
-<pre>protected void CanvasPaintComplete(Canvas canvas)
+
+<p>The canvas handles its background grid and calls the <code>CanvasPaintComplete Action&lt;&gt;</code> method that the controller must set for the canvas.&nbsp; By default, all it does is this:</p>
+
+<pre>
+protected void CanvasPaintComplete(Canvas canvas)
 {
   DrawBottomToTop(elements);
 }</pre>
-<h4>Erasing and Drawing Shapes</h4>
+
+<h4><a name="ErasingandDrawingShapes36">Erasing and Drawing Shapes</a></h4>
+
 <p>(BaseController.cs)</p>
-<pre>protected IEnumerable&lt;GraphicElement&gt; EraseTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
+
+<pre>
+protected IEnumerable&lt;GraphicElement&gt; EraseTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
 {
   List&lt;GraphicElement&gt; intersections = new List&lt;GraphicElement&gt;();
   FindAllIntersections(intersections, el, dx, dy);
@@ -641,12 +860,13 @@ protected void DrawBottomToTop(IEnumerable&lt;GraphicElement&gt; els, int dx = 0
     e.Draw();
   });
 }</pre>
-<p>In order to optimize the drawing of a shape, any time it's moved, any 
-intersecting elements also have to be erased.&nbsp; Erasing is done 
-top-to-bottom, and redrawing is done bottom-to-top.&nbsp; This allows each shape 
-to capture the background before it is drawn.</p>
+
+<p>In order to optimize the drawing of a shape, any time it&#39;s moved, any intersecting elements also have to be erased.&nbsp; Erasing is done top-to-bottom, and redrawing is done bottom-to-top.&nbsp; This allows each shape to capture the background before it is drawn.</p>
+
 <p>Intersections are detected like this:</p>
-<pre>/// &lt;summary&gt;
+
+<pre>
+/// &lt;summary&gt;
 /// Recursive loop to get all intersecting rectangles, including intersectors of the intersectees, 
 /// so that all elements that are affected by an overlap redraw are erased and redrawn, otherwise
 /// we get artifacts of some intersecting elements when intersection count &gt; 2.
@@ -662,21 +882,25 @@ protected void FindAllIntersections(List&lt;GraphicElement&gt; intersections, Gr
     FindAllIntersections(intersections, e);
   });
 }</pre>
-<p>A fun recursive algorithm!&nbsp; The optional &quot;grow&quot; factor handles the fact 
-that after a shape has been moved, we have to identify intersections of both the 
-source and destination locations.&nbsp; This algorithm assumes that movement is 
-typically in small increments.&nbsp; Intersected shapes, which are not moving, 
-have a default &quot;grow&quot; factor of 0.</p>
-<h4>Double Buffering, Managing the Bitmap, and Erasing</h4>
+
+<p>A fun recursive algorithm!&nbsp; The optional &quot;grow&quot; factor handles the fact that after a shape has been moved, we have to identify intersections of both the source and destination locations.&nbsp; This algorithm assumes that movement is typically in small increments.&nbsp; Intersected shapes, which are not moving, have a default &quot;grow&quot; factor of 0.</p>
+
+<h4><a name="DoubleBuffering,ManagingtheBitmap,andErasing37">Double Buffering, Managing the Bitmap, and Erasing</a></h4>
+
 <p>(Canvas.cs)</p>
-<p>The actual <code>Panel</code> base class control is double-buffered, which 
-creates a nice user experience:</p>
-<pre>public Canvas()
+
+<p>The actual <code>Panel</code> base class control is double-buffered, which creates a nice user experience:</p>
+
+<pre>
+public Canvas()
 {
   DoubleBuffered = true;
 </pre>
+
 <p>But FlowSharp maintains its own bitmap:</p>
-<pre>public void CreateBitmap(int w, int h)
+
+<pre>
+public void CreateBitmap(int w, int h)
 {
   bitmap = new Bitmap(w, h);
   CreateGraphicsObjects();
@@ -694,11 +918,15 @@ protected void CreateGraphicsObjects()
   antiAliasGraphics = Graphics.FromImage(bitmap);
   antiAliasGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 }</pre>
-<p>Note also that two <code>Graphic</code> objects are created, as for some operations, we 
-don't need the anti-aliasing feature.</p>
+
+<p>Note also that two <code>Graphic</code> objects are created, as for some operations, we don&#39;t need the anti-aliasing feature.</p>
+
 <p>Maintaining our own bitmap allows for erasing shapes:</p>
+
 <p>(GraphicElement.cs)</p>
-<pre>public virtual void Erase()
+
+<pre>
+public virtual void Erase()
 {
   if (canvas.OnScreen(backgroundRectangle))
   {
@@ -712,8 +940,11 @@ public static void Erase(this Bitmap background, Canvas canvas, Rectangle r)
   canvas.DrawImage(background, r);
   background.Dispose();
 }</pre>
+
 <p>and capturing the new background after the shape has moved:</p>
-<pre>public virtual void GetBackground()
+
+<pre>
+public virtual void GetBackground()
 {
   background?.Dispose();
   background = null;
@@ -724,24 +955,32 @@ public static void Erase(this Bitmap background, Canvas canvas, Rectangle r)
     background = canvas.GetImage(backgroundRectangle);
   }
 }</pre>
+
 <p>(Canvas.cs)</p>
+
 <pre>
 public Bitmap GetImage(Rectangle r)
 {
   return bitmap.Clone(r, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 }</pre>
+
 <p>Updating the screen itself is simple:</p>
+
 <p>(BaseController.cs)</p>
-<pre>protected void UpdateScreen(IEnumerable&lt;GraphicElement&gt; els, int dx = 0, int dy = 0)
+
+<pre>
+protected void UpdateScreen(IEnumerable&lt;GraphicElement&gt; els, int dx = 0, int dy = 0)
 {
   els.Where(e =&gt; e.OnScreen(dx, dy)).ForEach(e =&gt; e.UpdateScreen(dx, dy));
 }
 </pre>
-<p>Is this faster than creating a unioned rectangle? Dunno, because the unioned 
-rectangle might include a lot of space not part of the shapes, for example like 
-something in an &quot;L&quot; pattern.</p>
+
+<p>Is this faster than creating a unioned rectangle? Dunno, because the unioned rectangle might include a lot of space not part of the shapes, for example like something in an &quot;L&quot; pattern.</p>
+
 <p>(Canvas.cs)</p>
-<pre>public virtual void UpdateScreen(int ix = 0, int iy = 0)
+
+<pre>
+public virtual void UpdateScreen(int ix = 0, int iy = 0)
 {
   Rectangle r = canvas.Clip(UpdateRectangle.Grow(ix, iy));
 
@@ -759,13 +998,17 @@ public void CopyToScreen(Rectangle r)
   b.Dispose();
   grScreen.Dispose();
 }</pre>
-<p>Note how <code>CopyToScreen</code> copies only the region of our internal bitmap to the 
-affected region on the screen.&nbsp; The odd thing is that <code>Graphics</code> has a 
-<code>CopyFromScreen</code>, but not a <code>CopyToScreen</code>, so we have to write it ourselves.</p>
-<h4>Clipping</h4>
+
+<p>Note how <code>CopyToScreen</code> copies only the region of our internal bitmap to the affected region on the screen.&nbsp; The odd thing is that <code>Graphics</code> has a <code>CopyFromScreen</code>, but not a <code>CopyToScreen</code>, so we have to write it ourselves.</p>
+
+<h4><a name="Clipping38">Clipping</a></h4>
+
 <p>(Canvas.cs)</p>
+
 <p>Shapes partially off screen are clipped:</p>
-<pre>public Rectangle Clip(Rectangle r)
+
+<pre>
+public Rectangle Clip(Rectangle r)
 {
   int x = r.X.Max(0);
   int y = r.Y.Max(0);
@@ -777,10 +1020,15 @@ affected region on the screen.&nbsp; The odd thing is that <code>Graphics</code>
 
   return new Rectangle(x, y, width, height);
 }</pre>
-<h3>Higher Level Functionality</h3>
-<h4>Moving a Shape</h4>
+
+<h3><a name="HigherLevelFunctionality39">Higher Level Functionality</a></h3>
+
+<h4><a name="MovingaShape40">Moving a Shape</a></h4>
+
 <p>(BaseController.cs)</p>
-<pre>public void MoveElement(GraphicElement el, Point delta)
+
+<pre>
+public void MoveElement(GraphicElement el, Point delta)
 {
   if (el.OnScreen())
   {
@@ -798,19 +1046,24 @@ affected region on the screen.&nbsp; The odd thing is that <code>Graphics</code>
     el.Move(delta);
   }
 }</pre>
+
 <p>Moving a shape involves:</p>
+
 <ol>
 	<li>erasing it an its intersecting shapes</li>
-<li>updating the shape's path (implemented by connector shapes)</li>
+	<li>updating the shape&#39;s path (implemented by connector shapes)</li>
 	<li>redrawing the affected shapes on the bitmap</li>
 	<li>and copying the bitmap regions to the screen.</li>
 </ol>
-<h4>Snapping</h4>
+
+<h4><a name="Snapping41">Snapping</a></h4>
+
 <p>(CanvasController.cs)</p>
-<p>This is by far the most complicated code in the <code>CanvasController</code>.  Let's start with 
-the piece that detects whether the anchor of a connector is near a connection 
-point of a shape:</p>
-<pre>protected virtual List&lt;SnapInfo&gt; GetNearbyElements(IEnumerable&lt;ConnectionPoint&gt; connectionPoints)
+
+<p>This is by far the most complicated code in the <code>CanvasController</code>. Let&#39;s start with the piece that detects whether the anchor of a connector is near a connection point of a shape:</p>
+
+<pre>
+protected virtual List&lt;SnapInfo&gt; GetNearbyElements(IEnumerable&lt;ConnectionPoint&gt; connectionPoints)
 {
   List&lt;SnapInfo&gt; nearElements = new List&lt;SnapInfo&gt;();
 
@@ -829,14 +1082,13 @@ point of a shape:</p>
 
   return nearElements;
 }</pre>
-<p>This method returns all the possible snap points (the connection points) of 
-the shape that the anchor is near to.&nbsp; It's not obvious that we're using 
-the anchor because the parameter passed in is the connection points of the 
-connector.&nbsp; Because those are the same as a connector's endpoints, we use 
-the connector's connection points rather than going through hoops to figure out 
-the actual point on the anchor that represents the &quot;tip&quot; of the connector.</p>
+
+<p>This method returns all the possible snap points (the connection points) of the shape that the anchor is near to.&nbsp; It&#39;s not obvious that we&#39;re using the anchor because the parameter passed in is the connection points of the connector.&nbsp; Because those are the same as a connector&#39;s endpoints, we use the connector&#39;s connection points rather than going through hoops to figure out the actual point on the anchor that represents the &quot;tip&quot; of the connector.</p>
+
 <p>The actual snap detection method is this monster:</p>
-<pre>public override bool Snap(GripType type, ref Point delta)
+
+<pre>
+public override bool Snap(GripType type, ref Point delta)
 {
   bool snapped = false;
 
@@ -844,8 +1096,8 @@ the actual point on the anchor that represents the &quot;tip&quot; of the connec
   // If a connection point is nearby, and the delta is moving toward that connection point, 
   // then snap to that connection point.
 
-  // So, it seems odd that we're using the connection points of the line, rather than the anchors.
-  // However, this is actually simpler, and a line's connection points should at least include the endpoint anchors.
+  // So, it seems odd that we&#39;re using the connection points of the line, rather than the anchors.
+  // However, this is actually simpler, and a line&#39;s connection points should at least include the endpoint anchors.
   IEnumerable&lt;ConnectionPoint&gt; connectionPoints = selectedElement.GetConnectionPoints().
     Where(p =&gt; type == GripType.None || p.Type == type);
   List&lt;SnapInfo&gt; nearElements = GetNearbyElements(connectionPoints);
@@ -871,7 +1123,7 @@ the actual point on the anchor that represents the &quot;tip&quot; of the connec
       int deltaxsign = delta.X.Sign();
       int deltaysign = delta.Y.Sign();
 
-      // Are we attached already or moving toward the shape's connection point?
+      // Are we attached already or moving toward the shape&#39;s connection point?
       if ((neardxsign == 0 || deltaxsign == 0 || neardxsign == deltaxsign) &amp;&amp;
         (neardysign == 0 || deltaysign == 0 || neardysign == deltaysign))
       {
@@ -906,20 +1158,20 @@ the actual point on the anchor that represents the &quot;tip&quot; of the connec
 
   return snapped;
 }</pre>
+
 <p>The algorithm:</p>
+
 <ol>
 	<li>Finds nearby shapes</li>
-	<li>Checks each connection point on the shape to see if we're already 
-	connected or moving toward the connection point</li>
-	<li>If already connected (<code>neardxsign</code> and <code>neardysign</code> both == 0) check if 
-	we're actually moving away at a sufficient &quot;velocity&quot; and if so, detach the 
-	connector.</li>
-	<li>Otherwise, check if we're already connected.&nbsp; If not, connect the 
-	connector to the shape.</li>
+	<li>Checks each connection point on the shape to see if we&#39;re already connected or moving toward the connection point</li>
+	<li>If already connected (<code>neardxsign</code> and <code>neardysign</code> both == 0) check if we&#39;re actually moving away at a sufficient &quot;velocity&quot; and if so, detach the connector.</li>
+	<li>Otherwise, check if we&#39;re already connected.&nbsp; If not, connect the connector to the shape.</li>
 </ol>
-<p>The list of near shapes is preserved so that the connection points can be 
-erased on a mouse-up:</p>
-<pre>protected void OnMouseUp(object sender, MouseEventArgs args)
+
+<p>The list of near shapes is preserved so that the connection points can be erased on a mouse-up:</p>
+
+<pre>
+protected void OnMouseUp(object sender, MouseEventArgs args)
 {
   if (args.Button == MouseButtons.Left)
   {
@@ -930,8 +1182,11 @@ erased on a mouse-up:</p>
     currentlyNear.Clear();
   }
 }</pre>
+
 <p>Implementing the snap check is done in the mouse move event hander:</p>
-<pre>protected void OnMouseMove(object sender, MouseEventArgs args)
+
+<pre>
+protected void OnMouseMove(object sender, MouseEventArgs args)
 {
   Point delta = args.Location.Delta(mousePosition);
 
@@ -959,26 +1214,28 @@ erased on a mouse-up:</p>
       DragSelectedElement(delta);
     }
   }</pre>
-<p>Notice in the <code>Snap</code> method that the delta is a reference.&nbsp; The <code>Snap</code> 
-method updates this value when a snap occurs.&nbsp; In the <code>SnapCheck</code> method, the 
-element is either moved based on the user's mouse movement or by the amount the 
-Snap method determined is necessary to actually make the connection:</p>
+
+<p>Notice in the <code>Snap</code> method that the delta is a reference.&nbsp; The <code>Snap</code> method updates this value when a snap occurs.&nbsp; In the <code>SnapCheck</code> method, the element is either moved based on the user&#39;s mouse movement or by the amount the Snap method determined is necessary to actually make the connection:</p>
+
 <p>(GraphicElement.cs, DynamicConnector.cs, Line.cs)</p>
-<pre>public virtual bool SnapCheck(ShapeAnchor anchor, Point delta)
+
+<pre>
+public virtual bool SnapCheck(ShapeAnchor anchor, Point delta)
 {
   UpdateSize(anchor, delta);
   canvas.Controller.UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = this });
 
   return false;
 }</pre>
-<p>(The <code>UpdateSelectedElement</code> event is fired so that the property grid can be 
-updated with the new position information.)</p>
-<p>We can also snap a connector by moving the entire connector (preserving its 
-shape) rather than the connector's anchor point.&nbsp; This will snap either 
-endpoint of the connector to a nearby shape's connection point, and is handled 
-by the method responsible for dragging the shape:</p>
+
+<p>(The <code>UpdateSelectedElement</code> event is fired so that the property grid can be updated with the new position information.)</p>
+
+<p>We can also snap a connector by moving the entire connector (preserving its shape) rather than the connector&#39;s anchor point.&nbsp; This will snap either endpoint of the connector to a nearby shape&#39;s connection point, and is handled by the method responsible for dragging the shape:</p>
+
 <p>(CanvasController.cs)</p>
-<pre>public void DragSelectedElement(Point delta)
+
+<pre>
+public void DragSelectedElement(Point delta)
 {
   bool connectorAttached = selectedElement.SnapCheck(GripType.Start, ref delta) || 
     selectedElement.SnapCheck(GripType.End, ref delta);
@@ -991,22 +1248,29 @@ by the method responsible for dragging the shape:</p>
     DetachFromAllShapes(selectedElement);
   }
 }</pre>
-<p>Shapes cannot snap to each other, so a shape's default behavior is to return 
-false:</p>
-<pre>// Default returns true so we don't detach a shape's connectors when moving a shape.
+
+<p>Shapes cannot snap to each other, so a shape&#39;s default behavior is to return false:</p>
+
+<pre>
+// Default returns true so we don&#39;t detach a shape&#39;s connectors when moving a shape.
 public virtual bool SnapCheck(GripType gt, ref Point delta) { return false; }</pre>
+
 <p>This is overridden by the <code>DynamicConnector</code>:</p>
+
 <p>(DynamicConnector.cs)</p>
-<pre>public override bool SnapCheck(GripType gt, ref Point delta)
+
+<pre>
+public override bool SnapCheck(GripType gt, ref Point delta)
 {
   return canvas.Controller.Snap(GripType.None, ref delta);
 }</pre>
-<p>Horizontal and vertical lines are a bit stranger, because moving the line is constrained to the axis if the line -- you can't create 
-diagonal lines.&nbsp; So for lines, if the line is snapped, we have to move the 
-entire line, otherwise a diagonal line would be created.&nbsp; If there is no 
-snap action, then the line is resized according to its constraints.</p>
+
+<p>Horizontal and vertical lines are a bit stranger, because moving the line is constrained to the axis if the line -- you can&#39;t create diagonal lines.&nbsp; So for lines, if the line is snapped, we have to move the entire line, otherwise a diagonal line would be created.&nbsp; If there is no snap action, then the line is resized according to its constraints.</p>
+
 <p>(Line.cs)</p>
-<pre>public override bool SnapCheck(ShapeAnchor anchor, Point delta)
+
+<pre>
+public override bool SnapCheck(ShapeAnchor anchor, Point delta)
 {
   bool ret = canvas.Controller.Snap(anchor.Type, ref delta);
 
@@ -1023,9 +1287,13 @@ snap action, then the line is resized according to its constraints.</p>
 
   return ret;
 }</pre>
-<h4>Creating a PNG</h4>
+
+<h4><a name="CreatingaPNG42">Creating a PNG</a></h4>
+
 <p>(BaseController.cs)</p>
-<pre>public void SaveAsPng(string filename)
+
+<pre>
+public void SaveAsPng(string filename)
 {
   // Get boundaries of of all elements.
   int x1 = elements.Min(e =&gt; e.DisplayRectangle.X);
@@ -1057,17 +1325,17 @@ snap action, then the line is resized according to its constraints.</p>
   pngCanvas.Bitmap.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
   pngCanvas.Dispose();
 }</pre>
-<p>Creating the PNG is bit &quot;dirty&quot; as all shapes need to be moved 
-relative to the bitmap created for the PNG, which is sized to the extents of the 
-shapes.&nbsp; And the canvas for each shape has to be set as well so that the 
-shape thinks it's know attached to the PNG's canvas.&nbsp; Then, it all has to 
-get undone.&nbsp; Personally, I think think this points to a &quot;mild&quot; 
-design/implementation flaw, but the workaround in the code above is simple 
-enough to get the job done for now.</p>
-<h4>Serialization</h4>
+
+<p>Creating the PNG is bit &quot;dirty&quot; as all shapes need to be moved relative to the bitmap created for the PNG, which is sized to the extents of the shapes.&nbsp; And the canvas for each shape has to be set as well so that the shape thinks it&#39;s know attached to the PNG&#39;s canvas.&nbsp; Then, it all has to get undone.&nbsp; Personally, I think think this points to a &quot;mild&quot; design/implementation flaw, but the workaround in the code above is simple enough to get the job done for now.</p>
+
+<h4><a name="Serialization43">Serialization</a></h4>
+
 <p>(Persist.cs)</p>
+
 <p>Serialization, at least at the call point, is straight forward:</p>
-<pre>public static string Serialize(List&lt;GraphicElement&gt; elements)
+
+<pre>
+public static string Serialize(List&lt;GraphicElement&gt; elements)
 {
   List&lt;ElementPropertyBag&gt; sps = new List&lt;ElementPropertyBag&gt;();
   elements.ForEach(el =&gt;
@@ -1084,12 +1352,13 @@ enough to get the job done for now.</p>
 
   return sb.ToString();
 }</pre>
-<p>Note the use of a separate property bag, which I use to keep a clean separate 
-of concerns between the shapes, connectors, and internal stuff.&nbsp; The main 
-purpose of the property bag is to handle serializing graphic objects, like 
-fonts, colors, and pens, that .NET doesn't serialize:</p>
+
+<p>Note the use of a separate property bag, which I use to keep a clean separate of concerns between the shapes, connectors, and internal stuff.&nbsp; The main purpose of the property bag is to handle serializing graphic objects, like fonts, colors, and pens, that .NET doesn&#39;t serialize:</p>
+
 <p>For example:</p>
-<pre>[XmlIgnore]
+
+<pre>
+[XmlIgnore]
 public Color BorderPenColor { get; set; }
 
 [XmlElement(&quot;BorderPenColor&quot;)]
@@ -1098,10 +1367,13 @@ public int XBorderPenColor
   get { return BorderPenColor.ToArgb(); }
   set { BorderPenColor = Color.FromArgb(value); }
 }</pre>
-<p>The heavy lifting is handed off to the shapes, which has to deal with saving 
-the actual attributes of a font, brush, pen, and color:</p>
+
+<p>The heavy lifting is handed off to the shapes, which has to deal with saving the actual attributes of a font, brush, pen, and color:</p>
+
 <p>(GraphicElement.cs)</p>
-<pre>public virtual void Serialize(ElementPropertyBag epb)
+
+<pre>
+public virtual void Serialize(ElementPropertyBag epb)
 {
   epb.ElementName = GetType().AssemblyQualifiedName;
   epb.Id = Id;
@@ -1129,14 +1401,17 @@ the actual attributes of a font, brush, pen, and color:</p>
 
   Connections.ForEach(c =&gt; c.Serialize(epb));
 }</pre>
-<p>Yes, it's a little annoying to have to copy the properties that need 
-serialization into the property bag, but I really do like the separation of a 
-serialization model from the shape model.</p>
-<h4>Deserialization</h4>
+
+<p>Yes, it&#39;s a little annoying to have to copy the properties that need serialization into the property bag, but I really do like the separation of a serialization model from the shape model.</p>
+
+<h4><a name="Deserialization44">Deserialization</a></h4>
+
 <p>(Persist.cs)</p>
-<p>Deserialization is more complicated because the connection points need to be 
-wired up to their actual objects:</p>
-<pre>public static List&lt;GraphicElement&gt; Deserialize(Canvas canvas, string data)
+
+<p>Deserialization is more complicated because the connection points need to be wired up to their actual objects:</p>
+
+<pre>
+public static List&lt;GraphicElement&gt; Deserialize(Canvas canvas, string data)
 {
   Tuple&lt;List&lt;GraphicElement&gt;, List&lt;ElementPropertyBag&gt;&gt; collections = InternalDeserialize(canvas, data);
   FixupConnections(collections);
@@ -1182,10 +1457,13 @@ private static void FinalFixup(Tuple&lt;List&lt;GraphicElement&gt;, List&lt;Elem
 {
   collections.Item2.ForEach(epb =&gt; epb.Element.FinalFixup(collections.Item1, epb));
 }</pre>
-<p>Connectors implement serialization/deserialization for the data that they 
-manage:</p>
+
+<p>Connectors implement serialization/deserialization for the data that they manage:</p>
+
 <p>(Connection.cs)</p>
-<pre>// !!! If this class ends up being subclassed for any reason, the serializer must be updated to account for subclasses !!!
+
+<pre>
+// !!! If this class ends up being subclassed for any reason, the serializer must be updated to account for subclasses !!!
 /// &lt;summary&gt;
 /// Used for shapes connecting to lines.
 /// &lt;/summary&gt;
@@ -1211,20 +1489,27 @@ public class Connection
     ElementConnectionPoint = cpb.ElementConnectionPoint;
   }
 }</pre>
-<p>and lastly, when the connection objects are all deserialized, a final fixup 
-is required to wire up the actual shape object from the shape ID:</p>
+
+<p>and lastly, when the connection objects are all deserialized, a final fixup is required to wire up the actual shape object from the shape ID:</p>
+
 <p>(GraphicElement.cs, Connector.cs)</p>
-<pre>public override void FinalFixup(List&lt;GraphicElement&gt; elements, ElementPropertyBag epb)
+
+<pre>
+public override void FinalFixup(List&lt;GraphicElement&gt; elements, ElementPropertyBag epb)
 {
   base.FinalFixup(elements, epb);
   StartConnectedShape = elements.SingleOrDefault(e =&gt; e.Id == epb.StartConnectedShapeId);
   EndConnectedShape = elements.SingleOrDefault(e =&gt; e.Id == epb.EndConnectedShapeId);
 }</pre>
-<h4>Keyboard Actions</h4>
+
+<h4><a name="KeyboardActions45">Keyboard Actions</a></h4>
+
 <p>(FlowSharpUI.cs)</p>
-<p>Because there's no actual input control, keyboard operations in the FlowSharp 
-UI project have to be intercepted by overriding ProcessCmdKey:</p>
-<pre>protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+
+<p>Because there&#39;s no actual input control, keyboard operations in the FlowSharp UI project have to be intercepted by overriding ProcessCmdKey:</p>
+
+<pre>
+protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 {
   Action act;
   bool ret = false;
@@ -1241,34 +1526,39 @@ UI project have to be intercepted by overriding ProcessCmdKey:</p>
 
   return ret;
 }</pre>
+
 <p>A dictionary:</p>
-<pre>protected Dictionary&lt;Keys, Action&gt; keyActions = new Dictionary&lt;Keys, Action&gt;();</pre>
-<p>is initialized with keyboard actions that can be performed on a selected 
-shape:</p>
-<pre>keyActions[Keys.Control | Keys.C] = Copy;
+
+<pre>
+protected Dictionary&lt;Keys, Action&gt; keyActions = new Dictionary&lt;Keys, Action&gt;();</pre>
+
+<p>is initialized with keyboard actions that can be performed on a selected shape:</p>
+
+<pre>
+keyActions[Keys.Control | Keys.C] = Copy;
 keyActions[Keys.Control | Keys.V] = Paste;
 keyActions[Keys.Delete] = Delete;
 keyActions[Keys.Up] = () =&gt; canvasController.DragSelectedElement(new Point(0, -1));
 keyActions[Keys.Down] = () =&gt; canvasController.DragSelectedElement(new Point(0, 1));
 keyActions[Keys.Left] = () =&gt; canvasController.DragSelectedElement(new Point(-1, 0));
 keyActions[Keys.Right] = () =&gt; canvasController.DragSelectedElement(new Point(1, 0));</pre>
-<p>Note that DragSelectedElement also does a snap check.&nbsp; Using the 
-keyboard's &quot;down&quot; to move a connector:</p>
-<p><img border="0" src="img15-1.png" width="100" height="144">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img border="0" src="img15-2.png" width="94" height="139">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img border="0" src="img15-3.png" width="95" height="131">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img border="0" src="img15-4.png" width="104" height="122"></p>
-<p>Not in snap range&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; In snap range&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-closer....&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-snapped!</p>
-<p>You cannot detach a connector using the keyboard (the &quot;velocity&quot; is too 
-small.)&nbsp; Is that a bug?</p>
-<h4>Vertical and Horizontal Lines</h4>
-<p>These are very primitive shapes that are constrained to be sized only along 
-their axis (see Anchor Constraints).&nbsp; You cannot create a diagonal line.&nbsp; A line is drawn based 
-on the <code>DisplayRectangle</code> of the shape, for example:</p>
+
+<p>Note that DragSelectedElement also does a snap check.&nbsp; Using the keyboard&#39;s &quot;down&quot; to move a connector:</p>
+
+<p><img border="0" height="144" src="img15-1.png" width="100" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img border="0" height="139" src="img15-2.png" width="94" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img border="0" height="131" src="img15-3.png" width="95" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img border="0" height="122" src="img15-4.png" width="104" /></p>
+
+<p>Not in snap range &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; In snap range &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; closer.... &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;snapped!</p>
+
+<p>You cannot detach a connector using the keyboard (the &quot;velocity&quot; is too small.)&nbsp; Is that a bug?</p>
+
+<h4><a name="VerticalandHorizontalLines46">Vertical and Horizontal Lines</a></h4>
+
+<p>These are very primitive shapes that are constrained to be sized only along their axis (see Anchor Constraints).&nbsp; You cannot create a diagonal line.&nbsp; A line is drawn based on the <code>DisplayRectangle</code> of the shape, for example:</p>
+
 <p>(VerticalLine.cs)</p>
-<pre>public override void Draw(Graphics gr)
+
+<pre>
+public override void Draw(Graphics gr)
 {
   Pen pen = (Pen)BorderPen.Clone();
 
@@ -1282,12 +1572,17 @@ on the <code>DisplayRectangle</code> of the shape, for example:</p>
 
   base.Draw(gr);
 }</pre>
-<h4>Anchor Constraints</h4>
-<p><img border="0" src="img17.png" width="484" height="304"></p>
-<p>The movement of an anchor is constrained by the type of anchor that you 
-select:</p>
+
+<h4><a name="AnchorConstraints47">Anchor Constraints</a></h4>
+
+<p><img border="0" height="304" src="img17.png" width="484" /></p>
+
+<p>The movement of an anchor is constrained by the type of anchor that you select:</p>
+
 <p>(ShapeAnchor.cs)</p>
-<pre>public Point AdjustedDelta(Point delta)
+
+<pre>
+public Point AdjustedDelta(Point delta)
 {
   Point ad = Point.Empty;
 
@@ -1318,46 +1613,59 @@ select:</p>
 
   return ad;
 }</pre>
-<p>As the above code shows, corner anchors and dynamic connector <code>Start</code> and <code>End</code> 
-grip types are not constrained.&nbsp; Middle anchors are constrained.</p>
-<h4>Size Constraints</h4>
-<p>For sanity, shapes cannot be less than a minimum width and height.&nbsp; This 
-means you cannot invert a shape by moving the top-left corner of a shape below 
-or to the right of the bottom or right edge.&nbsp; </p>
-<p><img border="0" src="img16.png" width="106" height="56"></p>
-<p>This illustrates the minimum sizes of a square (with mouse hover to show the 
-anchor points) and a circle.&nbsp; The reason for these minimums is to still 
-show (as the left shape illustrates) the anchor points.&nbsp; This is an ugly 
-and buggy piece of code that I won't show.</p>
-<h4>Dynamic Connector Line Caps</h4>
-<p>Line caps for dynamic connectors are complicated.&nbsp; In fact, drawing the 
-lines for a dynamic connector is complicated.&nbsp; Here's why.&nbsp; First, 
-let's look at what happens with the default endcap behavior for a line with 
-negative width.&nbsp; We'll start with a left-right dynamic connector:</p>
-<p><img border="0" src="img18.png" width="112" height="68"></p>
+
+<p>As the above code shows, corner anchors and dynamic connector <code>Start</code> and <code>End</code> grip types are not constrained.&nbsp; Middle anchors are constrained.</p>
+
+<h4><a name="SizeConstraints48">Size Constraints</a></h4>
+
+<p>For sanity, shapes cannot be less than a minimum width and height.&nbsp; This means you cannot invert a shape by moving the top-left corner of a shape below or to the right of the bottom or right edge.&nbsp;</p>
+
+<p><img border="0" height="56" src="img16.png" width="106" /></p>
+
+<p>This illustrates the minimum sizes of a square (with mouse hover to show the anchor points) and a circle.&nbsp; The reason for these minimums is to still show (as the left shape illustrates) the anchor points.&nbsp; This is an ugly and buggy piece of code that I won&#39;t show.</p>
+
+<h4><a name="DynamicConnectorLineCaps49">Dynamic Connector Line Caps</a></h4>
+
+<p>Line caps for dynamic connectors are complicated.&nbsp; In fact, drawing the lines for a dynamic connector is complicated.&nbsp; Here&#39;s why.&nbsp; First, let&#39;s look at what happens with the default endcap behavior for a line with negative width.&nbsp; We&#39;ll start with a left-right dynamic connector:</p>
+
+<p><img border="0" height="68" src="img18.png" width="112" /></p>
+
 <p>and move the start point so that the width is negative (start X &gt; end X):</p>
-<p><img border="0" src="img19.png" width="129" height="62"></p>
+
+<p><img border="0" height="62" src="img19.png" width="129" /></p>
+
 <p>If we account for negative widths, what happens is this:</p>
-<p><img border="0" src="negwidth1.png" width="212" height="169"></p>
+
+<p><img border="0" height="169" src="negwidth1.png" width="212" /></p>
+
 <p>Oops.&nbsp; The endcap draws beyond the actual end of the line.</p>
-<p>Let's see what happens when we adjust the endcap:</p>
-<pre>AdjustableArrowCap adjCap = new AdjustableArrowCap(-BaseController.CAP_WIDTH, BaseController.CAP_HEIGHT, true);</pre>
+
+<p>Let&#39;s see what happens when we adjust the endcap:</p>
+
+<pre>
+AdjustableArrowCap adjCap = new AdjustableArrowCap(-BaseController.CAP_WIDTH, BaseController.CAP_HEIGHT, true);</pre>
+
 <p>note the negative width.&nbsp; Now we get:</p>
-<p><img border="0" src="negwidth2.png" width="212" height="169"></p>
-<p>Notice we still have the same problem, but now there's artifact in the endcap 
--- a white line!</p>
-<p><img border="0" src="negwidth3.png" width="164" height="165"></p>
+
+<p><img border="0" height="169" src="negwidth2.png" width="212" /></p>
+
+<p>Notice we still have the same problem, but now there&#39;s artifact in the endcap -- a white line!</p>
+
+<p><img border="0" height="165" src="negwidth3.png" width="164" /></p>
+
 <p>Fussing with endcap properties, I did figure out how to draw diamond endcaps:</p>
-<pre>adjCap.MiddleInset = -5;</pre>
-<p><img border="0" src="negwidth4.png" width="212" height="169"></p>
-<p>That particular discovery allowed me to add diamonds to the list of possible 
-endcaps.</p>
-<p>Back to the point--the way .NET draws endcaps for lines in the &quot;negative&quot; orientation appears to 
-bugged (I don't discount the possibility that my tests had a bug though!)&nbsp; 
-That means we have to re-orient the lines and the start/endcaps depending on the 
-line orientation.&nbsp; For a right-angle connector, the horizontal and vertical 
-lines must be re-oriented so they always draw right-to-left and top-to-bottom:</p>
-<pre>if (startPoint.X &lt; endPoint.X)
+
+<pre>
+adjCap.MiddleInset = -5;</pre>
+
+<p><img border="0" height="169" src="negwidth4.png" width="212" /></p>
+
+<p>That particular discovery allowed me to add diamonds to the list of possible endcaps.</p>
+
+<p>Back to the point--the way .NET draws endcaps for lines in the &quot;negative&quot; orientation appears to bugged (I don&#39;t discount the possibility that my tests had a bug though!)&nbsp; That means we have to re-orient the lines and the start/endcaps depending on the line orientation.&nbsp; For a right-angle connector, the horizontal and vertical lines must be re-oriented so they always draw right-to-left and top-to-bottom:</p>
+
+<pre>
+if (startPoint.X &lt; endPoint.X)
 {
   lines[0].DisplayRectangle = new Rectangle(startPoint.X, 
      startPoint.Y - BaseController.MIN_HEIGHT / 2, 
@@ -1380,9 +1688,11 @@ else
   lines[1].DisplayRectangle = new Rectangle(endPoint.X - BaseController.MIN_WIDTH / 2, 
      endPoint.Y, BaseController.MIN_WIDTH, startPoint.Y - endPoint.Y);
 }</pre>
-<p>and of course the endcaps need to be re-oriented because we've just changed 
-the direction of line:</p>
-<pre>protected void UpdateCaps()
+
+<p>and of course the endcaps need to be re-oriented because we&#39;ve just changed the direction of line:</p>
+
+<pre>
+protected void UpdateCaps()
 {
   if (startPoint.X &lt; endPoint.X)
   {
@@ -1408,38 +1718,39 @@ the direction of line:</p>
 
   lines.ForEach(l =&gt; l.UpdateProperties());
 }</pre>
-<p>Conversely, and here's the real clincher, even if I'm wrong about how endcaps 
-work with negative orientations, the fact that the display rectangle could have a 
-negative width blows the <code>Clone</code> method (and others) out of the water (it throws an exception):</p>
-<pre>public Bitmap GetImage(Rectangle r)
+
+<p>Conversely, and here&#39;s the real clincher, even if I&#39;m wrong about how endcaps work with negative orientations, the fact that the display rectangle could have a negative width blows the <code>Clone</code> method (and others) out of the water (it throws an exception):</p>
+
+<pre>
+public Bitmap GetImage(Rectangle r)
 {
   return bitmap.Clone(r, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 }</pre>
-<p>So, even if I'm wrong about the .NET endcap bug, .NET still doesn't like 
-negative orientations for certain operations, and in fact <i>my library</i> is 
-very much oriented around the idea that the upper left corner of a rectangle is 
-above and to the left of the bottom right corner, meaning the width and height 
-are expected to be &gt; 0.&nbsp; It's not too hard to fix that, but it does require 
-additional computations especially when sizing a shape that is &quot;inverted&quot; in 
-orientation.&nbsp; I didn't really want to go there, so I'm paying the &quot;penalty&quot; 
-for that in how the dynamic connector works.&nbsp; This is one of those tradeoff 
-cases -- the code as-is works.&nbsp; The complexity increase in all the other 
-parts of the code (including working around .NET exceptions) in order to 
-simplify dynamic connector drawing doesn't seem justified.</p>
-<h2>FlowSharp UI Code</h2>
-<p><img border="0" src="flowaharp.png" width="615" height="342"></p>
-<p>The UI is very simple, consisting of a toolbox panel, the canvas, and a 
-property grid.&nbsp; You'll notice I changed the toolbox layout a bit and added 
-some triangle shapes from the previous screenshots.</p>
-<h3>UI Object Model</h3>
-<p><img border="0" src="uiObjectModel.png" width="389" height="228"></p>
-<h3>The Toolbox</h3>
-<p>The toolbox illustrates how easy it is to create your own canvas and 
-controller.</p>
-<h4>ToolboxCanvas</h4>
+
+<p>So, even if I&#39;m wrong about the .NET endcap bug, .NET still doesn&#39;t like negative orientations for certain operations, and in fact <i>my library</i> is very much oriented around the idea that the upper left corner of a rectangle is above and to the left of the bottom right corner, meaning the width and height are expected to be &gt; 0.&nbsp; It&#39;s not too hard to fix that, but it does require additional computations especially when sizing a shape that is &quot;inverted&quot; in orientation.&nbsp; I didn&#39;t really want to go there, so I&#39;m paying the &quot;penalty&quot; for that in how the dynamic connector works.&nbsp; This is one of those tradeoff cases -- the code as-is works.&nbsp; The complexity increase in all the other parts of the code (including working around .NET exceptions) in order to simplify dynamic connector drawing doesn&#39;t seem justified.</p>
+
+<h2><a name="FlowSharpUICode50">FlowSharp UI Code</a></h2>
+
+<p><img border="0" height="342" src="flowaharp.png" width="615" /></p>
+
+<p>The UI is very simple, consisting of a toolbox panel, the canvas, and a property grid.&nbsp; You&#39;ll notice I changed the toolbox layout a bit and added some triangle shapes from the previous screenshots.</p>
+
+<h3><a name="UIObjectModel51">UI Object Model</a></h3>
+
+<p><img border="0" height="228" src="uiObjectModel.png" width="389" /></p>
+
+<h3><a name="TheToolbox52">The Toolbox</a></h3>
+
+<p>The toolbox illustrates how easy it is to create your own canvas and controller.</p>
+
+<h4><a name="ToolboxCanvas53">ToolboxCanvas</a></h4>
+
 <p>This is about as simple as it gets:</p>
+
 <p>(ToolboxCanvas.cs)</p>
-<pre>public class ToolboxCanvas : Canvas
+
+<pre>
+public class ToolboxCanvas : Canvas
 {
   protected override void DrawBackground(Graphics gr)
   {
@@ -1450,20 +1761,22 @@ controller.</p>
   {
   }
 }</pre>
+
 <p>Here, the default canvas behavior is overridden:</p>
+
 <ul>
 	<li>The background is set to light grey.</li>
-<li>The grid is not drawn.</li>
+	<li>The grid is not drawn.</li>
 </ul>
-<h4>ToolboxController</h4>
-<p>The controller is very simple -- click on a shape in the toolbox and it 
-appears on the canvas as a selected shape.&nbsp; Ideally, I'd like to drag the 
-toolbox shape to the canvas, as that is the typical process after selecting the 
-shape: dragging it somewhere.&nbsp; By dragging the toolbox shape, additional 
-mouse movement and a mouse click would be avoided, however I haven't implemented 
-that yet.&nbsp; So the controller is very simple right now:</p>
+
+<h4><a name="ToolboxController54">ToolboxController</a></h4>
+
+<p>The controller is very simple -- click on a shape in the toolbox and it appears on the canvas as a selected shape.&nbsp; Ideally, I&#39;d like to drag the toolbox shape to the canvas, as that is the typical process after selecting the shape: dragging it somewhere.&nbsp; By dragging the toolbox shape, additional mouse movement and a mouse click would be avoided, however I haven&#39;t implemented that yet.&nbsp; So the controller is very simple right now:</p>
+
 <p>(ToolboxController.cs)</p>
-<pre>public class ToolboxController : BaseController
+
+<pre>
+public class ToolboxController : BaseController
 {
   protected CanvasController canvasController;
 
@@ -1497,10 +1810,13 @@ that yet.&nbsp; So the controller is very simple right now:</p>
   return el;
   }
 }</pre>
-<p>Notice that the cloning of the shape and its default dimensions are left to 
-each shape to determine.&nbsp; Cloning a shape is very easy:</p>
+
+<p>Notice that the cloning of the shape and its default dimensions are left to each shape to determine.&nbsp; Cloning a shape is very easy:</p>
+
 <p>(GraphicElement.cs)</p>
-<pre>public virtual GraphicElement CloneDefault(Canvas canvas)
+
+<pre>
+public virtual GraphicElement CloneDefault(Canvas canvas)
 {
   GraphicElement el = (GraphicElement)Activator.CreateInstance(GetType(), new object[] { canvas });
   el.DisplayRectangle = el.DefaultRectangle();
@@ -1509,35 +1825,1162 @@ each shape to determine.&nbsp; Cloning a shape is very easy:</p>
 
   return el;
 }</pre>
-<p>All this does is create a default shape from whatever the shape defines as 
-its defaults.&nbsp; Contrast this with pasting, which serializes all shape 
-properties and then deserializes them, inserting the new element slightly down 
-and to the right of the current element, then selecting it:</p>
+
+<p>All this does is create a default shape from whatever the shape defines as its defaults.&nbsp; Contrast this with pasting, which serializes all shape properties and then deserializes them, inserting the new element slightly down and to the right of the current element, then selecting it:</p>
+
 <p>(FlowSharpUI.cs)</p>
-<pre>GraphicElement el = Persist.DeserializeElement(canvas, copyBuffer);
+
+<pre>
+GraphicElement el = Persist.DeserializeElement(canvas, copyBuffer);
 el.Move(new Point(20, 20));
 el.UpdateProperties();
 el.UpdatePath();
 canvasController.Insert(el);
 canvasController.DeselectCurrentSelectedElement();
 canvasController.SelectElement(el);</pre>
-<h2>Conclusion</h2>
-<p>Not only was this fun to write, but I know have a usable and extensible 
-diagramming tool.&nbsp; This is important because I want to prototype some other 
-concepts where a diagramming tool is important, and I don't want to integrate 
-Visio and the other open source diagramming tools I looked at didn't meet my 
-needs.</p>
-<p>It was also interesting writing this article, as there was actually a 
-substantial amount of code cleanup / refactoring that took place as, while 
-writing this, I realized, wow, this can be done better.</p>
-<h3>Known Bugs</h3>
-<p>These are minor bugs that I know about:</p>
+
+<h2><a name="Conclusion55">Conclusion</a></h2>
+
+<p>Not only was this fun to write, but I know have a usable and extensible diagramming tool.&nbsp; This is important because I want to prototype some other concepts where a diagramming tool is important, and I don&#39;t want to integrate Visio and the other open source diagramming tools I looked at didn&#39;t meet my needs.</p>
+
+<p>It was also interesting writing this article, as there was actually a substantial amount of code cleanup / refactoring that took place as, while writing this, I realized, wow, this can be done better.</p>
+
+<h3><a name="KnownBugs56">Known Bugs</a></h3>
+
+<p>Copying a group with an non-grouped shape that is connected to an inner 
+grouped shape results in double motion of the connector when the entire pasted 
+collection of shapes is moved.</p>
+<p>And probably other things!</p>
+
+<h2><a name="revisions">Revisions</a></h2>
+
+<p><a name="102316">10/23/2016</a></p>
+<p></p>
+<h3>Grouping</h3>
+<p><img border="0" src="img34.png" width="846" height="462"></p>
+<p>First off, as the above screenshot illustrates, the debug view now shows the 
+hierarchy of grouped shapes.&nbsp; You can also click on an element in the debug 
+view and the selected element is indicated on the surface (in this case, the 
+diamond with the blue rectangle around it.)</p>
+<p>Secondly, you'll notice that groups can be nested.&nbsp; I point this out 
+mainly because it was not as easy to implement as one would think, with regards 
+to moving a group in the z-order up and down.</p>
+<p>Implementing grouping touched on just about every aspect of the FlowSharpLib 
+code.&nbsp; These were some of the issues and areas of the code that had to be 
+touched:</p>
 <ul>
-	<li>Resizing box from top left quickly to minimums moves box.</li>
-	<li>When unsnapping, mouse loses its position to the anchor/line. Can the 
-	mouse be moved back?<br>
-&nbsp;</li>
+	<li>When grouping, deselect grouped children</li>
+	<li>Grouped children should not be selectable</li>
+<li>Disable selecting a shape inside a group</li>
+	<li>After grouping, draw selection box around group. Child shapes should not 
+	be selected.</li>
+	<li>Implement ungroup</li>
+<li>Show grouped children in debug view</li>
+	<li>Serialize / deserialize groupbox with children</li>
+	<li>Disable group/ungroup menu if selected shape has no children</li>
+	<li>Changing z-order of groupbox.</li>
+	<li>When creating a groupbox, it should be inserted in the z-order right 
+	after the bottomost child being grouped.</li>
+	<li>Show grouped box in gray.</li>
+<li>Bug (fixed): Connector from outside of group to a grouped child does not 
+preserve connection to child when group moves.</li>
+<li>Bug (fixed): Create 2 boxes, connect them, group one of the boxes, then move 
+the group - a small trail of the connector remains</li>
+<li>Bug (fixed): Delete groupbox doesn't quite work.</li>
+	<li>Bug (fixed): Copy and paste of a groupbox faults.</li>
+	<li>Bug (fixed): group 2 shapes, add a third, click on &quot;Group&quot; main menu, 
+	then click on grouped shape. Null reference exception is thrown in mouse 
+	controller.</li>
+	<li>Bug (fixed): After grouping, move canvas, and grouped elements move 2x 
+	because they're in two lists now</li>
 </ul>
+<h4>The GroupBox Shape</h4>
+<p>At its simplest level, grouping shapes &quot;merely&quot; required creating a <code>GroupBox</code> 
+element, which is not selectable from the toolbar:</p>
+<p>(GroupBox.cs)</p>
+<pre>public class GroupBox : Box
+{
+  public GroupBox(Canvas canvas) : base(canvas)
+  {
+    FillBrush.Color = Color.FromArgb(240, 240, 240);
+  }
+
+  public override List&lt;ShapeAnchor&gt; GetAnchors()
+  {
+    // GroupBox doesn't have anchors - it can't be resized.
+    return new List&lt;ShapeAnchor&gt;();
+  }
+
+  public override void Move(Point delta)
+  {
+    base.Move(delta);
+
+    GroupChildren.ForEach(g =&gt;
+    {
+      g.Move(delta);
+      g.UpdatePath();
+      g.Connections.ForEach(c =&gt; c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
+    });
+  }
+}</pre>
+<p>Notice a few things:</p>
+<ol>
+	<li>The default fill color is changed to light grey which I like because it 
+	visually indicates a collection of grouped shapes.</li>
+	<li>The <code>GroupBox</code> cannot be resized -- sorry, no dynamic resizing of the 
+	shapes in the <code>GroupBox</code> (yet!)</li>
+	<li>The only thing the GroupBox needs to be responsible for is moving the 
+	shapes contained within it.</li>
+</ol>
+<p>It should be noted that any shape can technically behave as a container for 
+other shapes because GroupChildren is actually a collection implemented for each 
+shape:</p>
+<p>(GraphicElement.cs)</p>
+<pre>public class GraphicElement : IDisposable
+{
+  ...
+  public List&lt;GraphicElement&gt; GroupChildren = new List&lt;GraphicElement&gt;();
+  public GraphicElement Parent { get; set; }
+  ...</pre>
+<p>While this feature isn't implemented (you can't have a diamond-shaped group) 
+it does leave the implementation open to non-rectangular groups.</p>
+<h4>Time for a Major Design Decision</h4>
+<p>Grouping left me with a design decision.&nbsp; Before grouping was 
+implemented, all elements were implemented in a single collection, &quot;elements&quot;, 
+from which the z-order of shapes was implicitly determined by the order of the 
+shapes in the list:</p>
+<p>(BaseController.cs)</p>
+<pre>public abstract class BaseController
+{
+  ...
+  public ReadOnlyCollection&lt;GraphicElement&gt; Elements { get { return elements.AsReadOnly(); } }
+  ...</pre>
+<p>So the question was:</p>
+<ol>
+	<li>Do I maintain a flat list of all shapes, whether they are grouped or 
+	not, or...</li>
+	<li>Does the <code>GroupBox</code> maintain a list of its own grouped shapes?</li>
+</ol>
+<p>There are pros and cons to each implementation:</p>
+<ul>
+	<li>If a flat list is maintained:<ul>
+		<li>It allows ungrouped shapes to slide between grouped shapes in the 
+		z-order, which is a feature I've sometimes wanted in Visio</li>
+		<li>I don't have to touch the serializer/deserializer in any major way 
+		except to serialize the ID's of grouped shapes and fix up those ID's on 
+		deserialization.</li>
+		<li>I don't have to touch the connector &quot;snap&quot; behavior, as I don't need 
+		to drill into grouped shapes to see if a connector should snap to an 
+		inner shape.</li>
+	</ul>
+	</li>
+	<li>If a hierarchical collection of shapes is implemented:<ul>
+		<li>Moving the groupbox in the z-order is trivial, I really don't have 
+		to touch the implementation there.</li>
+		<li>Serialization needs a significant refactoring because the collection 
+		of shapes is now hierarchical.</li>
+		<li>Connector &quot;snap&quot; behavior needs to drill into groups.</li>
+		<li>The ability to move a shape in-between the z-order of the grouped 
+		shapes is not possible.</li>
+	</ul>
+</li>
+</ul>
+<p>I decided to stick with the flat list of shapes, which resulted in some 
+interesting implementation of how a grouped set of shapes (remember, this can 
+include nested shapes) is changed in the z-order.</p>
+<p>In the screenshot at the start of this section, while it looks hierarchical, 
+that is purely something the debug tree setup does -- it only looks that way, 
+you'll still see the child shapes as top-level items in the list.</p>
+<h4>Creating a GroupBox</h4>
+<p>At the UI level, grouping shapes is straight forward:</p>
+<p>(MenuController.cs)</p>
+<pre>private void mnuGroup_Click(object sender, EventArgs e)
+{
+  if (canvasController.SelectedElements.Any())
+  {
+    FlowSharpLib.GroupBox groupBox = canvasController.GroupShapes(canvasController.SelectedElements);
+    canvasController.DeselectCurrentSelectedElements();
+    canvasController.SelectElement(groupBox);
+ }
+}</pre>
+<p>Notice that the shapes to be grouped are deselected after they are grouped, 
+and the <code>GroupBox</code> is instead selected.</p>
+<p>Internally, something important takes place:</p>
+<pre>public GroupBox GroupShapes(List&lt;GraphicElement&gt; shapesToGroup)
+{
+  GroupBox groupBox = null;
+
+  groupBox = new GroupBox(canvas);
+  groupBox.GroupChildren.AddRange(shapesToGroup);
+  Rectangle r = GetExtents(shapesToGroup);e4
+  r.Inflate(5, 5);
+  groupBox.DisplayRectangle = r;
+  shapesToGroup.ForEach(s =&gt; s.Parent = groupBox);
+  IEnumerable&lt;GraphicElement&gt; intersections = FindAllIntersections(groupBox);
+  EraseTopToBottom(intersections);
+
+  // Insert groupbox just after the lowest shape being grouped.
+  int insertionPoint = shapesToGroup.Select(s =&gt; elements.IndexOf(s)).OrderBy(n =&gt; n).Last() + 1;
+  elements.Insert(insertionPoint, groupBox);
+
+  intersections = FindAllIntersections(groupBox);
+  DrawBottomToTop(intersections);
+  UpdateScreen(intersections);
+
+  return groupBox;
+}
+
+protected Rectangle GetExtents(List&lt;GraphicElement&gt; elements)
+{
+  Rectangle r = elements[0].DisplayRectangle;
+  elements.Skip(1).ForEach(el =&gt; r = r.Union(el.DisplayRectangle));
+
+  return r;
+}</pre>
+<p>Besides the <code>GroupBox</code> being created slightly larger than the 
+union of all the shapes, notice that the <code>GroupBox</code> is inserted 
+immediately after the lowest z-order shape to be grouped.</p>
+<h4>User Experience (UX)</h4>
+<p><img border="0" src="img35.png" width="251" height="168"></p>
+<p>The user experience with grouped shapes requires some consideration:</p>
+<ol>
+	<li>Shapes within the group cannot be selected.</li>
+<li>Hovering over a grouped shape does not show anchors -- you cannot resize a 
+shape once it's been grouped.</li>
+<li>The user cannot move a grouped shape once it has been grouped.</li>
+<li>The groupbox itself cannot be resized (no anchors).</li>
+<li>The user should still be able to attach connectors to grouped shapes (as 
+shown in the screenshot above).</li>
+</ol>
+<p>This required some minor modifications of the mouse controller, for example, 
+preventing anchors from showing over grouped shapes:</p>
+<p>(MouseController.cs)</p>
+<pre>// Show anchors when hovering over a shape
+router.Add(new MouseRouter()
+{
+  RouteName = RouteName.HoverOverShape,
+  MouseEvent = MouseEvent.MouseMove,
+  Condition = () =&gt; !DraggingSurface &amp;&amp; !DraggingShapes &amp;&amp; !SelectingShapes &amp;&amp; HoverShape == null &amp;&amp;
+  CurrentButtons == MouseButtons.None &amp;&amp;
+  Controller.IsShapeSelectable(CurrentMousePosition) &amp;&amp;
+  <b><font color="#FF0000">Controller.GetShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.</font>
+</b>  Action = () =&gt; ShowAnchors(),
+});</pre>
+<p>And preventing grouped shapes from being selected:</p>
+<p>(MouseController.cs)</p>
+<pre>protected void SelectShapesInSelectionBox()
+{
+  Controller.DeleteElement(SelectionBox);
+  List&lt;GraphicElement&gt; selectedElements = new List&lt;GraphicElement&gt;();
+
+  Controller.Elements.Where(e =&gt; !selectedElements.Contains(e) &amp;&amp; <font color="#FF0000"><b>e.Parent == null</b></font> &amp;&amp; 
+    e.UpdateRectangle.IntersectsWith(SelectionBox.DisplayRectangle)).ForEach((e) =&gt;
+  {
+    selectedElements.Add(e);
+  });
+
+  Controller.DeselectCurrentSelectedElements();
+  Controller.SelectElements(selectedElements);
+  Controller.Canvas.Invalidate();
+}</pre>
+<h4>Z-Ordering</h4>
+<p>Z-ordering, particularly moving a grouped shape up/down the z-order, took a 
+lot of thinking as to how to do it.&nbsp; The complexity is a direct result of 
+the fact that I chose not to implement a hierarchical list of elements, as 
+discussed at the beginning.</p>
+<p>Observe the z-order of these ungrouped shapes:</p>
+<p><img border="0" src="z1.png" width="224" height="154"><br>
+&nbsp;</p>
+<p>Now notice how the shapes appear when I group the red and blue boxes (I've 
+moved things a bit too, because otherwise the change would not be obvious):</p>
+<p><img border="0" src="z2.png" width="213" height="148"></p>
+<p>Notice that the z-order is maintained!&nbsp; The green box is still between 
+the red and blue boxes.&nbsp; This is an <i>implementation choice</i>, and if 
+you've worked with Visio, you'll notice Visio handles it differently -- here's 
+what Visio looks like after grouping the red and blue boxes:</p>
+<p><img border="0" src="v1.png" width="225" height="211"></p>
+<p>Personally, I prefer my implementation.&nbsp; Furthermore, in the Visio 
+implementation, you cannot slide a shape in between the shapes in the group.&nbsp; 
+In my implementation, you can (here, the yellow shape is moved under the blue 
+box and above the yellow box):</p>
+<p><img border="0" src="z3.png" width="180" height="140"></p>
+<p>Topmost and bottommost z-ordering is fairly straight forward:</p>
+<p>(BaseController.cs)</p>
+<pre>public void Topmost()
+{
+  // TODO: Sub-optimal, as we're erasing all elements.
+  EraseTopToBottom(elements);
+
+  // In their original z-order, but reversed because we're inserting at the top...
+  selectedElements.OrderByDescending(el =&gt; elements.IndexOf(el)).ForEach(el =&gt;
+  {
+    elements.Remove(el);
+    elements.Insert(0, el);
+    // Preserve child order.
+    el.GroupChildren.OrderByDescending(child=&gt;elements.IndexOf(child)).ForEach(child =&gt; MoveToTop(child));
+  });
+
+  DrawBottomToTop(elements);
+  UpdateScreen(elements);
+}
+
+public void Bottommost()
+{
+  // TODO: Sub-optimal, as we're erasing all elements.
+  EraseTopToBottom(elements);
+
+  // In their original z-oder, since we're appending to the bottom...
+  selectedElements.OrderBy(el =&gt; elements.IndexOf(el)).ForEach(el =&gt;
+  {
+    elements.Remove(el);
+    // Preserve child order.
+    el.GroupChildren.OrderBy(child=&gt;elements.IndexOf(child)).ForEach(child =&gt; MoveToBottom(child));
+    elements.Add(el);
+  });
+
+  DrawBottomToTop(elements);
+  UpdateScreen(elements);
+}</pre>
+<p>The &quot;trick&quot; here is how the selected elements are ordered.&nbsp; For a 
+topmost move, the selected shape order is reversed because, on an insert, we're 
+of course inserting <i>before</i> the specified index (0 for topmost.)</p>
+<p>Moving a group up or down is much more complicated!&nbsp; This code handles 
+both ungrouped and grouped shapes:</p>
+<pre>// The reason for the complexity here in MoveUp/MoveDown is because we're not actually &quot;containing&quot; child elements
+// of a group box in a sub-list. All child elements are actually part of the master, flat, z-ordered list of shapes (elements.)
+// This means we have to go through some interested machinations to properly move nested groupboxes, however the interesting
+// side effect to this is that, a non-grouped shape, can slide between shapes in a groupbox!
+
+protected void MoveUp(IEnumerable&lt;GraphicElement&gt; els)
+{
+  // Since we're swapping up, order by z-order so we're always swapping with the element above,
+  // thus preserving z-order of the selected shapes.
+
+  // (from el in els select new { El = el, Idx = elements.IndexOf(el) }).OrderBy(item =&gt; item.Idx).ForEach(item =&gt;
+  els.OrderBy(el=&gt;elements.IndexOf(el)).ForEach(el=&gt;
+  {
+    // To handle groupboxes:
+    // 1. Recursively get the list of all grouped shapes, which including sub-groups
+    List&lt;GraphicElement&gt; childElements = new List&lt;GraphicElement&gt;();
+    RecursiveGetAllGroupedShapes(el.GroupChildren, childElements);
+    childElements = childElements.OrderBy(e =&gt; elements.IndexOf(e)).ToList();
+
+    // 2. Delete all those elements, so we are working with root level shapes only.
+    childElements.ForEach(child =&gt; elements.Remove(child));
+
+    // 3. Now see if there's something to do.
+    int idx = elements.IndexOf(el);
+    int targetIdx = idx &gt; 0 ? idx - 1 : idx;
+
+    if (targetIdx != idx)
+    {
+      elements.Swap(idx, idx - 1);
+    }
+
+    // 4. Insert the child elements above the element we just moved up, in reverse order.
+    childElements.AsEnumerable().Reverse().ForEach(child =&gt; elements.Insert(targetIdx, child));
+  });
+}
+
+protected void MoveDown(IEnumerable&lt;GraphicElement&gt; els)
+{
+  // Since we're swapping down, order by z-oder descending so we're always swapping with the element below,
+  // thus preserving z-order of the selected shapes.
+  els.OrderByDescending(e =&gt; elements.IndexOf(e)).ForEach(el =&gt;
+  {
+    // To handle groupboxes:
+    // 1. Recursively get the list of all grouped shapes, which including sub-groups
+    List&lt;GraphicElement&gt; childElements = new List&lt;GraphicElement&gt;();
+    RecursiveGetAllGroupedShapes(el.GroupChildren, childElements);
+    childElements = childElements.OrderBy(e =&gt; elements.IndexOf(e)).ToList();
+
+    // 2. Delete all those elements, so we are working with root level shapes only.
+    childElements.ForEach(child =&gt; elements.Remove(child));
+
+    // 3. Now see if there's something to do.
+    int idx = elements.IndexOf(el);
+    int targetIdx = idx &lt; elements.Count - 1 ? idx + 1 : idx;
+
+    if (targetIdx != idx)
+    {
+      elements.Swap(idx, idx + 1);
+    }
+
+    // 4. Insert the child elements above the element we just moved down, in reverse order.
+    childElements.AsEnumerable().Reverse().ForEach(child =&gt; elements.Insert(targetIdx, child));
+  });
+}
+
+protected void RecursiveGetAllGroupedShapes(List&lt;GraphicElement&gt; children, List&lt;GraphicElement&gt; acc)
+{
+  acc.AddRange(children);
+  children.ForEach(child =&gt; RecursiveGetAllGroupedShapes(child.GroupChildren, acc));
+}</pre>
+<p>The reason for this complexity should be apparent when we look at the z-order 
+of the shapes in the debug window, which we read from topmost to bottommost:</p>
+<p><img border="0" src="img36.png" width="714" height="372"></p>
+<p>At this point in time, the &quot;Ungrouped Rectangle&quot; is actually below the &quot;Inner 
+Group&quot; but above the &quot;Outer Group.&quot;&nbsp; And because the outer group contains 
+the inner group, the outer group is <i>last</i> 
+in the z-order (at least at this point.)&nbsp; When we move the outer group 
+(only the outer group can be selected at this point!) we also have to ensure 
+that any child groups are preserved.&nbsp; So here's what it looks like after we 
+move the group up:</p>
+<p><img border="0" src="img37.png" width="674" height="398"></p>
+<p>The entire collection of shapes, <i>including the sub-groups</i> has been 
+moved above the only other shape in this diagram, the &quot;Ungrouped Rectangle.&quot;</p>
+<p>Fun stuff!&nbsp; I'll leave it to the reader to explore the relatively minor 
+changes that were made for copy and paste and delete to work.</p>
+<p></p>
+<p><a name="101816">10/18/2016</a></p>
+
+<p>After the 10/15 release, I discovered several bugs:</p>
+
+<ul>
+	<li>Connection points not hiding after mouse is release after connecting a connector and moving away from&nbsp;connector&#39;s anchor.
+	<ul>
+		<li>Dragging from toolbox and connecting to another shape</li>
+		<li>Dragging from canvas and connecting to another shape</li>
+	</ul>
+	</li>
+	<li>Paste doesn&#39;t continue working after changing text of box, clicking on canvas, then Ctrl+V</li>
+	<li>Copy &amp; paste crashes - occurred when selecting a shape with a connector, but not selecting the connector.</li>
+	<li>Copy &amp; paste crashes - selecting a shape and a connector, which is attached to another shape, crashes.</li>
+	<li>Drop three shapes, delete the last one, select one of the remaining shapes. &nbsp;Crashes.</li>
+	<li>Save crashed due to delete bug issue.</li>
+</ul>
+
+<p>At the moment, these have been corrected in the GitHub repo, I&#39;ll update the code download here soon.</p>
+
+<p><a name="101316">10/15/2016</a></p>
+
+<h3><a name="debugging">Debugging</a></h3>
+
+<p><img border="0" height="567" src="img31.png" width="665" /></p>
+
+<p>I started noticing some strange behaviors, so I implemented a tree view of the shapes and their connections.&nbsp; This will come in handy as well later when adding grouped shapes and so forth.&nbsp; Here&#39;s some examples of a few bugs.</p>
+
+<h4>Connectors not Setting Connected Shape on Load</h4>
+
+<p>In this test (actually initially intended to figure out why a multi-select drag operation was leaving trails):</p>
+
+<p><img border="0" height="220" src="img23.png" width="388" /></p>
+
+<p>Notice the debug tree:</p>
+
+<p><img border="0" height="243" src="img24.png" width="572" /></p>
+
+<p>Specifically, that the dynamic connector is missing the shapes to which it is connected!</p>
+
+<p>If I draw these shapes from a clean slate, rather than loading them from a file, notice the dynamic connector has the right references:</p>
+
+<p><img border="0" height="349" src="img25.png" width="433" /></p>
+
+<p>Oddly, this bug does not usually manifest as problem.&nbsp; The problem was created when I changed the deserializer (see Copy &amp; Paste below) to assign new GUID&#39;s.&nbsp; The old GUID&#39;s were not being mapped to the new GUID&#39;s.&nbsp; The fix is:</p>
+
+<pre>
+public override void FinalFixup(List&lt;GraphicElement&gt; elements, ElementPropertyBag epb, Dictionary&lt;Guid, Guid&gt; oldNewGuidMap)
+{
+  base.FinalFixup(elements, epb, oldNewGuidMap);
+  StartConnectedShape = elements.SingleOrDefault(e =&gt; e.Id == oldNewGuidMap[epb.StartConnectedShapeId]);
+  EndConnectedShape = elements.SingleOrDefault(e =&gt; e.Id == oldNewGuidMap[epb.EndConnectedShapeId]);
+}</pre>
+
+<p>Now, on a load, I get the correct shapes assigned to the connector.&nbsp; This also fixed the bug where connectors were not being detached from shapes, because now the two-way reference is working!</p>
+
+<h4>Trails Left with Multiple Shape Dragging with Connectors</h4>
+
+<p><img border="0" height="207" src="img26.png" width="469" /></p>
+
+<p>Notice the trail left on the triangle &quot;3&quot;.&nbsp; This occurs when the selected shapes &quot;1&quot; and &quot;2&quot; are dragged to the right over shape &quot;3&quot;.&nbsp; Why?</p>
+
+<p>We can see the problem here:</p>
+
+<p><img border="0" height="79" src="img27.png" width="318" /></p>
+
+<p>Notice that the horizontal and vertical lines comprising the connector are being erased first -- the z-order is not being preserved!&nbsp; The culprit in the code is this:</p>
+
+<p>(BaseController.cs)</p>
+
+<pre>
+protected void EraseTopToBottom(IEnumerable&lt;GraphicElement&gt; els)
+{
+  Trace.WriteLine(&quot;EraseTopToBottom&quot;);
+  els.Where(e =&gt; e.OnScreen()).ForEach(e =&gt; e.Erase());
+}</pre>
+
+<p>The elements being erased are expected to be in the correct z-order.&nbsp; Should this code assume correct ordering?&nbsp; What about this code:</p>
+
+<p>(BaseController.cs)</p>
+
+<pre>
+public void DrawBottomToTop(IEnumerable&lt;GraphicElement&gt; els, int dx = 0, int dy = 0)
+{
+  Trace.WriteLine(&quot;DrawBottomToTop&quot;);
+  els.Reverse().Where(e =&gt; e.OnScreen(dx, dy)).ForEach(e =&gt;
+  {
+    e.GetBackground();
+    e.Draw();
+  });
+}</pre>
+
+<p>Here again, the code assumes the list is ordered!&nbsp; How to fix this defensively but without resulting in excessive sorting?</p>
+
+<p>We can look at the real culprit, which is the call here:</p>
+
+<pre>
+List&lt;GraphicElement&gt; intersections = new List&lt;GraphicElement&gt;();
+selectedElements.ForEach(el =&gt; FindAllIntersections(intersections, el, dx, dy));
+...
+EraseTopToBottom(intersections);</pre>
+
+<p>Notice how ordering is performed here:</p>
+
+<pre>
+protected IEnumerable&lt;GraphicElement&gt; EraseTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
+{
+  List&lt;GraphicElement&gt; intersections = new List&lt;GraphicElement&gt;();
+  FindAllIntersections(intersections, el, dx, dy);
+  IEnumerable&lt;GraphicElement&gt; els = intersections.OrderBy(e =&gt; elements.IndexOf(e));
+  els.Where(e =&gt; e.OnScreen(dx, dy)).ForEach(e =&gt; e.Erase());
+
+  return els;
+}</pre>
+
+<p>This is the one and only time that ordering of elements is ever performed, and from a defensive programming perspective, it would make sense to always return an ordered list of intersecting shapes, given the use case.&nbsp; This requires refactoring the <code>FindAllIntersections</code> into two functions, since the process is recursive:</p>
+
+<pre>
+public IEnumerable&lt;GraphicElement&gt; FindAllIntersections(GraphicElement el, int dx = 0, int dy = 0)
+{
+  List&lt;GraphicElement&gt; intersections = new List&lt;FlowSharpLib.GraphicElement&gt;();
+  FindAllIntersections(intersections, el, dx, dy);
+
+  return intersections.OrderBy(e =&gt; elements.IndexOf(e));
+}
+
+/// &lt;summary&gt;
+/// Recursive loop to get all intersecting rectangles, including intersectors of the intersectees, so that all elements that
+/// are affected by an overlap redraw are erased and redrawn, otherwise we get artifacts of some intersecting elements when intersection count &gt; 2.
+/// &lt;/summary&gt;
+private void FindAllIntersections(List&lt;GraphicElement&gt; intersections, GraphicElement el, int dx = 0, int dy = 0)
+{
+  // Cool thing here is that if the element has no intersections, this list still returns that element because it intersects with itself!
+  elements.Where(e =&gt; !intersections.Contains(e) &amp;&amp; e.UpdateRectangle.IntersectsWith(el.UpdateRectangle.Grow(dx, dy))).ForEach((e) =&gt;
+  {
+    intersections.Add(e);
+    FindAllIntersections(intersections, e);
+  });
+}</pre>
+
+<p>Notice the recursive function is marked as <code>private</code>, so we don&#39;t accidentally use it outside of the controller class or in a derived controller class.&nbsp; A good example of why/when to use the <code>private</code> scope.&nbsp; As a result, this broke some code (which is good!) that needed to now call the <code>public FindAllIntersections</code> method, revealing other areas (the paste code) where this bug was potentially affecting the rendering.</p>
+
+<p>Unfortunately, while this definitely found an issue, it did not fix the problem.&nbsp; Notice the z-order of the shapes:</p>
+
+<p><img border="0" height="160" src="img28.png" width="241" /></p>
+
+<p>The &quot;left&quot; triangle is underneath the &quot;up&quot; triangle.&nbsp; So why is the &quot;left&quot; triangle being seen as above the &quot;up&quot; triangle?&nbsp; This doesn&#39;t happen why I move either of the two triangles individually:</p>
+
+<p><img border="0" height="85" src="img29.png" width="360" /></p>
+
+<p>Here we have the correct order: up-left.&nbsp; Above (earlier) we have the wrong order (left-up).&nbsp; Why?</p>
+
+<p>The problem is that the controller is still using the wrong method, from which the private scope doesn&#39;t protect us:</p>
+
+<pre>
+List&lt;GraphicElement&gt; intersections = new List&lt;GraphicElement&gt;();
+selectedElements.ForEach(el =&gt; FindAllIntersections(intersections, el, dx, dy));</pre>
+
+<p>It&#39;s better to rename the recursive method:</p>
+
+<pre>
+private void RecursiveFindAllIntersections(List&lt;GraphicElement&gt; intersections, GraphicElement el, int dx = 0, int dy = 0)</pre>
+
+<p>Now the compiler identifies the use cases (only one) where the wrong method is being called, and we can fix the problem:</p>
+
+<pre>
+List&lt;GraphicElement&gt; intersections = new List&lt;GraphicElement&gt;();
+
+selectedElements.ForEach(el =&gt;
+{
+  intersections.AddRange(FindAllIntersections(el));
+});
+
+IEnumerable&lt;GraphicElement&gt; distinctIntersections = intersections.Distinct();</pre>
+
+<p>Now the problem is finally fixed!</p>
+
+<p><img border="0" height="83" src="img30.png" width="325" /></p>
+
+<p>The erasure of the up-triangle, being in front of the left-triangle, is now correct.</p>
+
+<p><b><i>This really illustrates how adding some tracing and diagnostics can help debug problems, and also is some good guidance on how to refactor code (like renaming method being refactored) so that code that uses those refactored methods can be looked at for wrong use case as well.</i></b></p>
+
+<h3><a name="groupselect">Group Select</a></h3>
+
+<p>You can now select multiple shapes and drag them around, using the Shift or Ctrl keys.&nbsp; Hold down Shift or Ctrl when selecting more than one shape, then drag the shapes (holding the left mouse button down.)&nbsp; Once you start dragging, you can release the Shift or Ctrl key.</p>
+
+<p><img border="0" height="219" src="img22.png" width="224" /></p>
+
+<p>Code wise, it was interesting to see how much was needed to be touched when changing:</p>
+
+<p>(CanvasController.cs)</p>
+
+<pre>
+public GraphicElement SelectedElement {get {return selectedElement;} }</pre>
+
+<p>to:</p>
+
+<pre>
+public List&lt;GraphicElement&gt; SelectedElements { get { return selectedElements; } }</pre>
+
+<p>It wasn&#39;t too bad, I also pluralized relevant methods, so for example, <code>void DragSelectedElement(Point delta)</code> is now void <code>DragSelectedElements(Point delta).</code></p>
+
+<p>This of course required modifying a bunch of methods to iterate through the selection list for the drag operations.&nbsp; Once that was done, the &quot;magic&quot; took only a few extra lines of code:</p>
+
+<p>(CanvasController.cs)</p>
+
+<pre>
+if ((Control.ModifierKeys &amp; (Keys.Control | Keys.Shift)) == 0)
+{
+  DeselectCurrentSelectedElements();
+}
+
+SelectElement(args.Location);</pre>
+
+<p>It&#39;s very simple -- if the Shift or Ctrl key is not held down, deselect all the currently selected elements.</p>
+
+<p>One amusing artifact was if I selected the same shape more than once, it would double or triple the movement in the drag operation.&nbsp; Why?&nbsp; Because I kept adding it to the &quot;selected&quot; list.&nbsp; So, selecting an element now tests to see if the element is already selected:</p>
+
+<p>(CanvasController.cs)</p>
+
+<pre>
+public void SelectElement(GraphicElement el)
+{
+  // Add to selected elements only once!
+  if (!selectedElements.Contains(el))</pre>
+
+<h4>Selecting Shapes in a Region</h4>
+
+<p><img border="0" height="171" src="img32.png" width="297" /></p>
+
+<p>You can now select group of shapes with a right-click-drag.&nbsp; This presented a minor technical challenge because I wanted the selection box (which is Box element) to work regardless of whether the user drew the selection region from the top-left down and right, or &quot;inverted&quot; in the X, Y, or both axis (for example, starting at the bottom-right and moving to the top-left.)&nbsp; Because negative width/heights are not supported, the selection region has to be &quot;normalized&quot;:</p>
+
+<p>(CanvasController.cs)</p>
+
+<pre>
+currentSelectionPosition = mousePosition;
+// Normalize the rectangle to a top-left, bottom-right rectangle.
+int x = currentSelectionPosition.X.Min(startSelectionPosition.X);
+int y = currentSelectionPosition.Y.Min(startSelectionPosition.Y);
+int w = (currentSelectionPosition.X - startSelectionPosition.X).Abs();
+int h = (currentSelectionPosition.Y - startSelectionPosition.Y).Abs();
+Rectangle newRect = new Rectangle(x, y, w, h);
+UpdateDisplayRectangle(selectionBox, newRect, delta);</pre>
+
+<p>When the selection mode is started, a top-level transparent box is created (fun use of an existing shape!):</p>
+
+<p>(CanvasController.cs)</p>
+
+<pre>
+selectionMode = true;
+selectionBox = new Box(canvas);
+selectionBox.BorderPen.Color = Color.Gray;
+selectionBox.FillBrush.Color = Color.Transparent;
+selectionBox.DisplayRectangle = new Rectangle(startSelectionPosition, new Size(SELECTION_MIN, SELECTION_MIN));
+Insert(selectionBox);</pre>
+
+<h3><a name="ux">Group Select User Experience and the Need for a Mouse Router</a></h3>
+
+<p>Enabling the group select feature resulted in the discovery of how interesting the user experience needs to be.&nbsp; In my original implementation, shapes were selected by clicking on them while holding down the Ctrl or Shift key.&nbsp; To drag the selected shapes, you had to hold the Ctrl or Shift key, click on one of the shapes, and start dragging.&nbsp; At that point, you could release the Ctrl or Shift key and continue dragging.&nbsp; This is not how group selection / dragging works in Visio (my bible for how things should work).</p>
+
+<p>The real user experience is as follows:</p>
+
+<ol>
+	<li>Hold down Ctrl or Shift to select multiple objects</li>
+	<li>A rectangle of selected shapes appears (we&#39;re doing it a bit differently, by showing the selected shapes with their red rectangles)</li>
+	<li>If you click down (without releasing) on any of the selected shapes, they all stay selected.</li>
+	<li>If you release the mouse button at this point without dragging, the shape becomes deselected.</li>
+	<li>Conversely, if, after click-down on a selected shape, you start dragging, all the selected shapes move (again, visually represented slightly differently - Visio continues to show you their original position)</li>
+	<li>If you continue holding down the Shift key, Visio implements a &quot;snap to object alignment&quot; feature (something I&#39;d like to do at some point.)</li>
+</ol>
+
+<p>The salient point is #5 - <i>the shape does not deselect unless you haven&#39;t initiated dragging.</i></p>
+
+<p>Implementing this led me to rework the whole way that mouse events (down, up, motion) are handled.&nbsp; The current implementation was becoming a kludge of &quot;if&quot; statements.&nbsp; Just look at the mouse move event handler (inner code omitted):</p>
+
+<pre>
+Point delta = newMousePosition.Delta(mousePosition);
+
+if (delta == Point.Empty) return;
+
+mousePosition = newMousePosition;
+
+if (dragging)
+{
+  if (selectedAnchor != null)
+  {
+    ...
+    if (!connectorAttached)
+    {
+      ...
+    }
+  }
+  else
+  {
+    ...
+  }
+}
+else if (leftMouseDown)
+{
+  ...
+}
+else if (rightMouseDown)
+{
+  delta = mousePosition.Delta(currentSelectionPosition);
+
+  if (!selectionMode)
+  {
+    if ((delta.X.Abs() &gt; SELECTION_MIN) || (delta.Y.Abs() &gt; SELECTION_MIN))
+    {
+      ...
+    }
+  }
+  else
+  {
+    ...
+  }
+}
+else // Mouse Hover!
+{
+  ...
+  if (selectedElements.Count &lt;= 1)
+  {
+    ...
+    if (el != showingAnchorsElement)
+    {
+      if (showingAnchorsElement != null)
+      {
+        ...
+      }
+
+      if (el != null)
+      {
+        ...
+      }
+    }
+    else if (el != null &amp;&amp; el == showingAnchorsElement)
+    {
+      ...
+    }
+  }
+}</pre>
+
+<p><img border="0" height="184" src="img33.png" width="187" /></p>
+
+<p>What&#39;s needed is a mouse event router!&nbsp; In fact, the whole mouse handling can be moved out of the <code>CanvasController</code> and into it&#39;s own <code>MouseController</code> class.&nbsp; The result is this (a major update):</p>
+
+<p>(MouseController.cs)</p>
+
+<pre>
+public class MouseRouter
+{
+  public MouseController.RouteName RouteName { get; set; }
+  public MouseController.MouseEvent MouseEvent { get; set; }
+  public Func&lt;bool&gt; Condition { get; set; }
+  public Action Action { get; set; }
+}</pre>
+
+<p>This establishes the conditions for performing a particular action.&nbsp; All mouse events now go through a single router call:</p>
+
+<pre>
+protected virtual void HandleEvent(MouseAction action)
+{
+  CurrentMousePosition = action.MousePosition;
+  CurrentButtons = Control.MouseButtons;
+
+  // Resolve now, otherwise the iterator will find additional routes as actions occur.
+  // A good example is when a shape is added to a selection list, using the enumerator, this
+  // then qualifies the remove shape route from selected list!
+  List&lt;MouseRouter&gt; routes = router.Where(r =&gt; r.MouseEvent == action.MouseEvent &amp;&amp; r.Condition()).ToList();
+  routes.ForEach(r =&gt;
+  {
+    Trace.WriteLine(&quot;Route: &quot; + r.RouteName.ToString());
+    r.Action();
+  });
+
+  LastMousePosition = CurrentMousePosition;
+}</pre>
+
+<p>There are 19 routes!</p>
+
+<pre>
+public enum RouteName
+{
+  StartDragSurface,
+  EndDragSurface,
+  EndDragSurfaceWithDeselect,
+  DragSurface,
+  StartDragSelectionBox,
+  EndDragSelectionBox,
+  DragSelectionBox,
+  StartShapeDrag,
+  EndShapeDrag,
+  DragShapes,
+  DragAnchor,
+  HoverOverShape,
+  ShowAnchors,
+  ShowAnchorCursor,
+  ClearAnchorCursor,
+  HideAnchors,
+  SelectSingleShape,
+  AddSelectedShape,
+  RemoveSelectedShape,
+}</pre>
+
+<p>Here is an example of a route, namely the shape dragging route:</p>
+
+<pre>
+// Drag shapes:
+router.Add(new MouseRouter()
+{
+  RouteName = RouteName.DragShapes,
+  MouseEvent = MouseEvent.MouseMove,
+  Condition = () =&gt; DraggingShapes &amp;&amp; HoverShape.GetAnchors().FirstOrDefault(a =&gt; a.Near(CurrentMousePosition)) == null,
+  Action = () =&gt;
+  {
+    DragShapes();
+    DraggingOccurred = true;
+  },
+});</pre>
+
+<p>Notice this checks:</p>
+
+<ol>
+	<li>The state, that dragging shapes has been enabled (which is set by the mouse down route on the condition that a shape is selected.)</li>
+	<li>We&#39;re not dragging an anchor (the mouse isn&#39;t near an anchor.)</li>
+</ol>
+
+<p>The salient points of the router is that:</p>
+
+<ol>
+	<li>It manages state flags - a nice separation of concerns between state management and actions for a given state</li>
+	<li>The actions are all now very concise, doing one thing and one thing only, and no if statements!</li>
+</ol>
+
+<p>For example:</p>
+
+<pre>
+protected void DragShapes()
+{
+  Point delta = CurrentMousePosition.Delta(LastMousePosition);
+  Controller.DragSelectedElements(delta);
+  Controller.Canvas.Cursor = Cursors.SizeAll;
+}</pre>
+
+<h3><a name="issues1">Issues Encountered</a></h3>
+
+<h4>Connectors</h4>
+
+<p>One issue I had was that connectors.&nbsp; Because they are &quot;moved&quot; when group selected, they were detaching from their connected shape.&nbsp; This kludge (violates my &quot;don&#39;t do an <code>is</code> test&quot;) works for now:</p>
+
+<p>(CanvasController.cs)</p>
+
+<pre>
+public void DragSelectedElements(Point delta)
+{
+  selectedElements.ForEach(el =&gt;
+  {
+    bool connectorAttached = el.SnapCheck(GripType.Start, ref delta) || el.SnapCheck(GripType.End, ref delta);
+    el.Connections.ForEach(c =&gt; c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
+
+    // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
+    if (el is Connector &amp;&amp; selectedElements.Count == 1)
+    {
+      MoveElement(el, delta);
+    }
+    else if (!(el is Connector))
+    {
+      MoveElement(el, delta);
+    }
+
+    UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = el });
+
+    if (!connectorAttached)
+    {
+      // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
+      // Detach a connector only if it&#39;s the only shape being dragged.
+      if (selectedElements.Count == 1)
+      {
+        DetachFromAllShapes(el);
+      }
+    }
+  });
+}</pre>
+
+<p>I&#39;m not particularly proud of that code.&nbsp; To many <code>if</code> statements!</p>
+
+<h4>Multi-object Dragging Efficiency</h4>
+
+<p>The performance right now when selecting more than 10 shapes or so is very poor, resulting in jerky motion.&nbsp; This is most likely because, instead of erasing all the selected shapes, moving them, then redrawing them, the code is currently moving each shape one at a time, resulting in a lot of unnecessary erase/redraws.&nbsp;</p>
+
+<p>At least that&#39;s what I thought.&nbsp; While that is part of the issue, the real problem was that the property grid was being updated when each selected element was being dragged!</p>
+
+<h3><a name="cursors">Cursors</a></h3>
+
+<p>Hovering over or selecting an anchor point now displays the appropriate cursor arrow for that anchor.&nbsp; This was an easy tweak.&nbsp; First, set the cursor to display when building the anchor list, for example:</p>
+
+<p>(GraphicElement.cs)</p>
+
+<pre>
+anchors.Add(new ShapeAnchor(GripType.TopLeft, r, Cursors.SizeNWSE));</pre>
+
+<p>Then set the cursor for the anchor we are near or have selected.&nbsp; This is the code for when the mouse is hovering:</p>
+
+<p>(CanvasController.cs)</p>
+
+<pre>
+protected void SetAnchorCursor(GraphicElement el)
+{
+  ShapeAnchor anchor = el.GetAnchors().FirstOrDefault(a =&gt; a.Near(mousePosition));
+  canvas.Cursor = anchor == null ? Cursors.Arrow : anchor.Cursor;
+}</pre>
+
+<h3><a name="candp">Copy and Paste</a></h3>
+
+<p>Copy and paste was easy:</p>
+
+<p>(FlowSharpUI.cs)</p>
+
+<p>Copy (was):</p>
+
+<pre>
+string copyBuffer = Persist.Serialize(el);
+Clipboard.SetData(&quot;FlowSharp&quot;, copyBuffer);</pre>
+
+<p>Paste (was):</p>
+
+<pre>
+GraphicElement el = Persist.DeserializeElement(canvas, copyBuffer);</pre>
+
+<p>Now it&#39;s:</p>
+
+<p>Copy (now):</p>
+
+<pre>
+protected void Copy()
+{
+  if (canvasController.SelectedElements.Any())
+  {
+    string copyBuffer = Persist.Serialize(canvasController.SelectedElements);
+    Clipboard.SetData(&quot;FlowSharp&quot;, copyBuffer);
+  }
+  else
+  {
+    MessageBox.Show(&quot;Please select one or more shape(s).&quot;, &quot;Nothing to copy.&quot;, MessageBoxButtons.OK, MessageBoxIcon.Information);
+  }
+}</pre>
+
+<p>I should have tested for a selected shape to begin with.</p>
+
+<p>Deserialization of a selection list is more complicated now.&nbsp; Recall that in the single element deserializer, the GUID was reassigned:</p>
+
+<pre>
+el.Id = Guid.NewGuid(); // We get a new GUID when deserializing a specific element.</pre>
+
+<p>Easy-peasy.&nbsp; But now, the user can select multiple shapes, possibly connected, and we&#39;d like to preserve the connection information of the pasted shapes, relative to each other.&nbsp; This means we need to create new GUID&#39;s for the pasted shapes and remap the GUID&#39;s of the connectors so that they reference the newly pasted shapes, not their &quot;source&quot; shapes.</p>
+
+<p>This affects the persistence code.&nbsp; It now always creates new GUID&#39;s when deserializing.&nbsp; This actually is really useful, especially when we want to import a drawing into an existing drawing, we no longer have to worry about importing the same drawing more than once and having duplicate GUID&#39;s:</p>
+
+<p>(Persist.cs)</p>
+
+<p>The internal deserialization is a bit more complicated, as it always creates a map between the old GUID and the possibly new GUID:</p>
+
+<pre>
+private static Tuple&lt;List&lt;GraphicElement&gt;, List&lt;ElementPropertyBag&gt;&gt; InternalDeserialize(Canvas canvas, string data, Dictionary&lt;Guid, Guid&gt; oldNewIdMap)
+{
+  List&lt;GraphicElement&gt; elements = new List&lt;GraphicElement&gt;();
+  XmlSerializer xs = new XmlSerializer(typeof(List&lt;ElementPropertyBag&gt;));
+  TextReader tr = new StringReader(data);
+  List&lt;ElementPropertyBag&gt; sps = (List&lt;ElementPropertyBag&gt;)xs.Deserialize(tr);
+
+  foreach (ElementPropertyBag epb in sps)
+  {
+    Type t = Type.GetType(epb.ElementName);
+    GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { canvas });
+    el.Deserialize(epb);
+    Guid elGuid = el.Id;
+    elGuid = Guid.NewGuid();
+    oldNewIdMap[el.Id] = elGuid;
+    el.Id = elGuid;
+    elements.Add(el);
+    epb.Element = el;
+  }
+
+  return new Tuple&lt;List&lt;GraphicElement&gt;, List&lt;ElementPropertyBag&gt;&gt;(elements, sps);
+}</pre>
+
+<p>The connector deserialization now uses the map:</p>
+
+<p>(Connection.cs)</p>
+
+<pre>
+public void Deserialize(List&lt;GraphicElement&gt; elements, ConnectionPropertyBag cpb, Dictionary&lt;Guid, Guid&gt; oldNewGuidMap)
+{
+  ToElement = elements.Single(e =&gt; e.Id == oldNewGuidMap[cpb.ToElementId]);
+  ToConnectionPoint = cpb.ToConnectionPoint;
+  ElementConnectionPoint = cpb.ElementConnectionPoint;
+}</pre>
+
+<p>And finally, the new deserialization code for paste:</p>
+
+<p>Paste (now):</p>
+
+<pre>
+List&lt;GraphicElement&gt; els = Persist.Deserialize(canvas, copyBuffer);
+canvasController.DeselectCurrentSelectedElements();
+els.ForEach(el =&gt;
+{
+  el.Move(new Point(20, 20));
+  el.UpdateProperties();
+  el.UpdatePath();
+  canvasController.Insert(el);
+  canvasController.SelectElement(el);
+});</pre>
+
+<p>The newly pasted elements are auto-selected.</p>
+
+<h3>Import</h3>
+
+<p>Since we&#39;ve made the deserialization process better, we can now import an existing drawing into the current drawing:</p>
+
+<pre>
+private void mnuImport_Click(object sender, EventArgs e)
+{
+  OpenFileDialog ofd = new OpenFileDialog();
+  ofd.Filter = &quot;FlowSharp (*.fsd)|*.fsd&quot;;
+  DialogResult res = ofd.ShowDialog();
+
+  if (res == DialogResult.OK)
+  {
+    string importFilename = ofd.FileName;
+    string data = File.ReadAllText(importFilename);
+    List&lt;GraphicElement&gt; els = Persist.Deserialize(canvas, data);
+    elements.AddRange(els);
+    elements.ForEach(el =&gt; el.UpdatePath());
+    els.ForEach(el =&gt; canvas.Controller.SelectElement(el));
+    canvas.Invalidate();
+  }
+}</pre>
+
+<p>Note how the elements are selected so they can subsequently be easily dragged around.</p>
+
+<h3>Bug Fixes</h3>
+
+<h4>Topmost / Bottommost</h4>
+
+<p>These operations cannot swap the topmost or bottommost element with the currently selected element, as this changes the z-order of the element currently at the top or the bottom in relation to other elements in the middle.&nbsp; Instead, the element being brought to the top or bottom has to be explicitly placed at the top or bottom:</p>
+
+<pre>
+public void Topmost()
+{
+  selectedElements.ForEach(el =&gt;
+  {
+    EraseTopToBottom(elements);
+    elements.Remove(el);
+    elements.Insert(0, el);
+    DrawBottomToTop(elements);
+    UpdateScreen(elements);
+  });
+}
+
+public void Bottommost()
+{
+  selectedElements.ForEach(el =&gt;
+  {
+    EraseTopToBottom(elements);
+    elements.Remove(el);
+    elements.Add(el);
+    DrawBottomToTop(elements);
+    UpdateScreen(elements);
+  });
+}</pre>
+
+<p>Move up/down was unaffected because they are an adjacent swap.</p>
+
+<p><a name="101016">10/10/2016</a></p>
+
+<h3><a name="dand">Toolbox Drag &amp; Drop</a></h3>
+
+<p>You can now drag and drop from the toolbox onto the canvas.&nbsp; This was challenging because the when you move the mouse on the toolbox panel, the mouse events come to that panel, even as you cross over to the panel containing the canvas.&nbsp; This required simulating mouse selection and mouse movement on the canvas&#39; panel:</p>
+
+<pre>
+public void OnMouseMove(object sender, MouseEventArgs args)
+{
+  if (mouseDown &amp;&amp; selectedElement != null &amp;&amp; !dragging)
+  {
+    Point delta = args.Location.Delta(mouseDownPosition);
+
+    if ((delta.X.Abs() &gt; MIN_DRAG) || (delta.Y.Abs() &gt; MIN_DRAG))
+    {
+      dragging = true;
+      ResetDisplacement();
+      Point screenPos = new Point(canvas.Width, args.Location.Y); // target canvas screen position is the toolbox canvas width, toolbox mouse Y.
+      Point canvasPos = new Point(0, args.Location.Y); // target canvas position is left edge, toolbox mouse Y.
+      Point p = canvas.PointToScreen(screenPos); // screen position of mouse cursor, relative to the target canvas.
+      Cursor.Position = p;
+
+      GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas);
+      canvasController.Insert(el);
+      // Shape is placed so that the center of the shape is at the left edge (X), centered around the toolbox mouse (Y)
+      // The &quot;-5&quot; accounts for additional pixels between the toolbox end and the canvas start, should be calculable by converting toolbox canvas width to screen coordinate and subtracting
+      // that from the target canvas left edge screen coordinate.
+      Point offset = new Point(-el.DisplayRectangle.X - el.DisplayRectangle.Width/2 - 5, -el.DisplayRectangle.Y + args.Location.Y - el.DisplayRectangle.Height / 2);
+
+      // TODO: Why this fudge factor for DC&#39;s?
+      if (el is DynamicConnector)
+      {
+        offset = offset.Move(8, 6);
+      }
+
+      canvasController.MoveElement(el, offset);
+      canvasController.StartDraggingMode(el, canvasPos);
+      canvasController.SelectElement(el);
+    }
+  }
+  else if (mouseDown &amp;&amp; selectedElement != null &amp;&amp; dragging)
+  {
+    // Toolbox controller still has control, so simulate dragging on the canvas.
+    Point p = new Point(args.Location.X - canvas.Width, args.Location.Y);
+    canvasController.DragShape(p);
+  }
+}</pre>
+
+<p>Once you start dragging, the mouse cursor is moved over to the canvas and the shape appears:</p>
+
+<p><img border="0" height="89" src="img20.png" width="118" /></p>
+
+<h3>Toolbox Shape Selection</h3>
+
+<p>Notice in the above image that the selected shape in the toolbox is now indicated.</p>
+
+<h3>Toolbox Click</h3>
+
+<p>If you just click on a toolbox shape, instead of dragging it onto the canvas, the shapes are now positioned next to each other instead of on top of each other:</p>
+
+<p><img border="0" height="89" src="img21.png" width="424" /></p>
+
+<p>The above screenshot shows what the canvas looks like after clicking on the square, circle, and triangle.&nbsp; This is a useful feature for when you know you want to work with several shapes - you just click on what you want repeatedly in the toolbox, then move them around on the canvas.</p>
+
+<h3>License</h3>
+
+<p>The license in the code itself has been changed to CPOL.</p>
+
+<p><a name="100516">10/5/2016</a> - Nothing exciting, I thought I had a download source link at the top of the article, just noticed it wasn&#39;t there. &nbsp;Added it.</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
 
 </body>
 

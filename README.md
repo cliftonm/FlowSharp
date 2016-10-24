@@ -29,7 +29,7 @@ A short list of some of the features.
 ![Grouping](https://github.com/cliftonm/FlowSharp/blob/master/Article/img36.png)
 # What's not implemented:
 Please contribute to working on this list!
-*Shape text:
+* Shape text:
   * Currently only centered in the shape.
   * Boundaries can be easily exceeded.
   * No justification.

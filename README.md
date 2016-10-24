@@ -2,7 +2,7 @@
 
 ![FlowSharp](https://github.com/cliftonm/FlowSharp/blob/master/Article/flowsharp2.png)
 # Documentation
-[Article describing object model, code, and example usage.](http://htmlpreview.github.io/?https://github.com/cliftonm/FlowSharp/blob/master/Article/index.htm)
+[Article describing object model, code, and example usage.](https://cdn.rawgit.com/cliftonm/FlowSharp/master/Article/index2.htm)
 # Requirements to build code
 * Visual Studio 2015 or better
 * .NET 4.6.1 or higher

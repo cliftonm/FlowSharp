@@ -57,12 +57,20 @@ namespace FlowSharpLib
         {
             Dock = DockStyle.Fill;
             parent.Controls.Add(this);
-            CreateBitmap();
+
+            if (FindForm().WindowState != FormWindowState.Minimized)
+            {
+                CreateBitmap();
+            }
+
             parent.Resize += (sndr, args) =>
             {
-                bitmap.Dispose();
-                CreateBitmap();
-                Invalidate();
+                if (FindForm().WindowState != FormWindowState.Minimized)
+                {
+                    bitmap?.Dispose();
+                    CreateBitmap();
+                    Invalidate();
+                }
             };
         }
 

@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace FlowSharpLib
 {
@@ -30,7 +31,7 @@ namespace FlowSharpLib
             {
                 g.Move(delta);
                 g.UpdatePath();
-                g.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
+                g.Connections.Where(c => c.ToElement.Parent == null).ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
             });
         }
     }

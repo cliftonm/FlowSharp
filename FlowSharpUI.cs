@@ -193,7 +193,7 @@ namespace FlowSharp
 		{ 
 			canvasController = new CanvasController(canvas, elements);
             mouseController = new MouseController(canvasController);
-			canvasController.ElementSelected+=(snd, args) => UpdateMenu(args.Element != null);
+            canvasController.ElementSelected += (snd, args) => UpdateMenu(args.Element != null);
 			toolboxController = new ToolboxController(toolboxCanvas, toolboxElements, canvasController);
 			uiController = new UIController(pgElement, canvasController);
             mouseController.HookMouseEvents();

@@ -76,6 +76,7 @@ namespace FlowSharpLib
             });
 
             selectedElements.Clear();
+            ElementSelected.Fire(this, new ElementEventArgs() { Element = null });
         }
 
         public override void SelectElement(GraphicElement el)

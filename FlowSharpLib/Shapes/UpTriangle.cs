@@ -20,10 +20,10 @@ namespace FlowSharpLib
         public override List<ConnectionPoint> GetConnectionPoints()
         {
             List<ConnectionPoint> connectionPoints = new List<ConnectionPoint>();
-            connectionPoints.Add(new ConnectionPoint(GripType.Start, DisplayRectangle.TopMiddle()));
-            connectionPoints.Add(new ConnectionPoint(GripType.End, DisplayRectangle.BottomMiddle()));
-            connectionPoints.Add(new ConnectionPoint(GripType.Start, DisplayRectangle.BottomLeftCorner()));
-            connectionPoints.Add(new ConnectionPoint(GripType.End, DisplayRectangle.BottomRightCorner()));
+            connectionPoints.Add(new ConnectionPoint(GripType.TopMiddle, DisplayRectangle.TopMiddle()));
+            connectionPoints.Add(new ConnectionPoint(GripType.BottomMiddle, DisplayRectangle.BottomMiddle()));
+            connectionPoints.Add(new ConnectionPoint(GripType.BottomLeft, DisplayRectangle.BottomLeftCorner()));
+            connectionPoints.Add(new ConnectionPoint(GripType.BottomRight, DisplayRectangle.BottomRightCorner()));
 
             return connectionPoints;
         }

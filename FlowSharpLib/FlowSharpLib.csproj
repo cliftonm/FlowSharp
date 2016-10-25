@@ -44,40 +44,40 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Connection.cs" />
-    <Compile Include="Connector.cs" />
-    <Compile Include="DownTriangle.cs" />
-    <Compile Include="DynamicConnector.cs" />
-    <Compile Include="DynamicConnectorLD.cs" />
-    <Compile Include="DynamicConnectorProperties.cs" />
-    <Compile Include="DynamicConnectorUD.cs" />
-    <Compile Include="GroupBox.cs" />
-    <Compile Include="Line.cs" />
+    <Compile Include="Connectors\Connector.cs" />
+    <Compile Include="Shapes\DownTriangle.cs" />
+    <Compile Include="Connectors\DynamicConnector.cs" />
+    <Compile Include="Connectors\DynamicConnectorLD.cs" />
+    <Compile Include="Connectors\DynamicConnectorProperties.cs" />
+    <Compile Include="Connectors\DynamicConnectorUD.cs" />
+    <Compile Include="Shapes\GroupBox.cs" />
+    <Compile Include="Shapes\Line.cs" />
     <Compile Include="MouseController.cs" />
     <Compile Include="Persist.cs" />
-    <Compile Include="RightTriangle.cs" />
+    <Compile Include="Shapes\RightTriangle.cs" />
     <Compile Include="ShapeAnchor.cs" />
     <Compile Include="BaseController.cs" />
-    <Compile Include="Box.cs" />
+    <Compile Include="Shapes\Box.cs" />
     <Compile Include="Canvas.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CanvasController.cs" />
-    <Compile Include="Diamond.cs" />
-    <Compile Include="DynamicConnectorLR.cs" />
+    <Compile Include="Shapes\Diamond.cs" />
+    <Compile Include="Connectors\DynamicConnectorLR.cs" />
     <Compile Include="ElementProperties.cs" />
-    <Compile Include="Ellipse.cs" />
+    <Compile Include="Shapes\Ellipse.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GraphicElement.cs" />
-    <Compile Include="HorizontalLine.cs" />
+    <Compile Include="Shapes\HorizontalLine.cs" />
     <Compile Include="ConnectionPoint.cs" />
     <Compile Include="LineProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShapeProperties.cs" />
-    <Compile Include="LeftTriangle.cs" />
-    <Compile Include="TextShape.cs" />
+    <Compile Include="Shapes\LeftTriangle.cs" />
+    <Compile Include="Shapes\TextShape.cs" />
     <Compile Include="ToolboxText.cs" />
-    <Compile Include="UpTriangle.cs" />
-    <Compile Include="VerticalLine.cs" />
+    <Compile Include="Shapes\UpTriangle.cs" />
+    <Compile Include="Shapes\VerticalLine.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -116,9 +116,9 @@
             this.ckRoutingEvents.Enabled = false;
             this.ckRoutingEvents.Location = new System.Drawing.Point(172, 10);
             this.ckRoutingEvents.Name = "ckRoutingEvents";
-            this.ckRoutingEvents.Size = new System.Drawing.Size(108, 19);
+            this.ckRoutingEvents.Size = new System.Drawing.Size(103, 19);
             this.ckRoutingEvents.TabIndex = 15;
-            this.ckRoutingEvents.Text = "Routing Events";
+            this.ckRoutingEvents.Text = "Mouse Events";
             this.ckRoutingEvents.UseVisualStyleBackColor = true;
             // 
             // ckTraceEnabled

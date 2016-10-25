@@ -142,11 +142,11 @@ namespace FlowSharpLib
         {
             if (cp.Type == GripType.Start)
             {
-                startPoint = new Point(cpShape.Point.X, cpShape.Point.Y);
+                startPoint = cpShape.Point;
             }
             else
             {
-                endPoint = new Point(cpShape.Point.X, cpShape.Point.Y);
+                endPoint = cpShape.Point;
             }
 
             UpdatePath();

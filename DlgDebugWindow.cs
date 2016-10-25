@@ -17,6 +17,7 @@ namespace FlowSharp
             PopulateWithShapes();
             tvShapes.ExpandAll();
             tvShapes.AfterSelect += OnSelect;
+            ckTraceEnabled.CheckedChanged += OnTraceEnabledCheckedChanged;
         }
 
         public void Trace(string msg)
@@ -130,7 +131,7 @@ namespace FlowSharp
             tbTrace.Text = "";
         }
 
-        private void ckTraceEnabled_CheckedChanged(object sender, EventArgs e)
+        private void OnTraceEnabledCheckedChanged(object sender, EventArgs e)
         {
             ckRoutingEvents.Enabled = ckTraceEnabled.Checked;
             ckShapeEvents.Enabled = ckTraceEnabled.Checked;

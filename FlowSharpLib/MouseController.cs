@@ -401,15 +401,16 @@ namespace FlowSharpLib
         {
             CurrentMousePosition = action.MousePosition;
             CurrentButtons = Control.MouseButtons;
+            IEnumerable<MouseRouter> routes = router.Where(r => r.MouseEvent == action.MouseEvent);
 
-            // Resolve now, otherwise the iterator will find additional routes as actions occur.
-            // A good example is when a shape is added to a selection list, using the enumerator, this
-            // then qualifies the remove shape from selected list!
-            List<MouseRouter> routes = router.Where(r => r.MouseEvent == action.MouseEvent && r.Condition()).ToList();
             routes.ForEach(r =>
             {
-                Trace.WriteLine("Route:" + r.RouteName.ToString());
-                r.Action();
+                // Test condition every time after executing a route handler, as the handler may change state for the next condition.
+                if (r.Condition())
+                {
+                    Trace.WriteLine("Route:" + r.RouteName.ToString());
+                    r.Action();
+                }
             });
 
             LastMousePosition = CurrentMousePosition;

@@ -264,24 +264,6 @@ namespace FlowSharpLib
 			canvas.Controller.UpdateSize(this, anchor, delta);
 		}
 
-        public virtual void GetBackground()
-        {
-            background?.Dispose();
-			background = null;
-			backgroundRectangle = canvas.Clip(UpdateRectangle);
-
-			if (canvas.OnScreen(backgroundRectangle))
-			{
-				background = canvas.GetImage(backgroundRectangle);
-			}
-        }
-
-        public virtual void CancelBackground()
-        {
-            background?.Dispose();
-            background = null;
-        }
-
 		public virtual bool SnapCheck(ShapeAnchor anchor, Point delta)
 		{
 			UpdateSize(anchor, delta);
@@ -310,15 +292,9 @@ namespace FlowSharpLib
 			this.canvas = canvas;
 		}
 
-		public virtual void Erase()
+        public virtual void Erase()
         {
-            if (canvas.OnScreen(backgroundRectangle))
-            {
-                Trace.WriteLine("Shape:Erase " + ToString());
-                background?.Erase(canvas, backgroundRectangle);
-                // canvas.Graphics.DrawRectangle(selectionPen, backgroundRectangle);
-                background = null;
-            }
+            InternalErase();
         }
 
         public virtual void Draw()
@@ -347,15 +323,20 @@ namespace FlowSharpLib
 			}
         }
 
-		public virtual void UpdateScreen(int ix = 0, int iy = 0)
-		{
-			Rectangle r = canvas.Clip(UpdateRectangle.Grow(ix, iy));
+        public virtual void UpdateScreen(int ix = 0, int iy = 0)
+        {
+            InternalUpdateScreen(ix, iy);
+        }
 
-			if (canvas.OnScreen(r))
-			{
-				canvas.CopyToScreen(r);
-			}
-		}
+        public virtual void GetBackground()
+        {
+            InternalGetBackground();
+        }
+
+        public virtual void CancelBackground()
+        {
+            InternalCancelBackground();
+        }
 
         public virtual ShapeAnchor GetBottomRightAnchor()
         {
@@ -454,7 +435,47 @@ namespace FlowSharpLib
 			// DrawUpdateRectangle(gr);
         }
 
-		protected virtual void DrawSelection(Graphics gr)
+        protected void InternalUpdateScreen(int ix, int iy)
+        {
+            Rectangle r = canvas.Clip(UpdateRectangle.Grow(ix, iy));
+
+            if (canvas.OnScreen(r))
+            {
+                canvas.CopyToScreen(r);
+            }
+        }
+
+        protected void InternalErase()
+        {
+            if (canvas.OnScreen(backgroundRectangle))
+            {
+                Trace.WriteLine("Shape:Erase " + ToString());
+                background?.Erase(canvas, backgroundRectangle);
+                // canvas.Graphics.DrawRectangle(selectionPen, backgroundRectangle);
+                background = null;
+            }
+        }
+
+
+        protected void InternalGetBackground()
+        {
+            background?.Dispose();
+            background = null;
+            backgroundRectangle = canvas.Clip(UpdateRectangle);
+
+            if (canvas.OnScreen(backgroundRectangle))
+            {
+                background = canvas.GetImage(backgroundRectangle);
+            }
+        }
+
+        protected void InternalCancelBackground()
+        {
+            background?.Dispose();
+            background = null;
+        }
+
+        protected virtual void DrawSelection(Graphics gr)
 		{
 			if (BorderPen.Color.ToArgb() == selectionPen.Color.ToArgb())
 			{

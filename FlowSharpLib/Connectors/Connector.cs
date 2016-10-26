@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace FlowSharpLib
@@ -19,14 +20,24 @@ namespace FlowSharpLib
 		public GraphicElement EndConnectedShape { get; set; }
 
         public override bool IsConnector { get { return true; } }
+        public bool ShowConnectorAsSelected { get; set; }
+
+        // See CustomLineCap for creating other possible endcaps besides arrows.
+        // Note that AdjustableArrowCap derives from CustomLineCap!
+        // https://msdn.microsoft.com/en-us/library/system.drawing.drawing2d.customlinecap(v=vs.110).aspx
+        protected AdjustableArrowCap adjCapArrow;
+        protected AdjustableArrowCap adjCapDiamond;
 
         protected GripType[] startGrips = new GripType[] { GripType.Start, GripType.TopMiddle, GripType.LeftMiddle };
 
 		public Connector(Canvas canvas) : base(canvas)
 		{
-		}
+            adjCapArrow = new AdjustableArrowCap(BaseController.CAP_WIDTH, BaseController.CAP_HEIGHT, true);
+            adjCapDiamond = new AdjustableArrowCap(BaseController.CAP_WIDTH, BaseController.CAP_HEIGHT, true);
+            adjCapDiamond.MiddleInset = -BaseController.CAP_WIDTH;
+        }
 
-		public override void Serialize(ElementPropertyBag epb, List<GraphicElement> elementsBeingSerialized)
+        public override void Serialize(ElementPropertyBag epb, List<GraphicElement> elementsBeingSerialized)
 		{
 			base.Serialize(epb, elementsBeingSerialized);
 			epb.StartCap = StartCap;

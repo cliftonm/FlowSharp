@@ -63,7 +63,7 @@ namespace FlowSharpLib
 		{
 			Pen pen = (Pen)BorderPen.Clone();
 
-			if (ShowLineAsSelected)
+			if (ShowConnectorAsSelected)
 			{
 				pen.Color = pen.Color.ToArgb() == Color.Red.ToArgb() ? Color.Blue : Color.Red;
 			}

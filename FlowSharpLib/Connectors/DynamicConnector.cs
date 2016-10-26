@@ -22,7 +22,7 @@ namespace FlowSharpLib
 			set
 			{
 				base.Selected = value;
-				lines.ForEach(l => l.ShowLineAsSelected = value);
+				lines.ForEach(l => l.ShowConnectorAsSelected = value);
 			}
 		}
 
@@ -87,8 +87,11 @@ namespace FlowSharpLib
 		{
 			lines.ForEach(l =>
 			{
-				l.BorderPen.Dispose();
-				l.BorderPen = new Pen(BorderPen.Color, BorderPen.Width);
+                l.BorderPen.Color = BorderPen.Color;
+                l.BorderPen.Width = BorderPen.Width;
+                // was:
+                // l.Dispose();
+				// l.BorderPen = new Pen(BorderPen.Color, BorderPen.Width);
 			});
 		}
 

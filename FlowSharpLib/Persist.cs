@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -75,6 +76,8 @@ namespace FlowSharpLib
 		public bool TextFontStrikeout { get; set; }
 		public bool TextFontItalic { get; set; }
 
+        public string ExtraData { get; set; }
+
 		public List<ConnectionPropertyBag> Connections { get; set; }
         public List<ChildPropertyBag> Children { get; set; }
 
@@ -114,6 +117,9 @@ namespace FlowSharpLib
 
 	public static class Persist
 	{
+        public static Func<AssemblyName, Assembly> AssemblyResolver { get; set; }
+        public static Func<Assembly, string, bool, Type> TypeResolver { get; set; }
+
 		public static string Serialize(List<GraphicElement> elements)
 		{
 			List<ElementPropertyBag> sps = new List<ElementPropertyBag>();
@@ -184,7 +190,7 @@ namespace FlowSharpLib
 
             foreach (ElementPropertyBag epb in sps)
             {
-                Type t = Type.GetType(epb.ElementName);
+                Type t = Type.GetType(epb.ElementName, AssemblyResolver, TypeResolver);
                 GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { canvas });
                 el.Deserialize(epb);
                 Guid elGuid = el.Id;

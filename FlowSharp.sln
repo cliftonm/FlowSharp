@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharp", "FlowSharp.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpLib", "FlowSharpLib\FlowSharpLib.csproj", "{07F65CA7-B8D3-4716-BFBF-812EF4DA68BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginExample", "Plugins\PluginExample\PluginExample.csproj", "{DF4BC6E3-E126-4A81-A1F1-79C4F6C6E784}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{07F65CA7-B8D3-4716-BFBF-812EF4DA68BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07F65CA7-B8D3-4716-BFBF-812EF4DA68BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07F65CA7-B8D3-4716-BFBF-812EF4DA68BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF4BC6E3-E126-4A81-A1F1-79C4F6C6E784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF4BC6E3-E126-4A81-A1F1-79C4F6C6E784}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF4BC6E3-E126-4A81-A1F1-79C4F6C6E784}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF4BC6E3-E126-4A81-A1F1-79C4F6C6E784}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

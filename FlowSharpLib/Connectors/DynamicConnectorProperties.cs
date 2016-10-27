@@ -15,7 +15,7 @@ namespace FlowSharpLib
 		[Category("Endcaps")]
 		public AvailableLineCap EndCap { get; set; }
 
-		public DynamicConnectorProperties(DynamicConnector el) : base((GraphicElement)el)
+		public DynamicConnectorProperties(DynamicConnector el) : base(el)
 		{
 			StartCap = el.StartCap;
 			EndCap = el.EndCap;

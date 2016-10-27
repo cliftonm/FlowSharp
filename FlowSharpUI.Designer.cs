@@ -43,6 +43,8 @@
             this.mnuSave = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuPlugins = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCopy = new System.Windows.Forms.ToolStripMenuItem();
@@ -138,6 +140,8 @@
             this.mnuSave,
             this.mnuSaveAs,
             this.toolStripMenuItem1,
+            this.mnuPlugins,
+            this.toolStripMenuItem4,
             this.mnuExit});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 21);
@@ -146,52 +150,63 @@
             // mnuNew
             // 
             this.mnuNew.Name = "mnuNew";
-            this.mnuNew.Size = new System.Drawing.Size(122, 24);
+            this.mnuNew.Size = new System.Drawing.Size(165, 24);
             this.mnuNew.Text = "&New";
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(119, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(162, 6);
             // 
             // mnuOpen
             // 
             this.mnuOpen.Name = "mnuOpen";
-            this.mnuOpen.Size = new System.Drawing.Size(122, 24);
+            this.mnuOpen.Size = new System.Drawing.Size(165, 24);
             this.mnuOpen.Text = "&Open...";
             // 
             // mnuImport
             // 
             this.mnuImport.Name = "mnuImport";
-            this.mnuImport.Size = new System.Drawing.Size(122, 24);
+            this.mnuImport.Size = new System.Drawing.Size(165, 24);
             this.mnuImport.Text = "&Import...";
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(119, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(162, 6);
             // 
             // mnuSave
             // 
             this.mnuSave.Name = "mnuSave";
-            this.mnuSave.Size = new System.Drawing.Size(122, 24);
+            this.mnuSave.Size = new System.Drawing.Size(165, 24);
             this.mnuSave.Text = "&Save";
             // 
             // mnuSaveAs
             // 
             this.mnuSaveAs.Name = "mnuSaveAs";
-            this.mnuSaveAs.Size = new System.Drawing.Size(122, 24);
+            this.mnuSaveAs.Size = new System.Drawing.Size(165, 24);
             this.mnuSaveAs.Text = "Save &as";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(119, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(162, 6);
+            // 
+            // mnuPlugins
+            // 
+            this.mnuPlugins.Name = "mnuPlugins";
+            this.mnuPlugins.Size = new System.Drawing.Size(165, 24);
+            this.mnuPlugins.Text = "&Plugins...";
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(162, 6);
             // 
             // mnuExit
             // 
             this.mnuExit.Name = "mnuExit";
-            this.mnuExit.Size = new System.Drawing.Size(122, 24);
+            this.mnuExit.Size = new System.Drawing.Size(165, 24);
             this.mnuExit.Text = "E&xit";
             // 
             // editToolStripMenuItem
@@ -284,13 +299,13 @@
             // mnuGroup
             // 
             this.mnuGroup.Name = "mnuGroup";
-            this.mnuGroup.Size = new System.Drawing.Size(165, 24);
+            this.mnuGroup.Size = new System.Drawing.Size(124, 24);
             this.mnuGroup.Text = "&Group";
             // 
             // mnuUngroup
             // 
             this.mnuUngroup.Name = "mnuUngroup";
-            this.mnuUngroup.Size = new System.Drawing.Size(165, 24);
+            this.mnuUngroup.Size = new System.Drawing.Size(124, 24);
             this.mnuUngroup.Text = "&Ungroup";
             // 
             // FlowSharpUI
@@ -342,6 +357,8 @@
         private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mnuGroup;
         private System.Windows.Forms.ToolStripMenuItem mnuUngroup;
+        private System.Windows.Forms.ToolStripMenuItem mnuPlugins;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
     }
 }
 

@@ -177,5 +177,12 @@ namespace FlowSharp
             canvasController.UngroupShapes(canvasController.SelectedElements);
             canvasController.SelectedElements.Clear();
         }
+
+
+        private void mnuPlugins_Click(object sender, EventArgs e)
+        {
+            new DlgPlugins().ShowDialog();
+            pluginManager.UpdatePlugins();
+        }
     }
 }

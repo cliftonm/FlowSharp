@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 using FlowSharpLib;
@@ -17,6 +19,8 @@ namespace FlowSharp
 {
     public partial class FlowSharpUI : Form
     {
+        public const string PLUGIN_FILE_LIST = "plugins.txt";
+
         protected MouseController mouseController;
         protected CanvasController canvasController;
 		protected ToolboxController toolboxController;
@@ -30,6 +34,7 @@ namespace FlowSharp
 
         protected DlgDebugWindow debugWindow;
         protected TraceListener traceListener;
+        protected PluginManager pluginManager;
 
 		public FlowSharpUI()
         {
@@ -59,8 +64,9 @@ namespace FlowSharp
 			mnuMoveDown.Click += mnuMoveDown_Click;
             mnuGroup.Click += mnuGroup_Click;
             mnuUngroup.Click += mnuUngroup_Click;
+            mnuPlugins.Click += mnuPlugins_Click;
 
-			keyActions[Keys.Control | Keys.C] = Copy;
+            keyActions[Keys.Control | Keys.C] = Copy;
 			keyActions[Keys.Control | Keys.V] = Paste;
 			keyActions[Keys.Delete] = Delete;
             keyActions[Keys.Up] = () => canvasController.DragSelectedElements(new Point(0, -1));
@@ -71,6 +77,7 @@ namespace FlowSharp
 
         public void OnShown(object sender, EventArgs e)
         {
+            InitializePlugins();
 			InitializeCanvas();
 			InitializeToolbox();
 			InitializeControllers();
@@ -181,7 +188,13 @@ namespace FlowSharp
 			canvasController.DeleteSelectedElements();
 		}
 
-		protected void InitializeCanvas()
+        protected void InitializePlugins()
+        {
+            pluginManager = new PluginManager();
+            pluginManager.InitializePlugins();
+        }
+
+        protected void InitializeCanvas()
 		{
 			canvas = new Canvas();
 			canvas.Initialize(pnlCanvas);
@@ -237,6 +250,28 @@ namespace FlowSharp
 
 			toolboxElements.Add(new ToolboxText(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 230, 25, 25) });
             // toolboxElements.Add(new DiagonalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 25, 230, 25, 25) });
+
+            List<Type> pluginShapes = pluginManager.GetShapeTypes();
+
+            // Plugin shapes
+            int n = x - 60;
+            int y = 260;
+
+            foreach (Type t in pluginShapes)
+            {
+                GraphicElement pluginShape = Activator.CreateInstance(t, new object[] { toolboxCanvas }) as GraphicElement;
+                pluginShape.DisplayRectangle = new Rectangle(n, y, 25, 25);
+                toolboxElements.Add(pluginShape);
+
+                // Next toolbox shape position:
+                n += 40;
+
+                if (n > x + 60)
+                {
+                    n = x - 60;
+                    y += 40;
+                }
+            }
 
             toolboxElements.ForEach(el => el.UpdatePath());
 		}

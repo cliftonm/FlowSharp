@@ -11,10 +11,6 @@ using System.Windows.Forms;
 
 namespace FlowSharpLib
 {
-    /// <summary>
-    /// Left-down dynamic connector. (horizontal line, vertical line at right.)
-    /// Routing around shapes is ignored, which means that the best route may include going inside a connected shape.
-    /// </summary>
     public class DiagonalConnector : DynamicConnector
     {
         public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
@@ -39,7 +35,7 @@ namespace FlowSharpLib
         public override bool IsSelectable(Point p)
         {
             // Better implementation here: http://stackoverflow.com/questions/910882/how-can-i-tell-if-a-point-is-nearby-a-certain-line
-            // So we the point needs to be near the line.
+            // We should instead see if the point is near the line.
             return UpdateRectangle.Contains(p);
         }
 

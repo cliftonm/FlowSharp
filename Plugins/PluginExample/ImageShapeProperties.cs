@@ -23,6 +23,7 @@ namespace PluginExample
         public override void Update(GraphicElement el)
         {
             ((ImageShape)el).Filename = Filename;
+            base.Update(el);
         }
     }
 }

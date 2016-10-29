@@ -14,8 +14,6 @@ namespace PluginExample
 {
     public class ImageShape : GraphicElement
     {
-        protected const string DEFAULT_IMAGE = "defaultImage.png";
-
         protected string filename = DEFAULT_IMAGE;
         protected Image image;
 
@@ -34,7 +32,7 @@ namespace PluginExample
 
         public ImageShape(Canvas canvas) : base(canvas)
 		{
-            image = Image.FromFile(DEFAULT_IMAGE);
+            image = Resource1.DefaultImage;
         }
 
         public override void Dispose(bool disposing)

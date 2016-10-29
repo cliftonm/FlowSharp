@@ -33,6 +33,7 @@ namespace FlowSharpLib
         public MouseController.MouseEvent MouseEvent { get; set; }
         public Func<bool> Condition { get; set; }
         public Action Action { get; set; }
+        public Action Else { get; set; }
     }
 
     public class MouseController
@@ -56,6 +57,7 @@ namespace FlowSharpLib
         public BaseController Controller { get; protected set; }
 
         protected List<MouseRouter> router;
+        protected List<GraphicElement> justAddedShape = new List<GraphicElement>();
 
         public enum MouseEvent
         {
@@ -219,7 +221,7 @@ namespace FlowSharpLib
                 {
                     Controller.HideConnectionPoints();
                     DraggingShapes = false;
-                    DraggingOccurred = false;
+                    // DraggingOccurred = false;        / Will be cleared by RemoveSelectedShape but this is order dependent!  TODO: Fix this somehow! :)
                     DraggingAnchor = false;
                     SelectedAnchor = null;
                     Controller.Canvas.Cursor = Cursors.Arrow;
@@ -353,9 +355,16 @@ namespace FlowSharpLib
                 MouseEvent = MouseEvent.MouseUp,
                 Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
                     Controller.IsMultiSelect() && !DraggingSelectionBox &&
+                    // TODO: Would nice to avoid multiple GetShapeAt calls when processing conditions.  And not just here.
                     Controller.SelectedElements.Contains(Controller.GetShapeAt(CurrentMousePosition)) &&
+                    !justAddedShape.Contains(Controller.GetShapeAt(CurrentMousePosition)) &&
                     !DraggingOccurred,
                 Action = () => RemoveShape(),
+                Else = () =>
+                {
+                    justAddedShape.Clear();
+                    DraggingOccurred = false;
+                }
             });
 
             // SELECTION BOX
@@ -410,6 +419,10 @@ namespace FlowSharpLib
                 {
                     Trace.WriteLine("Route:" + r.RouteName.ToString());
                     r.Action();
+                }
+                else
+                {
+                    r.Else?.Invoke();
                 }
             });
 
@@ -468,6 +481,7 @@ namespace FlowSharpLib
         {
             GraphicElement el = Controller.GetShapeAt(CurrentMousePosition);
             Controller.SelectElement(el);
+            justAddedShape.Add(el);
         }
 
         protected void RemoveShape()

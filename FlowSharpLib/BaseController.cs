@@ -28,7 +28,11 @@ namespace FlowSharpLib
         public const int CAP_HEIGHT = 5;
 
 		public Canvas Canvas { get { return canvas; } }
+
+        // TODO: Return back to ReadOnlyCollection and implement the functions that the menu controller needs.
         public List<GraphicElement> Elements { get { return elements; } }
+        
+        // TODO: Implement as interface
         public MouseController MouseController { get; set; }
 
 		protected List<GraphicElement> elements;

@@ -88,6 +88,11 @@ namespace FlowSharp
                 }
             }
 
+            if (ret == null)
+            {
+                ret = Assembly.Load(assyName);
+            }
+
             return ret;
         }
 

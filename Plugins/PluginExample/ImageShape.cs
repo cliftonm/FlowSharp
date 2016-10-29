@@ -14,8 +14,8 @@ namespace PluginExample
 {
     public class ImageShape : GraphicElement
     {
-        protected string filename = DEFAULT_IMAGE;
         protected Image image;
+        protected string filename;
 
         public string Filename
         {
@@ -53,7 +53,7 @@ namespace PluginExample
         public override GraphicElement CloneDefault(Canvas canvas)
         {
             ImageShape img = (ImageShape)base.CloneDefault(canvas);
-            img.Filename = Filename == DEFAULT_IMAGE ? "" : Filename;
+            img.Filename = Filename;
 
             return img;
         }

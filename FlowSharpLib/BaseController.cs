@@ -28,7 +28,8 @@ namespace FlowSharpLib
         public const int CAP_HEIGHT = 5;
 
 		public Canvas Canvas { get { return canvas; } }
-        public ReadOnlyCollection<GraphicElement> Elements { get { return elements.AsReadOnly(); } }
+        public List<GraphicElement> Elements { get { return elements; } }
+        public MouseController MouseController { get; set; }
 
 		protected List<GraphicElement> elements;
 		public EventHandler<ElementEventArgs> ElementSelected;

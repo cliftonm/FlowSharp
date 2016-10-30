@@ -81,6 +81,8 @@ namespace FlowSharpLib
 		public List<ConnectionPropertyBag> Connections { get; set; }
         public List<ChildPropertyBag> Children { get; set; }
 
+        public ContentAlignment TextAlign { get; set; }
+
 		[XmlIgnore]
 		public Color TextColor { get; set; }
 		[XmlElement("TextColor")]

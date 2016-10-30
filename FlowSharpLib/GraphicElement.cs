@@ -58,6 +58,7 @@ namespace FlowSharpLib
 		public string Text { get; set; }
 		public Font TextFont { get; set; }
 		public Color TextColor { get; set; }
+        public ContentAlignment TextAlign { get; set; }
 		// TODO: Text location - left, top, right, middle, bottom
 
 		protected bool HasCornerAnchors { get; set; }
@@ -105,6 +106,7 @@ namespace FlowSharpLib
 			BorderPen.Width = 1;
 			TextFont = new Font(FontFamily.GenericSansSerif, 10);
 			TextColor = Color.Black;
+            TextAlign = ContentAlignment.MiddleCenter;
 		}
 
         public override string ToString()
@@ -187,6 +189,7 @@ namespace FlowSharpLib
 			epb.FillBrushColor = FillBrush.Color;
 			epb.Text = Text;
 			epb.TextColor = TextColor;
+            epb.TextAlign = TextAlign;
 			epb.TextFontFamily = TextFont.FontFamily.Name;
 			epb.TextFontSize = TextFont.Size;
 			epb.TextFontUnderline = TextFont.Underline;
@@ -217,6 +220,8 @@ namespace FlowSharpLib
 			FillBrush = new SolidBrush(epb.FillBrushColor);
 			Text = epb.Text;
 			TextColor = epb.TextColor;
+            // If missing (backwards compatibility) middle-center align.
+            TextAlign = epb.TextAlign == 0 ? ContentAlignment.MiddleCenter : epb.TextAlign;
 			TextFont.Dispose();
 			FontStyle fontStyle = (epb.TextFontUnderline ? FontStyle.Underline : FontStyle.Regular) | (epb.TextFontItalic ? FontStyle.Italic : FontStyle.Regular) | (epb.TextFontStrikeout ? FontStyle.Strikeout : FontStyle.Regular);
 			TextFont = new Font(epb.TextFontFamily, epb.TextFontSize, fontStyle);
@@ -534,10 +539,68 @@ namespace FlowSharpLib
 		public virtual void DrawText(Graphics gr)
 		{
 			SizeF size = gr.MeasureString(Text, TextFont);
-			Point textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
 			Brush brush = new SolidBrush(TextColor);
-			gr.DrawString(Text, TextFont, brush, textpos);
-			brush.Dispose();
+            Point textpos;
+
+            // TextRenderer is terrible when font is bolded.  Not sure why.
+            // Would be great to use this, but the rendering is so bad, I won't.
+
+            // Some info here:
+            // http://stackoverflow.com/questions/9038125/asp-net-textrenderer-drawtext-awful-text-images
+            //gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            //gr.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit; // <-- important!
+            //gr.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+            //gr.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            //gr.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            //gr.TextContrast = 0;
+            //TextFormatFlags flags = TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.WordBreak;
+            //TextRenderer.DrawText(gr, Text, TextFont, DisplayRectangle, TextColor, flags);
+
+            switch (TextAlign)
+            {
+                case ContentAlignment.TopLeft:
+                    textpos = DisplayRectangle.TopLeftCorner().Move(5, 5);
+                    break;
+
+                case ContentAlignment.TopCenter:
+                    textpos = DisplayRectangle.TopMiddle().Move((int)(-size.Width / 2), 5);
+                    break;
+
+                case ContentAlignment.TopRight:
+                    textpos = DisplayRectangle.TopRightCorner().Move((int)(-(size.Width+5)), 5);
+                    break;
+
+                case ContentAlignment.MiddleLeft:
+                    textpos = DisplayRectangle.LeftMiddle().Move(5, (int)(-size.Height / 2));
+                    break;
+
+                case ContentAlignment.MiddleCenter:
+                    textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
+                    break;
+
+                case ContentAlignment.MiddleRight:
+                    textpos = DisplayRectangle.RightMiddle().Move((int)(-(size.Width + 5)), (int)(-size.Height / 2));
+                    break;
+
+                case ContentAlignment.BottomLeft:
+                    textpos = DisplayRectangle.BottomLeftCorner().Move(5, (int)-(size.Height+5));
+                    break;
+
+                case ContentAlignment.BottomCenter:
+                    textpos = DisplayRectangle.BottomMiddle().Move((int)(-size.Width / 2), (int)-(size.Height + 5));
+                    break;
+
+                case ContentAlignment.BottomRight:
+                    textpos = DisplayRectangle.BottomRightCorner().Move((int)(-(size.Width + 5)), (int)-(size.Height + 5));
+                    break;
+
+                default:        // middle center
+                    textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
+                    break;
+            }
+
+            gr.DrawString(Text, TextFont, brush, textpos);
+            brush.Dispose();
 		}
 	}
 }

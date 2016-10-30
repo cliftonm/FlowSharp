@@ -6,6 +6,7 @@
 
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace FlowSharpLib
 {
@@ -17,12 +18,15 @@ namespace FlowSharpLib
 		public Font Font { get; set; }
 		[Category("Text")]
 		public Color TextColor { get; set; }
+        [Category("Text")]
+        public ContentAlignment TextAlign { get; set; }
 
-		public ShapeProperties(GraphicElement el) : base(el)
+        public ShapeProperties(GraphicElement el) : base(el)
 		{
 			Text = el.Text;
 			Font = el.TextFont;
 			TextColor = el.TextColor;
+            TextAlign = el.TextAlign;
 		}
 
 		public override void Update(GraphicElement el)
@@ -31,6 +35,7 @@ namespace FlowSharpLib
 			el.Text = Text;
 			el.TextFont = Font;
 			el.TextColor = TextColor;
+            el.TextAlign = TextAlign;
 		}
 	}
 }

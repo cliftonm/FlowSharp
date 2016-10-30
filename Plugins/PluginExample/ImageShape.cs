@@ -55,6 +55,11 @@ namespace PluginExample
             ImageShape img = (ImageShape)base.CloneDefault(canvas);
             img.Filename = Filename;
 
+            if (string.IsNullOrEmpty(Filename))
+            {
+                img.image = null;
+            }
+
             return img;
         }
 

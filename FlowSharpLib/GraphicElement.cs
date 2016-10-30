@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Newtonsoft.Json;
+
 namespace FlowSharpLib
 {
 	public static class GraphicElementHelpers
@@ -51,6 +53,11 @@ namespace FlowSharpLib
         public List<GraphicElement> GroupChildren = new List<GraphicElement>();
         public GraphicElement Parent { get; set; }
 
+        /// <summary>
+        /// Extra data that the application can associate with an element.
+        /// </summary>
+        public Dictionary<string, string> Json { get; set; }
+
 		public Rectangle DisplayRectangle { get; set; }
 		public Pen BorderPen { get; set; }
         public SolidBrush FillBrush { get; set; }
@@ -87,8 +94,9 @@ namespace FlowSharpLib
 
         public GraphicElement(Canvas canvas)
         {
-			Id = Guid.NewGuid();
-			this.canvas = canvas;
+            this.canvas = canvas;
+            Id = Guid.NewGuid();
+            Json = new Dictionary<string, string>();
             selectionPen = new Pen(Color.Red);
 			altSelectionPen = new Pen(Color.Blue);
             tagPen = new Pen(Color.Blue, 3);
@@ -183,6 +191,7 @@ namespace FlowSharpLib
 		{
 			epb.ElementName = GetType().AssemblyQualifiedName;
 			epb.Id = Id;
+            epb.Json = JsonConvert.SerializeObject(Json);
 			epb.DisplayRectangle = DisplayRectangle;
 			epb.BorderPenColor = BorderPen.Color;
 			epb.BorderPenWidth = (int)BorderPen.Width;
@@ -213,6 +222,12 @@ namespace FlowSharpLib
 		public virtual void Deserialize(ElementPropertyBag epb)
 		{
 			Id = epb.Id;
+
+            if (!String.IsNullOrEmpty(epb.Json))
+            {
+                Json = JsonConvert.DeserializeObject<Dictionary<string, string>>(epb.Json);
+            }
+
 			DisplayRectangle = epb.DisplayRectangle;
 			BorderPen.Dispose();
 			BorderPen = new Pen(epb.BorderPenColor, epb.BorderPenWidth);

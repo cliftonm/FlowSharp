@@ -85,7 +85,9 @@ namespace FlowSharpLib
             ShowAnchorCursor,
             ClearAnchorCursor,
             HideAnchors,
-            SelectSingleShape,
+            SelectSingleShapeMouseUp,
+            SelectSingleShapeMouseDown,
+            SelectSingleGroupedShape,
             AddSelectedShape,
             RemoveSelectedShape,
         }
@@ -134,7 +136,7 @@ namespace FlowSharpLib
             {
                 RouteName = RouteName.StartDragSurface,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => !Controller.IsShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Left,
+                Condition = () => !Controller.IsRootShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Left,
                 Action = () =>
                 {
                     DraggingSurface = true;
@@ -190,9 +192,10 @@ namespace FlowSharpLib
             {
                 RouteName = RouteName.StartShapeDrag,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
                     CurrentButtons == MouseButtons.Left &&
-                    Controller.GetShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null,
+                    Controller.GetRootShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null &&
+                    !Controller.IsChildShapeSelectable(CurrentMousePosition),       // can't drag a grouped shape
                 Action = () => DraggingShapes = true
             });
 
@@ -201,9 +204,9 @@ namespace FlowSharpLib
             {
                 RouteName = RouteName.StartShapeDrag,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
                     CurrentButtons == MouseButtons.Left &&
-                    Controller.GetShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) != null,
+                    Controller.GetRootShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) != null,
                 Action = () =>
                 {
                     DraggingAnchor = true;
@@ -264,8 +267,8 @@ namespace FlowSharpLib
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape == null &&
                     CurrentButtons == MouseButtons.None &&
-                    Controller.IsShapeSelectable(CurrentMousePosition) &&
-                    Controller.GetShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
+                    Controller.IsRootShapeSelectable(CurrentMousePosition) &&
+                    Controller.GetRootShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
                 Action = () => ShowAnchors(),
             });
 
@@ -276,9 +279,9 @@ namespace FlowSharpLib
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape != null &&
                     CurrentButtons == MouseButtons.None &&
-                    Controller.IsShapeSelectable(CurrentMousePosition) &&
-                    HoverShape != Controller.GetShapeAt(CurrentMousePosition) &&
-                    Controller.GetShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
+                    Controller.IsRootShapeSelectable(CurrentMousePosition) &&
+                    HoverShape != Controller.GetRootShapeAt(CurrentMousePosition) &&
+                    Controller.GetRootShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
                 Action = () => ChangeAnchors(),
             });
 
@@ -289,7 +292,7 @@ namespace FlowSharpLib
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape != null &&
                     CurrentButtons == MouseButtons.None &&
-                    !Controller.IsShapeSelectable(CurrentMousePosition),
+                    !Controller.IsRootShapeSelectable(CurrentMousePosition),
                 Action = () => HideAnchors(),
             });
 
@@ -318,23 +321,36 @@ namespace FlowSharpLib
             // Select a shape
             router.Add(new MouseRouter()
             {
-                RouteName = RouteName.SelectSingleShape,
+                RouteName = RouteName.SelectSingleShapeMouseDown,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
+                    !Controller.IsChildShapeSelectable(CurrentMousePosition) &&
                     !Controller.IsMultiSelect() &&
-                    !Controller.SelectedElements.Contains(Controller.GetShapeAt(CurrentMousePosition)),
-                Action = () => SelectSingleShape()
+                    !Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)),
+                Action = () => SelectSingleRootShape()
+            });
+
+            // Select a single grouped shape:
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.SelectSingleGroupedShape,
+                MouseEvent = MouseEvent.MouseDown,
+                Condition = () => Controller.IsChildShapeSelectable(CurrentMousePosition) &&
+                    !Controller.IsMultiSelect() &&
+                    !Controller.SelectedElements.Contains(Controller.GetChildShapeAt(CurrentMousePosition)),
+                Action = () => SelectSingleChildShape()
             });
 
             // Select a single shape
             router.Add(new MouseRouter()
             {
-                RouteName = RouteName.SelectSingleShape,
+                RouteName = RouteName.SelectSingleShapeMouseUp,
                 MouseEvent = MouseEvent.MouseUp,
-                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
+                    !Controller.IsChildShapeSelectable(CurrentMousePosition) &&     // Don't deselect grouped shape on mouse up (as in, don't select groupbox)
                     !Controller.IsMultiSelect() &&
                     !DraggingOccurred && !DraggingSelectionBox,
-                Action = () => SelectSingleShape()
+                Action = () => SelectSingleRootShape()
             });
 
             // Add another shape to selection list
@@ -342,9 +358,9 @@ namespace FlowSharpLib
             {
                 RouteName = RouteName.AddSelectedShape,
                 MouseEvent = MouseEvent.MouseUp,
-                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
                     Controller.IsMultiSelect() && !DraggingSelectionBox &&
-                    !Controller.SelectedElements.Contains(Controller.GetShapeAt(CurrentMousePosition)),
+                    !Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)),
                 Action = () => AddShape(),
             });
 
@@ -353,11 +369,11 @@ namespace FlowSharpLib
             {
                 RouteName = RouteName.RemoveSelectedShape,
                 MouseEvent = MouseEvent.MouseUp,
-                Condition = () => Controller.IsShapeSelectable(CurrentMousePosition) &&
+                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
                     Controller.IsMultiSelect() && !DraggingSelectionBox &&
                     // TODO: Would nice to avoid multiple GetShapeAt calls when processing conditions.  And not just here.
-                    Controller.SelectedElements.Contains(Controller.GetShapeAt(CurrentMousePosition)) &&
-                    !justAddedShape.Contains(Controller.GetShapeAt(CurrentMousePosition)) &&
+                    Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)) &&
+                    !justAddedShape.Contains(Controller.GetRootShapeAt(CurrentMousePosition)) &&
                     !DraggingOccurred,
                 Action = () => RemoveShape(),
                 Else = () =>
@@ -374,7 +390,7 @@ namespace FlowSharpLib
             {
                 RouteName = RouteName.StartDragSelectionBox,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => !Controller.IsShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Right,
+                Condition = () => !Controller.IsRootShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Right,
                 Action = () =>
                 {
                     DraggingSelectionBox = true;
@@ -445,7 +461,7 @@ namespace FlowSharpLib
 
         protected void ShowAnchors()
         {
-            GraphicElement el = Controller.GetShapeAt(CurrentMousePosition);
+            GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
             el.ShowAnchors = true;
             Controller.Redraw(el);
             HoverShape = el;
@@ -456,7 +472,7 @@ namespace FlowSharpLib
         {
             HoverShape.ShowAnchors = false;
             Controller.Redraw(HoverShape);
-            HoverShape = Controller.GetShapeAt(CurrentMousePosition);
+            HoverShape = Controller.GetRootShapeAt(CurrentMousePosition);
             HoverShape.ShowAnchors = true;
             Controller.Redraw(HoverShape);
             Controller.SetAnchorCursor(HoverShape);
@@ -470,23 +486,31 @@ namespace FlowSharpLib
             HoverShape = null;
         }
 
-        protected void SelectSingleShape()
+        protected void SelectSingleRootShape()
         {
             Controller.DeselectCurrentSelectedElements();
-            GraphicElement el = Controller.GetShapeAt(CurrentMousePosition);
+            GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
+            Controller.SelectElement(el);
+        }
+
+        protected void SelectSingleChildShape()
+        {
+            Controller.DeselectCurrentSelectedElements();
+            GraphicElement el = Controller.GetChildShapeAt(CurrentMousePosition);
             Controller.SelectElement(el);
         }
 
         protected void AddShape()
         {
-            GraphicElement el = Controller.GetShapeAt(CurrentMousePosition);
+            Controller.DeselectGroupedElements();
+            GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
             Controller.SelectElement(el);
             justAddedShape.Add(el);
         }
 
         protected void RemoveShape()
         {
-            GraphicElement el = Controller.GetShapeAt(CurrentMousePosition);
+            GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
             Controller.DeselectElement(el);
         }
 

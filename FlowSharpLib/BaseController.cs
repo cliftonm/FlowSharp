@@ -64,17 +64,28 @@ namespace FlowSharpLib
         public virtual void DragSelectedElements(Point delta) { }
         public virtual bool IsMultiSelect() { return false; }
         public virtual void DeselectCurrentSelectedElements() { }
+        public virtual void DeselectGroupedElements() { }
         public virtual void DeselectElement(GraphicElement el) { }
         public virtual void HideConnectionPoints() { }
 
-        public bool IsShapeSelectable(Point p)
+        public bool IsRootShapeSelectable(Point p)
         {
             return elements.Any(e => e.IsSelectable(p) && e.Parent == null);
         }
 
-        public GraphicElement GetShapeAt(Point p)
+        public bool IsChildShapeSelectable(Point p)
+        {
+            return elements.Any(e => e.IsSelectable(p) && e.Parent != null);
+        }
+
+        public GraphicElement GetRootShapeAt(Point p)
         {
             return elements.FirstOrDefault(e => e.IsSelectable(p) && e.Parent == null);
+        }
+
+        public GraphicElement GetChildShapeAt(Point p)
+        {
+            return elements.FirstOrDefault(e => e.IsSelectable(p) && e.Parent != null);
         }
 
         public void SelectElements(List<GraphicElement> els)

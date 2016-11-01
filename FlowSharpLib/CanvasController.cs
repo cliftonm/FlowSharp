@@ -79,6 +79,23 @@ namespace FlowSharpLib
             ElementSelected.Fire(this, new ElementEventArgs() { Element = null });
         }
 
+        public override void DeselectGroupedElements()
+        {
+            List<GraphicElement> elementsToRemove = new List<GraphicElement>();
+
+            selectedElements.Where(el=>el.Parent != null).ForEach(el =>
+            {
+                var els = EraseTopToBottom(el);
+                el.Selected = false;
+                DrawBottomToTop(els);
+                UpdateScreen(els);
+                elementsToRemove.Add(el);
+            });
+
+            elementsToRemove.ForEach(el => selectedElements.Remove(el));
+            ElementSelected.Fire(this, new ElementEventArgs() { Element = null });
+        }
+
         public override void SelectElement(GraphicElement el)
         {
             // Add to selected elements only once!

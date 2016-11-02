@@ -65,12 +65,14 @@ namespace PluginExample
 
         public override void Serialize(ElementPropertyBag epb, List<GraphicElement> elementsBeingSerialized)
         {
+            // TODO: Use JSON dictionary instead.
             epb.ExtraData = Filename;
             base.Serialize(epb, elementsBeingSerialized);
         }
 
         public override void Deserialize(ElementPropertyBag epb)
         {
+            // TODO: Use JSON dictionary instead.
             Filename = epb.ExtraData;
             base.Deserialize(epb);
         }

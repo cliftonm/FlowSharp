@@ -61,7 +61,7 @@ namespace FlowSharp
 
                 assy.GetTypes().ForEach(t =>
                 {
-                    if (t.BaseType == typeof(GraphicElement))
+                    if (t.IsSubclassOf(typeof(GraphicElement)))
                     {
                         pluginShapes.Add(t);
                     }

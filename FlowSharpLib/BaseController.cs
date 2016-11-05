@@ -35,7 +35,7 @@ namespace FlowSharpLib
         // TODO: Implement as interface
         public MouseController MouseController { get; set; }
 
-        // TODO: Kludgy workaround for issue #25.
+        // TODO: Kludgy workaround for issue #34.
         public bool IsCanvasDragging { get; set; }
 
 		protected List<GraphicElement> elements;

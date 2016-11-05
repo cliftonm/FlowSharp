@@ -563,7 +563,7 @@ namespace FlowSharpLib
             Controller.DeleteElement(SelectionBox);
             List<GraphicElement> selectedElements = new List<GraphicElement>();
 
-            Controller.Elements.Where(e => !selectedElements.Contains(e) && e.Parent == null && e.UpdateRectangle.IntersectsWith(SelectionBox.DisplayRectangle)).ForEach((e) =>
+            Controller.Elements.Where(e => !selectedElements.Contains(e) && e.Parent == null && SelectionBox.DisplayRectangle.Contains(e.UpdateRectangle)).ForEach((e) =>
             {
                 selectedElements.Add(e);
             });

@@ -140,6 +140,7 @@
             this.btnClearTrace.TabIndex = 13;
             this.btnClearTrace.Text = "Clear";
             this.btnClearTrace.UseVisualStyleBackColor = true;
+            this.btnClearTrace.Click += new System.EventHandler(this.btnClearTrace_Click);
             // 
             // tbTrace
             // 

@@ -166,15 +166,15 @@ namespace FlowSharpLib
                         // If attached, are we moving away from the connection point to detach it?
                         if (neardxsign == 0 && neardxsign == 0 && (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY))
                         {
-                            selectedElement.DisconnectShapeFromConnector(type);
-                            selectedElement.RemoveConnection(type);
+                            Disconnect(selectedElement, type);
                         }
                         else
                         {
                             // Not already connected?
-                            // if (!si.NearElement.Connections.Any(c => c.ToElement == selectedElement))
                             if (neardxsign != 0 || neardysign != 0)
                             {
+                                // Remove any current connections.  See issue #41
+                                Disconnect(selectedElement, type);
                                 si.NearElement.Connections.Add(new Connection() { ToElement = selectedElement, ToConnectionPoint = si.LineConnectionPoint, ElementConnectionPoint = nearConnectionPoint });
                                 selectedElement.SetConnection(si.LineConnectionPoint.Type, si.NearElement);
                             }
@@ -188,6 +188,12 @@ namespace FlowSharpLib
             }
 
             return snapped;
+        }
+
+        protected void Disconnect(GraphicElement el, GripType gripType)
+        {
+            el.DisconnectShapeFromConnector(gripType);
+            el.RemoveConnection(gripType);
         }
 
         public override void SetAnchorCursor(GraphicElement el)

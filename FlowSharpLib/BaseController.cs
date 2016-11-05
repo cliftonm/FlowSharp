@@ -35,6 +35,9 @@ namespace FlowSharpLib
         // TODO: Implement as interface
         public MouseController MouseController { get; set; }
 
+        // TODO: Kludgy workaround for issue #25.
+        public bool IsCanvasDragging { get; set; }
+
 		protected List<GraphicElement> elements;
 		public EventHandler<ElementEventArgs> ElementSelected;
 		public EventHandler<ElementEventArgs> UpdateSelectedElement;
@@ -352,6 +355,7 @@ namespace FlowSharpLib
         public void MoveAllElements(Point delta)
         {
             EraseTopToBottom(elements);
+            IsCanvasDragging = true;
 
             // Don't move grouped children, as the groupbox will do this for us when it moves.
             elements.Where(e=>e.Parent == null).ForEach(e =>
@@ -364,6 +368,7 @@ namespace FlowSharpLib
             int dy = delta.Y.Abs();
             DrawBottomToTop(elements, dx, dy);
             UpdateScreen(elements, dx, dy);
+            IsCanvasDragging = false;
         }
 
         public void SaveAsPng(string filename)

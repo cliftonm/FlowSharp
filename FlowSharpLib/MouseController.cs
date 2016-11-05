@@ -446,7 +446,7 @@ namespace FlowSharpLib
         {
             CurrentMousePosition = action.MousePosition;
             CurrentButtons = Control.MouseButtons;
-            // Mouse Move event fires even for button press when mouse hasn't moved!
+            // Issue #39: Mouse Move event fires even for button press when mouse hasn't moved!
             IEnumerable<MouseRouter> routes = router.Where(r => (action.MouseEvent != MouseEvent.MouseMove && r.MouseEvent == action.MouseEvent)
                 || ((action.MouseEvent == MouseEvent.MouseMove && r.MouseEvent == action.MouseEvent && MouseHasReallyMoved())));
 

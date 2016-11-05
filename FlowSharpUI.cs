@@ -36,6 +36,9 @@ namespace FlowSharp
         protected TraceListener traceListener;
         protected PluginManager pluginManager;
 
+        protected TextBox editBox;
+        protected GraphicElement shapeBeingEdited;
+
 		public FlowSharpUI()
         {
             InitializeComponent();
@@ -69,6 +72,7 @@ namespace FlowSharp
             keyActions[Keys.Control | Keys.C] = Copy;
 			keyActions[Keys.Control | Keys.V] = Paste;
 			keyActions[Keys.Delete] = Delete;
+            keyActions[Keys.F2] = EditText;
             keyActions[Keys.Up] = () => canvasController.DragSelectedElements(new Point(0, -1));
             keyActions[Keys.Down] = () => canvasController.DragSelectedElements(new Point(0, 1));
             keyActions[Keys.Left] = () => canvasController.DragSelectedElements(new Point(-1, 0));
@@ -89,10 +93,28 @@ namespace FlowSharp
 			Action act;
             bool ret = false;
 
-            if (canvas.Focused && keyActions.TryGetValue(keyData, out act))
+            if (editBox == null)
             {
-                act();
-                ret = true;
+                if (canvas.Focused && keyActions.TryGetValue(keyData, out act))
+                {
+                    act();
+                    ret = true;
+                }
+                else
+                {
+                    if (canvasController.SelectedElements.Count == 1 && CanStartEditing(keyData))
+                    {
+                        EditText();
+                        editBox.Text = ((char)keyData).ToString();
+                        editBox.SelectionStart = 1;
+                        editBox.SelectionLength = 0;
+                        ret = true;
+                    }
+                    else
+                    {
+                        ret = base.ProcessCmdKey(ref msg, keyData);
+                    }
+                }
             }
             else
             {
@@ -188,6 +210,66 @@ namespace FlowSharp
 			canvasController.DeleteSelectedElements();
 		}
 
+        protected bool CanStartEditing(Keys keyData)
+        {
+            bool ret = false;
+
+            if ((keyData & Keys.Control) != Keys.Control)
+            {
+                Keys k2 = (keyData & ~(Keys.Control | Keys.Shift));
+
+                if (k2 < Keys.F1 || k2 > Keys.F12)
+                {
+                    // Here we assume we have a viable character.
+                    // TODO: Probably more logic is required here.
+                    ret = true;
+                }
+            }
+
+            return ret;
+        }
+
+        protected void EditText()
+        {
+            if (canvasController.SelectedElements.Count == 1)
+            {
+                shapeBeingEdited = canvasController.SelectedElements[0];
+                editBox = CreateTextBox(shapeBeingEdited);
+                canvas.Controls.Add(editBox);
+                editBox.Visible = true;
+                editBox.Focus();
+                editBox.KeyPress += OnEditBoxKey;
+            }
+        }
+
+        protected void OnEditBoxKey(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 27 || e.KeyChar == 13)
+            {
+                TerminateEditing();
+            }
+        }
+
+        protected void TerminateEditing()
+        {
+            shapeBeingEdited.Text = editBox.Text;
+            canvasController.Redraw(shapeBeingEdited);
+            canvas.Controls.Remove(editBox);
+            editBox.KeyPress -= OnEditBoxKey;
+            editBox.Dispose();
+            editBox = null;
+        }
+
+        protected TextBox CreateTextBox(GraphicElement el)
+        {
+            TextBox tb = new TextBox();
+            tb.Location = el.DisplayRectangle.LeftMiddle().Move(0, -10);
+            tb.Size = new Size(el.DisplayRectangle.Width, 20);
+            tb.Text = el.Text;
+
+            return tb;
+        }
+
         protected void InitializePlugins()
         {
             pluginManager = new PluginManager();
@@ -206,6 +288,15 @@ namespace FlowSharp
 		{ 
 			canvasController = new CanvasController(canvas, elements);
             mouseController = new MouseController(canvasController);
+
+            mouseController.MouseClick += (sndr, args) =>
+              {
+                  if (editBox != null)
+                  {
+                      TerminateEditing();
+                  }
+              };
+
             canvasController.ElementSelected += (snd, args) => UpdateMenu(args.Element != null);
 			toolboxController = new ToolboxController(toolboxCanvas, toolboxElements, canvasController);
 			uiController = new UIController(pgElement, canvasController);

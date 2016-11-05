@@ -39,6 +39,8 @@ namespace FlowSharpLib
 
     public class MouseController
     {
+        public event EventHandler<EventArgs> MouseClick;
+
         // State information:
         public Point LastMousePosition { get; set; }
         public Point CurrentMousePosition { get; set; }
@@ -69,6 +71,7 @@ namespace FlowSharpLib
 
         public enum RouteName
         {
+            FireMouseClickEvent,
             CanvasFocus,
             StartDragSurface,
             EndDragSurface,
@@ -118,6 +121,18 @@ namespace FlowSharpLib
 
         public virtual void InitializeBehavior()
         {
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.FireMouseClickEvent,
+                MouseEvent = MouseEvent.MouseDown,
+                Condition = () => true,
+                Action = () =>
+                {
+                    // So Ctrl+V paste works, as keystroke is intercepted only when canvas panel has focus.
+                    MouseClick.Fire(this, EventArgs.Empty);
+                }
+            });
+
             router.Add(new MouseRouter()
             {
                 RouteName = RouteName.CanvasFocus,

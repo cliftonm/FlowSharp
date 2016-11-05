@@ -183,7 +183,7 @@ namespace FlowSharpLib
 
 		public void Redraw(GraphicElement el, int dx=0, int dy=0)
 		{
-            Trace.WriteLine("Shape:Redraw1");
+            // Trace.WriteLine("Shape:Redraw1");
 			var els = EraseIntersectionsTopToBottom(el, dx, dy);
 			DrawBottomToTop(els, dx, dy);
 			UpdateScreen(els, dx, dy);
@@ -191,7 +191,7 @@ namespace FlowSharpLib
 
 		public void Redraw(GraphicElement el, Action<GraphicElement> afterErase)
 		{
-            Trace.WriteLine("Shape:Redraw2");
+            // Trace.WriteLine("Shape:Redraw2");
             var els = EraseIntersectionsTopToBottom(el);
 			UpdateScreen(els);
 			afterErase(el);

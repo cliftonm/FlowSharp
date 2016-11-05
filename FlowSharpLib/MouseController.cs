@@ -34,6 +34,7 @@ namespace FlowSharpLib
         public Func<bool> Condition { get; set; }
         public Action Action { get; set; }
         public Action Else { get; set; }
+        public Action Debug { get; set; }
     }
 
     public class MouseController
@@ -196,7 +197,11 @@ namespace FlowSharpLib
                     CurrentButtons == MouseButtons.Left &&
                     Controller.GetRootShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null &&
                     !Controller.IsChildShapeSelectable(CurrentMousePosition),       // can't drag a grouped shape
-                Action = () => DraggingShapes = true
+                Action = () =>
+                {
+                    Controller.DeselectGroupedElements();
+                    DraggingShapes = true;
+                },
             });
 
             // Start anchor drag:
@@ -243,6 +248,7 @@ namespace FlowSharpLib
                 {
                     DragShapes();
                     DraggingOccurred = true;
+                    Trace.WriteLine("Route:Dragging Occurred!");
                 },
             });
 
@@ -380,6 +386,15 @@ namespace FlowSharpLib
                 {
                     justAddedShape.Clear();
                     DraggingOccurred = false;
+                },
+                Debug = () =>
+                {
+                    Trace.WriteLine("Route:IsRootShapeSelectable: " + Controller.IsRootShapeSelectable(CurrentMousePosition));
+                    Trace.WriteLine("Route:IsMultiSelect: " + Controller.IsMultiSelect());
+                    Trace.WriteLine("Route:!DraggingSelectionBox: " + !DraggingSelectionBox);
+                    Trace.WriteLine("Route:SelectedElements.ContainsShape: " + Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)));
+                    Trace.WriteLine("Route:!justShapeAdded: " + !justAddedShape.Contains(Controller.GetRootShapeAt(CurrentMousePosition)));
+                    Trace.WriteLine("Route:!DraggingOccurred: " + !DraggingOccurred);
                 }
             });
 
@@ -422,14 +437,23 @@ namespace FlowSharpLib
             });
         }
 
+        protected bool MouseHasReallyMoved()
+        {
+            return CurrentMousePosition.Delta(LastMousePosition) != Point.Empty;
+        }
+
         protected virtual void HandleEvent(MouseAction action)
         {
             CurrentMousePosition = action.MousePosition;
             CurrentButtons = Control.MouseButtons;
-            IEnumerable<MouseRouter> routes = router.Where(r => r.MouseEvent == action.MouseEvent);
+            // Mouse Move event fires even for button press when mouse hasn't moved!
+            IEnumerable<MouseRouter> routes = router.Where(r => (action.MouseEvent != MouseEvent.MouseMove && r.MouseEvent == action.MouseEvent)
+                || ((action.MouseEvent == MouseEvent.MouseMove && r.MouseEvent == action.MouseEvent && MouseHasReallyMoved())));
 
             routes.ForEach(r =>
             {
+                r.Debug?.Invoke();
+
                 // Test condition every time after executing a route handler, as the handler may change state for the next condition.
                 if (r.Condition())
                 {

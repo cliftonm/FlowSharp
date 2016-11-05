@@ -40,8 +40,11 @@ namespace FlowSharp
 
 		protected void UpdateSelectedElement(object controller, ElementEventArgs args)
 		{
-			elementProperties.UpdateFrom(args.Element);
-			pgElement.Refresh();
+            if (args.Element != null && elementProperties != null)
+            {
+                elementProperties.UpdateFrom(args.Element);
+                pgElement.Refresh();
+            }
 		}
 
 		protected void OnPropertyValueChanged(object s, PropertyValueChangedEventArgs e)

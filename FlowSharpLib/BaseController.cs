@@ -54,6 +54,9 @@ namespace FlowSharpLib
         protected bool rightMouseDown;
         protected bool selectionMode;
 
+        // Diagnostic
+        private int eraseCount = 0;
+
 		public BaseController(Canvas canvas, List<GraphicElement> elements)
 		{
 			this.canvas = canvas;
@@ -180,14 +183,16 @@ namespace FlowSharpLib
 
 		public void Redraw(GraphicElement el, int dx=0, int dy=0)
 		{
-			var els = EraseTopToBottom(el, dx, dy);
+            Trace.WriteLine("Shape:Redraw1");
+			var els = EraseIntersectionsTopToBottom(el, dx, dy);
 			DrawBottomToTop(els, dx, dy);
 			UpdateScreen(els, dx, dy);
 		}
 
 		public void Redraw(GraphicElement el, Action<GraphicElement> afterErase)
 		{
-			var els = EraseTopToBottom(el);
+            Trace.WriteLine("Shape:Redraw2");
+            var els = EraseIntersectionsTopToBottom(el);
 			UpdateScreen(els);
 			afterErase(el);
 			DrawBottomToTop(els);
@@ -215,7 +220,7 @@ namespace FlowSharpLib
 		{
 			int dx = delta.X.Abs();
 			int dy = delta.Y.Abs();
-            var els = EraseTopToBottom(el, dx, dy);
+            var els = EraseIntersectionsTopToBottom(el, dx, dy);
 			el.DisplayRectangle = newRect;
 			el.UpdatePath();
 			DrawBottomToTop(els, dx, dy);
@@ -337,7 +342,7 @@ namespace FlowSharpLib
 			{
                 int dx = delta.X.Abs();
                 int dy = delta.Y.Abs();
-                var els = EraseTopToBottom(el, dx, dy);
+                var els = EraseIntersectionsTopToBottom(el, dx, dy);
 				el.Move(delta);
 				el.UpdatePath();
 				DrawBottomToTop(els, dx, dy);
@@ -350,6 +355,24 @@ namespace FlowSharpLib
 				// TODO: Display element if moved back on screen at this point?
 			}
 		}
+
+        // Sort of kludgy workaround for Issue #40?
+        // TODO: Vertical / Horizontal shapes represent a sort of special case, which we might want to deal with at some point
+        // in the future.
+        public void MoveElementNoEraseNorRedraw(GraphicElement el, Point delta)
+        {
+            if (el.OnScreen())
+            {
+                int dx = delta.X.Abs();
+                int dy = delta.Y.Abs();
+                el.Move(delta);
+                el.UpdatePath();
+            }
+            else
+            {
+                el.Move(delta);
+            }
+        }
 
         // "Smart" move, erases everything first, moves all elements, then redraws them.
         public void MoveAllElements(Point delta)
@@ -414,13 +437,23 @@ namespace FlowSharpLib
 
         public void EraseTopToBottom(IEnumerable<GraphicElement> els)
         {
-            Trace.WriteLine("Shape:EraseTopToBottom");
+            if (++eraseCount > 1)
+            {
+                Trace.WriteLine("Shape:*** TOO MANY ERASE " + eraseCount + " ***");
+            }
+
+            Trace.WriteLine("Shape:EraseTopToBottom " + eraseCount);
             els.Where(e => e.OnScreen()).ForEach(e => e.Erase());
         }
 
         public void DrawBottomToTop(IEnumerable<GraphicElement> els, int dx = 0, int dy = 0)
         {
-            Trace.WriteLine("Shape:DrawBottomToTop");
+            if (--eraseCount < 0)
+            {
+                Trace.WriteLine("Shape:*** TOO MANY DRAW " + eraseCount + " ***");
+            }
+
+            Trace.WriteLine("Shape:DrawBottomToTop " + eraseCount);
             els.AsEnumerable().Reverse().Where(e => e.OnScreen(dx, dy)).ForEach(e =>
             {
                 e.GetBackground();
@@ -551,9 +584,14 @@ namespace FlowSharpLib
 			});
 		}
 
-		protected IEnumerable<GraphicElement> EraseTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
+		protected IEnumerable<GraphicElement> EraseIntersectionsTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
 		{
-            Trace.WriteLine("Shape:EraseTopToBottom");
+            if (++eraseCount > 1)
+            {
+                Trace.WriteLine("Shape:*** TOO MANY ERASE " + eraseCount + " ***");
+            }
+
+            Trace.WriteLine("Shape:EraseIntersectionsTopToBottom " + eraseCount);
             IEnumerable<GraphicElement> intersections = FindAllIntersections(el, dx, dy);
 			intersections.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.Erase());
 
@@ -562,6 +600,7 @@ namespace FlowSharpLib
 
 		protected void CanvasPaintComplete(Canvas canvas)
 		{
+            eraseCount = 1;         // Diagnostics
 			DrawBottomToTop(elements);
 		}
 	}

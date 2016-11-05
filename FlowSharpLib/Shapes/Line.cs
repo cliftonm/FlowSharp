@@ -68,7 +68,7 @@ namespace FlowSharpLib
 
 		public override void MoveElementOrAnchor(GripType gt, Point delta)
 		{
-			canvas.Controller.MoveElement(this, delta);
-		}
-	}
+            canvas.Controller.MoveElementNoEraseNorRedraw(this, delta);
+        }
+    }
 }

@@ -139,7 +139,7 @@ namespace FlowSharp
 
             if (el != null)
             {
-                var els = EraseTopToBottom(el);
+                var els = EraseIntersectionsTopToBottom(el);
                 el.Selected = true;
                 DrawBottomToTop(els);
                 UpdateScreen(els);
@@ -159,7 +159,7 @@ namespace FlowSharp
         {
             if (selectedElements.Any())
             {
-                var els = EraseTopToBottom(selectedElements[0]);
+                var els = EraseIntersectionsTopToBottom(selectedElements[0]);
                 selectedElements[0].Selected = false;
                 DrawBottomToTop(els);
                 UpdateScreen(els);

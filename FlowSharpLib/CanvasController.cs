@@ -69,7 +69,7 @@ namespace FlowSharpLib
         {
             selectedElements.ForEach(el =>
             {
-                var els = EraseTopToBottom(el);
+                var els = EraseIntersectionsTopToBottom(el);
                 el.Selected = false;
                 DrawBottomToTop(els);
                 UpdateScreen(els);
@@ -85,7 +85,7 @@ namespace FlowSharpLib
 
             selectedElements.Where(el=>el.Parent != null).ForEach(el =>
             {
-                var els = EraseTopToBottom(el);
+                var els = EraseIntersectionsTopToBottom(el);
                 el.Selected = false;
                 DrawBottomToTop(els);
                 UpdateScreen(els);
@@ -101,7 +101,7 @@ namespace FlowSharpLib
             // Add to selected elements only once!
             if (!selectedElements.Contains(el))
             {
-                var els = EraseTopToBottom(el);
+                var els = EraseIntersectionsTopToBottom(el);
                 selectedElements.Add(el);
                 el.Selected = true;
                 DrawBottomToTop(els);

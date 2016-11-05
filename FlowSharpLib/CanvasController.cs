@@ -22,7 +22,10 @@ namespace FlowSharpLib
 	{
 		public GraphicElement NearElement { get; set; }
 		public ConnectionPoint LineConnectionPoint { get; set; }
-	}
+        public ConnectionPoint NearConnectionPoint { get; set; }
+        public int AbsDx { get; set; }
+        public int AbsDy { get; set; }
+    }
 
 	public class CanvasController : BaseController
 	{
@@ -145,6 +148,11 @@ namespace FlowSharpLib
             ShowConnectionPoints(currentlyNear.Where(e => !nearElements.Any(e2 => e.NearElement == e2.NearElement)).Select(e => e.NearElement), false);
             currentlyNear = nearElements;
 
+            // Issue #6 
+            // TODO: Again, sort of kludgy.
+            UpdateWithNearElementConnectionPoints(nearElements);
+            nearElements = nearElements.OrderBy(si => si.AbsDx + si.AbsDy).ToList();    // abs(dx) + abs(dy) as a fast "distance" sorter, no need for sqrt(dx^2 + dy^2)
+
             foreach (SnapInfo si in nearElements)
             {
                 ConnectionPoint nearConnectionPoint = si.NearElement.GetConnectionPoints().FirstOrDefault(cp => cp.Point.IsNear(si.LineConnectionPoint.Point, SNAP_CONNECTION_POINT_RANGE));
@@ -188,6 +196,28 @@ namespace FlowSharpLib
             }
 
             return snapped;
+        }
+
+        /// <summary>
+        /// Update the SnapInfo structure with the deltas of the connector's connection point to the first nearby shape connection point found.
+        /// </summary>
+        protected void UpdateWithNearElementConnectionPoints(List<SnapInfo> nearElements)
+        {
+            foreach (SnapInfo si in nearElements)
+            {
+                // TODO: FirstOrDefault, or Where, returning a list of nearby CP's?
+                ConnectionPoint nearConnectionPoint = si.NearElement.GetConnectionPoints().FirstOrDefault(cp => cp.Point.IsNear(si.LineConnectionPoint.Point, SNAP_CONNECTION_POINT_RANGE));
+
+                if (nearConnectionPoint != null)
+                {
+                    Point sourceConnectionPoint = si.LineConnectionPoint.Point;
+                    int neardx = nearConnectionPoint.Point.X - sourceConnectionPoint.X;     // calculate to match possible delta sign
+                    int neardy = nearConnectionPoint.Point.Y - sourceConnectionPoint.Y;
+                    si.NearConnectionPoint = nearConnectionPoint;
+                    si.AbsDx = neardx.Abs();
+                    si.AbsDy = neardy.Abs();
+                }
+            }
         }
 
         protected void Disconnect(GraphicElement el, GripType gripType)

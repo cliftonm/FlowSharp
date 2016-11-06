@@ -102,7 +102,10 @@ namespace FlowSharp
                 }
                 else
                 {
-                    if (canvas.Focused && canvasController.SelectedElements.Count == 1 && CanStartEditing(keyData))
+                    if (canvas.Focused && 
+                        canvasController.SelectedElements.Count == 1 && 
+                        !canvasController.SelectedElements[0].IsConnector &&
+                        CanStartEditing(keyData))
                     {
                         EditText();
                         editBox.Text = ((char)keyData).ToString();
@@ -214,9 +217,10 @@ namespace FlowSharp
         {
             bool ret = false;
 
-            if ((keyData & Keys.Control) != Keys.Control)               // any control + key is not valid
+            if ( ((keyData & Keys.Control) != Keys.Control) &&              // any control + key is not valid
+                 ((keyData & Keys.Alt) != Keys.Alt) )                       // any alt + key is not valid
             {
-                Keys k2 = (keyData & ~(Keys.Control | Keys.Shift | Keys.ShiftKey));
+                Keys k2 = (keyData & ~(Keys.Control | Keys.Shift | Keys.ShiftKey | Keys.Alt | Keys.Menu));
 
                 if ((k2 != Keys.None) && (k2 < Keys.F1 || k2 > Keys.F12) )
                 {
@@ -233,13 +237,17 @@ namespace FlowSharp
         {
             if (canvasController.SelectedElements.Count == 1)
             {
-                shapeBeingEdited = canvasController.SelectedElements[0];
-                editBox = CreateTextBox(shapeBeingEdited);
-                canvas.Controls.Add(editBox);
-                editBox.Visible = true;
-                editBox.Focus();
-                editBox.KeyPress += OnEditBoxKey;
-                editBox.LostFocus += (sndr, args) => TerminateEditing();
+                // TODO: At the moment, connectors do not support text.
+                if (!canvasController.SelectedElements[0].IsConnector)
+                {
+                    shapeBeingEdited = canvasController.SelectedElements[0];
+                    editBox = CreateTextBox(shapeBeingEdited);
+                    canvas.Controls.Add(editBox);
+                    editBox.Visible = true;
+                    editBox.Focus();
+                    editBox.KeyPress += OnEditBoxKey;
+                    editBox.LostFocus += (sndr, args) => TerminateEditing();
+                }
             }
         }
 
@@ -255,16 +263,15 @@ namespace FlowSharp
         {
             if (editBox != null)
             {
+                editBox.KeyPress -= OnEditBoxKey;
                 shapeBeingEdited.Text = editBox.Text;
                 canvasController.Redraw(shapeBeingEdited);
-                
-                // Updates PropertyGrid:
-                canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
 
                 canvas.Controls.Remove(editBox);
-                editBox.KeyPress -= OnEditBoxKey;
-                editBox.Dispose();
                 editBox = null;
+
+                // Updates PropertyGrid:
+                canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
             }
         }
 

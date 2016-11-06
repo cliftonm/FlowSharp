@@ -4,6 +4,7 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -34,9 +35,25 @@ namespace FlowSharpLib
 
         public override bool IsSelectable(Point p)
         {
-            // Better implementation here: http://stackoverflow.com/questions/910882/how-can-i-tell-if-a-point-is-nearby-a-certain-line
-            // We should instead see if the point is near the line.
-            return UpdateRectangle.Contains(p);
+            bool ret = false;
+            // Issue #30
+            // Determine if point is near line, rather than whether the point is inside the update rectangle.
+            // See: http://stackoverflow.com/questions/910882/how-can-i-tell-if-a-point-is-nearby-a-certain-line
+
+            // First qualify by the point being inside the update rectangle itself.
+            if (UpdateRectangle.Contains(p))
+            {
+                // Then check how close the point is.
+                int a = p.X - UpdateRectangle.X;
+                int b = p.Y - UpdateRectangle.Y;
+                int c = UpdateRectangle.Width;
+                int d = UpdateRectangle.Height;
+
+                int dist = (int)(Math.Abs(a * d - c * b) / Math.Sqrt(c * c + d * d));
+                ret = dist <= BaseController.MIN_HEIGHT;
+            }
+
+            return ret;
         }
 
         public override List<ShapeAnchor> GetAnchors()

@@ -102,7 +102,7 @@ namespace FlowSharp
                 }
                 else
                 {
-                    if (canvasController.SelectedElements.Count == 1 && CanStartEditing(keyData))
+                    if (canvas.Focused && canvasController.SelectedElements.Count == 1 && CanStartEditing(keyData))
                     {
                         EditText();
                         editBox.Text = ((char)keyData).ToString();
@@ -239,6 +239,7 @@ namespace FlowSharp
                 editBox.Visible = true;
                 editBox.Focus();
                 editBox.KeyPress += OnEditBoxKey;
+                editBox.LostFocus += (sndr, args) => TerminateEditing();
             }
         }
 
@@ -252,12 +253,19 @@ namespace FlowSharp
 
         protected void TerminateEditing()
         {
-            shapeBeingEdited.Text = editBox.Text;
-            canvasController.Redraw(shapeBeingEdited);
-            canvas.Controls.Remove(editBox);
-            editBox.KeyPress -= OnEditBoxKey;
-            editBox.Dispose();
-            editBox = null;
+            if (editBox != null)
+            {
+                shapeBeingEdited.Text = editBox.Text;
+                canvasController.Redraw(shapeBeingEdited);
+                
+                // Updates PropertyGrid:
+                canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
+
+                canvas.Controls.Remove(editBox);
+                editBox.KeyPress -= OnEditBoxKey;
+                editBox.Dispose();
+                editBox = null;
+            }
         }
 
         protected TextBox CreateTextBox(GraphicElement el)
@@ -288,18 +296,10 @@ namespace FlowSharp
 		{ 
 			canvasController = new CanvasController(canvas, elements);
             mouseController = new MouseController(canvasController);
-
-            mouseController.MouseClick += (sndr, args) =>
-              {
-                  if (editBox != null)
-                  {
-                      TerminateEditing();
-                  }
-              };
-
+            mouseController.MouseClick += (sndr, args) => TerminateEditing();
             canvasController.ElementSelected += (snd, args) => UpdateMenu(args.Element != null);
 			toolboxController = new ToolboxController(toolboxCanvas, toolboxElements, canvasController);
-			uiController = new UIController(pgElement, canvasController);
+            uiController = new UIController(pgElement, canvasController);
             mouseController.HookMouseEvents();
             mouseController.InitializeBehavior();
 		}

@@ -40,13 +40,13 @@ namespace FlowSharpLib
 			Rectangle = el.DisplayRectangle;
 		}
 
-		public virtual void Update(GraphicElement el)
+		public virtual void Update(GraphicElement el, string label)
 		{
-			el.DisplayRectangle = Rectangle;
-			el.BorderPen.Color = BorderColor;
-			el.BorderPen.Width = BorderWidth;
-			el.FillBrush.Color = FillColor;
-			el.PropertiesChanged.Fire(this, new PropertiesChangedEventArgs(el));
+            (label == "DisplayRectangle").If(() => el.DisplayRectangle = Rectangle);
+            (label == "BorderColor").If(() => el.BorderPen.Color = BorderColor);
+            (label == "BorderWidth").If(() => el.BorderPen.Width = BorderWidth);
+            (label == "FillColor").If(() => el.FillBrush.Color = FillColor);
+			// el.PropertiesChanged.Fire(this, new PropertiesChangedEventArgs(el));
 		}
 	}
 }

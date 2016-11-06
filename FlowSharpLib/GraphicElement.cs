@@ -35,7 +35,7 @@ namespace FlowSharpLib
 
 	public class GraphicElement : IDisposable
     {
-		public EventHandler<PropertiesChangedEventArgs> PropertiesChanged;
+		// public EventHandler<PropertiesChangedEventArgs> PropertiesChanged;
 
 		public Guid Id { get; set; }
 		public virtual bool Selected { get; set; }

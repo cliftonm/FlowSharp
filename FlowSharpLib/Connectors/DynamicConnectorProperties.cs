@@ -21,11 +21,11 @@ namespace FlowSharpLib
 			EndCap = el.EndCap;
 		}
 
-		public override void Update(GraphicElement el)
+		public override void Update(GraphicElement el, string label)
 		{
-			((DynamicConnector)el).StartCap = StartCap;
-			((DynamicConnector)el).EndCap = EndCap;
-			base.Update(el);
+            (label == "StartCap").If(() => ((DynamicConnector)el).StartCap = StartCap);
+            (label == "EndCap").If(() => ((DynamicConnector)el).EndCap = EndCap);
+			base.Update(el, label);
 		}
 	}
 }

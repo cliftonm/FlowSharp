@@ -29,13 +29,13 @@ namespace FlowSharpLib
             TextAlign = el.TextAlign;
 		}
 
-		public override void Update(GraphicElement el)
+		public override void Update(GraphicElement el, string label)
 		{
-			base.Update(el);
-			el.Text = Text;
-			el.TextFont = Font;
-			el.TextColor = TextColor;
-            el.TextAlign = TextAlign;
-		}
-	}
+            (label == "Text").If(() => el.Text = Text);
+            (label == "Font").If(() => el.TextFont = Font);
+            (label == "TextColor").If(() => el.TextColor = TextColor);
+            (label == "TextAlign").If(() => el.TextAlign = TextAlign);
+            base.Update(el, label);
+        }
+    }
 }

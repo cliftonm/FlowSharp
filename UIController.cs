@@ -4,6 +4,7 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System;
 using System.Windows.Forms;
 
 using FlowSharpLib;
@@ -15,6 +16,7 @@ namespace FlowSharp
 		protected CanvasController canvasController;
 		protected ElementProperties elementProperties;
 		protected PropertyGrid pgElement;
+        protected Action onFocus;
 
 		public UIController(PropertyGrid pgElement, CanvasController canvasController)
 		{
@@ -29,6 +31,7 @@ namespace FlowSharp
 		{
 			elementProperties = null;
 
+            // TODO: Get rid of this if statement by having an ElementDeselected event.
 			if (args.Element != null)
 			{
 				elementProperties = args.Element.CreateProperties();
@@ -40,6 +43,8 @@ namespace FlowSharp
 
 		protected void UpdateSelectedElement(object controller, ElementEventArgs args)
 		{
+            // TODO: For some reason this event was being fired for either a null element or elementProperties was null.
+            // It would be nice to figure out why this happened and correct the root problem so we can remove this if statement.
             if (args.Element != null && elementProperties != null)
             {
                 elementProperties.UpdateFrom(args.Element);
@@ -53,7 +58,7 @@ namespace FlowSharp
             {
                 canvasController.Redraw(sel, el =>
                 {
-                    elementProperties.Update(el);
+                    elementProperties.Update(el, e.ChangedItem.Label);
                     el.UpdateProperties();
                     el.UpdatePath();
                 });

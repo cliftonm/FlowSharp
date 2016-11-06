@@ -20,10 +20,10 @@ namespace PluginExample
             Filename = el.Filename;
         }
 
-        public override void Update(GraphicElement el)
+        public override void Update(GraphicElement el, string label)
         {
             ((ImageShape)el).Filename = Filename;
-            base.Update(el);
+            base.Update(el, label);
         }
     }
 }

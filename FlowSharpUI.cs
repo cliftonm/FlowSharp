@@ -296,7 +296,8 @@ namespace FlowSharp
 		{ 
 			canvasController = new CanvasController(canvas, elements);
             mouseController = new MouseController(canvasController);
-            mouseController.MouseClick += (sndr, args) => TerminateEditing();
+            // No longer needed, as editbox LostFocus event handles terminating itself now.
+            // mouseController.MouseClick += (sndr, args) => TerminateEditing();
             canvasController.ElementSelected += (snd, args) => UpdateMenu(args.Element != null);
 			toolboxController = new ToolboxController(toolboxCanvas, toolboxElements, canvasController);
             uiController = new UIController(pgElement, canvasController);

@@ -96,7 +96,18 @@ namespace FlowSharpLib
             });
 
             elementsToRemove.ForEach(el => selectedElements.Remove(el));
-            ElementSelected.Fire(this, new ElementEventArgs() { Element = null });
+
+            if (selectedElements.Count == 0)
+            {
+                ElementSelected.Fire(this, new ElementEventArgs() { Element = null });
+            }
+            else
+            {
+                // Select the first element.
+                // TODO: This needs to fire an event that can handle the group of selected elements,
+                // particularly for PropertyGrid handling.
+                ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElements[0] });
+            }
         }
 
         public override void SelectElement(GraphicElement el)

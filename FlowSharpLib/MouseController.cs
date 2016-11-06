@@ -121,6 +121,7 @@ namespace FlowSharpLib
 
         public virtual void InitializeBehavior()
         {
+            // Any mouse down fires the MouseClick event for external handling.
             router.Add(new MouseRouter()
             {
                 RouteName = RouteName.FireMouseClickEvent,

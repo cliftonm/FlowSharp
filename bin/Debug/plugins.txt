@@ -1,0 +1,1 @@
+..\..\Plugins\PluginExample\bin\Debug\PluginExample.dll

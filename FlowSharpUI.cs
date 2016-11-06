@@ -84,7 +84,9 @@ namespace FlowSharp
             InitializePlugins();
 			InitializeCanvas();
 			InitializeToolbox();
-			InitializeControllers();
+            InitializePluginsInToolbox();
+            UpdateToolboxPaths();
+            InitializeControllers();
             UpdateMenu(false);
         }
 
@@ -324,22 +326,22 @@ namespace FlowSharp
             mnuUngroup.Enabled = canvasController.SelectedElements.Any(e => e.GroupChildren.Any());
 		}
 
-		protected void InitializeToolbox()
-		{
-			toolboxCanvas = new ToolboxCanvas();
-			toolboxCanvas.Initialize(pnlToolbox);
-			int x = pnlToolbox.Width / 2 - 12;
-			toolboxElements.Add(new Box(toolboxCanvas) { DisplayRectangle = new Rectangle(x-50, 15, 25, 25) });
-			toolboxElements.Add(new Ellipse(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 15, 25, 25) });
-			toolboxElements.Add(new Diamond(toolboxCanvas) { DisplayRectangle = new Rectangle(x+50, 15, 25, 25) });
+        protected void InitializeToolbox()
+        {
+            toolboxCanvas = new ToolboxCanvas();
+            toolboxCanvas.Initialize(pnlToolbox);
+            int x = pnlToolbox.Width / 2 - 12;
+            toolboxElements.Add(new Box(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 15, 25, 25) });
+            toolboxElements.Add(new Ellipse(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 15, 25, 25) });
+            toolboxElements.Add(new Diamond(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 50, 15, 25, 25) });
 
-            toolboxElements.Add(new LeftTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x -60, 60, 25, 25) });
+            toolboxElements.Add(new LeftTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 60, 60, 25, 25) });
             toolboxElements.Add(new RightTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 20, 60, 25, 25) });
-            toolboxElements.Add(new UpTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x+20, 60, 25, 25) });
-            toolboxElements.Add(new DownTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x+60, 60, 25, 25) });
+            toolboxElements.Add(new UpTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 20, 60, 25, 25) });
+            toolboxElements.Add(new DownTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 60, 60, 25, 25) });
 
             toolboxElements.Add(new HorizontalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 130, 30, 20) });
-			toolboxElements.Add(new VerticalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 125, 20, 30) });
+            toolboxElements.Add(new VerticalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 125, 20, 30) });
             toolboxElements.Add(new DiagonalConnector(toolboxCanvas, new Point(x + 50, 125), new Point(x + 50 + 25, 125 + 25)));
 
             // toolboxElements.Add(new ToolboxDynamicConnectorLR(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 185, 25, 25)});
@@ -347,9 +349,13 @@ namespace FlowSharp
             toolboxElements.Add(new DynamicConnectorLD(toolboxCanvas, new Point(x, 175), new Point(x + 25, 175 + 25)));
             toolboxElements.Add(new DynamicConnectorUD(toolboxCanvas, new Point(x + 50, 175), new Point(x + 50 + 25, 175 + 25)));
 
-			toolboxElements.Add(new ToolboxText(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 230, 25, 25) });
+            toolboxElements.Add(new ToolboxText(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 230, 25, 25) });
             // toolboxElements.Add(new DiagonalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 25, 230, 25, 25) });
+        }
 
+        protected void InitializePluginsInToolbox()
+        {
+            int x = pnlToolbox.Width / 2 - 12;
             List<Type> pluginShapes = pluginManager.GetShapeTypes();
 
             // Plugin shapes
@@ -371,11 +377,14 @@ namespace FlowSharp
                     y += 40;
                 }
             }
-
-            toolboxElements.ForEach(el => el.UpdatePath());
 		}
 
-		protected void UpdateCaption()
+        protected void UpdateToolboxPaths()
+        {
+            toolboxElements.ForEach(el => el.UpdatePath());
+        }
+
+        protected void UpdateCaption()
 		{
 			Text = "FlowSharp" + (String.IsNullOrEmpty(filename) ? "" : " - ") + filename;
 		}

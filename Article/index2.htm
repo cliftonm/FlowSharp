@@ -12,8 +12,16 @@
 	<li><a href="FlowSharp.zip">Download FlowSharp.zip - 746.7 KB</a></li>
 </ul>
 
-<p><b><a href="#102316">Reason for this update: Grouping / Ungrouping of shapes has been 
-implemented.</a></b></p>
+<p><b><a href="#110616">Reason for this update:</a></b></p>
+<ul>
+	<li>Numerous bug fixes (see
+	<a href="https://github.com/cliftonm/FlowSharp/issues?q=is:issue+is:closed">
+	Closed Issues</a>)</li>
+	<li>Added plug-in shape capability</li>
+	<li>Added ImageShape as a plug-in example</li>
+	<li>Added diagonal connector</li>
+	<li>Text alignment<br></li>
+</ul>
 
 <p align="center"><img border="0" height="400" src="flowsharp2.png" width="754" /></p>
 
@@ -119,20 +127,20 @@ implemented.</a></b></p>
 	</ul>
 	</li>
 	<li><a href="#revisions">Revisions</a>
-	
-<ul>
-	<li><a href="#102316">10/23/16 - Grouping</a></li>
-	<li><a href="#101816">10/18/16 - Bug Fixes</a></li>
-	<li><a href="#101316">10/15/16</a>
 	<ul>
-		<li><a href="#debugging">Debugging</a></li>
-		<li><a href="#groupselect">Group Select</a></li>
-		<li><a href="#ux">Group Select User Experience and the Need for a <b>Mouse Router</b></a></li>
-		<li><a href="#issues1">Issues Encountered</a></li>
-		<li><a href="#cursors">Cursors</a></li>
-		<li><a href="#candp">Copy and Paste</a></li>
-	</ul></li>
-</ul>
+		<li><a href="#102316">10/23/16 - Grouping</a></li>
+		<li><a href="#101816">10/18/16 - Bug Fixes</a></li>
+		<li><a href="#101316">10/15/16</a>
+		<ul>
+			<li><a href="#debugging">Debugging</a></li>
+			<li><a href="#groupselect">Group Select</a></li>
+			<li><a href="#ux">Group Select User Experience and the Need for a <b>Mouse Router</b></a></li>
+			<li><a href="#issues1">Issues Encountered</a></li>
+			<li><a href="#cursors">Cursors</a></li>
+			<li><a href="#candp">Copy and Paste</a></li>
+		</ul>
+		</li>
+	</ul>
 
 	<ul>
 		<li><a href="#101016">10/10/16</a>
@@ -346,69 +354,9 @@ protected void Paste()
 
 <h3><a name="What'sNotImplemented15">What&#39;s Not Implemented</a></h3>
 
-<p>There&#39;s a variety useful things for the future:</p>
-
-<ul>
-	<li>Shape text location.
-	<ul>
-		<li>
-		<p align="left">Currently only centered in the shape.</p>
-		</li>
-		<li>
-		<p align="left">Boundaries can be easily exceeded.</p>
-		</li>
-		<li>
-		<p align="left">No justification.</p>
-		</li>
-		<li>
-		<p align="left">Single line only - no auto-wrap.</p>
-		</li>
-	</ul>
-	</li>
-	<li><s>Multiple element select.</s>
-	<ul>
-		<li><s>With click-drag selection rectangle.</s></li>
-		<li><s>Selectable with Ctrl or Shift - click</s></li>
-	</ul>
-	</li>
-	<li>Scrollbars for canvas - currently you drag the canvas to move it.</li>
-	<li>Zoom.</li>
-	<li>Shape rotation.</li>
-	<li><strike>Grouping / Ungrouping</strike></li>
-	<li>Custom defined connection points.
-	<ul>
-		<li>Including on connectors.</li>
-		<li>Adjust custom connection points intelligently when shape is resized.</li>
-	</ul>
-	</li>
-	<li>True dynamic connectors.</li>
-	<li>Other line caps besides an arrow.
-	<ul>
-		<li>Well, there&#39;s a diamond now too, but not worthy of removing this TODO.</li>
-	</ul>
-	</li>
-	<li>Ruler margins / page boundaries.</li>
-	<li>Snap shapes to centers and edges.</li>
-	<li>Printing (more or less easily implemented, actually)&nbsp; If you want to print, save the diagram as a PNG and use some other tool!</li>
-	<li><s>True drag-from-toolbox-onto-surface.</s></li>
-	<li><strike>Arrow cursors for grip dragging.</strike></li>
-	<li>Undo/redo.&nbsp; That&#39;ll be fun!</li>
-	<li>Better property UX - PropertyGrid&#39;s are ok for developers, they are awful for users.</li>
-</ul>
-
-<p>New things I&#39;m adding to the TODO list:</p>
-
-<ul>
-	<li>grouping / ungrouping shapes</li>
-	<li>combine shapes into a single &quot;drill-into&quot; shape</li>
-	<li>image shape</li>
-	<li>auto-fit / auto-size</li>
-	<li>gradient fills</li>
-	<li>opacity / transparency (beyond just &quot;transparent&quot; fill color)</li>
-</ul>
-
-<p>For the moment, I can live without these features!</p>
-
+<p>For the latest issues, feature requests, and help wanted, please visit the
+<a href="https://github.com/cliftonm/FlowSharp/issues?q=is:open+is:issue">Open 
+Issues</a>.</p>
 <h4><a name="Contribute16">Contribute!</a></h4>
 
 <p>Contributions are welcome, and if you want to contribute, please fork the GitHub repo <a href="https://github.com/cliftonm/FlowSharp">here</a> and submit pull requests.</p>
@@ -1847,58 +1795,189 @@ canvasController.SelectElement(el);</pre>
 
 <h3><a name="KnownBugs56">Known Bugs</a></h3>
 
-<p>Copying a group with an non-grouped shape that is connected to an inner 
-grouped shape results in double motion of the connector when the entire pasted 
-collection of shapes is moved.</p>
+<p>Copying a group with an non-grouped shape that is connected to an inner grouped shape results in double motion of the connector when the entire pasted collection of shapes is moved.</p>
+
 <p>And probably other things!</p>
 
 <h2><a name="revisions">Revisions</a></h2>
+<p><a name="110616">11/06/2016</a></p>
+<h3>Diagonal Connector</h3>
+<p><img border="0" src="img38.png" width="405" height="277"></p>
+<p>Diagonal connectors are now supported.&nbsp; The most interesting part of 
+this code is handling the question &quot;is the mouse near the diagonal connector?&quot;&nbsp; </p>
+<p>(DiagonalConnector.cs)</p>
+<pre>public override bool IsSelectable(Point p)
+{
+  bool ret = false;
+
+  // Determine if point is near line, rather than whether the point is inside the update rectangle.
+  // First qualify by the point being inside the update rectangle itself.
+  if (UpdateRectangle.Contains(p))
+  {
+    // Then check how close the point is.
+    int a = p.X - UpdateRectangle.X;
+    int b = p.Y - UpdateRectangle.Y;
+    int c = UpdateRectangle.Width;
+    int d = UpdateRectangle.Height;
+
+    int dist = (int)(Math.Abs(a * d - c * b) / Math.Sqrt(c * c + d * d));
+    ret = dist &lt;= BaseController.MIN_HEIGHT;
+  }
+
+  return ret;
+}</pre>
+<p>Here, once the mouse moves into the rectangle defined by the diagonal 
+connector, an additional test of how close the mouse is to the line is made to 
+qualify whether the connector can be selected.</p>
+<h3>Plug-In Support</h3>
+<p>As I want to extend the kinds of shapes (and their behaviors) from the core 
+set, a plug-in ability was definitely needed.&nbsp; This is demonstrated with 
+the ImageShape plug-in:</p>
+<p><img border="0" src="img39.png" width="489" height="407"></p>
+<p>Yes, you get stuck with a picture of my cat, Earl Grey, unless you change the 
+bitmap in the resource file.</p>
+<p>Plug-ins are implemented very &quot;cheaply&quot; at the moment.&nbsp; There is a silly 
+little dialog where you list, on separate lines, the assemblies that contain 
+your additional shapes:</p>
+<p><img border="0" src="img40.png" width="580" height="130"></p>
+<p>Each assembly in the list is inspected for classes that derive from 
+<code>GraphicElement</code>:</p>
+<p>(PluginManager.cs)</p>
+<pre>protected void RegisterPlugin(string plugin)
+{
+  try
+  {
+    Assembly assy = Assembly.LoadFrom(plugin);
+    pluginAssemblies.Add(assy);
+
+    assy.GetTypes().ForEach(t =&gt;
+    {
+      if (t.IsSubclassOf(typeof(GraphicElement)))
+      {
+        pluginShapes.Add(t);
+      }
+    });
+
+    pluginFiles.Add(plugin);
+  }
+  catch (Exception ex)
+  {
+    MessageBox.Show(plugin + &quot;\r\n&quot; + ex.Message, &quot;Plugin Load Error&quot;, MessageBoxButtons.OK, MessageBoxIcon.Error);
+  }
+}</pre>
+<p>Once located, plug-ins are added automatically to the toolbar:</p>
+<p>(FlowSharpUI.cs)</p>
+<pre>protected void InitializePluginsInToolbox()
+{
+  int x = pnlToolbox.Width / 2 - 12;
+  List&lt;Type&gt; pluginShapes = pluginManager.GetShapeTypes();
+
+  // Plugin shapes
+  int n = x - 60;
+  int y = 260;
+
+  foreach (Type t in pluginShapes)
+  {
+    GraphicElement pluginShape = Activator.CreateInstance(t, new object[] { toolboxCanvas }) as GraphicElement;
+    pluginShape.DisplayRectangle = new Rectangle(n, y, 25, 25);
+    toolboxElements.Add(pluginShape);
+
+    // Next toolbox shape position:
+    n += 40;
+
+    if (n &gt; x + 60)
+    {
+      n = x - 60;
+      y += 40;
+    }
+  }
+}</pre>
+<p>As you can see, the implementation is very basic right now -- I don't even 
+check if the number of plug-ins exceeds the height of the toolbox!</p>
+<p>Creating a shape plug-in is very simple:</p>
+<ol>
+	<li>Create a DLL project</li>
+	<li>Reference FlowSharpLib</li>
+	<li>Derive your shape from GraphicElement</li>
+	<li>Implement any overrides for drawing the shape and performing other 
+	actions, typically extra information that needs to be serialized / 
+	deserialized.</li>
+</ol>
+<h3>The ImageShape </h3>
+<p>The ImageShape used a plug-in example overrides drawing and serialization / 
+deserialization:</p>
+(ImageShape.cs)
+<pre>public override void Serialize(ElementPropertyBag epb, List&lt;GraphicElement&gt; elementsBeingSerialized)
+{
+  // TODO: Use JSON dictionary instead.
+  epb.ExtraData = Filename;
+  base.Serialize(epb, elementsBeingSerialized);
+}
+
+public override void Deserialize(ElementPropertyBag epb)
+{
+  // TODO: Use JSON dictionary instead.
+  Filename = epb.ExtraData;
+  base.Deserialize(epb);
+}
+
+public override void Draw(Graphics gr)
+{
+  if (image == null)
+  {
+    gr.FillRectangle(FillBrush, DisplayRectangle);
+  }
+  else
+  {
+    gr.DrawImage(image, DisplayRectangle, new Rectangle(0, 0, image.Width, image.Height), GraphicsUnit.Pixel);
+  }
+
+  gr.DrawRectangle(BorderPen, DisplayRectangle);
+  base.Draw(gr);
+}</pre>
+<p>At the moment, no attempt to maintain aspect ration is supported and probably 
+in the next update, I'll have moved this shape into the core library.</p>
 
 <p><a name="102316">10/23/2016</a></p>
-<p></p>
+
 <h3>Grouping</h3>
-<p><img border="0" src="img34.png" width="846" height="462"></p>
-<p>First off, as the above screenshot illustrates, the debug view now shows the 
-hierarchy of grouped shapes.&nbsp; You can also click on an element in the debug 
-view and the selected element is indicated on the surface (in this case, the 
-diamond with the blue rectangle around it.)</p>
-<p>Secondly, you'll notice that groups can be nested.&nbsp; I point this out 
-mainly because it was not as easy to implement as one would think, with regards 
-to moving a group in the z-order up and down.</p>
-<p>Implementing grouping touched on just about every aspect of the FlowSharpLib 
-code.&nbsp; These were some of the issues and areas of the code that had to be 
-touched:</p>
+
+<p><img border="0" height="462" src="img34.png" width="846" /></p>
+
+<p>First off, as the above screenshot illustrates, the debug view now shows the hierarchy of grouped shapes.&nbsp; You can also click on an element in the debug view and the selected element is indicated on the surface (in this case, the diamond with the blue rectangle around it.)</p>
+
+<p>Secondly, you&#39;ll notice that groups can be nested.&nbsp; I point this out mainly because it was not as easy to implement as one would think, with regards to moving a group in the z-order up and down.</p>
+
+<p>Implementing grouping touched on just about every aspect of the FlowSharpLib code.&nbsp; These were some of the issues and areas of the code that had to be touched:</p>
+
 <ul>
 	<li>When grouping, deselect grouped children</li>
 	<li>Grouped children should not be selectable</li>
-<li>Disable selecting a shape inside a group</li>
-	<li>After grouping, draw selection box around group. Child shapes should not 
-	be selected.</li>
+	<li>Disable selecting a shape inside a group</li>
+	<li>After grouping, draw selection box around group. Child shapes should not be selected.</li>
 	<li>Implement ungroup</li>
-<li>Show grouped children in debug view</li>
+	<li>Show grouped children in debug view</li>
 	<li>Serialize / deserialize groupbox with children</li>
 	<li>Disable group/ungroup menu if selected shape has no children</li>
 	<li>Changing z-order of groupbox.</li>
-	<li>When creating a groupbox, it should be inserted in the z-order right 
-	after the bottomost child being grouped.</li>
+	<li>When creating a groupbox, it should be inserted in the z-order right after the bottomost child being grouped.</li>
 	<li>Show grouped box in gray.</li>
-<li>Bug (fixed): Connector from outside of group to a grouped child does not 
-preserve connection to child when group moves.</li>
-<li>Bug (fixed): Create 2 boxes, connect them, group one of the boxes, then move 
-the group - a small trail of the connector remains</li>
-<li>Bug (fixed): Delete groupbox doesn't quite work.</li>
+	<li>Bug (fixed): Connector from outside of group to a grouped child does not preserve connection to child when group moves.</li>
+	<li>Bug (fixed): Create 2 boxes, connect them, group one of the boxes, then move the group - a small trail of the connector remains</li>
+	<li>Bug (fixed): Delete groupbox doesn&#39;t quite work.</li>
 	<li>Bug (fixed): Copy and paste of a groupbox faults.</li>
-	<li>Bug (fixed): group 2 shapes, add a third, click on &quot;Group&quot; main menu, 
-	then click on grouped shape. Null reference exception is thrown in mouse 
-	controller.</li>
-	<li>Bug (fixed): After grouping, move canvas, and grouped elements move 2x 
-	because they're in two lists now</li>
+	<li>Bug (fixed): group 2 shapes, add a third, click on &quot;Group&quot; main menu, then click on grouped shape. Null reference exception is thrown in mouse controller.</li>
+	<li>Bug (fixed): After grouping, move canvas, and grouped elements move 2x because they&#39;re in two lists now</li>
 </ul>
+
 <h4>The GroupBox Shape</h4>
-<p>At its simplest level, grouping shapes &quot;merely&quot; required creating a <code>GroupBox</code> 
-element, which is not selectable from the toolbar:</p>
+
+<p>At its simplest level, grouping shapes &quot;merely&quot; required creating a <code>GroupBox</code> element, which is not selectable from the toolbar:</p>
+
 <p>(GroupBox.cs)</p>
-<pre>public class GroupBox : Box
+
+<pre>
+public class GroupBox : Box
 {
   public GroupBox(Canvas canvas) : base(canvas)
   {
@@ -1907,7 +1986,7 @@ element, which is not selectable from the toolbar:</p>
 
   public override List&lt;ShapeAnchor&gt; GetAnchors()
   {
-    // GroupBox doesn't have anchors - it can't be resized.
+    // GroupBox doesn&#39;t have anchors - it can&#39;t be resized.
     return new List&lt;ShapeAnchor&gt;();
   }
 
@@ -1923,78 +2002,81 @@ element, which is not selectable from the toolbar:</p>
     });
   }
 }</pre>
+
 <p>Notice a few things:</p>
+
 <ol>
-	<li>The default fill color is changed to light grey which I like because it 
-	visually indicates a collection of grouped shapes.</li>
-	<li>The <code>GroupBox</code> cannot be resized -- sorry, no dynamic resizing of the 
-	shapes in the <code>GroupBox</code> (yet!)</li>
-	<li>The only thing the GroupBox needs to be responsible for is moving the 
-	shapes contained within it.</li>
+	<li>The default fill color is changed to light grey which I like because it visually indicates a collection of grouped shapes.</li>
+	<li>The <code>GroupBox</code> cannot be resized -- sorry, no dynamic resizing of the shapes in the <code>GroupBox</code> (yet!)</li>
+	<li>The only thing the GroupBox needs to be responsible for is moving the shapes contained within it.</li>
 </ol>
-<p>It should be noted that any shape can technically behave as a container for 
-other shapes because GroupChildren is actually a collection implemented for each 
-shape:</p>
+
+<p>It should be noted that any shape can technically behave as a container for other shapes because GroupChildren is actually a collection implemented for each shape:</p>
+
 <p>(GraphicElement.cs)</p>
-<pre>public class GraphicElement : IDisposable
+
+<pre>
+public class GraphicElement : IDisposable
 {
   ...
   public List&lt;GraphicElement&gt; GroupChildren = new List&lt;GraphicElement&gt;();
   public GraphicElement Parent { get; set; }
   ...</pre>
-<p>While this feature isn't implemented (you can't have a diamond-shaped group) 
-it does leave the implementation open to non-rectangular groups.</p>
+
+<p>While this feature isn&#39;t implemented (you can&#39;t have a diamond-shaped group) it does leave the implementation open to non-rectangular groups.</p>
+
 <h4>Time for a Major Design Decision</h4>
-<p>Grouping left me with a design decision.&nbsp; Before grouping was 
-implemented, all elements were implemented in a single collection, &quot;elements&quot;, 
-from which the z-order of shapes was implicitly determined by the order of the 
-shapes in the list:</p>
+
+<p>Grouping left me with a design decision.&nbsp; Before grouping was implemented, all elements were implemented in a single collection, &quot;elements&quot;, from which the z-order of shapes was implicitly determined by the order of the shapes in the list:</p>
+
 <p>(BaseController.cs)</p>
-<pre>public abstract class BaseController
+
+<pre>
+public abstract class BaseController
 {
   ...
   public ReadOnlyCollection&lt;GraphicElement&gt; Elements { get { return elements.AsReadOnly(); } }
   ...</pre>
+
 <p>So the question was:</p>
+
 <ol>
-	<li>Do I maintain a flat list of all shapes, whether they are grouped or 
-	not, or...</li>
+	<li>Do I maintain a flat list of all shapes, whether they are grouped or not, or...</li>
 	<li>Does the <code>GroupBox</code> maintain a list of its own grouped shapes?</li>
 </ol>
+
 <p>There are pros and cons to each implementation:</p>
+
 <ul>
-	<li>If a flat list is maintained:<ul>
-		<li>It allows ungrouped shapes to slide between grouped shapes in the 
-		z-order, which is a feature I've sometimes wanted in Visio</li>
-		<li>I don't have to touch the serializer/deserializer in any major way 
-		except to serialize the ID's of grouped shapes and fix up those ID's on 
-		deserialization.</li>
-		<li>I don't have to touch the connector &quot;snap&quot; behavior, as I don't need 
-		to drill into grouped shapes to see if a connector should snap to an 
-		inner shape.</li>
+	<li>If a flat list is maintained:
+	<ul>
+		<li>It allows ungrouped shapes to slide between grouped shapes in the z-order, which is a feature I&#39;ve sometimes wanted in Visio</li>
+		<li>I don&#39;t have to touch the serializer/deserializer in any major way except to serialize the ID&#39;s of grouped shapes and fix up those ID&#39;s on deserialization.</li>
+		<li>I don&#39;t have to touch the connector &quot;snap&quot; behavior, as I don&#39;t need to drill into grouped shapes to see if a connector should snap to an inner shape.</li>
 	</ul>
 	</li>
-	<li>If a hierarchical collection of shapes is implemented:<ul>
-		<li>Moving the groupbox in the z-order is trivial, I really don't have 
-		to touch the implementation there.</li>
-		<li>Serialization needs a significant refactoring because the collection 
-		of shapes is now hierarchical.</li>
+	<li>If a hierarchical collection of shapes is implemented:
+	<ul>
+		<li>Moving the groupbox in the z-order is trivial, I really don&#39;t have to touch the implementation there.</li>
+		<li>Serialization needs a significant refactoring because the collection of shapes is now hierarchical.</li>
 		<li>Connector &quot;snap&quot; behavior needs to drill into groups.</li>
-		<li>The ability to move a shape in-between the z-order of the grouped 
-		shapes is not possible.</li>
+		<li>The ability to move a shape in-between the z-order of the grouped shapes is not possible.</li>
 	</ul>
-</li>
+	</li>
 </ul>
-<p>I decided to stick with the flat list of shapes, which resulted in some 
-interesting implementation of how a grouped set of shapes (remember, this can 
-include nested shapes) is changed in the z-order.</p>
-<p>In the screenshot at the start of this section, while it looks hierarchical, 
-that is purely something the debug tree setup does -- it only looks that way, 
-you'll still see the child shapes as top-level items in the list.</p>
+
+<p>I decided to stick with the flat list of shapes, which resulted in some interesting implementation of how a grouped set of shapes (remember, this can include nested shapes) is changed in the z-order.</p>
+
+<p>In the screenshot at the start of this section, while it looks hierarchical, that is purely something the debug tree setup does -- it only looks that way, you&#39;ll still see the child shapes as top-level items in the list.</p>
+
 <h4>Creating a GroupBox</h4>
+
 <p>At the UI level, grouping shapes is straight forward:</p>
+
 <p>(MenuController.cs)</p>
-<pre>private void mnuGroup_Click(object sender, EventArgs e)
+
+<pre>
+private void mnuGroup_Click(object sender, EventArgs e)
 {
   if (canvasController.SelectedElements.Any())
   {
@@ -2003,10 +2085,13 @@ you'll still see the child shapes as top-level items in the list.</p>
     canvasController.SelectElement(groupBox);
  }
 }</pre>
-<p>Notice that the shapes to be grouped are deselected after they are grouped, 
-and the <code>GroupBox</code> is instead selected.</p>
+
+<p>Notice that the shapes to be grouped are deselected after they are grouped, and the <code>GroupBox</code> is instead selected.</p>
+
 <p>Internally, something important takes place:</p>
-<pre>public GroupBox GroupShapes(List&lt;GraphicElement&gt; shapesToGroup)
+
+<pre>
+public GroupBox GroupShapes(List&lt;GraphicElement&gt; shapesToGroup)
 {
   GroupBox groupBox = null;
 
@@ -2037,25 +2122,29 @@ protected Rectangle GetExtents(List&lt;GraphicElement&gt; elements)
 
   return r;
 }</pre>
-<p>Besides the <code>GroupBox</code> being created slightly larger than the 
-union of all the shapes, notice that the <code>GroupBox</code> is inserted 
-immediately after the lowest z-order shape to be grouped.</p>
+
+<p>Besides the <code>GroupBox</code> being created slightly larger than the union of all the shapes, notice that the <code>GroupBox</code> is inserted immediately after the lowest z-order shape to be grouped.</p>
+
 <h4>User Experience (UX)</h4>
-<p><img border="0" src="img35.png" width="251" height="168"></p>
+
+<p><img border="0" height="168" src="img35.png" width="251" /></p>
+
 <p>The user experience with grouped shapes requires some consideration:</p>
+
 <ol>
 	<li>Shapes within the group cannot be selected.</li>
-<li>Hovering over a grouped shape does not show anchors -- you cannot resize a 
-shape once it's been grouped.</li>
-<li>The user cannot move a grouped shape once it has been grouped.</li>
-<li>The groupbox itself cannot be resized (no anchors).</li>
-<li>The user should still be able to attach connectors to grouped shapes (as 
-shown in the screenshot above).</li>
+	<li>Hovering over a grouped shape does not show anchors -- you cannot resize a shape once it&#39;s been grouped.</li>
+	<li>The user cannot move a grouped shape once it has been grouped.</li>
+	<li>The groupbox itself cannot be resized (no anchors).</li>
+	<li>The user should still be able to attach connectors to grouped shapes (as shown in the screenshot above).</li>
 </ol>
-<p>This required some minor modifications of the mouse controller, for example, 
-preventing anchors from showing over grouped shapes:</p>
+
+<p>This required some minor modifications of the mouse controller, for example, preventing anchors from showing over grouped shapes:</p>
+
 <p>(MouseController.cs)</p>
-<pre>// Show anchors when hovering over a shape
+
+<pre>
+// Show anchors when hovering over a shape
 router.Add(new MouseRouter()
 {
   RouteName = RouteName.HoverOverShape,
@@ -2066,9 +2155,13 @@ router.Add(new MouseRouter()
   <b><font color="#FF0000">Controller.GetShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.</font>
 </b>  Action = () =&gt; ShowAnchors(),
 });</pre>
+
 <p>And preventing grouped shapes from being selected:</p>
+
 <p>(MouseController.cs)</p>
-<pre>protected void SelectShapesInSelectionBox()
+
+<pre>
+protected void SelectShapesInSelectionBox()
 {
   Controller.DeleteElement(SelectionBox);
   List&lt;GraphicElement&gt; selectedElements = new List&lt;GraphicElement&gt;();
@@ -2083,35 +2176,39 @@ router.Add(new MouseRouter()
   Controller.SelectElements(selectedElements);
   Controller.Canvas.Invalidate();
 }</pre>
+
 <h4>Z-Ordering</h4>
-<p>Z-ordering, particularly moving a grouped shape up/down the z-order, took a 
-lot of thinking as to how to do it.&nbsp; The complexity is a direct result of 
-the fact that I chose not to implement a hierarchical list of elements, as 
-discussed at the beginning.</p>
+
+<p>Z-ordering, particularly moving a grouped shape up/down the z-order, took a lot of thinking as to how to do it.&nbsp; The complexity is a direct result of the fact that I chose not to implement a hierarchical list of elements, as discussed at the beginning.</p>
+
 <p>Observe the z-order of these ungrouped shapes:</p>
-<p><img border="0" src="z1.png" width="224" height="154"><br>
+
+<p><img border="0" height="154" src="z1.png" width="224" /><br />
 &nbsp;</p>
-<p>Now notice how the shapes appear when I group the red and blue boxes (I've 
-moved things a bit too, because otherwise the change would not be obvious):</p>
-<p><img border="0" src="z2.png" width="213" height="148"></p>
-<p>Notice that the z-order is maintained!&nbsp; The green box is still between 
-the red and blue boxes.&nbsp; This is an <i>implementation choice</i>, and if 
-you've worked with Visio, you'll notice Visio handles it differently -- here's 
-what Visio looks like after grouping the red and blue boxes:</p>
-<p><img border="0" src="v1.png" width="225" height="211"></p>
-<p>Personally, I prefer my implementation.&nbsp; Furthermore, in the Visio 
-implementation, you cannot slide a shape in between the shapes in the group.&nbsp; 
-In my implementation, you can (here, the yellow shape is moved under the blue 
-box and above the yellow box):</p>
-<p><img border="0" src="z3.png" width="180" height="140"></p>
+
+<p>Now notice how the shapes appear when I group the red and blue boxes (I&#39;ve moved things a bit too, because otherwise the change would not be obvious):</p>
+
+<p><img border="0" height="148" src="z2.png" width="213" /></p>
+
+<p>Notice that the z-order is maintained!&nbsp; The green box is still between the red and blue boxes.&nbsp; This is an <i>implementation choice</i>, and if you&#39;ve worked with Visio, you&#39;ll notice Visio handles it differently -- here&#39;s what Visio looks like after grouping the red and blue boxes:</p>
+
+<p><img border="0" height="211" src="v1.png" width="225" /></p>
+
+<p>Personally, I prefer my implementation.&nbsp; Furthermore, in the Visio implementation, you cannot slide a shape in between the shapes in the group.&nbsp; In my implementation, you can (here, the yellow shape is moved under the blue box and above the yellow box):</p>
+
+<p><img border="0" height="140" src="z3.png" width="180" /></p>
+
 <p>Topmost and bottommost z-ordering is fairly straight forward:</p>
+
 <p>(BaseController.cs)</p>
-<pre>public void Topmost()
+
+<pre>
+public void Topmost()
 {
-  // TODO: Sub-optimal, as we're erasing all elements.
+  // TODO: Sub-optimal, as we&#39;re erasing all elements.
   EraseTopToBottom(elements);
 
-  // In their original z-order, but reversed because we're inserting at the top...
+  // In their original z-order, but reversed because we&#39;re inserting at the top...
   selectedElements.OrderByDescending(el =&gt; elements.IndexOf(el)).ForEach(el =&gt;
   {
     elements.Remove(el);
@@ -2126,10 +2223,10 @@ box and above the yellow box):</p>
 
 public void Bottommost()
 {
-  // TODO: Sub-optimal, as we're erasing all elements.
+  // TODO: Sub-optimal, as we&#39;re erasing all elements.
   EraseTopToBottom(elements);
 
-  // In their original z-oder, since we're appending to the bottom...
+  // In their original z-oder, since we&#39;re appending to the bottom...
   selectedElements.OrderBy(el =&gt; elements.IndexOf(el)).ForEach(el =&gt;
   {
     elements.Remove(el);
@@ -2141,19 +2238,22 @@ public void Bottommost()
   DrawBottomToTop(elements);
   UpdateScreen(elements);
 }</pre>
-<p>The &quot;trick&quot; here is how the selected elements are ordered.&nbsp; For a 
-topmost move, the selected shape order is reversed because, on an insert, we're 
-of course inserting <i>before</i> the specified index (0 for topmost.)</p>
-<p>Moving a group up or down is much more complicated!&nbsp; This code handles 
-both ungrouped and grouped shapes:</p>
-<pre>// The reason for the complexity here in MoveUp/MoveDown is because we're not actually &quot;containing&quot; child elements
+
+<p>The &quot;trick&quot; here is how the selected elements are ordered.&nbsp; For a topmost move, the selected shape order is reversed because, on an insert, we&#39;re of course inserting <i>before</i> the specified index (0 for topmost.)</p>
+
+<p>Moving a group up or down is much more complicated!&nbsp; This code handles both ungrouped and grouped shapes:</p>
+
+<p>(BaseController.cs)</p>
+
+<pre>
+// The reason for the complexity here in MoveUp/MoveDown is because we&#39;re not actually &quot;containing&quot; child elements
 // of a group box in a sub-list. All child elements are actually part of the master, flat, z-ordered list of shapes (elements.)
 // This means we have to go through some interested machinations to properly move nested groupboxes, however the interesting
 // side effect to this is that, a non-grouped shape, can slide between shapes in a groupbox!
 
 protected void MoveUp(IEnumerable&lt;GraphicElement&gt; els)
 {
-  // Since we're swapping up, order by z-order so we're always swapping with the element above,
+  // Since we&#39;re swapping up, order by z-order so we&#39;re always swapping with the element above,
   // thus preserving z-order of the selected shapes.
 
   // (from el in els select new { El = el, Idx = elements.IndexOf(el) }).OrderBy(item =&gt; item.Idx).ForEach(item =&gt;
@@ -2168,7 +2268,7 @@ protected void MoveUp(IEnumerable&lt;GraphicElement&gt; els)
     // 2. Delete all those elements, so we are working with root level shapes only.
     childElements.ForEach(child =&gt; elements.Remove(child));
 
-    // 3. Now see if there's something to do.
+    // 3. Now see if there&#39;s something to do.
     int idx = elements.IndexOf(el);
     int targetIdx = idx &gt; 0 ? idx - 1 : idx;
 
@@ -2184,7 +2284,7 @@ protected void MoveUp(IEnumerable&lt;GraphicElement&gt; els)
 
 protected void MoveDown(IEnumerable&lt;GraphicElement&gt; els)
 {
-  // Since we're swapping down, order by z-oder descending so we're always swapping with the element below,
+  // Since we&#39;re swapping down, order by z-oder descending so we&#39;re always swapping with the element below,
   // thus preserving z-order of the selected shapes.
   els.OrderByDescending(e =&gt; elements.IndexOf(e)).ForEach(el =&gt;
   {
@@ -2197,7 +2297,7 @@ protected void MoveDown(IEnumerable&lt;GraphicElement&gt; els)
     // 2. Delete all those elements, so we are working with root level shapes only.
     childElements.ForEach(child =&gt; elements.Remove(child));
 
-    // 3. Now see if there's something to do.
+    // 3. Now see if there&#39;s something to do.
     int idx = elements.IndexOf(el);
     int targetIdx = idx &lt; elements.Count - 1 ? idx + 1 : idx;
 
@@ -2216,22 +2316,21 @@ protected void RecursiveGetAllGroupedShapes(List&lt;GraphicElement&gt; children,
   acc.AddRange(children);
   children.ForEach(child =&gt; RecursiveGetAllGroupedShapes(child.GroupChildren, acc));
 }</pre>
-<p>The reason for this complexity should be apparent when we look at the z-order 
-of the shapes in the debug window, which we read from topmost to bottommost:</p>
-<p><img border="0" src="img36.png" width="714" height="372"></p>
-<p>At this point in time, the &quot;Ungrouped Rectangle&quot; is actually below the &quot;Inner 
-Group&quot; but above the &quot;Outer Group.&quot;&nbsp; And because the outer group contains 
-the inner group, the outer group is <i>last</i> 
-in the z-order (at least at this point.)&nbsp; When we move the outer group 
-(only the outer group can be selected at this point!) we also have to ensure 
-that any child groups are preserved.&nbsp; So here's what it looks like after we 
-move the group up:</p>
-<p><img border="0" src="img37.png" width="674" height="398"></p>
-<p>The entire collection of shapes, <i>including the sub-groups</i> has been 
-moved above the only other shape in this diagram, the &quot;Ungrouped Rectangle.&quot;</p>
-<p>Fun stuff!&nbsp; I'll leave it to the reader to explore the relatively minor 
-changes that were made for copy and paste and delete to work.</p>
-<p></p>
+
+<p>The reason for this complexity should be apparent when we look at the z-order of the shapes in the debug window, which we read from topmost to bottommost:</p>
+
+<p><img border="0" height="372" src="img36.png" width="714" /></p>
+
+<p>At this point in time, the &quot;Ungrouped Rectangle&quot; is actually below the &quot;Inner Group&quot; but above the &quot;Outer Group.&quot;&nbsp; And because the outer group contains the inner group, the outer group is <i>last</i> in the z-order (at least at this point.)&nbsp; When we move the outer group (only the outer group can be selected at this point!) we also have to ensure that any child groups are preserved.&nbsp; So here&#39;s what it looks like after we move the group up:</p>
+
+<p><img border="0" height="398" src="img37.png" width="674" /></p>
+
+<p>The entire collection of shapes, <i>including the sub-groups</i> has been moved above the only other shape in this diagram, the &quot;Ungrouped Rectangle.&quot;</p>
+
+<p>Fun stuff!&nbsp; I&#39;ll leave it to the reader to explore the relatively minor changes that were made for copy and paste and delete to work.</p>
+
+<p>&nbsp;</p>
+
 <p><a name="101816">10/18/2016</a></p>
 
 <p>After the 10/15 release, I discovered several bugs:</p>
@@ -2976,10 +3075,6 @@ public void OnMouseMove(object sender, MouseEventArgs args)
 <p>The license in the code itself has been changed to CPOL.</p>
 
 <p><a name="100516">10/5/2016</a> - Nothing exciting, I thought I had a download source link at the top of the article, just noticed it wasn&#39;t there. &nbsp;Added it.</p>
-
-<p>&nbsp;</p>
-
-<p>&nbsp;</p>
 
 
 </body>

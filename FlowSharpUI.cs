@@ -214,11 +214,11 @@ namespace FlowSharp
         {
             bool ret = false;
 
-            if ((keyData & Keys.Control) != Keys.Control)
+            if ((keyData & Keys.Control) != Keys.Control)               // any control + key is not valid
             {
-                Keys k2 = (keyData & ~(Keys.Control | Keys.Shift));
+                Keys k2 = (keyData & ~(Keys.Control | Keys.Shift | Keys.ShiftKey));
 
-                if (k2 < Keys.F1 || k2 > Keys.F12)
+                if ((k2 != Keys.None) && (k2 < Keys.F1 || k2 > Keys.F12) )
                 {
                     // Here we assume we have a viable character.
                     // TODO: Probably more logic is required here.

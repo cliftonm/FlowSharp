@@ -243,11 +243,6 @@ namespace FlowSharpLib
             canvas.Cursor = anchor == null ? Cursors.Arrow : anchor.Cursor;
         }
 
-        public override bool IsMultiSelect()
-        {
-            return !((Control.ModifierKeys & (Keys.Control | Keys.Shift)) == 0);
-        }
-
         protected void DetachFromAllShapes(GraphicElement el)
 		{
 			el.DisconnectShapeFromConnector(GripType.Start);

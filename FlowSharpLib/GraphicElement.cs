@@ -66,9 +66,14 @@ namespace FlowSharpLib
 		public Font TextFont { get; set; }
 		public Color TextColor { get; set; }
         public ContentAlignment TextAlign { get; set; }
-		// TODO: Text location - left, top, right, middle, bottom
+        // TODO: Text location - left, top, right, middle, bottom
 
-		protected bool HasCornerAnchors { get; set; }
+        public virtual bool IsSnapToBeIgnored()
+        {
+            return (Control.ModifierKeys & Keys.Control) == Keys.Control;
+        }
+
+        protected bool HasCornerAnchors { get; set; }
 		protected bool HasCenterAnchors { get; set; }
 		protected bool HasLeftRightAnchors { get; set; }
 		protected bool HasTopBottomAnchors { get; set; }

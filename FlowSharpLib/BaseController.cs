@@ -6,10 +6,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace FlowSharpLib
 {
@@ -68,7 +68,12 @@ namespace FlowSharpLib
         public virtual void SelectElement(GraphicElement el) { }
         public virtual void SetAnchorCursor(GraphicElement el) { }
         public virtual void DragSelectedElements(Point delta) { }
-        public virtual bool IsMultiSelect() { return false; }
+
+        public virtual bool IsMultiSelect()
+        {
+            return !((Control.ModifierKeys & (Keys.Control | Keys.Shift)) == 0);
+        }
+
         public virtual void DeselectCurrentSelectedElements() { }
         public virtual void DeselectGroupedElements() { }
         public virtual void DeselectElement(GraphicElement el) { }

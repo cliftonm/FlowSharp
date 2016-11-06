@@ -35,7 +35,7 @@ namespace PluginExample
             image = Resource1.DefaultImage;
         }
 
-        public override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!disposed && disposing)
             {

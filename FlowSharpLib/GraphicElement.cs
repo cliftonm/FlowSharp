@@ -128,7 +128,7 @@ namespace FlowSharpLib
 			GC.SuppressFinalize(this);
 		}
 
-		public virtual void Dispose(bool disposing)
+		protected virtual void Dispose(bool disposing)
 		{
 			if (!disposed)
 			{
@@ -145,6 +145,8 @@ namespace FlowSharpLib
 					anchorBrush.Dispose();
 					TextFont.Dispose();
                     connectionPointPen.Dispose();
+                    tagPen.Dispose();
+                    altTagPen.Dispose();
 				}
 			}
 		}

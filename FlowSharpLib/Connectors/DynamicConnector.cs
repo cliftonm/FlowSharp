@@ -34,7 +34,7 @@ namespace FlowSharpLib
 			HasLeftRightAnchors = false;
 		}
 
-		public override void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
             if (!disposed && disposing)
 			{
@@ -219,7 +219,7 @@ namespace FlowSharpLib
         }
 
 
-        protected virtual Rectangle RecalcDisplayRectangle()
+        protected Rectangle RecalcDisplayRectangle()
         {
             int x1 = startPoint.X.Min(endPoint.X);
             int y1 = startPoint.Y.Min(endPoint.Y);

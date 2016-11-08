@@ -5,6 +5,7 @@
 */
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using FlowSharpLib;
@@ -52,8 +53,8 @@ namespace FlowSharp
             }
 		}
 
-		protected void OnPropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-		{
+        protected void OnPropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
             canvasController.SelectedElements.ForEach(sel =>
             {
                 canvasController.Redraw(sel, el =>
@@ -63,6 +64,12 @@ namespace FlowSharp
                     el.UpdatePath();
                 });
             });
-		}
-	}
+
+            // Return focus to the canvas so that keyboard actions, like copy/paste, undo/redo, are intercepted
+            // TODO: Seems really kludgy.
+            Task.Delay(250).ContinueWith(t =>
+                pgElement.FindForm().BeginInvoke(() => canvasController.Canvas.Focus())
+            );
+        }
+    }
 }

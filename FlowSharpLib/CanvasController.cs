@@ -48,6 +48,7 @@ namespace FlowSharpLib
 
         public override void DragSelectedElements(Point delta)
         {
+            // If we're dragging only one shape, then we do a snap check.
             if (selectedElements.Count == 1)
             {
                 GraphicElement el = selectedElements[0];

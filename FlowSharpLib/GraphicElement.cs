@@ -62,7 +62,12 @@ namespace FlowSharpLib
 		public Pen BorderPen { get; set; }
         public SolidBrush FillBrush { get; set; }
 
-		public string Text { get; set; }
+        // Helpers for reflection undo/redo update
+        public Color BorderPenColor { get { return BorderPen.Color; } set { BorderPen.Color = value; } }
+        public int BorderPenWidth { get { return (int)BorderPen.Width; } set { BorderPen.Width = value; } }
+        public Color FillColor { get { return FillBrush.Color; } set { FillBrush.Color = value; } }
+
+        public string Text { get; set; }
 		public Font TextFont { get; set; }
 		public Color TextColor { get; set; }
         public ContentAlignment TextAlign { get; set; }

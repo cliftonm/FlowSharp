@@ -112,6 +112,8 @@ namespace FlowSharp
                         CanStartEditing(keyData))
                     {
                         EditText();
+                        // TODO: THIS IS SUCH A MESS!
+
                         // Will return upper case letter always, regardless of shift key....
                         string firstKey = ((char)keyData).ToString();
 
@@ -119,6 +121,23 @@ namespace FlowSharp
                         if ((keyData & Keys.Shift) != Keys.Shift)
                         {
                             firstKey = firstKey.ToLower();
+                        }
+                        else
+                        {
+                            // Handle shift of number keys on main keyboard
+                            if (char.IsDigit(firstKey[0]))
+                            {
+                                // TODO: Probably doesn't handle non-American keyboards!
+                                // Note index 0 is ")"
+                                string key = ")!@#$%^&*(";
+                                int n;
+
+                                if (int.TryParse(firstKey, out n))
+                                {
+                                    firstKey = key[n].ToString();
+                                }
+                            }
+                            // TODO: This is such a PITA.  Other symbols and shift combinations do not produce the correct first character!
                         }
 
                         editBox.Text = firstKey;

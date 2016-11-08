@@ -68,6 +68,8 @@ namespace FlowSharp
             mnuGroup.Click += mnuGroup_Click;
             mnuUngroup.Click += mnuUngroup_Click;
             mnuPlugins.Click += mnuPlugins_Click;
+            //mnuUndo.Click += mnuUndo_Click;
+            //mnuRedo.Click += mnuRedo_Click;
 
             keyActions[Keys.Control | Keys.C] = Copy;
 			keyActions[Keys.Control | Keys.V] = Paste;
@@ -110,7 +112,16 @@ namespace FlowSharp
                         CanStartEditing(keyData))
                     {
                         EditText();
-                        editBox.Text = ((char)keyData).ToString();
+                        // Will return upper case letter always, regardless of shift key....
+                        string firstKey = ((char)keyData).ToString();
+
+                        // ... so we have to fix it.  Sigh.
+                        if ((keyData & Keys.Shift) != Keys.Shift)
+                        {
+                            firstKey = firstKey.ToLower();
+                        }
+
+                        editBox.Text = firstKey;
                         editBox.SelectionStart = 1;
                         editBox.SelectionLength = 0;
                         ret = true;
@@ -258,6 +269,7 @@ namespace FlowSharp
             if (e.KeyChar == 27 || e.KeyChar == 13)
             {
                 TerminateEditing();
+                e.Handled = true;       // Suppress beep.
             }
         }
 

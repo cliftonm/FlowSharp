@@ -170,7 +170,7 @@ namespace FlowSharp
                 // the ID's for the child elements aren't found.
                 elementsToCopy.AddRange(canvasController.SelectedElements);
                 elementsToCopy.AddRange(IncludeChildren(elementsToCopy));
-                string copyBuffer = Persist.Serialize(elementsToCopy);
+                string copyBuffer = Persist.Serialize(elementsToCopy.OrderByDescending(el=>elements.IndexOf(el)));
                 Clipboard.SetData("FlowSharp", copyBuffer);
             }
             else

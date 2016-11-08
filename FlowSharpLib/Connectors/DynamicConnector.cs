@@ -64,7 +64,7 @@ namespace FlowSharpLib
             };
         }
 
-        public override void Serialize(ElementPropertyBag epb, List<GraphicElement> elementsBeingSerialized)
+        public override void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
 		{
 			base.Serialize(epb, elementsBeingSerialized);
 			epb.StartPoint = startPoint;

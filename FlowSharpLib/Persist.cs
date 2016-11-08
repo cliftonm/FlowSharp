@@ -125,7 +125,7 @@ namespace FlowSharpLib
         public static Func<AssemblyName, Assembly> AssemblyResolver { get; set; }
         public static Func<Assembly, string, bool, Type> TypeResolver { get; set; }
 
-		public static string Serialize(List<GraphicElement> elements)
+		public static string Serialize(IEnumerable<GraphicElement> elements)
 		{
 			List<ElementPropertyBag> sps = new List<ElementPropertyBag>();
 			elements.ForEach(el =>

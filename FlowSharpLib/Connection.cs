@@ -20,7 +20,7 @@ namespace FlowSharpLib
 		public ConnectionPoint ToConnectionPoint { get; set; }
 		public ConnectionPoint ElementConnectionPoint { get; set; }
 
-		public void Serialize(ElementPropertyBag epb, List<GraphicElement> elementsBeingSerialized)
+		public void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
 		{
             // If partial serialization (like copying a subset of shapes, don't include unselected connectors.)
             if (elementsBeingSerialized.Contains(ToElement))

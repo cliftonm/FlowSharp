@@ -194,7 +194,7 @@ namespace FlowSharpLib
 			return el;
 		}
 
-		public virtual void Serialize(ElementPropertyBag epb, List<GraphicElement> elementsBeingSerialized)
+		public virtual void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
 		{
 			epb.ElementName = GetType().AssemblyQualifiedName;
 			epb.Id = Id;

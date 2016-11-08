@@ -45,6 +45,7 @@ namespace FlowSharpLib
 		public List<GraphicElement> SelectedElements { get { return selectedElements; } }
 
 		protected Canvas canvas;
+        protected UndoStack undoStack;
 		protected List<GraphicElement> selectedElements;
 		protected ShapeAnchor selectedAnchor;
 		protected GraphicElement showingAnchorsElement;
@@ -59,25 +60,46 @@ namespace FlowSharpLib
 
 		public BaseController(Canvas canvas, List<GraphicElement> elements)
 		{
+            undoStack = new UndoStack();
 			this.canvas = canvas;
 			this.elements = elements;
             selectedElements = new List<GraphicElement>();
 		}
-
-		public virtual bool Snap(GripType type, ref Point delta) { return false; }
-        public virtual void SelectElement(GraphicElement el) { }
-        public virtual void SetAnchorCursor(GraphicElement el) { }
-        public virtual void DragSelectedElements(Point delta) { }
 
         public virtual bool IsMultiSelect()
         {
             return !((Control.ModifierKeys & (Keys.Control | Keys.Shift)) == 0);
         }
 
+        // TODO: These empty base class methods are indicative of bad design.
+        public virtual bool Snap(GripType type, ref Point delta) { return false; }
+        public virtual void SelectElement(GraphicElement el) { }
+        public virtual void SetAnchorCursor(GraphicElement el) { }
+        public virtual void DragSelectedElements(Point delta) { }
         public virtual void DeselectCurrentSelectedElements() { }
         public virtual void DeselectGroupedElements() { }
         public virtual void DeselectElement(GraphicElement el) { }
         public virtual void HideConnectionPoints() { }
+
+        public UndoStack UndoStack { get { return undoStack; } }
+
+        //public virtual void UndoRedo(Action doit, Action undoit)
+        //{
+        //    undoStack.Do(@do =>
+        //    {
+        //        if (@do) doit(); else undoit();
+        //    });
+        //}
+
+        public virtual void Undo()
+        {
+            undoStack.Undo();
+        }
+
+        public virtual void Redo()
+        {
+            undoStack.Redo();
+        }
 
         public bool IsRootShapeSelectable(Point p)
         {
@@ -239,7 +261,7 @@ namespace FlowSharpLib
             groupBox = new GroupBox(canvas);
             groupBox.GroupChildren.AddRange(shapesToGroup);
             Rectangle r = GetExtents(shapesToGroup);
-            r.Inflate(5, 5);
+            r.Inflate(20, 20);
             groupBox.DisplayRectangle = r;
             shapesToGroup.ForEach(s => s.Parent = groupBox);
             IEnumerable<GraphicElement> intersections = FindAllIntersections(groupBox);

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace FlowSharpLib
@@ -269,6 +270,51 @@ namespace FlowSharpLib
             {
                 action();
             }
+        }
+
+        public static T CastObject<T>(object obj)
+        {
+            return (T)Convert.ChangeType(obj, typeof(T));
+        }
+
+        // We're using reflect here so that the call:
+        // ex: this.ChangePropertyWithUndoRedo<string>(el, "Text", "Text"));
+        // can be as general purpose as possible, otherwise we have to write separate undo/redo handlers for each property, which is just gross.
+        public static void ChangePropertyWithUndoRedo<T>(this ElementProperties props, GraphicElement el, string elementPropertyName, string propertyName)
+        {
+            T save = default(T);
+            T redosave = default(T);
+            PropertyInfo piElement = el.GetType().GetProperty(elementPropertyName);
+            PropertyInfo piThis = props.GetType().GetProperty(propertyName);
+
+            el.Canvas.Controller.UndoStack.Do((@do, redo) =>
+            {
+                if (redo)
+                {
+                    piElement.SetValue(el, redosave);
+                    piThis.SetValue(props, redosave);
+                    el.Canvas.Controller.ElementSelected.Fire(props, new ElementEventArgs() { Element = el });
+                    el.UpdateProperties();
+                    el.UpdatePath();
+                    el.Canvas.Controller.Redraw(el);
+                }
+                else if (@do)
+                {
+                    save = CastObject<T>(piElement.GetValue(el));
+                    T newVal = CastObject<T>(piThis.GetValue(props));
+                    piElement.SetValue(el, newVal);
+                    redosave = newVal;
+                }
+                else
+                {
+                    piElement.SetValue(el, save);
+                    piThis.SetValue(props, save);
+                    el.Canvas.Controller.ElementSelected.Fire(props, new ElementEventArgs() { Element = el });
+                    el.UpdateProperties();
+                    el.UpdatePath();
+                    el.Canvas.Controller.Redraw(el);
+                }
+            });
         }
     }
 }

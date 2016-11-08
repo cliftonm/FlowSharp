@@ -23,9 +23,9 @@ namespace FlowSharpLib
 
 		public override void Update(GraphicElement el, string label)
 		{
-            (label == "StartCap").If(() => ((DynamicConnector)el).StartCap = StartCap);
-            (label == "EndCap").If(() => ((DynamicConnector)el).EndCap = EndCap);
-			base.Update(el, label);
+            (label == "StartCap").If(()=> this.ChangePropertyWithUndoRedo<AvailableLineCap>(el, "StartCap", "StartCap"));
+            (label == "EndCap").If(() => this.ChangePropertyWithUndoRedo<AvailableLineCap>(el, "EndCap", "EndCap"));
+            base.Update(el, label);
 		}
 	}
 }

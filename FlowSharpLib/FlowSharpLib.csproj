@@ -82,6 +82,7 @@
     <Compile Include="ToolboxText.cs" />
     <Compile Include="Shapes\UpTriangle.cs" />
     <Compile Include="Shapes\VerticalLine.cs" />
+    <Compile Include="UndoRedo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

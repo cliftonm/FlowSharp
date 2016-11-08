@@ -178,11 +178,20 @@ namespace FlowSharp
             canvasController.SelectedElements.Clear();
         }
 
-
         private void mnuPlugins_Click(object sender, EventArgs e)
         {
             new DlgPlugins().ShowDialog();
             pluginManager.UpdatePlugins();
+        }
+
+        private void mnuUndo_Click(object sender, EventArgs e)
+        {
+            Undo();
+        }
+
+        private void mnuRedo_Click(object sender, EventArgs e)
+        {
+            Redo();
         }
     }
 }

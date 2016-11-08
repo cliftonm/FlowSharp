@@ -68,12 +68,14 @@ namespace FlowSharp
             mnuGroup.Click += mnuGroup_Click;
             mnuUngroup.Click += mnuUngroup_Click;
             mnuPlugins.Click += mnuPlugins_Click;
-            //mnuUndo.Click += mnuUndo_Click;
-            //mnuRedo.Click += mnuRedo_Click;
+            mnuUndo.Click += mnuUndo_Click;
+            mnuRedo.Click += mnuRedo_Click;
 
             keyActions[Keys.Control | Keys.C] = Copy;
 			keyActions[Keys.Control | Keys.V] = Paste;
-			keyActions[Keys.Delete] = Delete;
+            keyActions[Keys.Control | Keys.Z] = Undo;
+            keyActions[Keys.Control | Keys.Y] = Redo;
+            keyActions[Keys.Delete] = Delete;
             keyActions[Keys.F2] = EditText;
             keyActions[Keys.Up] = () => canvasController.DragSelectedElements(new Point(0, -1));
             keyActions[Keys.Down] = () => canvasController.DragSelectedElements(new Point(0, 1));
@@ -244,6 +246,16 @@ namespace FlowSharp
             canvasController.SelectedElements.ForEach(el => mouseController.ShapeDeleted(el));
 			canvasController.DeleteSelectedElements();
 		}
+
+        protected void Undo()
+        {
+            canvasController.Undo();
+        }
+
+        protected void Redo()
+        {
+            canvasController.Redo();
+        }
 
         protected bool CanStartEditing(Keys keyData)
         {

@@ -18,11 +18,13 @@ namespace FlowSharpLib
         public MouseController.MouseEvent MouseEvent { get; }
         public Point MousePosition { get; }
         public MouseButtons Buttons { get; }
+        public MouseEventArgs MouseEventArgs { get; }
 
-        public MouseAction(MouseController.MouseEvent mouseEvent, Point mousePosition)
+        public MouseAction(MouseController.MouseEvent mouseEvent, MouseEventArgs args)
         {
             MouseEvent = mouseEvent;
-            MousePosition = mousePosition;
+            MouseEventArgs = args;
+            MousePosition = args.Location;
             // Buttons = buttons;
         }
     }
@@ -32,14 +34,14 @@ namespace FlowSharpLib
         public MouseController.RouteName RouteName { get; set; }
         public MouseController.MouseEvent MouseEvent { get; set; }
         public Func<bool> Condition { get; set; }
-        public Action Action { get; set; }
+        public Action<MouseEventArgs> Action { get; set; }
         public Action Else { get; set; }
         public Action Debug { get; set; }
     }
 
     public class MouseController
     {
-        public event EventHandler<EventArgs> MouseClick;
+        public event EventHandler<MouseEventArgs> MouseClick;
 
         // State information:
         public Point LastMousePosition { get; set; }
@@ -104,9 +106,9 @@ namespace FlowSharpLib
 
         public void HookMouseEvents()
         {
-            Controller.Canvas.MouseDown += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseDown, args.Location));
-            Controller.Canvas.MouseUp += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseUp, args.Location));
-            Controller.Canvas.MouseMove += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseMove, args.Location));
+            Controller.Canvas.MouseDown += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseDown, args));
+            Controller.Canvas.MouseUp += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseUp, args));
+            Controller.Canvas.MouseMove += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseMove, args));
         }
 
         public void ShapeDeleted(GraphicElement el)
@@ -127,10 +129,10 @@ namespace FlowSharpLib
                 RouteName = RouteName.FireMouseClickEvent,
                 MouseEvent = MouseEvent.MouseDown,
                 Condition = () => true,
-                Action = () =>
+                Action = (mouseEventArgs) =>
                 {
                     // So Ctrl+V paste works, as keystroke is intercepted only when canvas panel has focus.
-                    MouseClick.Fire(this, EventArgs.Empty);
+                    MouseClick.Fire(this, mouseEventArgs);
                 }
             });
 
@@ -139,7 +141,7 @@ namespace FlowSharpLib
                 RouteName = RouteName.CanvasFocus,
                 MouseEvent = MouseEvent.MouseDown,
                 Condition = () => true,
-                Action = () =>
+                Action = (_) =>
                 {
                     // So Ctrl+V paste works, as keystroke is intercepted only when canvas panel has focus.
                     Controller.Canvas.Focus();
@@ -154,7 +156,7 @@ namespace FlowSharpLib
                 RouteName = RouteName.StartDragSurface,
                 MouseEvent = MouseEvent.MouseDown,
                 Condition = () => !Controller.IsRootShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Left,
-                Action = () =>
+                Action = (_) =>
                 {
                     DraggingSurface = true;
                     DraggingSurfaceOccurred = false;
@@ -167,7 +169,7 @@ namespace FlowSharpLib
                 RouteName = RouteName.EndDragSurfaceWithDeselect,
                 MouseEvent = MouseEvent.MouseUp,
                 Condition = () => DraggingSurface && !DraggingSurfaceOccurred,
-                Action = () =>
+                Action = (_) =>
                 {
                     Controller.DeselectCurrentSelectedElements();
                     DraggingSurface = false;
@@ -181,7 +183,7 @@ namespace FlowSharpLib
                 RouteName = RouteName.EndDragSurface,
                 MouseEvent = MouseEvent.MouseUp,
                 Condition = () => DraggingSurface && DraggingSurfaceOccurred,
-                Action = () =>
+                Action = (_) =>
                 {
                     DraggingSurface = false;
                     DraggingSurfaceOccurred = false;
@@ -195,7 +197,7 @@ namespace FlowSharpLib
                 RouteName = RouteName.DragSurface,
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => DraggingSurface,
-                Action = () =>
+                Action = (_) =>
                 {
                     DraggingSurfaceOccurred = true;
                     DragCanvas();
@@ -213,7 +215,7 @@ namespace FlowSharpLib
                     CurrentButtons == MouseButtons.Left &&
                     Controller.GetRootShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null &&
                     !Controller.IsChildShapeSelectable(CurrentMousePosition),       // can't drag a grouped shape
-                Action = () =>
+                Action = (_) =>
                 {
                     Controller.DeselectGroupedElements();
                     DraggingShapes = true;
@@ -228,7 +230,7 @@ namespace FlowSharpLib
                 Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
                     CurrentButtons == MouseButtons.Left &&
                     Controller.GetRootShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) != null,
-                Action = () =>
+                Action = (_) =>
                 {
                     DraggingAnchor = true;
                     SelectedAnchor = HoverShape.GetAnchors().First(a => a.Near(CurrentMousePosition));
@@ -241,7 +243,7 @@ namespace FlowSharpLib
                 RouteName = RouteName.EndShapeDrag,
                 MouseEvent = MouseEvent.MouseUp,
                 Condition = () => DraggingShapes || DraggingAnchor,
-                Action = () =>
+                Action = (_) =>
                 {
                     Controller.HideConnectionPoints();
                     DraggingShapes = false;
@@ -260,7 +262,7 @@ namespace FlowSharpLib
                 Condition = () => DraggingShapes && 
                     HoverShape != null && 
                     HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null,
-                Action = () =>
+                Action = (_) =>
                 {
                     DragShapes();
                     DraggingOccurred = true;
@@ -274,7 +276,7 @@ namespace FlowSharpLib
                 RouteName = RouteName.DragAnchor,
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => HoverShape != null && DraggingAnchor,
-                Action = () =>
+                Action = (_) =>
                 {
                     DragAnchor();
                 },
@@ -291,7 +293,7 @@ namespace FlowSharpLib
                     CurrentButtons == MouseButtons.None &&
                     Controller.IsRootShapeSelectable(CurrentMousePosition) &&
                     Controller.GetRootShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
-                Action = () => ShowAnchors(),
+                Action = (_) => ShowAnchors(),
             });
 
             // Change anchors when hover shape changes
@@ -304,7 +306,7 @@ namespace FlowSharpLib
                     Controller.IsRootShapeSelectable(CurrentMousePosition) &&
                     HoverShape != Controller.GetRootShapeAt(CurrentMousePosition) &&
                     Controller.GetRootShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
-                Action = () => ChangeAnchors(),
+                Action = (_) => ChangeAnchors(),
             });
 
             // Hide anchors when not hovering over a shape
@@ -315,7 +317,7 @@ namespace FlowSharpLib
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape != null &&
                     CurrentButtons == MouseButtons.None &&
                     !Controller.IsRootShapeSelectable(CurrentMousePosition),
-                Action = () => HideAnchors(),
+                Action = (_) => HideAnchors(),
             });
 
             // Show cursor when hovering over an anchor
@@ -325,7 +327,7 @@ namespace FlowSharpLib
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && !DraggingAnchor && HoverShape != null &&
                     HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) != null,
-                Action = () => SetAnchorCursor(),
+                Action = (_) => SetAnchorCursor(),
             });
 
             // Clear cursor when hovering over an anchor
@@ -335,7 +337,7 @@ namespace FlowSharpLib
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape != null &&
                     HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null,
-                Action = () => ClearAnchorCursor(),
+                Action = (_) => ClearAnchorCursor(),
             });
 
             // SHAPE SELECTION
@@ -349,7 +351,7 @@ namespace FlowSharpLib
                     !Controller.IsChildShapeSelectable(CurrentMousePosition) &&
                     !Controller.IsMultiSelect() &&
                     !Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)),
-                Action = () => SelectSingleRootShape()
+                Action = (_) => SelectSingleRootShape()
             });
 
             // Select a single grouped shape:
@@ -360,7 +362,7 @@ namespace FlowSharpLib
                 Condition = () => Controller.IsChildShapeSelectable(CurrentMousePosition) &&
                     !Controller.IsMultiSelect() &&
                     !Controller.SelectedElements.Contains(Controller.GetChildShapeAt(CurrentMousePosition)),
-                Action = () => SelectSingleChildShape()
+                Action = (_) => SelectSingleChildShape()
             });
 
             // Select a single shape
@@ -372,7 +374,7 @@ namespace FlowSharpLib
                     !Controller.IsChildShapeSelectable(CurrentMousePosition) &&     // Don't deselect grouped shape on mouse up (as in, don't select groupbox)
                     !Controller.IsMultiSelect() &&
                     !DraggingOccurred && !DraggingSelectionBox,
-                Action = () => SelectSingleRootShape()
+                Action = (_) => SelectSingleRootShape()
             });
 
             // Add another shape to selection list
@@ -383,7 +385,7 @@ namespace FlowSharpLib
                 Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
                     Controller.IsMultiSelect() && !DraggingSelectionBox &&
                     !Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)),
-                Action = () => AddShape(),
+                Action = (_) => AddShape(),
             });
 
             // Remove shape from selection list
@@ -397,7 +399,7 @@ namespace FlowSharpLib
                     Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)) &&
                     !justAddedShape.Contains(Controller.GetRootShapeAt(CurrentMousePosition)) &&
                     !DraggingOccurred,
-                Action = () => RemoveShape(),
+                Action = (_) => RemoveShape(),
                 Else = () =>
                 {
                     justAddedShape.Clear();
@@ -422,7 +424,7 @@ namespace FlowSharpLib
                 RouteName = RouteName.StartDragSelectionBox,
                 MouseEvent = MouseEvent.MouseDown,
                 Condition = () => !Controller.IsRootShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Right,
-                Action = () =>
+                Action = (_) =>
                 {
                     DraggingSelectionBox = true;
                     StartSelectionPosition = CurrentMousePosition;
@@ -436,7 +438,7 @@ namespace FlowSharpLib
                 RouteName = RouteName.EndDragSelectionBox,
                 MouseEvent = MouseEvent.MouseUp,
                 Condition = () => DraggingSelectionBox,
-                Action = () =>
+                Action = (_) =>
                 {
                     DraggingSelectionBox = false;
                     SelectShapesInSelectionBox();
@@ -449,7 +451,7 @@ namespace FlowSharpLib
                 RouteName = RouteName.DragSelectionBox,
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => DraggingSelectionBox,
-                Action = () => DragSelectionBox(),
+                Action = (_) => DragSelectionBox(),
             });
         }
 
@@ -474,7 +476,7 @@ namespace FlowSharpLib
                 if (r.Condition())
                 {
                     Trace.WriteLine("Route:" + r.RouteName.ToString());
-                    r.Action();
+                    r.Action(action.MouseEventArgs);
                 }
                 else
                 {

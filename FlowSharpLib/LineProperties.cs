@@ -15,7 +15,7 @@ namespace FlowSharpLib
 		[Category("Endcaps")]
 		public AvailableLineCap EndCap { get; set; }
 
-		public LineProperties(Line el) : base((GraphicElement)el)
+		public LineProperties(Line el) : base(el)
 		{
 			StartCap = el.StartCap;
 			EndCap = el.EndCap;
@@ -23,8 +23,8 @@ namespace FlowSharpLib
 
 		public override void Update(GraphicElement el, string label)
 		{
-			((Line)el).StartCap = StartCap;
-			((Line)el).EndCap = EndCap;
+            (label == "StartCap").If(() => this.ChangePropertyWithUndoRedo<AvailableLineCap>(el, "StartCap", "StartCap"));
+            (label == "EndCap").If(() => this.ChangePropertyWithUndoRedo<AvailableLineCap>(el, "EndCap", "EndCap"));
             base.Update(el, label);
         }
     }

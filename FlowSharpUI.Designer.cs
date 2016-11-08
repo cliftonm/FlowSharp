@@ -60,6 +60,9 @@
             this.groupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuGroup = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuUngroup = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuUndo = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuRedo = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlProperties.SuspendLayout();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -150,63 +153,63 @@
             // mnuNew
             // 
             this.mnuNew.Name = "mnuNew";
-            this.mnuNew.Size = new System.Drawing.Size(165, 24);
+            this.mnuNew.Size = new System.Drawing.Size(125, 24);
             this.mnuNew.Text = "&New";
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(162, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(122, 6);
             // 
             // mnuOpen
             // 
             this.mnuOpen.Name = "mnuOpen";
-            this.mnuOpen.Size = new System.Drawing.Size(165, 24);
+            this.mnuOpen.Size = new System.Drawing.Size(125, 24);
             this.mnuOpen.Text = "&Open...";
             // 
             // mnuImport
             // 
             this.mnuImport.Name = "mnuImport";
-            this.mnuImport.Size = new System.Drawing.Size(165, 24);
+            this.mnuImport.Size = new System.Drawing.Size(125, 24);
             this.mnuImport.Text = "&Import...";
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(162, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(122, 6);
             // 
             // mnuSave
             // 
             this.mnuSave.Name = "mnuSave";
-            this.mnuSave.Size = new System.Drawing.Size(165, 24);
+            this.mnuSave.Size = new System.Drawing.Size(125, 24);
             this.mnuSave.Text = "&Save";
             // 
             // mnuSaveAs
             // 
             this.mnuSaveAs.Name = "mnuSaveAs";
-            this.mnuSaveAs.Size = new System.Drawing.Size(165, 24);
+            this.mnuSaveAs.Size = new System.Drawing.Size(125, 24);
             this.mnuSaveAs.Text = "Save &as";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(162, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(122, 6);
             // 
             // mnuPlugins
             // 
             this.mnuPlugins.Name = "mnuPlugins";
-            this.mnuPlugins.Size = new System.Drawing.Size(165, 24);
+            this.mnuPlugins.Size = new System.Drawing.Size(125, 24);
             this.mnuPlugins.Text = "&Plugins...";
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(162, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(122, 6);
             // 
             // mnuExit
             // 
             this.mnuExit.Name = "mnuExit";
-            this.mnuExit.Size = new System.Drawing.Size(165, 24);
+            this.mnuExit.Size = new System.Drawing.Size(125, 24);
             this.mnuExit.Text = "E&xit";
             // 
             // editToolStripMenuItem
@@ -214,7 +217,10 @@
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuCopy,
             this.mnuPaste,
-            this.mnuDelete});
+            this.mnuDelete,
+            this.toolStripMenuItem5,
+            this.mnuUndo,
+            this.mnuRedo});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 21);
             this.editToolStripMenuItem.Text = "&Edit";
@@ -222,19 +228,19 @@
             // mnuCopy
             // 
             this.mnuCopy.Name = "mnuCopy";
-            this.mnuCopy.Size = new System.Drawing.Size(110, 24);
+            this.mnuCopy.Size = new System.Drawing.Size(165, 24);
             this.mnuCopy.Text = "&Copy";
             // 
             // mnuPaste
             // 
             this.mnuPaste.Name = "mnuPaste";
-            this.mnuPaste.Size = new System.Drawing.Size(110, 24);
+            this.mnuPaste.Size = new System.Drawing.Size(165, 24);
             this.mnuPaste.Text = "&Paste";
             // 
             // mnuDelete
             // 
             this.mnuDelete.Name = "mnuDelete";
-            this.mnuDelete.Size = new System.Drawing.Size(110, 24);
+            this.mnuDelete.Size = new System.Drawing.Size(165, 24);
             this.mnuDelete.Text = "&Delete";
             // 
             // viewToolStripMenuItem
@@ -308,6 +314,23 @@
             this.mnuUngroup.Size = new System.Drawing.Size(124, 24);
             this.mnuUngroup.Text = "&Ungroup";
             // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(162, 6);
+            // 
+            // mnuUndo
+            // 
+            this.mnuUndo.Name = "mnuUndo";
+            this.mnuUndo.Size = new System.Drawing.Size(165, 24);
+            this.mnuUndo.Text = "&Undo";
+            // 
+            // mnuRedo
+            // 
+            this.mnuRedo.Name = "mnuRedo";
+            this.mnuRedo.Size = new System.Drawing.Size(165, 24);
+            this.mnuRedo.Text = "&Redo";
+            // 
             // FlowSharpUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -359,6 +382,9 @@
         private System.Windows.Forms.ToolStripMenuItem mnuUngroup;
         private System.Windows.Forms.ToolStripMenuItem mnuPlugins;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem mnuUndo;
+        private System.Windows.Forms.ToolStripMenuItem mnuRedo;
     }
 }
 

@@ -132,6 +132,16 @@ namespace FlowSharpLib
 			return new Point(r.Left + r.Width / 2, r.Bottom);
 		}
 
+        /// <summary>
+        /// Return a new rectangle whose position is adjusted by p.
+        /// </summary>
+        public static Rectangle Add(this Rectangle r, Point p)
+        {
+            Rectangle ret = new Rectangle(r.X + p.X, r.Y + p.Y, r.Width, r.Height);
+
+            return ret;
+        }
+
 		public static Rectangle Move(this Rectangle r, Point p)
 		{
 			r.Offset(p);
@@ -315,6 +325,33 @@ namespace FlowSharpLib
                     el.Canvas.Controller.Redraw(el);
                 }
             });
+        }
+
+        /// <summary>
+        /// Graphic element property changes that require an erase, update, and redraw on an undo/redo.
+        /// </summary>
+        public static void ChangePropertyWithUndoRedo<T>(this GraphicElement el, string elementPropertyName, T newVal, bool finishGroup = true)
+        {
+            T save = default(T);
+            T redosave = default(T);
+            PropertyInfo piElement = el.GetType().GetProperty(elementPropertyName);
+
+            el.Canvas.Controller.UndoStack.Do((@do, redo) =>
+            {
+                if (redo)
+                {
+                    el.Canvas.Controller.Redraw(el, _ => piElement.SetValue(el, redosave));
+                }
+                else if (@do)
+                {
+                    save = CastObject<T>(piElement.GetValue(el));
+                    redosave = newVal;
+                }
+                else
+                {
+                    el.Canvas.Controller.Redraw(el, _ => piElement.SetValue(el, save));
+                }
+            }, finishGroup);
         }
     }
 }

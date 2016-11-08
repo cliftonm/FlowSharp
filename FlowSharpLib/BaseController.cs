@@ -248,6 +248,7 @@ namespace FlowSharpLib
 			int dx = delta.X.Abs();
 			int dy = delta.Y.Abs();
             var els = EraseIntersectionsTopToBottom(el, dx, dy);
+            el.ChangePropertyWithUndoRedo("DisplayRectangle", newRect, false);
 			el.DisplayRectangle = newRect;
 			el.UpdatePath();
 			DrawBottomToTop(els, dx, dy);
@@ -345,6 +346,7 @@ namespace FlowSharpLib
 
             connectors.ForEach(c =>
             {
+                c.ChangePropertyWithUndoRedo("DisplayRectangle", c.DisplayRectangle.Add(delta), false);
                 c.Move(delta);
                 c.UpdatePath();
             });
@@ -354,6 +356,7 @@ namespace FlowSharpLib
                 // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
                 if (!el.IsConnector)
                 {
+                    el.ChangePropertyWithUndoRedo("DisplayRectangle", el.DisplayRectangle.Add(delta), false);
                     el.Move(delta);
                     el.UpdatePath();
                 }
@@ -370,7 +373,8 @@ namespace FlowSharpLib
                 int dx = delta.X.Abs();
                 int dy = delta.Y.Abs();
                 var els = EraseIntersectionsTopToBottom(el, dx, dy);
-				el.Move(delta);
+                el.ChangePropertyWithUndoRedo("DisplayRectangle", el.DisplayRectangle.Add(delta), false);
+                el.Move(delta);
 				el.UpdatePath();
 				DrawBottomToTop(els, dx, dy);
 				UpdateScreen(els, dx, dy);
@@ -378,7 +382,8 @@ namespace FlowSharpLib
 			else
 			{
 				el.CancelBackground();
-				el.Move(delta);
+                el.ChangePropertyWithUndoRedo("DisplayRectangle", el.DisplayRectangle.Add(delta), false);
+                el.Move(delta);
 				// TODO: Display element if moved back on screen at this point?
 			}
 		}
@@ -392,11 +397,13 @@ namespace FlowSharpLib
             {
                 int dx = delta.X.Abs();
                 int dy = delta.Y.Abs();
+                el.ChangePropertyWithUndoRedo("DisplayRectangle", el.DisplayRectangle.Add(delta), false);
                 el.Move(delta);
                 el.UpdatePath();
             }
             else
             {
+                el.ChangePropertyWithUndoRedo("DisplayRectangle", el.DisplayRectangle.Add(delta), false);
                 el.Move(delta);
             }
         }

@@ -39,7 +39,7 @@ namespace FlowSharp
         protected TextBox editBox;
         protected GraphicElement shapeBeingEdited;
 
-		public FlowSharpUI()
+        public FlowSharpUI()
         {
             InitializeComponent();
             traceListener = new TraceListener();
@@ -58,13 +58,13 @@ namespace FlowSharp
             mnuSave.Click += mnuSave_Click;
             mnuSaveAs.Click += mnuSaveAs_Click;
             mnuExit.Click += mnuExit_Click;
-			mnuCopy.Click += mnuCopy_Click;
-			mnuPaste.Click += mnuPaste_Click;
-			mnuDelete.Click += mnuDelete_Click;
-			mnuTopmost.Click += mnuTopmost_Click;
-			mnuBottommost.Click += mnuBottommost_Click;
-			mnuMoveUp.Click += mnuMoveUp_Click;
-			mnuMoveDown.Click += mnuMoveDown_Click;
+            mnuCopy.Click += mnuCopy_Click;
+            mnuPaste.Click += mnuPaste_Click;
+            mnuDelete.Click += mnuDelete_Click;
+            mnuTopmost.Click += mnuTopmost_Click;
+            mnuBottommost.Click += mnuBottommost_Click;
+            mnuMoveUp.Click += mnuMoveUp_Click;
+            mnuMoveDown.Click += mnuMoveDown_Click;
             mnuGroup.Click += mnuGroup_Click;
             mnuUngroup.Click += mnuUngroup_Click;
             mnuPlugins.Click += mnuPlugins_Click;
@@ -72,16 +72,35 @@ namespace FlowSharp
             mnuRedo.Click += mnuRedo_Click;
 
             keyActions[Keys.Control | Keys.C] = Copy;
-			keyActions[Keys.Control | Keys.V] = Paste;
+            keyActions[Keys.Control | Keys.V] = Paste;
             keyActions[Keys.Control | Keys.Z] = Undo;
             keyActions[Keys.Control | Keys.Y] = Redo;
             keyActions[Keys.Delete] = Delete;
             keyActions[Keys.F2] = EditText;
-            keyActions[Keys.Up] = () => canvasController.DragSelectedElements(new Point(0, -1));
-            keyActions[Keys.Down] = () => canvasController.DragSelectedElements(new Point(0, 1));
-            keyActions[Keys.Left] = () => canvasController.DragSelectedElements(new Point(-1, 0));
-            keyActions[Keys.Right] = () => canvasController.DragSelectedElements(new Point(1, 0));
-		}
+
+            // TODO: Don't finish the group until another action other than cursor movement of a shape occurs.
+
+            keyActions[Keys.Up] = () =>
+            {
+                canvasController.DragSelectedElements(new Point(0, -1));
+                canvasController.UndoStack.FinishGroup();
+            };
+            keyActions[Keys.Down] = () =>
+            {
+                canvasController.DragSelectedElements(new Point(0, 1));
+                canvasController.UndoStack.FinishGroup();
+            };
+            keyActions[Keys.Left] = () =>
+            {
+                canvasController.DragSelectedElements(new Point(-1, 0));
+                canvasController.UndoStack.FinishGroup();
+            };
+            keyActions[Keys.Right] = () =>
+            {
+                canvasController.DragSelectedElements(new Point(1, 0));
+                canvasController.UndoStack.FinishGroup();
+            };
+        }
 
         public void OnShown(object sender, EventArgs e)
         {

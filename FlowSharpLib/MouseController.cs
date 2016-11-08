@@ -245,6 +245,7 @@ namespace FlowSharpLib
                 Condition = () => DraggingShapes || DraggingAnchor,
                 Action = (_) =>
                 {
+                    Controller.UndoStack.FinishGroup();
                     Controller.HideConnectionPoints();
                     DraggingShapes = false;
                     // DraggingOccurred = false;        / Will be cleared by RemoveSelectedShape but this is order dependent!  TODO: Fix this somehow! :)
@@ -559,8 +560,12 @@ namespace FlowSharpLib
         protected void DragShapes()
         {
             Point delta = CurrentMousePosition.Delta(LastMousePosition);
-            Controller.DragSelectedElements(delta);
-            Controller.Canvas.Cursor = Cursors.SizeAll;
+
+            if (delta != Point.Empty)
+            {
+                Controller.DragSelectedElements(delta);
+                Controller.Canvas.Cursor = Cursors.SizeAll;
+            }
         }
 
         protected void ClearAnchorCursor()

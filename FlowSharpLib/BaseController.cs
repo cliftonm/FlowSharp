@@ -197,18 +197,38 @@ namespace FlowSharpLib
             canvas.Invalidate();
 		}
 
+        /// <summary>
+        /// Removes an element from the elements list, without disposing it.
+        /// This behavior is used for caching elements so they are not disposed as a result of an undo/redo step.
+        /// </summary>
+        public void RemoveElement(GraphicElement el)
+        {
+            // TODO: don't redraw all the elements, only erase the current element and update the screen!
+            // See how this is done with Ungroup.
+            el.DetachAll();
+            var els = EraseIntersectionsTopToBottom(el);
+            elements.Remove(el);
+            List<GraphicElement> elsToRedraw = els.ToList();
+            elsToRedraw.Remove(el);
+            DrawBottomToTop(elsToRedraw);
+            UpdateScreen(els);
+        }
+
         public void DeleteElement(GraphicElement el)
         {
             // TODO: don't redraw all the elements, only erase the current element and update the screen!
             // See how this is done with Ungroup.
             el.DetachAll();
-            EraseTopToBottom(elements);
+            var els = EraseIntersectionsTopToBottom(el);
             elements.Remove(el);
+            List<GraphicElement> elsToRedraw = els.ToList();
+            elsToRedraw.Remove(el);
+            DrawBottomToTop(elsToRedraw);
+            UpdateScreen(els);
             el.Dispose();
-            DrawBottomToTop(elements);
         }
 
-		public void Redraw(GraphicElement el, int dx=0, int dy=0)
+        public void Redraw(GraphicElement el, int dx=0, int dy=0)
 		{
             // Trace.WriteLine("Shape:Redraw1");
 			var els = EraseIntersectionsTopToBottom(el, dx, dy);

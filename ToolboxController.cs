@@ -24,6 +24,11 @@ namespace FlowSharp
         protected Point currentDragPosition;
         protected bool setup;
 
+        /// <summary>
+        /// Used for caching deleting elements as part of undo/redo, so the element's pens, brushes, etc., are not disposed.
+        /// </summary>
+        protected List<GraphicElement> cachedElements = new List<GraphicElement>();
+
 		public ToolboxController(Canvas canvas, List<GraphicElement> elements, CanvasController canvasController) : base(canvas, elements)
 		{
 			this.canvasController = canvasController;
@@ -60,12 +65,38 @@ namespace FlowSharp
             {
                 if (selectedElements.Any())
                 {
-                    GraphicElement el = selectedElements[0].CloneDefault(canvasController.Canvas, new Point(xDisplacement, 0));
+                    GraphicElement selectedElement = selectedElements[0];
+                    GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas, new Point(xDisplacement, 0));
                     el.UpdatePath();
-                    xDisplacement += 80;
-                    canvasController.Insert(el);
-                    canvasController.DeselectCurrentSelectedElements();
-                    canvasController.SelectElement(el);
+
+                    canvasController.UndoStack.Do((@do, redo) =>
+                    {
+                        if (@do || redo)
+                        {
+                            canvasController.Insert(el);
+                            canvasController.DeselectCurrentSelectedElements();
+                            canvasController.SelectElement(el);
+                            xDisplacement += 80;
+                        }
+                        else
+                        {
+                            canvasController.RemoveElement(el);
+
+                            if (!cachedElements.Contains(el))
+                            {
+                                // Cache the element being deleted so we can do a proper dispose of deleted elements at some point.
+                                // TODO: When is that "point"?
+                                cachedElements.Add(el);
+                            }
+
+                            xDisplacement -= 80;
+
+                            if (xDisplacement < 0)
+                            {
+                                xDisplacement = 0;
+                            }
+                        }
+                    });
                 }
             }
 

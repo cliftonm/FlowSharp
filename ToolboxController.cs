@@ -99,6 +99,10 @@ namespace FlowSharp
                     });
                 }
             }
+            else if (args.Button == MouseButtons.Left && dragging)
+            {
+                canvasController.UndoStack.FinishGroup();
+            }
 
             dragging = false;
             mouseDown = false;
@@ -120,28 +124,35 @@ namespace FlowSharp
                     setup = true;
                     canvasController.DeselectCurrentSelectedElements();
                     ResetDisplacement();
-                    Point screenPos = new Point(canvas.Width, args.Location.Y);     // target canvas screen position is the toolbox canvas width, toolbox mouse Y.
-                    Point canvasPos = new Point(0, args.Location.Y);                // target canvas position is left edge, toolbox mouse Y.
-                    Point p = canvas.PointToScreen(screenPos);                      // screen position of mouse cursor, relative to the target canvas.
-                    Cursor.Position = p;
-
                     GraphicElement el = selectedElements[0].CloneDefault(canvasController.Canvas);
-                    canvasController.Insert(el);
-                    // Shape is placed so that the center of the shape is at the left edge (X), centered around the toolbox mouse (Y)
-                    // The "-5" accounts for additional pixels between the toolbox end and the canvas start, should be calculable by converting toolbox canvas width to screen coordinate and subtracting
-                    // that from the target canvas left edge screen coordinate.
-                    Point offset = new Point(-el.DisplayRectangle.X - el.DisplayRectangle.Width/2 - 5, -el.DisplayRectangle.Y + args.Location.Y - el.DisplayRectangle.Height / 2);
 
-                    // TODO: Why this fudge factor for DC's?
                     if (el is DynamicConnector)
                     {
-                        offset = offset.Move(8, 6);
                         el.ShowAnchors = true;
                     }
 
-                    canvasController.MoveElement(el, offset);
-                    canvasController.SelectElement(el);
-                    canvas.Cursor = Cursors.SizeAll;
+                    Cursor.Position = canvas.PointToScreen(el.DisplayRectangle.Center().Move(canvas.Width, 0));
+
+                    canvasController.UndoStack.Do((@do, redo) =>
+                    {
+                        if (@do || redo)
+                        {
+                            canvasController.Insert(el);
+                            canvasController.SelectElement(el);
+                            canvas.Cursor = Cursors.SizeAll;
+                        }
+                        else
+                        {
+                            canvasController.RemoveElement(el);
+
+                            if (!cachedElements.Contains(el))
+                            {
+                                // Cache the element being deleted so we can do a proper dispose of deleted elements at some point.
+                                // TODO: When is that "point"?
+                                cachedElements.Add(el);
+                            }
+                        }
+                    });
                 }
             }
             else if (mouseDown && selectedElements.Any() && dragging)

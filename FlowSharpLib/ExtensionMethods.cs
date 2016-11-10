@@ -353,5 +353,33 @@ namespace FlowSharpLib
                 }
             }, finishGroup);
         }
+
+        /// <summary>
+        /// Graphic element property changes that require an erase, update, and redraw on an undo/redo.
+        /// </summary>
+        public static void MoveUndoRedo(this GraphicElement el, string elementPropertyName, Point newVal, bool finishGroup = true)
+        {
+            Point save = Point.Empty;
+            Point redosave = Point.Empty;
+
+            // TODO: undo/redo should perform all operations before Redraw.  How do we accomplish that with the UndoRedo object?
+
+            el.Canvas.Controller.UndoStack.Do((@do, redo) =>
+            {
+                if (redo)
+                {
+                    el.Canvas.Controller.Redraw(el, _ => el.Move(redosave));
+                }
+                else if (@do)
+                {
+                    save = new Point(-newVal.X, -newVal.Y);
+                    redosave = newVal;
+                }
+                else
+                {
+                    el.Canvas.Controller.Redraw(el, _ => el.Move(save));
+                }
+            }, finishGroup);
+        }
     }
 }

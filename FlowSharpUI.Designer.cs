@@ -50,6 +50,9 @@
             this.mnuCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuPaste = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuUndo = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuRedo = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDebugWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.orderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,9 +63,8 @@
             this.groupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuGroup = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuUngroup = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuUndo = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuRedo = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlProperties.SuspendLayout();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -153,68 +155,75 @@
             // mnuNew
             // 
             this.mnuNew.Name = "mnuNew";
-            this.mnuNew.Size = new System.Drawing.Size(125, 24);
+            this.mnuNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.mnuNew.Size = new System.Drawing.Size(165, 24);
             this.mnuNew.Text = "&New";
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(122, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(162, 6);
             // 
             // mnuOpen
             // 
             this.mnuOpen.Name = "mnuOpen";
-            this.mnuOpen.Size = new System.Drawing.Size(125, 24);
+            this.mnuOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.mnuOpen.Size = new System.Drawing.Size(165, 24);
             this.mnuOpen.Text = "&Open...";
             // 
             // mnuImport
             // 
             this.mnuImport.Name = "mnuImport";
-            this.mnuImport.Size = new System.Drawing.Size(125, 24);
+            this.mnuImport.Size = new System.Drawing.Size(165, 24);
             this.mnuImport.Text = "&Import...";
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(122, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(162, 6);
             // 
             // mnuSave
             // 
             this.mnuSave.Name = "mnuSave";
-            this.mnuSave.Size = new System.Drawing.Size(125, 24);
+            this.mnuSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.mnuSave.Size = new System.Drawing.Size(165, 24);
             this.mnuSave.Text = "&Save";
             // 
             // mnuSaveAs
             // 
             this.mnuSaveAs.Name = "mnuSaveAs";
-            this.mnuSaveAs.Size = new System.Drawing.Size(125, 24);
+            this.mnuSaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.mnuSaveAs.Size = new System.Drawing.Size(165, 24);
             this.mnuSaveAs.Text = "Save &as";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(122, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(162, 6);
             // 
             // mnuPlugins
             // 
             this.mnuPlugins.Name = "mnuPlugins";
-            this.mnuPlugins.Size = new System.Drawing.Size(125, 24);
+            this.mnuPlugins.Size = new System.Drawing.Size(165, 24);
             this.mnuPlugins.Text = "&Plugins...";
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(122, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(162, 6);
             // 
             // mnuExit
             // 
             this.mnuExit.Name = "mnuExit";
-            this.mnuExit.Size = new System.Drawing.Size(125, 24);
+            this.mnuExit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.mnuExit.Size = new System.Drawing.Size(165, 24);
             this.mnuExit.Text = "E&xit";
             // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuEdit,
+            this.toolStripMenuItem6,
             this.mnuCopy,
             this.mnuPaste,
             this.mnuDelete,
@@ -228,20 +237,42 @@
             // mnuCopy
             // 
             this.mnuCopy.Name = "mnuCopy";
+            this.mnuCopy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
             this.mnuCopy.Size = new System.Drawing.Size(165, 24);
             this.mnuCopy.Text = "&Copy";
             // 
             // mnuPaste
             // 
             this.mnuPaste.Name = "mnuPaste";
+            this.mnuPaste.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
             this.mnuPaste.Size = new System.Drawing.Size(165, 24);
             this.mnuPaste.Text = "&Paste";
             // 
             // mnuDelete
             // 
             this.mnuDelete.Name = "mnuDelete";
+            this.mnuDelete.ShortcutKeys = System.Windows.Forms.Keys.Delete;
             this.mnuDelete.Size = new System.Drawing.Size(165, 24);
             this.mnuDelete.Text = "&Delete";
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(162, 6);
+            // 
+            // mnuUndo
+            // 
+            this.mnuUndo.Name = "mnuUndo";
+            this.mnuUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.mnuUndo.Size = new System.Drawing.Size(165, 24);
+            this.mnuUndo.Text = "&Undo";
+            // 
+            // mnuRedo
+            // 
+            this.mnuRedo.Name = "mnuRedo";
+            this.mnuRedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+            this.mnuRedo.Size = new System.Drawing.Size(165, 24);
+            this.mnuRedo.Text = "&Redo";
             // 
             // viewToolStripMenuItem
             // 
@@ -272,25 +303,29 @@
             // mnuTopmost
             // 
             this.mnuTopmost.Name = "mnuTopmost";
-            this.mnuTopmost.Size = new System.Drawing.Size(141, 24);
+            this.mnuTopmost.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.T)));
+            this.mnuTopmost.Size = new System.Drawing.Size(179, 24);
             this.mnuTopmost.Text = "To &Top";
             // 
             // mnuBottommost
             // 
             this.mnuBottommost.Name = "mnuBottommost";
-            this.mnuBottommost.Size = new System.Drawing.Size(141, 24);
+            this.mnuBottommost.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.B)));
+            this.mnuBottommost.Size = new System.Drawing.Size(179, 24);
             this.mnuBottommost.Text = "To &Bottom";
             // 
             // mnuMoveUp
             // 
             this.mnuMoveUp.Name = "mnuMoveUp";
-            this.mnuMoveUp.Size = new System.Drawing.Size(141, 24);
+            this.mnuMoveUp.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.U)));
+            this.mnuMoveUp.Size = new System.Drawing.Size(179, 24);
             this.mnuMoveUp.Text = "Move &Up";
             // 
             // mnuMoveDown
             // 
             this.mnuMoveDown.Name = "mnuMoveDown";
-            this.mnuMoveDown.Size = new System.Drawing.Size(141, 24);
+            this.mnuMoveDown.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D)));
+            this.mnuMoveDown.Size = new System.Drawing.Size(179, 24);
             this.mnuMoveDown.Text = "Move &Down";
             // 
             // groupToolStripMenuItem
@@ -305,31 +340,28 @@
             // mnuGroup
             // 
             this.mnuGroup.Name = "mnuGroup";
-            this.mnuGroup.Size = new System.Drawing.Size(124, 24);
+            this.mnuGroup.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
+            this.mnuGroup.Size = new System.Drawing.Size(166, 24);
             this.mnuGroup.Text = "&Group";
             // 
             // mnuUngroup
             // 
             this.mnuUngroup.Name = "mnuUngroup";
-            this.mnuUngroup.Size = new System.Drawing.Size(124, 24);
+            this.mnuUngroup.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
+            this.mnuUngroup.Size = new System.Drawing.Size(166, 24);
             this.mnuUngroup.Text = "&Ungroup";
             // 
-            // toolStripMenuItem5
+            // toolStripMenuItem6
             // 
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(162, 6);
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(162, 6);
             // 
-            // mnuUndo
+            // mnuEdit
             // 
-            this.mnuUndo.Name = "mnuUndo";
-            this.mnuUndo.Size = new System.Drawing.Size(165, 24);
-            this.mnuUndo.Text = "&Undo";
-            // 
-            // mnuRedo
-            // 
-            this.mnuRedo.Name = "mnuRedo";
-            this.mnuRedo.Size = new System.Drawing.Size(165, 24);
-            this.mnuRedo.Text = "&Redo";
+            this.mnuEdit.Name = "mnuEdit";
+            this.mnuEdit.ShortcutKeys = System.Windows.Forms.Keys.F2;
+            this.mnuEdit.Size = new System.Drawing.Size(165, 24);
+            this.mnuEdit.Text = "&Edit";
             // 
             // FlowSharpUI
             // 
@@ -385,6 +417,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem mnuUndo;
         private System.Windows.Forms.ToolStripMenuItem mnuRedo;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
+        private System.Windows.Forms.ToolStripMenuItem mnuEdit;
     }
 }
 

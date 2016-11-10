@@ -70,11 +70,12 @@ namespace FlowSharp
             mnuPlugins.Click += mnuPlugins_Click;
             mnuUndo.Click += mnuUndo_Click;
             mnuRedo.Click += mnuRedo_Click;
+            mnuEdit.Click += (sndr, args) => EditText();
 
-            keyActions[Keys.Control | Keys.C] = Copy;
-            keyActions[Keys.Control | Keys.V] = Paste;
-            keyActions[Keys.Control | Keys.Z] = Undo;
-            keyActions[Keys.Control | Keys.Y] = Redo;
+            //keyActions[Keys.Control | Keys.C] = Copy;
+            //keyActions[Keys.Control | Keys.V] = Paste;
+            //keyActions[Keys.Control | Keys.Z] = Undo;
+            //keyActions[Keys.Control | Keys.Y] = Redo;
             keyActions[Keys.Delete] = Delete;
             keyActions[Keys.F2] = EditText;
 
@@ -328,6 +329,7 @@ namespace FlowSharp
             if (editBox != null)
             {
                 editBox.KeyPress -= OnEditBoxKey;
+                shapeBeingEdited.ChangePropertyWithUndoRedo<string>("Text", editBox.Text);
                 shapeBeingEdited.Text = editBox.Text;
                 canvasController.Redraw(shapeBeingEdited);
 

@@ -121,11 +121,6 @@ namespace FlowSharpLib
             return canvas.Controller.Snap(GripType.None, ref delta);
 		}
 
-		public override void MoveElementOrAnchor(GripType gt, Point delta)
-		{
-			MoveAnchor(gt, delta);
-		}
-
 		public override void SetCanvas(Canvas canvas)
 		{
 			lines.ForEach(l => l.SetCanvas(canvas));

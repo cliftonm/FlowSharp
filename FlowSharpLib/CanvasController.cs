@@ -53,7 +53,7 @@ namespace FlowSharpLib
             {
                 GraphicElement el = selectedElements[0];
                 bool connectorAttached = el.SnapCheck(GripType.Start, ref delta) || el.SnapCheck(GripType.End, ref delta);
-                el.Connections.ForEach(c => c.ToElement.MoveElementOrAnchor(c.ToConnectionPoint.Type, delta));
+                el.Connections.ForEach(c => c.ToElement.MoveAnchor(c.ToConnectionPoint.Type, delta));
 
                 if (!connectorAttached)
                 {

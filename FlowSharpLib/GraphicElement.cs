@@ -308,7 +308,6 @@ namespace FlowSharpLib
 		public virtual bool SnapCheck(GripType gt, ref Point delta) { return false; }
 
 		// Placeholders:
-		public virtual void MoveElementOrAnchor(GripType gt, Point delta) { }
 		public virtual void SetConnection(GripType gt, GraphicElement shape) { }
 		public virtual void DisconnectShapeFromConnector(GripType gt) { }
 		public virtual void DetachAll() { }

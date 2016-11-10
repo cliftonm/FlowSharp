@@ -39,6 +39,12 @@ namespace FlowSharp
             canvas.MouseMove += OnMouseMove;
         }
 
+        public void ClearCache()
+        {
+            cachedElements.ForEach(el => el.Dispose());
+            cachedElements.Clear();
+        }
+
         public void ResetDisplacement()
         {
             xDisplacement = 0;

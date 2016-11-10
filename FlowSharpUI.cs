@@ -467,5 +467,10 @@ namespace FlowSharp
                 };
             }
         }
+
+        protected void ClearElementCaches()
+        {
+            toolboxController.ClearCache();
+        }
     }
 }

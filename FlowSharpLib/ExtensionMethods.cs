@@ -361,7 +361,7 @@ namespace FlowSharpLib
         /// <summary>
         /// Graphic element property changes that require an erase, update, and redraw on an undo/redo.
         /// </summary>
-        public static void MoveUndoRedo(this GraphicElement el, Point newVal, bool finishGroup = true)
+        public static void MoveUndoRedo(this GraphicElement el, Point delta, bool finishGroup = true)
         {
             Point save = Point.Empty;
             Point redosave = Point.Empty;
@@ -372,16 +372,24 @@ namespace FlowSharpLib
             {
                 if (redo)
                 {
-                    el.Canvas.Controller.Redraw(el, _ => el.Move(redosave));
+                    el.Canvas.Controller.Redraw(el, _ =>
+                    {
+                        el.Connections.ForEach(c => c.ToElement.MoveAnchor(c.ToConnectionPoint.Type, redosave));
+                        el.Move(redosave);
+                    });
                 }
                 else if (@do)
                 {
-                    save = new Point(-newVal.X, -newVal.Y);
-                    redosave = newVal;
+                    save = new Point(-delta.X, -delta.Y);
+                    redosave = delta;
                 }
                 else
                 {
-                    el.Canvas.Controller.Redraw(el, _ => el.Move(save));
+                    el.Canvas.Controller.Redraw(el, _ =>
+                    {
+                        el.Connections.ForEach(c => c.ToElement.MoveAnchor(c.ToConnectionPoint.Type, save));
+                        el.Move(save);
+                    });
                 }
             }, finishGroup);
         }

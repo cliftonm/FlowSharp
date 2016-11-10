@@ -23,8 +23,8 @@ namespace FlowSharpLib
 
         public DiagonalConnector(Canvas canvas, Point start, Point end) : base(canvas)
         {
-            startPoint = start;
-            endPoint = end;
+            StartPoint = start;
+            EndPoint = end;
             DisplayRectangle = RecalcDisplayRectangle();
             Initialize();
         }
@@ -60,15 +60,15 @@ namespace FlowSharpLib
         {
             Size szAnchor = new Size(anchorWidthHeight, anchorWidthHeight);
 
-            int startxOffset = startPoint.X < endPoint.X ? 0 : -anchorWidthHeight;
-            int startyOffset = startPoint.Y < endPoint.Y ? 0: -anchorWidthHeight;
+            int startxOffset = StartPoint.X < EndPoint.X ? 0 : -anchorWidthHeight;
+            int startyOffset = StartPoint.Y < EndPoint.Y ? 0: -anchorWidthHeight;
 
-            int endxOffset = startPoint.X < endPoint.X ? -anchorWidthHeight : 0;
-            int endyOffset = startPoint.Y < endPoint.Y ? -anchorWidthHeight : 0;
+            int endxOffset = StartPoint.X < EndPoint.X ? -anchorWidthHeight : 0;
+            int endyOffset = StartPoint.Y < EndPoint.Y ? -anchorWidthHeight : 0;
 
             return new List<ShapeAnchor>() {
-                new ShapeAnchor(GripType.Start, new Rectangle(startPoint.Move(startxOffset/2, startyOffset/2), szAnchor), Cursors.Arrow),
-                new ShapeAnchor(GripType.End, new Rectangle(endPoint.Move(endxOffset/2, endyOffset/2), szAnchor), Cursors.Arrow),
+                new ShapeAnchor(GripType.Start, new Rectangle(StartPoint.Move(startxOffset/2, startyOffset/2), szAnchor), Cursors.Arrow),
+                new ShapeAnchor(GripType.End, new Rectangle(EndPoint.Move(endxOffset/2, endyOffset/2), szAnchor), Cursors.Arrow),
             };
         }
 
@@ -138,7 +138,7 @@ namespace FlowSharpLib
                 pen.Color = pen.Color.ToArgb() == Color.Red.ToArgb() ? Color.Blue : Color.Red;
             }
 
-            gr.DrawLine(pen, startPoint, endPoint);
+            gr.DrawLine(pen, StartPoint, EndPoint);
             pen.Dispose();
 
             base.Draw(gr);

@@ -26,8 +26,8 @@ namespace FlowSharpLib
 		public DynamicConnectorLD(Canvas canvas, Point start, Point end) : base(canvas)
 		{
 			Initialize();
-			startPoint = start;
-			endPoint = end;
+			StartPoint = start;
+			EndPoint = end;
             DisplayRectangle = RecalcDisplayRectangle();
         }
 
@@ -41,12 +41,12 @@ namespace FlowSharpLib
 		{
 			Size szAnchor = new Size(anchorWidthHeight, anchorWidthHeight);
 
-			int startxOffset = startPoint.X < endPoint.X ? 0 : -anchorWidthHeight;
-			int endyOffset = startPoint.Y < endPoint.Y ? -anchorWidthHeight : 0;
+			int startxOffset = StartPoint.X < EndPoint.X ? 0 : -anchorWidthHeight;
+			int endyOffset = StartPoint.Y < EndPoint.Y ? -anchorWidthHeight : 0;
 
 			return new List<ShapeAnchor>() {
-				new ShapeAnchor(GripType.Start, new Rectangle(startPoint.Move(startxOffset, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
-				new ShapeAnchor(GripType.End, new Rectangle(endPoint.Move(-anchorWidthHeight/2, endyOffset), szAnchor), Cursors.Arrow),
+				new ShapeAnchor(GripType.Start, new Rectangle(StartPoint.Move(startxOffset, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
+				new ShapeAnchor(GripType.End, new Rectangle(EndPoint.Move(-anchorWidthHeight/2, endyOffset), szAnchor), Cursors.Arrow),
 			};
 		}
 
@@ -63,22 +63,22 @@ namespace FlowSharpLib
 		{
             UpdateCaps();
 
-            if (startPoint.X < endPoint.X)
+            if (StartPoint.X < EndPoint.X)
 			{
-				lines[0].DisplayRectangle = new Rectangle(startPoint.X, startPoint.Y - BaseController.MIN_HEIGHT / 2, endPoint.X - startPoint.X, BaseController.MIN_HEIGHT);
+				lines[0].DisplayRectangle = new Rectangle(StartPoint.X, StartPoint.Y - BaseController.MIN_HEIGHT / 2, EndPoint.X - StartPoint.X, BaseController.MIN_HEIGHT);
 			}
 			else
 			{
-				lines[0].DisplayRectangle = new Rectangle(endPoint.X, startPoint.Y - BaseController.MIN_HEIGHT / 2, startPoint.X - endPoint.X, BaseController.MIN_HEIGHT);
+				lines[0].DisplayRectangle = new Rectangle(EndPoint.X, StartPoint.Y - BaseController.MIN_HEIGHT / 2, StartPoint.X - EndPoint.X, BaseController.MIN_HEIGHT);
 			}
 
-			if (startPoint.Y < endPoint.Y)
+			if (StartPoint.Y < EndPoint.Y)
 			{
-				lines[1].DisplayRectangle = new Rectangle(endPoint.X - BaseController.MIN_WIDTH / 2, startPoint.Y, BaseController.MIN_WIDTH, endPoint.Y - startPoint.Y);
+				lines[1].DisplayRectangle = new Rectangle(EndPoint.X - BaseController.MIN_WIDTH / 2, StartPoint.Y, BaseController.MIN_WIDTH, EndPoint.Y - StartPoint.Y);
 			}
 			else
 			{
-				lines[1].DisplayRectangle = new Rectangle(endPoint.X - BaseController.MIN_WIDTH / 2, endPoint.Y, BaseController.MIN_WIDTH, startPoint.Y - endPoint.Y);
+				lines[1].DisplayRectangle = new Rectangle(EndPoint.X - BaseController.MIN_WIDTH / 2, EndPoint.Y, BaseController.MIN_WIDTH, StartPoint.Y - EndPoint.Y);
 			}
 
 			lines.ForEach(l => l.UpdatePath());
@@ -86,7 +86,7 @@ namespace FlowSharpLib
 
         protected void UpdateCaps()
         {
-            if (startPoint.X < endPoint.X)
+            if (StartPoint.X < EndPoint.X)
             {
                 lines[0].StartCap = StartCap;
                 lines[0].EndCap = AvailableLineCap.None;
@@ -97,7 +97,7 @@ namespace FlowSharpLib
                 lines[0].EndCap = StartCap;
             }
 
-            if (startPoint.Y < endPoint.Y)
+            if (StartPoint.Y < EndPoint.Y)
             {
                 lines[1].StartCap = AvailableLineCap.None;
                 lines[1].EndCap = EndCap;

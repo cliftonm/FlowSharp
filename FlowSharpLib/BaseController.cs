@@ -367,7 +367,7 @@ namespace FlowSharpLib
 
             connectors.ForEach(c =>
             {
-                c.MoveUndoRedo("DisplayRectangle", delta, false);
+                c.MoveUndoRedo(delta, false);
                 c.Move(delta);
                 c.UpdatePath();
             });
@@ -377,7 +377,7 @@ namespace FlowSharpLib
                 // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
                 if (!el.IsConnector)
                 {
-                    el.MoveUndoRedo("DisplayRectangle", delta, false);
+                    el.MoveUndoRedo(delta, false);
                     el.Move(delta);
                     el.UpdatePath();
                 }
@@ -394,7 +394,7 @@ namespace FlowSharpLib
                 int dx = delta.X.Abs();
                 int dy = delta.Y.Abs();
                 var els = EraseIntersectionsTopToBottom(el, dx, dy);
-                el.MoveUndoRedo("DisplayRectangle", delta, false);
+                el.MoveUndoRedo(delta, false);
                 el.Move(delta);
 				el.UpdatePath();
 				DrawBottomToTop(els, dx, dy);
@@ -403,7 +403,7 @@ namespace FlowSharpLib
 			else
 			{
 				el.CancelBackground();
-                el.MoveUndoRedo("DisplayRectangle", delta, false);
+                el.MoveUndoRedo(delta, false);
                 el.Move(delta);
 				// TODO: Display element if moved back on screen at this point?
 			}
@@ -418,13 +418,13 @@ namespace FlowSharpLib
             {
                 int dx = delta.X.Abs();
                 int dy = delta.Y.Abs();
-                el.MoveUndoRedo("DisplayRectangle", delta, false);
+                el.MoveUndoRedo(delta, false);
                 el.Move(delta);
                 el.UpdatePath();
             }
             else
             {
-                el.MoveUndoRedo("DisplayRectangle", delta, false);
+                el.MoveUndoRedo(delta, false);
                 el.Move(delta);
             }
         }

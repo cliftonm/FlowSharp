@@ -46,10 +46,10 @@ namespace FlowSharpLib
             return Math.Abs(n);
         }
 
-		public static int Sign(this int n)
-		{
-			return Math.Sign(n);
-		}
+        public static int Sign(this int n)
+        {
+            return Math.Sign(n);
+        }
 
         public static int Min(this int a, int max)
         {
@@ -63,25 +63,25 @@ namespace FlowSharpLib
 
         public static Rectangle Grow(this Rectangle r, float w)
         {
-			Rectangle ret = r;
+            Rectangle ret = r;
             ret.Inflate((int)w, (int)w);
 
             return ret;
         }
 
-		public static Point Center(this Rectangle r)
-		{
-			return new Point(r.X + r.Width / 2, r.Y + r.Height / 2);
-		}
+        public static Point Center(this Rectangle r)
+        {
+            return new Point(r.X + r.Width / 2, r.Y + r.Height / 2);
+        }
 
-		public static bool IsNear(this Point p1, Point p2, int range)
-		{
-			return (p1.X - p2.X).Abs() <= range && (p1.Y - p2.Y).Abs() <= range;
-		}
+        public static bool IsNear(this Point p1, Point p2, int range)
+        {
+            return (p1.X - p2.X).Abs() <= range && (p1.Y - p2.Y).Abs() <= range;
+        }
 
         public static Rectangle Grow(this Rectangle r, float x, float y)
         {
-			Rectangle ret = r;
+            Rectangle ret = r;
             ret.Inflate((int)x, (int)y);
 
             return ret;
@@ -92,45 +92,45 @@ namespace FlowSharpLib
             return Rectangle.Union(r, r2);
         }
 
-		public static Point TopLeftCorner(this Rectangle r)
-		{
-			return new Point(r.Left, r.Top);
-		}
+        public static Point TopLeftCorner(this Rectangle r)
+        {
+            return new Point(r.Left, r.Top);
+        }
 
-		public static Point TopRightCorner(this Rectangle r)
-		{
-			return new Point(r.Right, r.Top);
-		}
+        public static Point TopRightCorner(this Rectangle r)
+        {
+            return new Point(r.Right, r.Top);
+        }
 
-		public static Point BottomLeftCorner(this Rectangle r)
-		{
-			return new Point(r.Left, r.Bottom);
-		}
+        public static Point BottomLeftCorner(this Rectangle r)
+        {
+            return new Point(r.Left, r.Bottom);
+        }
 
-		public static Point BottomRightCorner(this Rectangle r)
-		{
-			return new Point(r.Right, r.Bottom);
-		}
+        public static Point BottomRightCorner(this Rectangle r)
+        {
+            return new Point(r.Right, r.Bottom);
+        }
 
-		public static Point LeftMiddle(this Rectangle r)
-		{
-			return new Point(r.Left, r.Top + r.Height / 2);
-		}
+        public static Point LeftMiddle(this Rectangle r)
+        {
+            return new Point(r.Left, r.Top + r.Height / 2);
+        }
 
-		public static Point RightMiddle(this Rectangle r)
-		{
-			return new Point(r.Right, r.Top + r.Height / 2);
-		}
+        public static Point RightMiddle(this Rectangle r)
+        {
+            return new Point(r.Right, r.Top + r.Height / 2);
+        }
 
-		public static Point TopMiddle(this Rectangle r)
-		{
-			return new Point(r.Left + r.Width /2, r.Top);
-		}
+        public static Point TopMiddle(this Rectangle r)
+        {
+            return new Point(r.Left + r.Width / 2, r.Top);
+        }
 
-		public static Point BottomMiddle(this Rectangle r)
-		{
-			return new Point(r.Left + r.Width / 2, r.Bottom);
-		}
+        public static Point BottomMiddle(this Rectangle r)
+        {
+            return new Point(r.Left + r.Width / 2, r.Bottom);
+        }
 
         /// <summary>
         /// Return a new rectangle whose position is adjusted by p.
@@ -142,42 +142,42 @@ namespace FlowSharpLib
             return ret;
         }
 
-		public static Rectangle Move(this Rectangle r, Point p)
-		{
-			r.Offset(p);
+        public static Rectangle Move(this Rectangle r, Point p)
+        {
+            r.Offset(p);
 
-			return r;
-		}
+            return r;
+        }
 
-		public static Rectangle Move(this Rectangle r, int x, int y)
-		{
-			r.Offset(x, y);
+        public static Rectangle Move(this Rectangle r, int x, int y)
+        {
+            r.Offset(x, y);
 
-			return r;
-		}
+            return r;
+        }
 
-		public static Point Move(this Point r, Point p)
-		{
-			r.Offset(p);
+        public static Point Move(this Point r, Point p)
+        {
+            r.Offset(p);
 
-			return r;
-		}
+            return r;
+        }
 
-		public static Point Move(this Point r, Size sz)
-		{
-			r.Offset(sz.Width, sz.Height);
+        public static Point Move(this Point r, Size sz)
+        {
+            r.Offset(sz.Width, sz.Height);
 
-			return r;
-		}
+            return r;
+        }
 
-		public static Point Move(this Point r, int x, int y)
-		{
-			r.Offset(x, y);
+        public static Point Move(this Point r, int x, int y)
+        {
+            r.Offset(x, y);
 
-			return r;
-		}
+            return r;
+        }
 
-		public static int to_i(this float f)
+        public static int to_i(this float f)
         {
             return (int)f;
         }
@@ -199,48 +199,48 @@ namespace FlowSharpLib
             }
         }
 
-		public static void Fire<TEventArgs>(this EventHandler<TEventArgs> theEvent, object sender, TEventArgs e = null) where TEventArgs : EventArgs
-		{
-			theEvent?.Invoke(sender, e);
-		}
+        public static void Fire<TEventArgs>(this EventHandler<TEventArgs> theEvent, object sender, TEventArgs e = null) where TEventArgs : EventArgs
+        {
+            theEvent?.Invoke(sender, e);
+        }
 
-		// Logic helpers
+        // Logic helpers
 
-		public static bool If(this bool b, Action action)
-		{
-			if (b)
-			{
-				action();
-			}
+        public static bool If(this bool b, Action action)
+        {
+            if (b)
+            {
+                action();
+            }
 
-			return b;
-		}
+            return b;
+        }
 
-		public static void IfElse(this bool b, Action ifTrue, Action ifFalse)
-		{
-			if (b) ifTrue(); else ifFalse();
-		}
+        public static void IfElse(this bool b, Action ifTrue, Action ifFalse)
+        {
+            if (b) ifTrue(); else ifFalse();
+        }
 
-		/// <summary>
-		/// If the boolean is false, performs the specified action and returns the complement of the original state.
-		/// </summary>
-		public static void Else(this bool b, Action f)
-		{
-			if (!b) { f(); }
-		}
+        /// <summary>
+        /// If the boolean is false, performs the specified action and returns the complement of the original state.
+        /// </summary>
+        public static void Else(this bool b, Action f)
+        {
+            if (!b) { f(); }
+        }
 
-		public static void IfNotNull<T>(this T obj, Action<T> f)
-		{
-			if (obj != null)
-			{
-				f(obj);
-			}
-		}
+        public static void IfNotNull<T>(this T obj, Action<T> f)
+        {
+            if (obj != null)
+            {
+                f(obj);
+            }
+        }
 
-		public static bool In<T>(this T item, T[] options)
-		{
-			return options.Contains(item);
-		}
+        public static bool In<T>(this T item, T[] options)
+        {
+            return options.Contains(item);
+        }
 
         /// <summary>
         /// Copies the elements into a new list, useful when an operation modifies the master list.
@@ -361,7 +361,7 @@ namespace FlowSharpLib
         /// <summary>
         /// Graphic element property changes that require an erase, update, and redraw on an undo/redo.
         /// </summary>
-        public static void MoveUndoRedo(this GraphicElement el, string elementPropertyName, Point newVal, bool finishGroup = true)
+        public static void MoveUndoRedo(this GraphicElement el, Point newVal, bool finishGroup = true)
         {
             Point save = Point.Empty;
             Point redosave = Point.Empty;
@@ -382,6 +382,37 @@ namespace FlowSharpLib
                 else
                 {
                     el.Canvas.Controller.Redraw(el, _ => el.Move(save));
+                }
+            }, finishGroup);
+        }
+
+        /// <summary>
+        /// Graphic element property changes that require an erase, update, and redraw on an undo/redo.
+        /// </summary>
+        public static void AnchorMoveUndoRedo(this DynamicConnector el, string elementPropertyName, Point newVal, bool finishGroup = true)
+        {
+            Point save = Point.Empty;
+            Point redosave = Point.Empty;
+            PropertyInfo piElement = el.GetType().GetProperty(elementPropertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            el.Canvas.Controller.UndoStack.Do((@do, redo) =>
+            {
+                if (redo)
+                {
+                    // TODO: If element is selected element (and only 1 selected element?) update property grid as well.
+                    // Or simply select element undergoing undo/redo?
+                    el.Canvas.Controller.Redraw(el, _ => piElement.SetValue(el, redosave));
+                }
+                else if (@do)
+                {
+                    save = CastObject<Point>(piElement.GetValue(el));
+                    redosave = newVal;
+                }
+                else
+                {
+                    // TODO: If element is selected element (and only 1 selected element?) update property grid as well.
+                    // Or simply select element undergoing undo/redo?
+                    el.Canvas.Controller.Redraw(el, _ => piElement.SetValue(el, save));
                 }
             }, finishGroup);
         }

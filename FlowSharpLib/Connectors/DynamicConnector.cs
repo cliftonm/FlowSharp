@@ -13,8 +13,8 @@ namespace FlowSharpLib
 	public abstract class DynamicConnector : Connector
 	{
 		protected List<Line> lines = new List<Line>();
-		protected Point startPoint;
-		protected Point endPoint;
+		protected Point StartPoint { get; set; }
+		protected Point EndPoint { get; set; }
 
 		public override bool Selected
 		{
@@ -46,8 +46,8 @@ namespace FlowSharpLib
 
         public override Rectangle DefaultRectangle()
         {
-            startPoint = new Point(20, 20);
-            endPoint = new Point(60, 60);
+            StartPoint = new Point(20, 20);
+            EndPoint = new Point(60, 60);
             return base.DefaultRectangle();
         }
 
@@ -59,23 +59,23 @@ namespace FlowSharpLib
         public override List<ConnectionPoint> GetConnectionPoints()
         {
             return new List<ConnectionPoint>() {
-                new ConnectionPoint(GripType.Start, startPoint),
-                new ConnectionPoint(GripType.End, endPoint),
+                new ConnectionPoint(GripType.Start, StartPoint),
+                new ConnectionPoint(GripType.End, EndPoint),
             };
         }
 
         public override void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
 		{
 			base.Serialize(epb, elementsBeingSerialized);
-			epb.StartPoint = startPoint;
-			epb.EndPoint = endPoint;
+			epb.StartPoint = StartPoint;
+			epb.EndPoint = EndPoint;
 		}
 
 		public override void Deserialize(ElementPropertyBag epb)
 		{
 			base.Deserialize(epb);
-			startPoint = epb.StartPoint;
-			endPoint = epb.EndPoint;
+			StartPoint = epb.StartPoint;
+			EndPoint = epb.EndPoint;
 		}
 
 		public override ElementProperties CreateProperties()
@@ -135,35 +135,37 @@ namespace FlowSharpLib
         /// </summary>
         public override void Move(Point delta)
         {
-            startPoint = startPoint.Move(delta);
-            endPoint = endPoint.Move(delta);
+            StartPoint = StartPoint.Move(delta);
+            EndPoint = EndPoint.Move(delta);
             DisplayRectangle = RecalcDisplayRectangle();
         }
 
+        // Executes when shape connected to this connector resizes.
         public override void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint cp)
         {
             if (cp.Type == GripType.Start)
             {
-                startPoint = cpShape.Point;
+                StartPoint = cpShape.Point;
             }
             else
             {
-                endPoint = cpShape.Point;
+                EndPoint = cpShape.Point;
             }
 
             UpdatePath();
             DisplayRectangle = RecalcDisplayRectangle();
         }
 
+        // Executes when shape connected to this connector moves.
         public override void MoveAnchor(GripType type, Point delta)
         {
             if (type == GripType.Start)
             {
-                startPoint = startPoint.Move(delta);
+                StartPoint = StartPoint.Move(delta);
             }
             else
             {
-                endPoint = endPoint.Move(delta);
+                EndPoint = EndPoint.Move(delta);
             }
 
             UpdatePath();
@@ -174,11 +176,13 @@ namespace FlowSharpLib
         {
             if (anchor.Type == GripType.Start)
             {
-                startPoint = startPoint.Move(delta);
+                this.AnchorMoveUndoRedo("StartPoint", StartPoint.Move(delta), false);
+                StartPoint = StartPoint.Move(delta);
             }
             else
             {
-                endPoint = endPoint.Move(delta);
+                this.AnchorMoveUndoRedo("EndPoint", EndPoint.Move(delta), false);
+                EndPoint = EndPoint.Move(delta);
             }
 
             UpdatePath();
@@ -220,10 +224,10 @@ namespace FlowSharpLib
 
         protected Rectangle RecalcDisplayRectangle()
         {
-            int x1 = startPoint.X.Min(endPoint.X);
-            int y1 = startPoint.Y.Min(endPoint.Y);
-            int x2 = startPoint.X.Max(endPoint.X);
-            int y2 = startPoint.Y.Max(endPoint.Y);
+            int x1 = StartPoint.X.Min(EndPoint.X);
+            int y1 = StartPoint.Y.Min(EndPoint.Y);
+            int x2 = StartPoint.X.Max(EndPoint.X);
+            int y2 = StartPoint.Y.Max(EndPoint.Y);
 
             return new Rectangle(x1, y1, x2 - x1, y2 - y1);
         }

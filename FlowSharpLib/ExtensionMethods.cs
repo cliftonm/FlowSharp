@@ -340,6 +340,8 @@ namespace FlowSharpLib
             {
                 if (redo)
                 {
+                    // TODO: If element is selected element (and only 1 selected element?) update property grid as well.
+                    // Or simply select element undergoing undo/redo?
                     el.Canvas.Controller.Redraw(el, _ => piElement.SetValue(el, redosave));
                 }
                 else if (@do)
@@ -349,6 +351,8 @@ namespace FlowSharpLib
                 }
                 else
                 {
+                    // TODO: If element is selected element (and only 1 selected element?) update property grid as well.
+                    // Or simply select element undergoing undo/redo?
                     el.Canvas.Controller.Redraw(el, _ => piElement.SetValue(el, save));
                 }
             }, finishGroup);

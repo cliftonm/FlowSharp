@@ -332,9 +332,9 @@ namespace FlowSharp
                 shapeBeingEdited.ChangePropertyWithUndoRedo<string>("Text", editBox.Text);
                 shapeBeingEdited.Text = editBox.Text;
                 canvasController.Redraw(shapeBeingEdited);
-
-                canvas.Controls.Remove(editBox);
-                editBox = null;
+                TextBox tb = editBox;
+                editBox = null;     // set editBox to null so the remove, which fires a LoseFocus event, doesn't call into TerminateEditing again!
+                canvas.Controls.Remove(tb);
 
                 // Updates PropertyGrid:
                 canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });

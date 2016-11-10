@@ -145,10 +145,12 @@ namespace FlowSharpLib
         {
             if (cp.Type == GripType.Start)
             {
+                this.AnchorMoveUndoRedo("StartPoint", cpShape.Point, false);
                 StartPoint = cpShape.Point;
             }
             else
             {
+                this.AnchorMoveUndoRedo("EndPoint", cpShape.Point, false);
                 EndPoint = cpShape.Point;
             }
 
@@ -161,10 +163,12 @@ namespace FlowSharpLib
         {
             if (type == GripType.Start)
             {
+                this.AnchorMoveUndoRedo("StartPoint", StartPoint.Move(delta), false);
                 StartPoint = StartPoint.Move(delta);
             }
             else
             {
+                this.AnchorMoveUndoRedo("EndPoint", EndPoint.Move(delta), false);
                 EndPoint = EndPoint.Move(delta);
             }
 

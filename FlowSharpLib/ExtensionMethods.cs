@@ -374,7 +374,6 @@ namespace FlowSharpLib
                 {
                     el.Canvas.Controller.Redraw(el, _ =>
                     {
-                        el.Connections.ForEach(c => c.ToElement.MoveAnchor(c.ToConnectionPoint.Type, redosave));
                         el.Move(redosave);
                     });
                 }
@@ -387,16 +386,12 @@ namespace FlowSharpLib
                 {
                     el.Canvas.Controller.Redraw(el, _ =>
                     {
-                        el.Connections.ForEach(c => c.ToElement.MoveAnchor(c.ToConnectionPoint.Type, save));
                         el.Move(save);
                     });
                 }
             }, finishGroup);
         }
 
-        /// <summary>
-        /// Graphic element property changes that require an erase, update, and redraw on an undo/redo.
-        /// </summary>
         public static void AnchorMoveUndoRedo(this DynamicConnector el, string elementPropertyName, Point newVal, bool finishGroup = true)
         {
             Point save = Point.Empty;
@@ -424,5 +419,5 @@ namespace FlowSharpLib
                 }
             }, finishGroup);
         }
-    }
+   }
 }

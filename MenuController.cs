@@ -58,8 +58,8 @@ namespace FlowSharp
 
 		private void mnuNew_Click(object sender, EventArgs e)
 		{
-			// TODO: Check for changes before closing.
-			elements.Clear();
+            if (CheckForChanges()) return;
+            elements.Clear();
 			canvas.Invalidate();
 			filename = String.Empty;
 			UpdateCaption();
@@ -67,7 +67,7 @@ namespace FlowSharp
 
 		private void mnuOpen_Click(object sender, EventArgs e)
 		{
-			// TODO: Check for changes before closing.
+            if (CheckForChanges()) return;
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.Filter = "FlowSharp (*.fsd)|*.fsd";
 			DialogResult res = ofd.ShowDialog();
@@ -112,13 +112,7 @@ namespace FlowSharp
 		{
 			if (elements.Count > 0)
 			{
-				if (String.IsNullOrEmpty(filename))
-				{
-					mnuSaveAs_Click(sender, e);
-				}
-
-				string data = Persist.Serialize(elements);
-				File.WriteAllText(filename, data);
+                SaveOrSaveAs();
 				UpdateCaption();
 			}
 			else
@@ -131,24 +125,8 @@ namespace FlowSharp
 		{
 			if (elements.Count > 0)
 			{
-				SaveFileDialog sfd = new SaveFileDialog();
-				sfd.Filter = "FlowSharp (*.fsd)|*.fsd|PNG (*.png)|*.png";
-				DialogResult res = sfd.ShowDialog();
-
-				if (res == DialogResult.OK)
-				{
-					if (Path.GetExtension(sfd.FileName).ToLower() == ".png")
-					{
-						canvasController.SaveAsPng(sfd.FileName);
-					}
-					else
-					{
-						filename = sfd.FileName;
-                        string data = Persist.Serialize(elements);
-                        File.WriteAllText(filename, data);
-                        UpdateCaption();
-                    }
-                }
+                SaveOrSaveAs(true);
+                UpdateCaption();
 			}
 			else
 			{
@@ -158,8 +136,8 @@ namespace FlowSharp
 
 		private void mnuExit_Click(object sender, EventArgs e)
 		{
-			// TODO: Check for changes before closing.
-			Close();
+            if (CheckForChanges()) return;
+            Close();
 		}
 
         private void mnuGroup_Click(object sender, EventArgs e)
@@ -192,6 +170,71 @@ namespace FlowSharp
         private void mnuRedo_Click(object sender, EventArgs e)
         {
             Redo();
+        }
+
+        /// <summary>
+        /// Return true if operation should be cancelled.
+        /// </summary>
+        protected bool CheckForChanges()
+        {
+            bool ret = false;
+
+            if (canvasController.UndoStack.HasChanges)
+            {
+                DialogResult res = MessageBox.Show("Do you wish to save changes to this drawing?", "Save Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                ret = res == DialogResult.Cancel;
+
+                if (res == DialogResult.Yes)
+                {
+                    ret = !SaveOrSaveAs();   // override because of possible cancel in save operation.
+                }
+            }
+
+            return ret;
+        }
+
+        protected bool SaveOrSaveAs(bool forceSaveAs = false)
+        {
+            bool ret = true;
+
+            if (String.IsNullOrEmpty(filename) || forceSaveAs)
+            {
+                ret = SaveAs();
+            }
+            else
+            {
+                string data = Persist.Serialize(elements);
+                File.WriteAllText(filename, data);
+            }
+
+            return ret;
+        }
+
+        protected bool SaveAs()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "FlowSharp (*.fsd)|*.fsd|PNG (*.png)|*.png";
+            DialogResult res = sfd.ShowDialog();
+            string ext = ".fsd";
+
+            if (res == DialogResult.OK)
+            {
+                ext = Path.GetExtension(sfd.FileName).ToLower();
+
+                if (ext == ".png")
+                {
+                    canvasController.SaveAsPng(sfd.FileName);
+                }
+                else
+                {
+                    filename = sfd.FileName;
+                    string data = Persist.Serialize(elements);
+                    File.WriteAllText(filename, data);
+                    UpdateCaption();
+                }
+            }
+
+            return res == DialogResult.OK && ext != ".png";
         }
     }
 }

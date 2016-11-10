@@ -37,6 +37,9 @@ namespace FlowSharpLib
     /// <summary>A simple, general class for managing an undo-redo stack.</summary>
     public class UndoStack
     {
+        public virtual void AfterAction(bool @do) { }
+        public virtual bool HasChanges { get { return _undoStack.Count != 0; } }
+
         protected struct Command
         {
             public Command(DoOrUndo action, bool finishGroup)
@@ -56,8 +59,6 @@ namespace FlowSharpLib
 
         protected Stack<Command> _undoStack = new Stack<Command>();
         protected Stack<Command> _redoStack = new Stack<Command>();
-
-        public virtual void AfterAction(bool @do) { }
 
         /// <summary>Executes an action and adds it to the undo stack.</summary>
         /// <param name="action">Action to take. Initially called with an argument of true.</param>

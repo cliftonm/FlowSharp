@@ -60,6 +60,12 @@ namespace FlowSharpLib
         protected Stack<Command> _undoStack = new Stack<Command>();
         protected Stack<Command> _redoStack = new Stack<Command>();
 
+        public virtual void ClearStacks()
+        {
+            _undoStack.Clear();
+            _redoStack.Clear();
+        }
+
         /// <summary>Executes an action and adds it to the undo stack.</summary>
         /// <param name="action">Action to take. Initially called with an argument of true.</param>
         /// <param name="finishGroup">If you want to group multiple actions together

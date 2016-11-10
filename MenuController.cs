@@ -63,9 +63,10 @@ namespace FlowSharp
 			canvas.Invalidate();
 			filename = String.Empty;
 			UpdateCaption();
-		}
+            canvasController.UndoStack.ClearStacks();
+        }
 
-		private void mnuOpen_Click(object sender, EventArgs e)
+        private void mnuOpen_Click(object sender, EventArgs e)
 		{
             if (CheckForChanges()) return;
 			OpenFileDialog ofd = new OpenFileDialog();
@@ -88,6 +89,7 @@ namespace FlowSharp
 			elements.ForEach(el => el.UpdatePath());
 			canvas.Invalidate();
 			UpdateCaption();
+            canvasController.UndoStack.ClearStacks();
 		}
 
         private void mnuImport_Click(object sender, EventArgs e)

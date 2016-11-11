@@ -262,9 +262,12 @@ namespace FlowSharp
 
 		protected void Delete()
 		{
-            // TODO: Better implementation would be for the mouse controller to hook a shape deleted event?
-            canvasController.SelectedElements.ForEach(el => mouseController.ShapeDeleted(el));
-			canvasController.DeleteSelectedElements();
+            if (canvasController.Canvas.Focused)
+            {
+                // TODO: Better implementation would be for the mouse controller to hook a shape deleted event?
+                canvasController.SelectedElements.ForEach(el => mouseController.ShapeDeleted(el));
+                canvasController.DeleteSelectedElements();
+            }
 		}
 
         protected void Undo()
@@ -329,7 +332,7 @@ namespace FlowSharp
             if (editBox != null)
             {
                 editBox.KeyPress -= OnEditBoxKey;
-                shapeBeingEdited.ChangePropertyWithUndoRedo<string>("Text", editBox.Text);
+                shapeBeingEdited.ChangePropertyWithUndoRedo<string>(nameof(editBox.Text), editBox.Text);
                 shapeBeingEdited.Text = editBox.Text;
                 canvasController.Redraw(shapeBeingEdited);
                 TextBox tb = editBox;

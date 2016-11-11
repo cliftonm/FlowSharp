@@ -269,7 +269,7 @@ namespace FlowSharpLib
 			int dx = delta.X.Abs();
 			int dy = delta.Y.Abs();
             var els = EraseIntersectionsTopToBottom(el, dx, dy);
-            el.ChangePropertyWithUndoRedo("DisplayRectangle", newRect, false);
+            el.ChangePropertyWithUndoRedo(nameof(el.DisplayRectangle), newRect, false);
 			el.DisplayRectangle = newRect;
 			el.UpdatePath();
 			DrawBottomToTop(els, dx, dy);

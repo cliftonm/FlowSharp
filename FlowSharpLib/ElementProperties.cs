@@ -42,10 +42,10 @@ namespace FlowSharpLib
 
 		public virtual void Update(GraphicElement el, string label)
 		{
-            (label == "DisplayRectangle").If(() => this.ChangePropertyWithUndoRedo<Rectangle>(el, "DisplayRectangle", "Rectangle"));
-            (label == "BorderColor").If(() => this.ChangePropertyWithUndoRedo<Color>(el, "BorderPenColor", "BorderColor"));
-            (label == "BorderWidth").If(() => this.ChangePropertyWithUndoRedo<int>(el, "BorderPenWidth", "BorderWidth"));
-            (label == "FillColor").If(() => this.ChangePropertyWithUndoRedo<Color>(el, "FillColor", "FillColor"));
+            (label == nameof(Rectangle)).If(() => this.ChangePropertyWithUndoRedo<Rectangle>(el, nameof(el.DisplayRectangle), nameof(Rectangle)));
+            (label == nameof(BorderColor)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.BorderPenColor), nameof(BorderColor)));
+            (label == nameof(BorderWidth)).If(() => this.ChangePropertyWithUndoRedo<int>(el, nameof(el.BorderPenWidth), nameof(BorderWidth)));
+            (label == nameof(FillColor)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.FillColor), nameof(FillColor)));
         }
     }
 }

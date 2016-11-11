@@ -31,10 +31,10 @@ namespace FlowSharpLib
 
         public override void Update(GraphicElement el, string label)
         {
-            (label == "Text").If(() => this.ChangePropertyWithUndoRedo<string>(el, "Text", "Text"));
-            (label == "Font").If(() => this.ChangePropertyWithUndoRedo<Font>(el, "TextFont", "Font"));
-            (label == "TextColor").If(() => this.ChangePropertyWithUndoRedo<Color>(el, "TextColor", "TextColor"));
-            (label == "TextAlign").If(() => this.ChangePropertyWithUndoRedo<Color>(el, "TextAlign", "TextAlign"));
+            (label == nameof(Text)).If(() => this.ChangePropertyWithUndoRedo<string>(el, nameof(el.Text), nameof(Text)));
+            (label == nameof(Font)).If(() => this.ChangePropertyWithUndoRedo<Font>(el, nameof(el.TextFont), nameof(Font)));
+            (label == nameof(TextColor)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.TextColor), nameof(TextColor)));
+            (label == nameof(TextAlign)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.TextAlign), nameof(TextAlign)));
             base.Update(el, label);
         }
     }

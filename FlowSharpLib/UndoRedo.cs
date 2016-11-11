@@ -37,18 +37,26 @@ namespace FlowSharpLib
     /// <summary>A simple, general class for managing an undo-redo stack.</summary>
     public class UndoStack
     {
-        public virtual void AfterAction(bool @do) { }
+        public event EventHandler<EventArgs> AfterAction;
+        // public virtual void AfterAction(bool @do) { }
         public virtual bool HasChanges { get { return _undoStack.Count != 0; } }
+
+        public virtual List<string> GetStackInfo()
+        {
+            return _undoStack.Select(s => s.Name + " " + (s.FinishGroup ? "F" : "-")).Reverse().ToList();
+        }
 
         protected struct Command
         {
-            public Command(DoOrUndo action, bool finishGroup)
-            { _action = action; _done = false; _finishGroup = finishGroup; }
+            public Command(string name, DoOrUndo action, bool finishGroup)
+            { _name = name; _action = action; _done = false; _finishGroup = finishGroup; }
             DoOrUndo _action;
             bool _done; // debug check
                         // To group a series of actions into one undo command, _finishGroup should 
                         // be false on all actions except the final one.
             bool _finishGroup;
+            string _name;
+            public string Name { get { return _name; } }
             public bool FinishGroup { get { return _finishGroup; } }
             public Command Do() { Debug.Assert(!_done); _done = true; _action(true, false); return this; }
             public Command Undo() { Debug.Assert(_done); _done = false; _action(false, false); return this; }
@@ -73,14 +81,15 @@ namespace FlowSharpLib
         /// true only on the last action.</param>
         /// <remarks>If there are any actions on the tentative stack, they are accepted
         /// and grouped with this new action.</remarks>
-        public virtual void Do(DoOrUndo action, bool finishGroup = true)
+        public virtual void Do(string name, DoOrUndo action, bool finishGroup = true)
         {
             if (action != null)
             {
                 AcceptTentativeAction(false);
-                _undoStack.Push(new Command(action, finishGroup).Do());
+                _undoStack.Push(new Command(name, action, finishGroup).Do());
                 _redoStack.Clear();
-                AfterAction(true);
+                AfterAction.Fire(this, EventArgs.Empty);
+                // AfterAction(true);
             }
         }
 
@@ -88,6 +97,7 @@ namespace FlowSharpLib
         {
             Debug.Assert(_undoStack.Count > 0);
             _undoStack.Push(_undoStack.Pop().WithSeparatorFlag(finish));
+            AfterAction.Fire(this, EventArgs.Empty);
         }
 
         public virtual bool Undo(bool run = true)
@@ -101,7 +111,9 @@ namespace FlowSharpLib
                 {
                     _redoStack.Push(_undoStack.Pop().Undo());
                 } while (_undoStack.Count != 0 && !_undoStack.Peek().FinishGroup);
-                AfterAction(false);
+
+                AfterAction.Fire(this, EventArgs.Empty);
+                // AfterAction(false);
             }
             return true;
         }
@@ -116,7 +128,9 @@ namespace FlowSharpLib
                 {
                     _undoStack.Push(_redoStack.Pop().Redo());
                 } while (!_undoStack.Peek().FinishGroup);
-                AfterAction(true);
+
+                AfterAction.Fire(this, EventArgs.Empty);
+                // AfterAction(true);
             }
             return true;
         }
@@ -134,8 +148,8 @@ namespace FlowSharpLib
         /// undo.
         public virtual void DoTentatively(DoOrUndo action)
         {
-            _tempStack.Push(new Command(action, false).Do());
-            AfterAction(true);
+            _tempStack.Push(new Command("", action, false).Do());
+            // AfterAction(true);
         }
         /// <summary>If tentative action(s) have been performed, they are now added 
         /// to the undo stack and the redo stack is cleared.</summary>

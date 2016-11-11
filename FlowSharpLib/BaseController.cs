@@ -23,11 +23,15 @@ namespace FlowSharpLib
 		public const int SNAP_DETACH_VELOCITY = 5;
 
 		public const int CONNECTION_POINT_SIZE = 3;		// this is actually the length from center.
+        public const int GROUPBOX_INFLATE = 15;
 
         public const int CAP_WIDTH = 5;
         public const int CAP_HEIGHT = 5;
 
-		public Canvas Canvas { get { return canvas; } }
+        public EventHandler<ElementEventArgs> ElementSelected;
+        public EventHandler<ElementEventArgs> UpdateSelectedElement;
+
+        public Canvas Canvas { get { return canvas; } }
 
         // TODO: Return back to ReadOnlyCollection and implement the functions that the menu controller needs.
         public List<GraphicElement> Elements { get { return elements; } }
@@ -39,30 +43,23 @@ namespace FlowSharpLib
         public bool IsCanvasDragging { get; set; }
 
 		protected List<GraphicElement> elements;
-		public EventHandler<ElementEventArgs> ElementSelected;
-		public EventHandler<ElementEventArgs> UpdateSelectedElement;
 
-		public List<GraphicElement> SelectedElements { get { return selectedElements; } }
+        public UndoStack UndoStack { get { return undoStack; } }
+
+        public List<GraphicElement> SelectedElements { get { return selectedElements; } }
 
 		protected Canvas canvas;
         protected UndoStack undoStack;
 		protected List<GraphicElement> selectedElements;
-		protected ShapeAnchor selectedAnchor;
-		protected GraphicElement showingAnchorsElement;
-
-		protected bool dragging;
-		protected bool leftMouseDown;
-        protected bool rightMouseDown;
-        protected bool selectionMode;
 
         // Diagnostic
         private int eraseCount = 0;
 
-		public BaseController(Canvas canvas, List<GraphicElement> elements)
+		public BaseController(Canvas canvas)
 		{
             undoStack = new UndoStack();
 			this.canvas = canvas;
-			this.elements = elements;
+            elements = new List<GraphicElement>();
             selectedElements = new List<GraphicElement>();
 		}
 
@@ -80,16 +77,6 @@ namespace FlowSharpLib
         public virtual void DeselectGroupedElements() { }
         public virtual void DeselectElement(GraphicElement el) { }
         public virtual void HideConnectionPoints() { }
-
-        public UndoStack UndoStack { get { return undoStack; } }
-
-        //public virtual void UndoRedo(Action doit, Action undoit)
-        //{
-        //    undoStack.Do(@do =>
-        //    {
-        //        if (@do) doit(); else undoit();
-        //    });
-        //}
 
         public virtual void Undo()
         {
@@ -182,10 +169,6 @@ namespace FlowSharpLib
 
         public void DeleteSelectedElements()
 		{
-            selectedAnchor = null;
-            showingAnchorsElement = null;
-            dragging = false;
-
             // TODO: Optimize for redrawing just selected elements (we remove call to DeleteElement when we do this)
             selectedElements.ForEach(el =>
             {
@@ -196,23 +179,6 @@ namespace FlowSharpLib
             selectedElements.Clear();
             canvas.Invalidate();
 		}
-
-        /// <summary>
-        /// Removes an element from the elements list, without disposing it.
-        /// This behavior is used for caching elements so they are not disposed as a result of an undo/redo step.
-        /// </summary>
-        public void RemoveElement(GraphicElement el)
-        {
-            // TODO: don't redraw all the elements, only erase the current element and update the screen!
-            // See how this is done with Ungroup.
-            el.DetachAll();
-            var els = EraseIntersectionsTopToBottom(el);
-            elements.Remove(el);
-            List<GraphicElement> elsToRedraw = els.ToList();
-            elsToRedraw.Remove(el);
-            DrawBottomToTop(elsToRedraw);
-            UpdateScreen(els);
-        }
 
         public void DeleteElement(GraphicElement el)
         {
@@ -283,7 +249,7 @@ namespace FlowSharpLib
             groupBox = new GroupBox(canvas);
             groupBox.GroupChildren.AddRange(shapesToGroup);
             Rectangle r = GetExtents(shapesToGroup);
-            r.Inflate(20, 20);
+            r.Inflate(GROUPBOX_INFLATE, GROUPBOX_INFLATE);
             groupBox.DisplayRectangle = r;
             shapesToGroup.ForEach(s => s.Parent = groupBox);
             IEnumerable<GraphicElement> intersections = FindAllIntersections(groupBox);
@@ -298,6 +264,26 @@ namespace FlowSharpLib
             UpdateScreen(intersections);
 
             return groupBox;
+        }
+
+        // Called from undoing an ungroup.
+        public void RegroupShapes(GroupBox groupBox, List<GraphicElement> shapesToGroup)
+        {
+            groupBox.GroupChildren.AddRange(shapesToGroup);
+            Rectangle r = GetExtents(shapesToGroup);
+            r.Inflate(GROUPBOX_INFLATE, GROUPBOX_INFLATE);
+            groupBox.DisplayRectangle = r;
+            shapesToGroup.ForEach(s => s.Parent = groupBox);
+            IEnumerable<GraphicElement> intersections = FindAllIntersections(groupBox);
+            EraseTopToBottom(intersections);
+
+            // Insert groupbox just after the lowest shape being grouped.
+            int insertionPoint = shapesToGroup.Select(s => elements.IndexOf(s)).OrderBy(n => n).Last() + 1;
+            elements.Insert(insertionPoint, groupBox);
+
+            intersections = FindAllIntersections(groupBox);
+            DrawBottomToTop(intersections);
+            UpdateScreen(intersections);
         }
 
         public void UngroupShapes(List<GraphicElement> shapesToUngroup)

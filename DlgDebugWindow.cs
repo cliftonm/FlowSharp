@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -36,11 +37,22 @@ namespace FlowSharp
             }
         }
 
-        private void btnUpdate_Click(object sender, EventArgs e)
+        public void UpdateUndoStack(List<string> undoEvents)
+        {
+            tbUndoEvents.Clear();
+            undoEvents.Where(s=>s.EndsWith("F")).ForEach(s => tbUndoEvents.AppendText(s+"\r\n"));
+        }
+
+        public void UpdateShapeTree()
         {
             tvShapes.Nodes.Clear();
             PopulateWithShapes();
             tvShapes.ExpandAll();
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            UpdateShapeTree();
         }
 
         protected void PopulateWithShapes()

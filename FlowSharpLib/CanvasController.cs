@@ -39,7 +39,7 @@ namespace FlowSharpLib
 		protected List<SnapInfo> currentlyNear = new List<SnapInfo>();
         protected List<SnapInfo> nearElements;
 
-        public CanvasController(Canvas canvas, List<GraphicElement> elements) : base(canvas, elements)
+        public CanvasController(Canvas canvas) : base(canvas)
 		{
 			canvas.Controller = this;
 			canvas.PaintComplete = CanvasPaintComplete;

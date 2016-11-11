@@ -59,12 +59,11 @@ namespace FlowSharp
 		private void mnuNew_Click(object sender, EventArgs e)
 		{
             if (CheckForChanges()) return;
-            elements.Clear();
+            canvasController.Elements.Clear();
 			canvas.Invalidate();
 			filename = String.Empty;
 			UpdateCaption();
             canvasController.UndoStack.ClearStacks();
-            ClearElementCaches();
         }
 
         private void mnuOpen_Click(object sender, EventArgs e)
@@ -85,13 +84,12 @@ namespace FlowSharp
 
 			string data = File.ReadAllText(filename);
 			List<GraphicElement> els = Persist.Deserialize(canvas, data);
-			elements.Clear();
-			elements.AddRange(els);
-			elements.ForEach(el => el.UpdatePath());
+            canvasController.Elements.Clear();
+            canvasController.Elements.AddRange(els);
+            canvasController.Elements.ForEach(el => el.UpdatePath());
 			canvas.Invalidate();
 			UpdateCaption();
             canvasController.UndoStack.ClearStacks();
-            ClearElementCaches();
         }
 
         private void mnuImport_Click(object sender, EventArgs e)
@@ -105,8 +103,8 @@ namespace FlowSharp
                 string importFilename = ofd.FileName;
                 string data = File.ReadAllText(importFilename);
                 List<GraphicElement> els = Persist.Deserialize(canvas, data);
-                elements.AddRange(els);
-                elements.ForEach(el => el.UpdatePath());
+                canvasController.Elements.AddRange(els);
+                canvasController.Elements.ForEach(el => el.UpdatePath());
                 els.ForEach(el => canvas.Controller.SelectElement(el));
                 canvas.Invalidate();
             }
@@ -114,7 +112,7 @@ namespace FlowSharp
 
         private void mnuSave_Click(object sender, EventArgs e)
 		{
-			if (elements.Count > 0)
+			if (canvasController.Elements.Count > 0)
 			{
                 SaveOrSaveAs();
 				UpdateCaption();
@@ -127,7 +125,7 @@ namespace FlowSharp
 
 		private void mnuSaveAs_Click(object sender, EventArgs e)
 		{
-			if (elements.Count > 0)
+			if (canvasController.Elements.Count > 0)
 			{
                 SaveOrSaveAs(true);
                 UpdateCaption();
@@ -148,7 +146,8 @@ namespace FlowSharp
         {
             if (canvasController.SelectedElements.Any())
             {
-                FlowSharpLib.GroupBox groupBox = canvasController.GroupShapes(canvasController.SelectedElements);
+                FlowSharpLib.GroupBox groupBox = null;
+                groupBox = canvasController.GroupShapes(canvasController.SelectedElements);
                 canvasController.DeselectCurrentSelectedElements();
                 canvasController.SelectElement(groupBox);
             }
@@ -207,7 +206,7 @@ namespace FlowSharp
             }
             else
             {
-                string data = Persist.Serialize(elements);
+                string data = Persist.Serialize(canvasController.Elements);
                 File.WriteAllText(filename, data);
             }
 
@@ -232,7 +231,7 @@ namespace FlowSharp
                 else
                 {
                     filename = sfd.FileName;
-                    string data = Persist.Serialize(elements);
+                    string data = Persist.Serialize(canvasController.Elements);
                     File.WriteAllText(filename, data);
                     UpdateCaption();
                 }

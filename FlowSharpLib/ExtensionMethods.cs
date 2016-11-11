@@ -297,7 +297,7 @@ namespace FlowSharpLib
             PropertyInfo piElement = el.GetType().GetProperty(elementPropertyName);
             PropertyInfo piThis = props.GetType().GetProperty(propertyName);
 
-            el.Canvas.Controller.UndoStack.Do((@do, redo) =>
+            el.Canvas.Controller.UndoStack.Do(el.ToString() + ":" + elementPropertyName, (@do, redo) =>
             {
                 if (redo)
                 {
@@ -336,7 +336,7 @@ namespace FlowSharpLib
             T redosave = default(T);
             PropertyInfo piElement = el.GetType().GetProperty(elementPropertyName);
 
-            el.Canvas.Controller.UndoStack.Do((@do, redo) =>
+            el.Canvas.Controller.UndoStack.Do(el.ToString() + ":" + elementPropertyName, (@do, redo) =>
             {
                 if (redo)
                 {
@@ -368,7 +368,7 @@ namespace FlowSharpLib
 
             // TODO: undo/redo should perform all operations before Redraw.  How do we accomplish that with the UndoRedo object?
 
-            el.Canvas.Controller.UndoStack.Do((@do, redo) =>
+            el.Canvas.Controller.UndoStack.Do(el.ToString() + ":Move", (@do, redo) =>
             {
                 if (redo)
                 {
@@ -398,7 +398,7 @@ namespace FlowSharpLib
             Point redosave = Point.Empty;
             PropertyInfo piElement = el.GetType().GetProperty(elementPropertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-            el.Canvas.Controller.UndoStack.Do((@do, redo) =>
+            el.Canvas.Controller.UndoStack.Do(el.ToString() + ":" + elementPropertyName, (@do, redo) =>
             {
                 if (redo)
                 {

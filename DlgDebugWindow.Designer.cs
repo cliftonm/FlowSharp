@@ -32,6 +32,8 @@
             this.tvShapes = new System.Windows.Forms.TreeView();
             this.label2 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.tbUndoEvents = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.ckShapeEvents = new System.Windows.Forms.CheckBox();
             this.ckRoutingEvents = new System.Windows.Forms.CheckBox();
             this.ckTraceEnabled = new System.Windows.Forms.CheckBox();
@@ -46,8 +48,7 @@
             // 
             // btnUpdate
             // 
-            this.btnUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdate.Location = new System.Drawing.Point(780, 5);
+            this.btnUpdate.Location = new System.Drawing.Point(515, 10);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(75, 23);
             this.btnUpdate.TabIndex = 2;
@@ -57,12 +58,11 @@
             // 
             // tvShapes
             // 
-            this.tvShapes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tvShapes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.tvShapes.Location = new System.Drawing.Point(7, 34);
             this.tvShapes.Name = "tvShapes";
-            this.tvShapes.Size = new System.Drawing.Size(852, 196);
+            this.tvShapes.Size = new System.Drawing.Size(584, 208);
             this.tvShapes.TabIndex = 3;
             // 
             // label2
@@ -83,6 +83,8 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.tbUndoEvents);
+            this.splitContainer1.Panel1.Controls.Add(this.label3);
             this.splitContainer1.Panel1.Controls.Add(this.tvShapes);
             this.splitContainer1.Panel1.Controls.Add(this.btnUpdate);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
@@ -95,9 +97,30 @@
             this.splitContainer1.Panel2.Controls.Add(this.btnClearTrace);
             this.splitContainer1.Panel2.Controls.Add(this.tbTrace);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
-            this.splitContainer1.Size = new System.Drawing.Size(863, 687);
-            this.splitContainer1.SplitterDistance = 229;
+            this.splitContainer1.Size = new System.Drawing.Size(1002, 724);
+            this.splitContainer1.SplitterDistance = 241;
             this.splitContainer1.TabIndex = 11;
+            // 
+            // tbUndoEvents
+            // 
+            this.tbUndoEvents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbUndoEvents.Location = new System.Drawing.Point(598, 34);
+            this.tbUndoEvents.Multiline = true;
+            this.tbUndoEvents.Name = "tbUndoEvents";
+            this.tbUndoEvents.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbUndoEvents.Size = new System.Drawing.Size(392, 208);
+            this.tbUndoEvents.TabIndex = 8;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(594, 16);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(73, 15);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Undo Stack:";
             // 
             // ckShapeEvents
             // 
@@ -134,7 +157,7 @@
             // btnClearTrace
             // 
             this.btnClearTrace.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearTrace.Location = new System.Drawing.Point(780, 8);
+            this.btnClearTrace.Location = new System.Drawing.Point(919, 8);
             this.btnClearTrace.Name = "btnClearTrace";
             this.btnClearTrace.Size = new System.Drawing.Size(75, 23);
             this.btnClearTrace.TabIndex = 13;
@@ -151,7 +174,7 @@
             this.tbTrace.Multiline = true;
             this.tbTrace.Name = "tbTrace";
             this.tbTrace.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbTrace.Size = new System.Drawing.Size(852, 422);
+            this.tbTrace.Size = new System.Drawing.Size(991, 447);
             this.tbTrace.TabIndex = 12;
             // 
             // label1
@@ -167,7 +190,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(863, 687);
+            this.ClientSize = new System.Drawing.Size(1002, 724);
             this.Controls.Add(this.splitContainer1);
             this.Name = "DlgDebugWindow";
             this.Text = "FlowSharp Debug Window";
@@ -192,5 +215,7 @@
         private System.Windows.Forms.Button btnClearTrace;
         public System.Windows.Forms.TextBox tbTrace;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox tbUndoEvents;
+        private System.Windows.Forms.Label label3;
     }
 }

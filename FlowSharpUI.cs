@@ -23,14 +23,12 @@ namespace FlowSharp
 
         protected MouseController mouseController;
         protected CanvasController canvasController;
-		protected ToolboxController toolboxController;
-		protected UIController uiController;
-		protected Canvas canvas;
-		protected List<GraphicElement> elements = new List<GraphicElement>();
+        protected ToolboxController toolboxController;
+        protected UIController uiController;
+        protected Canvas canvas;
 
-		protected Canvas toolboxCanvas;
-		protected List<GraphicElement> toolboxElements = new List<GraphicElement>();
-		protected Dictionary<Keys, Action> keyActions = new Dictionary<Keys, Action>();
+        protected Canvas toolboxCanvas;
+        protected Dictionary<Keys, Action> keyActions = new Dictionary<Keys, Action>();
 
         protected DlgDebugWindow debugWindow;
         protected TraceListener traceListener;
@@ -106,17 +104,17 @@ namespace FlowSharp
         public void OnShown(object sender, EventArgs e)
         {
             InitializePlugins();
-			InitializeCanvas();
-			InitializeToolbox();
+            InitializeCanvas();
+            InitializeControllers();
+            InitializeToolbox();
             InitializePluginsInToolbox();
             UpdateToolboxPaths();
-            InitializeControllers();
             UpdateMenu(false);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-		{
-			Action act;
+        {
+            Action act;
             bool ret = false;
 
             if (editBox == null)
@@ -128,8 +126,8 @@ namespace FlowSharp
                 }
                 else
                 {
-                    if (canvas.Focused && 
-                        canvasController.SelectedElements.Count == 1 && 
+                    if (canvas.Focused &&
+                        canvasController.SelectedElements.Count == 1 &&
                         !canvasController.SelectedElements[0].IsConnector &&
                         CanStartEditing(keyData))
                     {
@@ -179,10 +177,10 @@ namespace FlowSharp
             }
 
             return ret;
-		}
+        }
 
-		protected void Copy()
-		{
+        protected void Copy()
+        {
             if (canvasController.SelectedElements.Any())
             {
                 List<GraphicElement> elementsToCopy = new List<GraphicElement>();
@@ -190,7 +188,7 @@ namespace FlowSharp
                 // the ID's for the child elements aren't found.
                 elementsToCopy.AddRange(canvasController.SelectedElements);
                 elementsToCopy.AddRange(IncludeChildren(elementsToCopy));
-                string copyBuffer = Persist.Serialize(elementsToCopy.OrderByDescending(el=>elements.IndexOf(el)));
+                string copyBuffer = Persist.Serialize(elementsToCopy.OrderByDescending(el => canvasController.Elements.IndexOf(el)));
                 Clipboard.SetData("FlowSharp", copyBuffer);
             }
             else
@@ -213,15 +211,15 @@ namespace FlowSharp
         }
 
         protected void Paste()
-		{
-			string copyBuffer = Clipboard.GetData("FlowSharp")?.ToString();
+        {
+            string copyBuffer = Clipboard.GetData("FlowSharp")?.ToString();
 
-			if (copyBuffer == null)
-			{
-				MessageBox.Show("Clipboard does not contain a FlowSharp shape", "Paste Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-			else
-			{
+            if (copyBuffer == null)
+            {
+                MessageBox.Show("Clipboard does not contain a FlowSharp shape", "Paste Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
                 try
                 {
                     List<GraphicElement> els = Persist.Deserialize(canvas, copyBuffer);
@@ -248,27 +246,27 @@ namespace FlowSharp
 
                     IEnumerable<GraphicElement> distinctIntersections = intersections.Distinct();
                     canvasController.EraseTopToBottom(distinctIntersections);
-                    els.ForEach(el => elements.Insert(0, el));
+                    els.ForEach(el => canvasController.Elements.Insert(0, el));
                     canvasController.DrawBottomToTop(distinctIntersections);
                     canvasController.UpdateScreen(distinctIntersections);
                     noParentElements.ForEach(el => canvasController.SelectElement(el));
                 }
                 catch (Exception ex)
-				{
-					MessageBox.Show("Error pasting shape:\r\n"+ex.Message, "Paste Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-			}
-		}
+                {
+                    MessageBox.Show("Error pasting shape:\r\n" + ex.Message, "Paste Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
 
-		protected void Delete()
-		{
+        protected void Delete()
+        {
             if (canvasController.Canvas.Focused)
             {
                 // TODO: Better implementation would be for the mouse controller to hook a shape deleted event?
                 canvasController.SelectedElements.ForEach(el => mouseController.ShapeDeleted(el));
                 canvasController.DeleteSelectedElements();
             }
-		}
+        }
 
         protected void Undo()
         {
@@ -366,16 +364,18 @@ namespace FlowSharp
 			canvas.Initialize(pnlCanvas);
             // Once the user clicks on the canvas, the displacement for copying elements from the toolbox onto the canvas is reset.
             canvas.MouseClick += (sndr, args) => toolboxController.ResetDisplacement();
+            toolboxCanvas = new ToolboxCanvas();
         }
 
-		protected void InitializeControllers()
+        protected void InitializeControllers()
 		{ 
-			canvasController = new CanvasController(canvas, elements);
+			canvasController = new CanvasController(canvas);
             mouseController = new MouseController(canvasController);
             // No longer needed, as editbox LostFocus event handles terminating itself now.
             // mouseController.MouseClick += (sndr, args) => TerminateEditing();
             canvasController.ElementSelected += (snd, args) => UpdateMenu(args.Element != null);
-			toolboxController = new ToolboxController(toolboxCanvas, toolboxElements, canvasController);
+            canvasController.UndoStack.AfterAction += (sndr, args) => UpdateDebugWindowUndoStack();
+			toolboxController = new ToolboxController(toolboxCanvas, canvasController);
             uiController = new UIController(pgElement, canvasController);
             mouseController.HookMouseEvents();
             mouseController.InitializeBehavior();
@@ -393,30 +393,39 @@ namespace FlowSharp
             mnuUngroup.Enabled = canvasController.SelectedElements.Any(e => e.GroupChildren.Any());
 		}
 
+        protected void UpdateDebugWindowUndoStack()
+        {
+            if (debugWindow != null)
+            {
+                List<string> undoEvents = canvasController.UndoStack.GetStackInfo();
+                debugWindow.UpdateUndoStack(undoEvents);
+                debugWindow.UpdateShapeTree();
+            }
+        }
+
         protected void InitializeToolbox()
         {
-            toolboxCanvas = new ToolboxCanvas();
             toolboxCanvas.Initialize(pnlToolbox);
             int x = pnlToolbox.Width / 2 - 12;
-            toolboxElements.Add(new Box(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 15, 25, 25) });
-            toolboxElements.Add(new Ellipse(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 15, 25, 25) });
-            toolboxElements.Add(new Diamond(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 50, 15, 25, 25) });
+            toolboxController.Elements.Add(new Box(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 15, 25, 25) });
+            toolboxController.Elements.Add(new Ellipse(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 15, 25, 25) });
+            toolboxController.Elements.Add(new Diamond(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 50, 15, 25, 25) });
 
-            toolboxElements.Add(new LeftTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 60, 60, 25, 25) });
-            toolboxElements.Add(new RightTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 20, 60, 25, 25) });
-            toolboxElements.Add(new UpTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 20, 60, 25, 25) });
-            toolboxElements.Add(new DownTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 60, 60, 25, 25) });
+            toolboxController.Elements.Add(new LeftTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 60, 60, 25, 25) });
+            toolboxController.Elements.Add(new RightTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 20, 60, 25, 25) });
+            toolboxController.Elements.Add(new UpTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 20, 60, 25, 25) });
+            toolboxController.Elements.Add(new DownTriangle(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 60, 60, 25, 25) });
 
-            toolboxElements.Add(new HorizontalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 130, 30, 20) });
-            toolboxElements.Add(new VerticalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 125, 20, 30) });
-            toolboxElements.Add(new DiagonalConnector(toolboxCanvas, new Point(x + 50, 125), new Point(x + 50 + 25, 125 + 25)));
+            toolboxController.Elements.Add(new HorizontalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 130, 30, 20) });
+            toolboxController.Elements.Add(new VerticalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 125, 20, 30) });
+            toolboxController.Elements.Add(new DiagonalConnector(toolboxCanvas, new Point(x + 50, 125), new Point(x + 50 + 25, 125 + 25)));
 
             // toolboxElements.Add(new ToolboxDynamicConnectorLR(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 185, 25, 25)});
-            toolboxElements.Add(new DynamicConnectorLR(toolboxCanvas, new Point(x - 50, 175), new Point(x - 50 + 25, 175 + 25)));
-            toolboxElements.Add(new DynamicConnectorLD(toolboxCanvas, new Point(x, 175), new Point(x + 25, 175 + 25)));
-            toolboxElements.Add(new DynamicConnectorUD(toolboxCanvas, new Point(x + 50, 175), new Point(x + 50 + 25, 175 + 25)));
+            toolboxController.Elements.Add(new DynamicConnectorLR(toolboxCanvas, new Point(x - 50, 175), new Point(x - 50 + 25, 175 + 25)));
+            toolboxController.Elements.Add(new DynamicConnectorLD(toolboxCanvas, new Point(x, 175), new Point(x + 25, 175 + 25)));
+            toolboxController.Elements.Add(new DynamicConnectorUD(toolboxCanvas, new Point(x + 50, 175), new Point(x + 50 + 25, 175 + 25)));
 
-            toolboxElements.Add(new ToolboxText(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 230, 25, 25) });
+            toolboxController.Elements.Add(new ToolboxText(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 230, 25, 25) });
             // toolboxElements.Add(new DiagonalLine(toolboxCanvas) { DisplayRectangle = new Rectangle(x + 25, 230, 25, 25) });
         }
 
@@ -433,7 +442,7 @@ namespace FlowSharp
             {
                 GraphicElement pluginShape = Activator.CreateInstance(t, new object[] { toolboxCanvas }) as GraphicElement;
                 pluginShape.DisplayRectangle = new Rectangle(n, y, 25, 25);
-                toolboxElements.Add(pluginShape);
+                toolboxController.Elements.Add(pluginShape);
 
                 // Next toolbox shape position:
                 n += 40;
@@ -448,7 +457,7 @@ namespace FlowSharp
 
         protected void UpdateToolboxPaths()
         {
-            toolboxElements.ForEach(el => el.UpdatePath());
+            toolboxController.Elements.ForEach(el => el.UpdatePath());
         }
 
         protected void UpdateCaption()
@@ -462,6 +471,8 @@ namespace FlowSharp
             {
                 debugWindow = new DlgDebugWindow(canvasController);
                 debugWindow.Show();
+                List<string> undoEvents = canvasController.UndoStack.GetStackInfo();
+                debugWindow.UpdateUndoStack(undoEvents);
                 traceListener.DebugWindow = debugWindow;
                 debugWindow.FormClosed += (sndr, args) =>
                 {
@@ -469,11 +480,6 @@ namespace FlowSharp
                     traceListener.DebugWindow = null;
                 };
             }
-        }
-
-        protected void ClearElementCaches()
-        {
-            toolboxController.ClearCache();
         }
     }
 }

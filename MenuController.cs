@@ -59,7 +59,7 @@ namespace FlowSharp
 		private void mnuNew_Click(object sender, EventArgs e)
 		{
             if (CheckForChanges()) return;
-            canvasController.Elements.Clear();
+            canvasController.Clear();
 			canvas.Invalidate();
 			filename = String.Empty;
 			UpdateCaption();
@@ -84,8 +84,8 @@ namespace FlowSharp
 
 			string data = File.ReadAllText(filename);
 			List<GraphicElement> els = Persist.Deserialize(canvas, data);
-            canvasController.Elements.Clear();
-            canvasController.Elements.AddRange(els);
+            canvasController.Clear();
+            canvasController.AddRange(els);
             canvasController.Elements.ForEach(el => el.UpdatePath());
 			canvas.Invalidate();
 			UpdateCaption();
@@ -103,7 +103,7 @@ namespace FlowSharp
                 string importFilename = ofd.FileName;
                 string data = File.ReadAllText(importFilename);
                 List<GraphicElement> els = Persist.Deserialize(canvas, data);
-                canvasController.Elements.AddRange(els);
+                canvasController.AddRange(els);
                 canvasController.Elements.ForEach(el => el.UpdatePath());
                 els.ForEach(el => canvas.Controller.SelectElement(el));
                 canvas.Invalidate();
@@ -147,7 +147,7 @@ namespace FlowSharp
             if (canvasController.SelectedElements.Any())
             {
                 FlowSharpLib.GroupBox groupBox = null;
-                groupBox = canvasController.GroupShapes(canvasController.SelectedElements);
+                groupBox = canvasController.GroupShapes();
                 canvasController.DeselectCurrentSelectedElements();
                 canvasController.SelectElement(groupBox);
             }
@@ -155,8 +155,7 @@ namespace FlowSharp
 
         private void mnuUngroup_Click(object sender, EventArgs e)
         {
-            canvasController.UngroupShapes(canvasController.SelectedElements);
-            canvasController.SelectedElements.Clear();
+            canvasController.UngroupShapes();
         }
 
         private void mnuPlugins_Click(object sender, EventArgs e)

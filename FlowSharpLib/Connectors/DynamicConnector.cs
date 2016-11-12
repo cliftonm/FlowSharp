@@ -16,17 +16,19 @@ namespace FlowSharpLib
 		protected Point StartPoint { get; set; }
 		protected Point EndPoint { get; set; }
 
-		public override bool Selected
-		{
-			get { return base.Selected; }
-			set
-			{
-				base.Selected = value;
-				lines.ForEach(l => l.ShowConnectorAsSelected = value);
-			}
-		}
+        public override void Select()
+        {
+            base.Select();
+            lines.ForEach(l => l.ShowConnectorAsSelected = true);
+        }
 
-		public DynamicConnector(Canvas canvas) : base(canvas)
+        public override void Deselect()
+        {
+            base.Deselect();
+            lines.ForEach(l => l.ShowConnectorAsSelected = false);
+        }
+
+        public DynamicConnector(Canvas canvas) : base(canvas)
 		{
 			HasCornerAnchors = false;
 			HasCenterAnchors = false;

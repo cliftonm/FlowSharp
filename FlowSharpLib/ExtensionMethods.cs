@@ -347,6 +347,7 @@ namespace FlowSharpLib
                 else if (@do)
                 {
                     save = CastObject<T>(piElement.GetValue(el));
+                    piElement.SetValue(el, newVal);
                     redosave = newVal;
                 }
                 else

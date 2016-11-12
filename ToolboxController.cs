@@ -136,7 +136,7 @@ namespace FlowSharp
             if (el != null)
             {
                 var els = EraseIntersectionsTopToBottom(el);
-                el.Selected = true;
+                el.Select();
                 DrawBottomToTop(els);
                 UpdateScreen(els);
                 selectedElements.Add(el);
@@ -156,7 +156,7 @@ namespace FlowSharp
             if (selectedElements.Any())
             {
                 var els = EraseIntersectionsTopToBottom(selectedElements[0]);
-                selectedElements[0].Selected = false;
+                selectedElements[0].Select();
                 DrawBottomToTop(els);
                 UpdateScreen(els);
                 selectedElements.Clear();

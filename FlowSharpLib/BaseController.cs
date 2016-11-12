@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Drawing;
@@ -34,7 +35,7 @@ namespace FlowSharpLib
         public Canvas Canvas { get { return canvas; } }
 
         // TODO: Return back to ReadOnlyCollection and implement the functions that the menu controller needs.
-        public List<GraphicElement> Elements { get { return elements; } }
+        public ReadOnlyCollection<GraphicElement> Elements { get { return elements.AsReadOnly(); } }
         
         // TODO: Implement as interface
         public MouseController MouseController { get; set; }
@@ -42,12 +43,10 @@ namespace FlowSharpLib
         // TODO: Kludgy workaround for issue #34.
         public bool IsCanvasDragging { get; set; }
 
-		protected List<GraphicElement> elements;
-
         public UndoStack UndoStack { get { return undoStack; } }
+        public ReadOnlyCollection<GraphicElement> SelectedElements { get { return selectedElements.AsReadOnly(); } }
 
-        public List<GraphicElement> SelectedElements { get { return selectedElements; } }
-
+        protected List<GraphicElement> elements;
 		protected Canvas canvas;
         protected UndoStack undoStack;
 		protected List<GraphicElement> selectedElements;
@@ -77,6 +76,26 @@ namespace FlowSharpLib
         public virtual void DeselectGroupedElements() { }
         public virtual void DeselectElement(GraphicElement el) { }
         public virtual void HideConnectionPoints() { }
+
+        public void Insert(int idx, GraphicElement el)
+        {
+            elements.Insert(idx, el);
+        }
+
+        public void Add(GraphicElement el)
+        {
+            elements.Add(el);
+        }
+
+        public void AddRange(List<GraphicElement> els)
+        {
+            elements.AddRange(els);
+        }
+
+        public void Clear()
+        {
+            elements.Clear();
+        }
 
         public virtual void Undo()
         {
@@ -236,14 +255,14 @@ namespace FlowSharpLib
 			int dy = delta.Y.Abs();
             var els = EraseIntersectionsTopToBottom(el, dx, dy);
             el.ChangePropertyWithUndoRedo(nameof(el.DisplayRectangle), newRect, false);
-			el.DisplayRectangle = newRect;
 			el.UpdatePath();
 			DrawBottomToTop(els, dx, dy);
 			UpdateScreen(els, dx, dy);
 		}
 
-        public GroupBox GroupShapes(List<GraphicElement> shapesToGroup)
+        public GroupBox GroupShapes()
         {
+            List<GraphicElement> shapesToGroup = selectedElements;
             GroupBox groupBox = null;
 
             groupBox = new GroupBox(canvas);
@@ -266,59 +285,24 @@ namespace FlowSharpLib
             return groupBox;
         }
 
-        // Called from undoing an ungroup.
-        public void RegroupShapes(GroupBox groupBox, List<GraphicElement> shapesToGroup)
+        public void UngroupShapes()
         {
-            groupBox.GroupChildren.AddRange(shapesToGroup);
-            Rectangle r = GetExtents(shapesToGroup);
-            r.Inflate(GROUPBOX_INFLATE, GROUPBOX_INFLATE);
-            groupBox.DisplayRectangle = r;
-            shapesToGroup.ForEach(s => s.Parent = groupBox);
-            IEnumerable<GraphicElement> intersections = FindAllIntersections(groupBox);
-            EraseTopToBottom(intersections);
-
-            // Insert groupbox just after the lowest shape being grouped.
-            int insertionPoint = shapesToGroup.Select(s => elements.IndexOf(s)).OrderBy(n => n).Last() + 1;
-            elements.Insert(insertionPoint, groupBox);
-
-            intersections = FindAllIntersections(groupBox);
-            DrawBottomToTop(intersections);
-            UpdateScreen(intersections);
-        }
-
-        public void UngroupShapes(List<GraphicElement> shapesToUngroup)
-        {
-            List<GraphicElement> groupBoxesToRemove = new List<GraphicElement>();
-
-            List<GraphicElement> intersections = new List<GraphicElement>();
-
-            shapesToUngroup.ForEach(el =>
-            {
-                intersections.AddRange(FindAllIntersections(el));
-            });
+            GraphicElement el = selectedElements[0];
+            List<GraphicElement> intersections = FindAllIntersections(el).ToList();
 
             // Preserve the original list, including the group boxes, for when we update the screen,
             // So that the erased groupbox region is updated on the screen.
             List<GraphicElement> originalIntersections = new List<GraphicElement>(intersections);
 
-            foreach (GraphicElement el in shapesToUngroup)
-            {
-                if (el.GroupChildren.Any())
-                {
-                    groupBoxesToRemove.Add(el);
-                    el.GroupChildren.ForEach(c => c.Parent = null);
-                }
-            }
-
+            el.GroupChildren.ForEach(c => c.Parent = null);
             EraseTopToBottom(intersections.AsEnumerable());
 
-            // Remove from elements collection and remove from intersections so only
-            // the children are redrawn.
-            groupBoxesToRemove.ForEach(gb =>
-            {
-                elements.Remove(gb);
-                intersections.Remove(gb);
-            });
+            selectedElements.Clear();
+            selectedElements.AddRange(el.GroupChildren);
+            selectedElements.ForEach(e => e.Select());
+
+            elements.Remove(el);
+            intersections.Remove(el);
 
             DrawBottomToTop(intersections.AsEnumerable());
             UpdateScreen(originalIntersections);        // remember, this updates the screen for the now erased groupbox.

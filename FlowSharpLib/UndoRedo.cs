@@ -95,9 +95,11 @@ namespace FlowSharpLib
 
         public void FinishGroup(bool finish = true)
         {
-            Debug.Assert(_undoStack.Count > 0);
-            _undoStack.Push(_undoStack.Pop().WithSeparatorFlag(finish));
-            AfterAction.Fire(this, EventArgs.Empty);
+            if (_undoStack.Count > 0)
+            {
+                _undoStack.Push(_undoStack.Pop().WithSeparatorFlag(finish));
+                AfterAction.Fire(this, EventArgs.Empty);
+            }
         }
 
         public virtual bool Undo(bool run = true)

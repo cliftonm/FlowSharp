@@ -74,7 +74,7 @@ namespace FlowSharpLib
             selectedElements.ForEach(el =>
             {
                 var els = EraseIntersectionsTopToBottom(el);
-                el.Selected = false;
+                el.Deselect();
                 DrawBottomToTop(els);
                 UpdateScreen(els);
             });
@@ -90,7 +90,7 @@ namespace FlowSharpLib
             selectedElements.Where(el=>el.Parent != null).ForEach(el =>
             {
                 var els = EraseIntersectionsTopToBottom(el);
-                el.Selected = false;
+                el.Deselect();
                 DrawBottomToTop(els);
                 UpdateScreen(els);
                 elementsToRemove.Add(el);
@@ -118,7 +118,7 @@ namespace FlowSharpLib
             {
                 var els = EraseIntersectionsTopToBottom(el);
                 selectedElements.Add(el);
-                el.Selected = true;
+                el.Select();
                 DrawBottomToTop(els);
                 UpdateScreen(els);
                 ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
@@ -129,7 +129,7 @@ namespace FlowSharpLib
         {
             IEnumerable<GraphicElement> intersections = FindAllIntersections(el);
             EraseTopToBottom(intersections);
-            el.Selected = false;
+            el.Deselect();
             selectedElements.Remove(el);
             DrawBottomToTop(intersections);
             UpdateScreen(intersections);

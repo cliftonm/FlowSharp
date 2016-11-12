@@ -38,7 +38,7 @@ namespace FlowSharpLib
 		// public EventHandler<PropertiesChangedEventArgs> PropertiesChanged;
 
 		public Guid Id { get; set; }
-		public virtual bool Selected { get; set; }
+		public virtual bool Selected { get; protected set; }
         public bool Tagged { get; set; }
 		public bool ShowConnectionPoints { get; set; }
 		// public bool HideConnectionPoints { get; set; }
@@ -126,6 +126,16 @@ namespace FlowSharpLib
 			TextColor = Color.Black;
             TextAlign = ContentAlignment.MiddleCenter;
 		}
+
+        public virtual void Select()
+        {
+            this.ChangePropertyWithUndoRedo(nameof(Selected), true);
+        }
+
+        public virtual void Deselect()
+        {
+            this.ChangePropertyWithUndoRedo(nameof(Selected), false);
+        }
 
         public override string ToString()
         {

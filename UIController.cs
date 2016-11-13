@@ -5,6 +5,7 @@
 */
 
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -57,13 +58,37 @@ namespace FlowSharp
         {
             canvasController.SelectedElements.ForEach(sel =>
             {
-                canvasController.Redraw(sel, el =>
-                {
-                    elementProperties.Update(el, e.ChangedItem.Label);
-                    el.UpdateProperties();
-                    el.UpdatePath();
-                });
+                string label = e.ChangedItem.Label;
+                PropertyInfo piElProps = elementProperties.GetType().GetProperty(label);
+                object oldVal = e.OldValue;
+                object newVal = piElProps.GetValue(elementProperties);
+
+                canvasController.UndoStack.UndoRedo("Update " + label,
+                    () =>
+                    {
+                        canvasController.Redraw(sel, el =>
+                        {
+                            piElProps.SetValue(elementProperties, newVal);
+                            elementProperties.Update(el, label);
+                            el.UpdateProperties();
+                            el.UpdatePath();
+                            pgElement.Refresh();
+                        });
+                    },
+                    () =>
+                    {
+                        canvasController.Redraw(sel, el =>
+                        {
+                            piElProps.SetValue(elementProperties, oldVal);
+                            elementProperties.Update(el, label);
+                            el.UpdateProperties();
+                            el.UpdatePath();
+                            pgElement.Refresh();
+                        });
+                    }, false);
             });
+
+            canvasController.UndoStack.FinishGroup();
 
             // Return focus to the canvas so that keyboard actions, like copy/paste, undo/redo, are intercepted
             // TODO: Seems really kludgy.

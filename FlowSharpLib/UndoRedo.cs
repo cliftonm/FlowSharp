@@ -83,7 +83,7 @@ namespace FlowSharpLib
             _redoStack.Clear();
         }
 
-        public virtual void UndoRedo(string name, Action doit, Action undoit)
+        public virtual void UndoRedo(string name, Action doit, Action undoit, bool finishGroup = true)
         {
             Do(name, (@do, redo) =>
             {
@@ -95,7 +95,7 @@ namespace FlowSharpLib
                 {
                     undoit();
                 }
-            });
+            }, finishGroup);
         }
 
         /// <summary>Executes an action and adds it to the undo stack.</summary>

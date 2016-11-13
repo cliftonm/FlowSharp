@@ -99,22 +99,28 @@ namespace FlowSharpLib
 
 		public override bool SnapCheck(ShapeAnchor anchor, Point delta)
 		{
-            if (IsSnapToBeIgnored()) return false;
+            bool ret = false;
 
-			bool ret = canvas.Controller.Snap(anchor.Type, ref delta);
+            if (IsSnapToBeIgnored())
+            {
+                ret = base.SnapCheck(anchor, delta);
+            }
+            else
+            {
+                ret = canvas.Controller.Snap(anchor.Type, ref delta);
 
-			if (ret)
-			{
-				MoveAnchor(anchor.Type, delta);
-			}
-			else
-			{
-				ret = base.SnapCheck(anchor, delta);
-			}
+                if (ret)
+                {
+                    MoveAnchor(anchor.Type, delta);
+                }
+                else
+                {
+                    ret = base.SnapCheck(anchor, delta);
+                }
+            }
 
 			return ret;
 		}
-
 
 		public override bool SnapCheck(GripType gt, ref Point delta)
 		{

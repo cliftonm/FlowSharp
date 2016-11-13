@@ -18,27 +18,89 @@ namespace FlowSharp
 	{
 		protected string filename;
 
-		private void mnuTopmost_Click(object sender, EventArgs e)
+        protected void SaveChildZOrder(GraphicElement el, List<ZOrderMap> zorder)
+        {
+            el.GroupChildren.ForEach(gc =>
+            {
+                zorder.Add(new ZOrderMap() { Element = gc, Index = canvasController.Elements.IndexOf(gc) });
+                SaveChildZOrder(gc, zorder);
+            });
+        }
+
+        protected List<ZOrderMap> GetZOrder()
+        {
+            List<ZOrderMap> originalZOrder = new List<ZOrderMap>();
+
+            canvasController.SelectedElements.ForEach(el =>
+            {
+                originalZOrder.Add(new ZOrderMap() { Element = el, Index = canvasController.Elements.IndexOf(el) });
+                SaveChildZOrder(el, originalZOrder);
+            });
+
+            return originalZOrder;
+        }
+
+        private void mnuTopmost_Click(object sender, EventArgs e)
 		{
-			canvasController.Topmost();
+            List<ZOrderMap> originalZOrder = GetZOrder();
+
+            canvasController.UndoStack.UndoRedo("Z-Top",
+                () =>
+                {
+                    canvasController.Topmost();
+                },
+                () =>
+                {
+                    canvasController.RestoreZOrder(originalZOrder);
+                });
 		}
 
-		private void mnuBottommost_Click(object sender, EventArgs e)
-		{
-			canvasController.Bottommost();
-		}
+        private void mnuBottommost_Click(object sender, EventArgs e)
+        {
+            List<ZOrderMap> originalZOrder = GetZOrder();
 
-		private void mnuMoveUp_Click(object sender, EventArgs e)
-		{
-			canvasController.MoveSelectedElementsUp();
-		}
+            canvasController.UndoStack.UndoRedo("Z-Bottom",
+                () =>
+                {
+                    canvasController.Bottommost();
+                },
+                () =>
+                {
+                    canvasController.RestoreZOrder(originalZOrder);
+                });
+        }
 
-		private void mnuMoveDown_Click(object sender, EventArgs e)
+        private void mnuMoveUp_Click(object sender, EventArgs e)
 		{
-			canvasController.MoveSelectedElementsDown();
-		}
+            List<ZOrderMap> originalZOrder = GetZOrder();
 
-		private void mnuCopy_Click(object sender, EventArgs e)
+            canvasController.UndoStack.UndoRedo("Z-Up",
+                () =>
+                {
+                    canvasController.MoveSelectedElementsUp();
+                },
+                () =>
+                {
+                    canvasController.RestoreZOrder(originalZOrder);
+                });
+        }
+
+        private void mnuMoveDown_Click(object sender, EventArgs e)
+		{
+            List<ZOrderMap> originalZOrder = GetZOrder();
+
+            canvasController.UndoStack.UndoRedo("Z-Down",
+                () =>
+                {
+                    canvasController.MoveSelectedElementsDown();
+                },
+                () =>
+                {
+                    canvasController.RestoreZOrder(originalZOrder);
+                });
+        }
+
+        private void mnuCopy_Click(object sender, EventArgs e)
 		{
 			if (canvasController.SelectedElements.Count > 0)
 			{

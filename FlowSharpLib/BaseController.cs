@@ -14,7 +14,13 @@ using System.Windows.Forms;
 
 namespace FlowSharpLib
 {
-	public abstract class BaseController
+    public class ZOrderMap
+    {
+        public GraphicElement Element { get; set; }
+        public int Index { get; set; }
+    }
+
+    public abstract class BaseController
 	{
         public const int MIN_WIDTH = 20;
         public const int MIN_HEIGHT = 20;
@@ -156,6 +162,16 @@ namespace FlowSharpLib
         public void SelectElements(List<GraphicElement> els)
         {
             els.ForEach(el => SelectElement(el));
+        }
+
+        public void RestoreZOrder(List<ZOrderMap> zorder)
+        {
+            // Remove all shapes from the elements list.
+            zorder.Select(zo => zo.Element).ForEach(el => elements.Remove(el));
+            // Insert them into the list in ascending order, so each insertion goes in the right place.
+            zorder.OrderBy(zo => zo.Index).ForEach(zo => elements.Insert(zo.Index, zo.Element));
+            // TODO: Redraw everything, because I'm lazy and because this actually might be the best way of getting all the pieces to play nice together.
+            canvas.Invalidate();
         }
 
         public void Topmost()

@@ -233,7 +233,7 @@ namespace FlowSharp
                 try
                 {
                     List<GraphicElement> els = Persist.Deserialize(canvas, copyBuffer);
-                    canvasController.DeselectCurrentSelectedElements();
+                    List<GraphicElement> selectedElements = canvasController.SelectedElements.ToList();
 
                     // After deserialization, only move and select elements without parents -
                     // children of group boxes should not be moved, as their parent will handle this,
@@ -255,11 +255,37 @@ namespace FlowSharp
                     });
 
                     IEnumerable<GraphicElement> distinctIntersections = intersections.Distinct();
-                    canvasController.EraseTopToBottom(distinctIntersections);
-                    els.ForEach(el => canvasController.Insert(0, el));
-                    canvasController.DrawBottomToTop(distinctIntersections);
-                    canvasController.UpdateScreen(distinctIntersections);
-                    noParentElements.ForEach(el => canvasController.SelectElement(el));
+
+                    canvasController.UndoStack.UndoRedo("Paste",
+                        () =>
+                        {
+                            canvasController.DeselectCurrentSelectedElements();
+
+                            canvasController.EraseTopToBottom(distinctIntersections);
+
+                            els.ForEach(el =>
+                            {
+                                canvasController.Insert(0, el);
+                                ElementCache.Instance.Remove(el);
+                            });
+
+                            canvasController.DrawBottomToTop(distinctIntersections);
+                            canvasController.UpdateScreen(distinctIntersections);
+                            noParentElements.ForEach(el => canvasController.SelectElement(el));
+                        }
+                        ,
+                        () =>
+                        {
+                            canvasController.DeselectCurrentSelectedElements();
+
+                            els.ForEach(el =>
+                            {
+                                canvasController.DeleteElement(el, false);
+                                ElementCache.Instance.Add(el);
+                            });
+
+                            canvasController.SelectElements(selectedElements);
+                        });
                 }
                 catch (Exception ex)
                 {

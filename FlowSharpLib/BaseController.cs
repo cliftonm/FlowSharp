@@ -257,6 +257,7 @@ namespace FlowSharpLib
             var els = EraseIntersectionsTopToBottom(el, dx, dy);
             // X1
             // el.ChangePropertyWithUndoRedo(nameof(el.DisplayRectangle), newRect, false);
+            el.DisplayRectangle = newRect;
 			el.UpdatePath();
 			DrawBottomToTop(els, dx, dy);
 			UpdateScreen(els, dx, dy);

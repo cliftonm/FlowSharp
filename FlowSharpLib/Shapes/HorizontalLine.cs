@@ -44,7 +44,7 @@ namespace FlowSharpLib
 			return new Rectangle(20, 20, 40, 20);
 		}
 
-		public override void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint cp)
+        public override void MoveAnchor(ConnectionPoint cpShape, ConnectionPoint cp)
 		{
 			if (cp.Type == GripType.Start)
 			{

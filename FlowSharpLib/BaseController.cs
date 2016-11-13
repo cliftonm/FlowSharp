@@ -290,12 +290,9 @@ namespace FlowSharpLib
 			UpdateScreen(els, dx, dy);
 		}
 
-        public GroupBox GroupShapes()
+        public GroupBox GroupShapes(GroupBox groupBox)
         {
             List<GraphicElement> shapesToGroup = selectedElements;
-            GroupBox groupBox = null;
-
-            groupBox = new GroupBox(canvas);
             groupBox.GroupChildren.AddRange(shapesToGroup);
             Rectangle r = GetExtents(shapesToGroup);
             r.Inflate(GROUPBOX_INFLATE, GROUPBOX_INFLATE);
@@ -315,9 +312,8 @@ namespace FlowSharpLib
             return groupBox;
         }
 
-        public void UngroupShapes()
+        public void UngroupShapes(GroupBox el, bool dispose=true)
         {
-            GraphicElement el = selectedElements[0];
             List<GraphicElement> intersections = FindAllIntersections(el).ToList();
 
             // Preserve the original list, including the group boxes, for when we update the screen,
@@ -325,17 +321,19 @@ namespace FlowSharpLib
             List<GraphicElement> originalIntersections = new List<GraphicElement>(intersections);
 
             el.GroupChildren.ForEach(c => c.Parent = null);
+            el.GroupChildren.Clear();
             EraseTopToBottom(intersections.AsEnumerable());
-
-            selectedElements.Clear();
-            selectedElements.AddRange(el.GroupChildren);
-            selectedElements.ForEach(e => e.Select());
 
             elements.Remove(el);
             intersections.Remove(el);
 
             DrawBottomToTop(intersections.AsEnumerable());
             UpdateScreen(originalIntersections);        // remember, this updates the screen for the now erased groupbox.
+
+            if (dispose)
+            {
+                el.Dispose();
+            }
         }
 
         public void MoveSelectedElements(Point delta)

@@ -146,16 +146,54 @@ namespace FlowSharp
         {
             if (canvasController.SelectedElements.Any())
             {
-                FlowSharpLib.GroupBox groupBox = null;
-                groupBox = canvasController.GroupShapes();
-                canvasController.DeselectCurrentSelectedElements();
-                canvasController.SelectElement(groupBox);
+                List<GraphicElement> selectedShapes = canvasController.SelectedElements.ToList();
+                FlowSharpLib.GroupBox groupBox = new FlowSharpLib.GroupBox(canvas);
+
+                canvasController.UndoStack.UndoRedo("Group",
+                    () =>
+                    {
+                        ElementCache.Instance.Remove(groupBox);
+                        canvasController.GroupShapes(groupBox);
+                        canvasController.DeselectCurrentSelectedElements();
+                        canvasController.SelectElement(groupBox);
+                    },
+                    () =>
+                    {
+                        ElementCache.Instance.Add(groupBox);
+                        canvasController.UngroupShapes(groupBox, false);
+                        canvasController.DeselectCurrentSelectedElements();
+                        canvasController.SelectElements(selectedShapes);
+                    });
             }
         }
 
         private void mnuUngroup_Click(object sender, EventArgs e)
         {
-            canvasController.UngroupShapes();
+            if (canvasController.SelectedElements.Any())
+            {
+                FlowSharpLib.GroupBox groupBox = canvasController.SelectedElements[0] as FlowSharpLib.GroupBox;
+
+                if (groupBox != null)
+                {
+                    List<GraphicElement> groupedShapes = new List<GraphicElement>(groupBox.GroupChildren);
+
+                    canvasController.UndoStack.UndoRedo("Ungroup",
+                    () =>
+                    {
+                        ElementCache.Instance.Add(groupBox);
+                        canvasController.UngroupShapes(groupBox, false);
+                        canvasController.DeselectCurrentSelectedElements();
+                        canvasController.SelectElements(groupedShapes);
+                    },
+                    () =>
+                    {
+                        ElementCache.Instance.Remove(groupBox);
+                        canvasController.GroupShapes(groupBox);
+                        canvasController.DeselectCurrentSelectedElements();
+                        canvasController.SelectElement(groupBox);
+                    });
+                }
+            }
         }
 
         private void mnuPlugins_Click(object sender, EventArgs e)

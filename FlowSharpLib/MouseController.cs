@@ -655,13 +655,30 @@ namespace FlowSharpLib
         protected void DragAnchor()
         {
             Point delta = CurrentMousePosition.Delta(LastMousePosition);
-            bool connectorAttached = HoverShape.SnapCheck(SelectedAnchor, delta);
+            GraphicElement hoverShape = HoverShape;
+            ShapeAnchor selectedAnchor = SelectedAnchor;
 
-            if (!connectorAttached)
-            {
-                HoverShape.DisconnectShapeFromConnector(SelectedAnchor.Type);
-                HoverShape.RemoveConnection(SelectedAnchor.Type);
-            }
+            Controller.UndoStack.UndoRedo("Drag Anchor",
+                () =>
+                {
+                    bool connectorAttached = hoverShape.SnapCheck(selectedAnchor, delta);
+
+                    if (!connectorAttached)
+                    {
+                        hoverShape.DisconnectShapeFromConnector(selectedAnchor.Type);
+                        hoverShape.RemoveConnection(selectedAnchor.Type);
+                    }
+                },
+                () =>
+                {
+                    bool connectorAttached = hoverShape.SnapCheck(selectedAnchor, delta.ReverseDirection(), true); // force disconnect in reverse direction.
+
+                    if (!connectorAttached)
+                    {
+                        hoverShape.DisconnectShapeFromConnector(selectedAnchor.Type);
+                        hoverShape.RemoveConnection(selectedAnchor.Type);
+                    }
+                }, false);
         }
 
         protected void CreateSelectionBox()

@@ -147,12 +147,14 @@ namespace FlowSharpLib
         {
             if (cp.Type == GripType.Start)
             {
-                this.AnchorMoveUndoRedo(nameof(StartPoint), cpShape.Point, false);
+                // X1
+                // this.AnchorMoveUndoRedo(nameof(StartPoint), cpShape.Point, false);
                 StartPoint = cpShape.Point;
             }
             else
             {
-                this.AnchorMoveUndoRedo(nameof(EndPoint), cpShape.Point, false);
+                // X1
+                //this.AnchorMoveUndoRedo(nameof(EndPoint), cpShape.Point, false);
                 EndPoint = cpShape.Point;
             }
 
@@ -165,12 +167,14 @@ namespace FlowSharpLib
         {
             if (type == GripType.Start)
             {
-                this.AnchorMoveUndoRedo(nameof(StartPoint), StartPoint.Move(delta), false);
+                // X1
+                //this.AnchorMoveUndoRedo(nameof(StartPoint), StartPoint.Move(delta), false);
                 StartPoint = StartPoint.Move(delta);
             }
             else
             {
-                this.AnchorMoveUndoRedo(nameof(EndPoint), EndPoint.Move(delta), false);
+                // X1
+                //this.AnchorMoveUndoRedo(nameof(EndPoint), EndPoint.Move(delta), false);
                 EndPoint = EndPoint.Move(delta);
             }
 
@@ -182,12 +186,14 @@ namespace FlowSharpLib
         {
             if (anchor.Type == GripType.Start)
             {
-                this.AnchorMoveUndoRedo(nameof(StartPoint), StartPoint.Move(delta), false);
+                // X1
+                //this.AnchorMoveUndoRedo(nameof(StartPoint), StartPoint.Move(delta), false);
                 StartPoint = StartPoint.Move(delta);
             }
             else
             {
-                this.AnchorMoveUndoRedo(nameof(EndPoint), EndPoint.Move(delta), false);
+                // X1
+                //this.AnchorMoveUndoRedo(nameof(EndPoint), EndPoint.Move(delta), false);
                 EndPoint = EndPoint.Move(delta);
             }
 

@@ -23,7 +23,9 @@ namespace PluginExample
         public override void Update(GraphicElement el, string label)
         {
             // ((ImageShape)el).Filename = Filename;
-            (label == nameof(Filename)).If(() => this.ChangePropertyWithUndoRedo<string>(el, nameof(Filename), nameof(Filename)));
+            // X1
+            //(label == nameof(Filename)).If(() => this.ChangePropertyWithUndoRedo<string>(el, nameof(Filename), nameof(Filename)));
+            (label == nameof(Filename)).If(() => ((ImageShape)el).Filename = Filename);
             base.Update(el, label);
         }
     }

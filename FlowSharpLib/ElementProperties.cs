@@ -42,10 +42,15 @@ namespace FlowSharpLib
 
 		public virtual void Update(GraphicElement el, string label)
 		{
-            (label == nameof(Rectangle)).If(() => this.ChangePropertyWithUndoRedo<Rectangle>(el, nameof(el.DisplayRectangle), nameof(Rectangle)));
-            (label == nameof(BorderColor)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.BorderPenColor), nameof(BorderColor)));
-            (label == nameof(BorderWidth)).If(() => this.ChangePropertyWithUndoRedo<int>(el, nameof(el.BorderPenWidth), nameof(BorderWidth)));
-            (label == nameof(FillColor)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.FillColor), nameof(FillColor)));
+            // X1
+            //(label == nameof(Rectangle)).If(() => this.ChangePropertyWithUndoRedo<Rectangle>(el, nameof(el.DisplayRectangle), nameof(Rectangle)));
+            //(label == nameof(BorderColor)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.BorderPenColor), nameof(BorderColor)));
+            //(label == nameof(BorderWidth)).If(() => this.ChangePropertyWithUndoRedo<int>(el, nameof(el.BorderPenWidth), nameof(BorderWidth)));
+            //(label == nameof(FillColor)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.FillColor), nameof(FillColor)));
+            (label == nameof(Rectangle)).If(() => el.DisplayRectangle = Rectangle);
+            (label == nameof(BorderColor)).If(() => el.BorderPenColor = BorderColor);
+            (label == nameof(BorderWidth)).If(() => el.BorderPenWidth = BorderWidth);
+            (label == nameof(FillColor)).If(() => el.FillColor = FillColor);
         }
     }
 }

@@ -129,12 +129,16 @@ namespace FlowSharpLib
 
         public virtual void Select()
         {
-            this.ChangePropertyWithUndoRedo(nameof(Selected), true);
+            // X1
+            //this.ChangePropertyWithUndoRedo(nameof(Selected), true, false);
+            Selected = true;
         }
 
         public virtual void Deselect()
         {
-            this.ChangePropertyWithUndoRedo(nameof(Selected), false);
+            // X1
+            //this.ChangePropertyWithUndoRedo(nameof(Selected), false, false);
+            Selected = false;
         }
 
         public override string ToString()

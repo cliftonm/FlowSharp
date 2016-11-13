@@ -23,8 +23,11 @@ namespace FlowSharpLib
 
 		public override void Update(GraphicElement el, string label)
 		{
-            (label == nameof(StartCap)).If(()=> this.ChangePropertyWithUndoRedo<AvailableLineCap>(el, nameof(StartCap), nameof(StartCap)));
-            (label == nameof(StartCap)).If(() => this.ChangePropertyWithUndoRedo<AvailableLineCap>(el, nameof(EndCap), nameof(EndCap)));
+            // X1
+            //(label == nameof(StartCap)).If(()=> this.ChangePropertyWithUndoRedo<AvailableLineCap>(el, nameof(StartCap), nameof(StartCap)));
+            //(label == nameof(StartCap)).If(() => this.ChangePropertyWithUndoRedo<AvailableLineCap>(el, nameof(EndCap), nameof(EndCap)));
+            (label == nameof(StartCap)).If(() => ((Connector)el).StartCap = StartCap);
+            (label == nameof(StartCap)).If(() => ((Connector)el).EndCap = EndCap);
             base.Update(el, label);
 		}
 	}

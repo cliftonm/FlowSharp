@@ -287,6 +287,7 @@ namespace FlowSharpLib
             return (T)Convert.ChangeType(obj, typeof(T));
         }
 
+        /*
         // We're using reflect here so that the call:
         // ex: this.ChangePropertyWithUndoRedo<string>(el, "Text", "Text"));
         // can be as general purpose as possible, otherwise we have to write separate undo/redo handlers for each property, which is just gross.
@@ -336,7 +337,7 @@ namespace FlowSharpLib
             T redosave = default(T);
             PropertyInfo piElement = el.GetType().GetProperty(elementPropertyName);
 
-            el.Canvas.Controller.UndoStack.Do(el.ToString() + ":" + elementPropertyName, (@do, redo) =>
+            el.Canvas.Controller.UndoStack.Do(el.ToString() + ":" + elementPropertyName + " = " + newVal.ToString(), (@do, redo) =>
             {
                 if (redo)
                 {
@@ -375,7 +376,7 @@ namespace FlowSharpLib
                 {
                     el.Canvas.Controller.Redraw(el, _ =>
                     {
-                        el.Move(redosave);
+                        el.Move(delta);
                     });
                 }
                 else if (@do)
@@ -420,5 +421,6 @@ namespace FlowSharpLib
                 }
             }, finishGroup);
         }
+        */
    }
 }

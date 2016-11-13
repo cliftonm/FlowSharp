@@ -330,7 +330,9 @@ namespace FlowSharp
             if (editBox != null)
             {
                 editBox.KeyPress -= OnEditBoxKey;
-                shapeBeingEdited.ChangePropertyWithUndoRedo<string>(nameof(editBox.Text), editBox.Text);
+                // X1
+                //shapeBeingEdited.ChangePropertyWithUndoRedo<string>(nameof(editBox.Text), editBox.Text);
+                shapeBeingEdited.Text = editBox.Text;
                 canvasController.Redraw(shapeBeingEdited);
                 TextBox tb = editBox;
                 editBox = null;     // set editBox to null so the remove, which fires a LoseFocus event, doesn't call into TerminateEditing again!

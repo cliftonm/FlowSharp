@@ -4,7 +4,6 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -48,7 +47,7 @@ namespace FlowSharp
         {
             if (args.Button == MouseButtons.Left)
             {
-                GraphicElement selectedElement = SelectElement(args.Location);
+                GraphicElement selectedElement = GetSelectedElement(args.Location);
                 mouseDown = true;
                 mouseDownPosition = args.Location;
                 SelectElement(selectedElement);
@@ -144,7 +143,7 @@ namespace FlowSharp
             }
         }
 
-        protected GraphicElement SelectElement(Point p)
+        protected GraphicElement GetSelectedElement(Point p)
 		{
 			GraphicElement el = elements.FirstOrDefault(e => e.DisplayRectangle.Contains(p));
 
@@ -156,7 +155,7 @@ namespace FlowSharp
             if (selectedElements.Any())
             {
                 var els = EraseIntersectionsTopToBottom(selectedElements[0]);
-                selectedElements[0].Select();
+                selectedElements[0].Deselect();
                 DrawBottomToTop(els);
                 UpdateScreen(els);
                 selectedElements.Clear();

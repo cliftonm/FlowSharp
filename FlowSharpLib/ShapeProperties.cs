@@ -31,10 +31,15 @@ namespace FlowSharpLib
 
         public override void Update(GraphicElement el, string label)
         {
-            (label == nameof(Text)).If(() => this.ChangePropertyWithUndoRedo<string>(el, nameof(el.Text), nameof(Text)));
-            (label == nameof(Font)).If(() => this.ChangePropertyWithUndoRedo<Font>(el, nameof(el.TextFont), nameof(Font)));
-            (label == nameof(TextColor)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.TextColor), nameof(TextColor)));
-            (label == nameof(TextAlign)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.TextAlign), nameof(TextAlign)));
+            // X1
+            //(label == nameof(Text)).If(() => this.ChangePropertyWithUndoRedo<string>(el, nameof(el.Text), nameof(Text)));
+            //(label == nameof(Font)).If(() => this.ChangePropertyWithUndoRedo<Font>(el, nameof(el.TextFont), nameof(Font)));
+            //(label == nameof(TextColor)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.TextColor), nameof(TextColor)));
+            //(label == nameof(TextAlign)).If(() => this.ChangePropertyWithUndoRedo<Color>(el, nameof(el.TextAlign), nameof(TextAlign)));
+            (label == nameof(Text)).If(() => el.Text = Text);
+            (label == nameof(Font)).If(() => el.TextFont = Font);
+            (label == nameof(TextColor)).If(() => el.TextColor = TextColor);
+            (label == nameof(TextAlign)).If(() => el.TextAlign = TextAlign);
             base.Update(el, label);
         }
     }

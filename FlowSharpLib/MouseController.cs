@@ -246,7 +246,7 @@ namespace FlowSharpLib
                 Action = (_) =>
                 {
                     // X1
-                    // Controller.UndoStack.FinishGroup();
+                    Controller.UndoStack.FinishGroup();
                     Controller.HideConnectionPoints();
                     DraggingShapes = false;
                     // DraggingOccurred = false;        / Will be cleared by RemoveSelectedShape but this is order dependent!  TODO: Fix this somehow! :)
@@ -387,7 +387,7 @@ namespace FlowSharpLib
                 Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
                     Controller.IsMultiSelect() && !DraggingSelectionBox &&
                     !Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)),
-                Action = (_) => AddShape(),
+                Action = (_) => AddShapeToSelectionList(),
             });
 
             // Remove shape from selection list
@@ -401,7 +401,7 @@ namespace FlowSharpLib
                     Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)) &&
                     !justAddedShape.Contains(Controller.GetRootShapeAt(CurrentMousePosition)) &&
                     !DraggingOccurred,
-                Action = (_) => RemoveShape(),
+                Action = (_) => RemoveShapeFromSelectionList(),
                 Else = () =>
                 {
                     justAddedShape.Clear();
@@ -544,7 +544,7 @@ namespace FlowSharpLib
             Controller.SelectElement(el);
         }
 
-        protected void AddShape()
+        protected void AddShapeToSelectionList()
         {
             Controller.DeselectGroupedElements();
             GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
@@ -552,7 +552,7 @@ namespace FlowSharpLib
             justAddedShape.Add(el);
         }
 
-        protected void RemoveShape()
+        protected void RemoveShapeFromSelectionList()
         {
             GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
             Controller.DeselectElement(el);
@@ -564,8 +564,19 @@ namespace FlowSharpLib
 
             if (delta != Point.Empty)
             {
-                Controller.DragSelectedElements(delta);
-                Controller.Canvas.Cursor = Cursors.SizeAll;
+                Cursor lastCursor = Controller.Canvas.Cursor;
+
+                Controller.UndoStack.UndoRedo("Move",
+                    () =>
+                    {
+                        Controller.DragSelectedElements(delta);
+                        Controller.Canvas.Cursor = Cursors.SizeAll;
+                    },
+                    () =>
+                    {
+                        Controller.DragSelectedElements(delta.ReverseDirection(), true);    // simulate keypress so we disconnect connectors immediately.
+                        Controller.Canvas.Cursor = lastCursor;
+                    }, false);
             }
         }
 

@@ -61,35 +61,13 @@ namespace FlowSharp
             {
                 if (selectedElements.Any())
                 {
-                    int where = xDisplacement;
+                    CreateShape();
                     xDisplacement += 80;
-                    // For undo, we need to preserve currently selected shapes.
-                    List<GraphicElement> currentSelectedShapes = canvasController.SelectedElements.ToList();
-                    GraphicElement selectedElement = selectedElements[0];
-                    GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas, new Point(where, 0));
-
-                    canvasController.UndoStack.UndoRedo("Create " + selectedElement.ToString(),
-                        () =>
-                        {
-                            ElementCache.Instance.Remove(el);
-                            el.UpdatePath();
-                            canvasController.Insert(el);
-                            canvasController.DeselectCurrentSelectedElements();
-                            canvasController.SelectElement(el);
-                        },
-                        () =>
-                        {
-                            ElementCache.Instance.Add(el);
-                            canvasController.DeselectCurrentSelectedElements();
-                            canvasController.DeleteElement(el, false);
-                            canvasController.SelectElements(currentSelectedShapes);
-                        });
                 }
             }
             else if (args.Button == MouseButtons.Left && dragging)
             {
-                // X1
-                // canvasController.UndoStack.FinishGroup();
+                canvasController.UndoStack.FinishGroup();       // Finish any move operation from click-drag process.
             }
 
             dragging = false;
@@ -110,18 +88,8 @@ namespace FlowSharp
                 {
                     dragging = true;
                     setup = true;
-                    canvasController.DeselectCurrentSelectedElements();
                     ResetDisplacement();
-                    GraphicElement el = selectedElements[0].CloneDefault(canvasController.Canvas);
-
-                    if (el is DynamicConnector)
-                    {
-                        el.ShowAnchors = true;
-                    }
-
-                    Cursor.Position = canvas.PointToScreen(el.DisplayRectangle.Center().Move(canvas.Width, 0));
-                    canvasController.Insert(el);
-                    canvasController.SelectElement(el);
+                    CreateShape();
                     canvas.Cursor = Cursors.SizeAll;
                 }
             }
@@ -139,10 +107,55 @@ namespace FlowSharp
                 {
                     // Toolbox controller still has control, so simulate dragging on the canvas.
                     Point delta = args.Location.Delta(currentDragPosition);
-                    canvasController.DragSelectedElements(delta);
+
+                    if (delta != Point.Empty)
+                    {
+                        canvasController.UndoStack.UndoRedo("Move " + selectedElements[0].ToString(),
+                            () => canvasController.DragSelectedElements(delta),
+                            () => canvasController.DragSelectedElements(delta.ReverseDirection(), true) // simulate by keypress, so connector immediately disconnects.
+                            , false);
+                    }
+
                     currentDragPosition = args.Location;
                 }
             }
+        }
+
+        protected void CreateShape()
+        {
+            int where = xDisplacement;
+
+            // For undo, we need to preserve currently selected shapes.
+            List<GraphicElement> currentSelectedShapes = canvasController.SelectedElements.ToList();
+            GraphicElement selectedElement = selectedElements[0];
+            GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas, new Point(where, 0));
+
+            canvasController.UndoStack.UndoRedo("Create " + selectedElement.ToString(),
+                () =>
+                {
+                    ElementCache.Instance.Remove(el);
+                    el.UpdatePath();
+                    canvasController.Insert(el);
+                    canvasController.DeselectCurrentSelectedElements();
+                    canvasController.SelectElement(el);
+
+                    if (dragging)
+                    {
+                        Cursor.Position = canvas.PointToScreen(el.DisplayRectangle.Center().Move(canvas.Width, 0));
+
+                        if (el.IsConnector)
+                        {
+                            el.ShowAnchors = true;
+                        }
+                    }
+                },
+                () =>
+                {
+                    ElementCache.Instance.Add(el);
+                    canvasController.DeselectCurrentSelectedElements();
+                    canvasController.DeleteElement(el, false);
+                    canvasController.SelectElements(currentSelectedShapes);
+                });
         }
 
         public override void SelectElement(GraphicElement el)

@@ -667,15 +667,26 @@ namespace FlowSharpLib
         {
             Controller.DeleteElement(SelectionBox);
             List<GraphicElement> selectedElements = new List<GraphicElement>();
+            List<GraphicElement> previouslySelectedElements = Controller.SelectedElements.ToList();
 
             Controller.Elements.Where(e => !selectedElements.Contains(e) && e.Parent == null && SelectionBox.DisplayRectangle.Contains(e.UpdateRectangle)).ForEach((e) =>
             {
                 selectedElements.Add(e);
             });
 
-            Controller.DeselectCurrentSelectedElements();
-            Controller.SelectElements(selectedElements);
-            Controller.Canvas.Invalidate();
+            Controller.UndoStack.UndoRedo("Group Select",
+                () =>
+                {
+                    Controller.DeselectCurrentSelectedElements();
+                    Controller.SelectElements(selectedElements);
+                },
+                () =>
+                {
+                    Controller.DeselectCurrentSelectedElements();
+                    Controller.SelectElements(previouslySelectedElements);
+                });
+            // Why was this here?
+            // Controller.Canvas.Invalidate();
         }
 
         protected void DragSelectionBox()

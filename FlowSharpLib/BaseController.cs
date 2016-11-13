@@ -106,12 +106,12 @@ namespace FlowSharpLib
             elements.Insert(idx, el);
         }
 
-        public void Add(GraphicElement el)
+        public void AddElement(GraphicElement el)
         {
             elements.Add(el);
         }
 
-        public void AddRange(List<GraphicElement> els)
+        public void AddElements(List<GraphicElement> els)
         {
             elements.AddRange(els);
         }

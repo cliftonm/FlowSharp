@@ -85,7 +85,7 @@ namespace FlowSharp
 			string data = File.ReadAllText(filename);
 			List<GraphicElement> els = Persist.Deserialize(canvas, data);
             canvasController.Clear();
-            canvasController.AddRange(els);
+            canvasController.AddElements(els);
             canvasController.Elements.ForEach(el => el.UpdatePath());
 			canvas.Invalidate();
 			UpdateCaption();
@@ -103,10 +103,23 @@ namespace FlowSharp
                 string importFilename = ofd.FileName;
                 string data = File.ReadAllText(importFilename);
                 List<GraphicElement> els = Persist.Deserialize(canvas, data);
-                canvasController.AddRange(els);
-                canvasController.Elements.ForEach(el => el.UpdatePath());
-                els.ForEach(el => canvas.Controller.SelectElement(el));
-                canvas.Invalidate();
+                List<GraphicElement> selectedElements = canvasController.SelectedElements.ToList();
+
+                canvasController.UndoStack.UndoRedo("Import",
+                    () =>
+                    {
+                        canvasController.DeselectCurrentSelectedElements();
+                        canvasController.AddElements(els);
+                        canvasController.Elements.ForEach(el => el.UpdatePath());
+                        canvasController.SelectElements(els);
+                        canvas.Invalidate();
+                    },
+                    () =>
+                    {
+                        canvasController.DeselectCurrentSelectedElements();
+                        els.ForEach(el => canvasController.DeleteElement(el));
+                        canvasController.SelectElements(selectedElements);
+                    });
             }
         }
 

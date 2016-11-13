@@ -532,30 +532,76 @@ namespace FlowSharpLib
 
         protected void SelectSingleRootShape()
         {
-            Controller.DeselectCurrentSelectedElements();
+            // Preserve for undo:
+            List<GraphicElement> selectedShapes = Controller.SelectedElements.ToList();
             GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
-            Controller.SelectElement(el);
+
+            if (selectedShapes.Count != 1 || !selectedShapes.Contains(el))
+            {
+                Controller.UndoStack.UndoRedo("Select Root " + el.ToString(),
+                    () =>
+                    {
+                        Controller.DeselectCurrentSelectedElements();
+                        Controller.SelectElement(el);
+                    },
+                    () =>
+                    {
+                        Controller.DeselectCurrentSelectedElements();
+                        Controller.SelectElements(selectedShapes);
+                    });
+            }
         }
 
         protected void SelectSingleChildShape()
         {
-            Controller.DeselectCurrentSelectedElements();
+            // Preserve for undo:
+            List<GraphicElement> selectedShapes = Controller.SelectedElements.ToList();
             GraphicElement el = Controller.GetChildShapeAt(CurrentMousePosition);
-            Controller.SelectElement(el);
+            Controller.UndoStack.UndoRedo("Select Child " + el.ToString(),
+                () =>
+                {
+                    Controller.DeselectCurrentSelectedElements();
+                    Controller.SelectElement(el);
+                },
+                () =>
+                {
+                    Controller.DeselectCurrentSelectedElements();
+                    Controller.SelectElements(selectedShapes);
+                });
         }
 
         protected void AddShapeToSelectionList()
         {
-            Controller.DeselectGroupedElements();
+            // Preserve for undo:
+            List<GraphicElement> selectedShapes = Controller.SelectedElements.ToList();
+
             GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
-            Controller.SelectElement(el);
-            justAddedShape.Add(el);
+            Controller.UndoStack.UndoRedo("Select " + el.ToString(),
+                () =>
+                {
+                    Controller.DeselectGroupedElements();
+                    Controller.SelectElement(el);
+                    justAddedShape.Add(el);
+                },
+                () =>
+                {
+                    Controller.DeselectCurrentSelectedElements();
+                    Controller.SelectElements(selectedShapes);
+                });
         }
 
         protected void RemoveShapeFromSelectionList()
         {
             GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
-            Controller.DeselectElement(el);
+            Controller.UndoStack.UndoRedo("Deselect " + el.ToString(),
+                () =>
+                {
+                    Controller.DeselectElement(el);
+                },
+                () =>
+                {
+                    Controller.SelectElement(el);
+                });
         }
 
         protected void DragShapes()

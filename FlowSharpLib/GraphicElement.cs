@@ -73,11 +73,6 @@ namespace FlowSharpLib
         public ContentAlignment TextAlign { get; set; }
         // TODO: Text location - left, top, right, middle, bottom
 
-        public virtual bool IsSnapToBeIgnored()
-        {
-            return (Control.ModifierKeys & Keys.Control) == Keys.Control;
-        }
-
         protected bool HasCornerAnchors { get; set; }
 		protected bool HasCenterAnchors { get; set; }
 		protected bool HasLeftRightAnchors { get; set; }
@@ -310,7 +305,7 @@ namespace FlowSharpLib
 			canvas.Controller.UpdateSize(this, anchor, delta);
 		}
 
-		public virtual bool SnapCheck(ShapeAnchor anchor, Point delta)
+		public virtual bool SnapCheck(ShapeAnchor anchor, Point delta, bool isByKeyPress = false)
 		{
 			UpdateSize(anchor, delta);
 			canvas.Controller.UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = this });
@@ -319,7 +314,7 @@ namespace FlowSharpLib
 		}
 
 		// Default returns true so we don't detach a shape's connectors when moving a shape.
-		public virtual bool SnapCheck(GripType gt, ref Point delta) { return false; }
+		public virtual bool SnapCheck(GripType gt, ref Point delta, bool isByKeyPress) { return false; }
 
 		// Placeholders:
 		public virtual void SetConnection(GripType gt, GraphicElement shape) { }

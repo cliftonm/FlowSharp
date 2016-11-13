@@ -43,6 +43,29 @@ namespace FlowSharpLib
         // TODO: Kludgy workaround for issue #34.
         public bool IsCanvasDragging { get; set; }
 
+        // Ignore snap if Ctrl key is pressed when "doing".
+        // Undo/redo is more complicated, especially since it can be activated with a keyboard Ctrl+Z or Ctrl+Y
+        // which means the ctrl key is pressed.  Furthermore, the original ignore snap needs to be preserved.
+        public bool UndoRedoIgnoreSnapCheck { get; set; }
+        public virtual bool IsSnapToBeIgnored
+        {
+            get
+            {
+                bool ret;
+
+                if (UndoStack.Performing == UndoStack.ActionState.Do)
+                {
+                    ret = (Control.ModifierKeys & Keys.Control) == Keys.Control;
+                }
+                else
+                {
+                    ret = UndoRedoIgnoreSnapCheck;
+                }
+
+                return ret;
+            }
+        }
+
         public UndoStack UndoStack { get { return undoStack; } }
         public ReadOnlyCollection<GraphicElement> SelectedElements { get { return selectedElements.AsReadOnly(); } }
 
@@ -68,11 +91,11 @@ namespace FlowSharpLib
         }
 
         // TODO: These empty base class methods are indicative of bad design.
-        public virtual bool Snap(GripType type, ref Point delta) { return false; }
+        public virtual bool Snap(GripType type, ref Point delta, bool isByKeyPress) { return false; }
         public virtual void SelectElement(GraphicElement el) { }
         public virtual void SelectOnlyElement(GraphicElement el) { }
         public virtual void SetAnchorCursor(GraphicElement el) { }
-        public virtual void DragSelectedElements(Point delta) { }
+        public virtual void DragSelectedElements(Point delta, bool isByKeyPress = false) { }
         public virtual void DeselectCurrentSelectedElements() { }
         public virtual void DeselectGroupedElements() { }
         public virtual void DeselectElement(GraphicElement el) { }

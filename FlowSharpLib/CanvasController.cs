@@ -46,13 +46,13 @@ namespace FlowSharpLib
             nearElements = new List<SnapInfo>();
 		}
 
-        public override void DragSelectedElements(Point delta)
+        public override void DragSelectedElements(Point delta, bool isByKeyPress = false)
         {
             // If we're dragging only one shape, then we do a snap check.
             if (selectedElements.Count == 1)
             {
                 GraphicElement el = selectedElements[0];
-                bool connectorAttached = el.SnapCheck(GripType.Start, ref delta) || el.SnapCheck(GripType.End, ref delta);
+                bool connectorAttached = el.SnapCheck(GripType.Start, ref delta, isByKeyPress) || el.SnapCheck(GripType.End, ref delta, isByKeyPress);
                 el.Connections.ForEach(c =>
                 {
                     // Issue #49.  Sort of a kludge here, resulting from removal of the MoveShapeOrAnchor method, which I really didn't like.
@@ -171,7 +171,7 @@ namespace FlowSharpLib
             nearElements.Clear();
         }
 
-        public override bool Snap(GripType type, ref Point delta)
+        public override bool Snap(GripType type, ref Point delta, bool isByKeyPress)
         {
             // Snapping permitted only when one and only one element is selected.
             if (selectedElements.Count != 1) return false;
@@ -214,7 +214,8 @@ namespace FlowSharpLib
                             (neardysign == 0 || deltaysign == 0 || neardysign == deltaysign))
                     {
                         // If attached, are we moving away from the connection point to detach it?
-                        if (neardxsign == 0 && neardxsign == 0 && (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY))
+                        if (neardxsign == 0 && neardxsign == 0 && ( (delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY) || 
+                            (isByKeyPress && (neardxsign != deltaxsign || neardysign != deltaysign)) ) )
                         {
                             Disconnect(selectedElement, type);
                         }

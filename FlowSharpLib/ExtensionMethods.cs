@@ -177,6 +177,11 @@ namespace FlowSharpLib
             return r;
         }
 
+        public static Point ReverseDirection(this Point p)
+        {
+            return new Point(-p.X, -p.Y);
+        }
+
         public static int to_i(this float f)
         {
             return (int)f;

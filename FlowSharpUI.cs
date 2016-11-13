@@ -80,26 +80,30 @@ namespace FlowSharp
 
             // TODO: Don't finish the group until another action other than cursor movement of a shape occurs.
 
-            keyActions[Keys.Up] = () =>
+            keyActions[Keys.Up] = () => DoMove(new Point(0, -1));
+            keyActions[Keys.Down] = () => DoMove(new Point(0, 1));
+            keyActions[Keys.Left] = () => DoMove(new Point(-1, 0));
+            keyActions[Keys.Right] = () => DoMove(new Point(1, 0));
+
+            // Also allow keyboard move with Ctrl key pressed, which ignores snap check.
+            keyActions[Keys.Control | Keys.Up] = () => DoMove(new Point(0, -1));
+            keyActions[Keys.Control | Keys.Down] = () => DoMove(new Point(0, 1));
+            keyActions[Keys.Control | Keys.Left] = () => DoMove(new Point(-1, 0));
+            keyActions[Keys.Control | Keys.Right] = () => DoMove(new Point(1, 0));
+        }
+
+        protected void DoMove(Point dir)
+        {
+            bool ignoreSnapCheck = canvasController.IsSnapToBeIgnored;      // preserve ignore snap state
+            canvasController.UndoStack.UndoRedo(
+            "Move",
+            () => canvasController.DragSelectedElements(dir, true),
+            () =>
             {
-                canvasController.DragSelectedElements(new Point(0, -1));
-                canvasController.UndoStack.FinishGroup();
-            };
-            keyActions[Keys.Down] = () =>
-            {
-                canvasController.DragSelectedElements(new Point(0, 1));
-                canvasController.UndoStack.FinishGroup();
-            };
-            keyActions[Keys.Left] = () =>
-            {
-                canvasController.DragSelectedElements(new Point(-1, 0));
-                canvasController.UndoStack.FinishGroup();
-            };
-            keyActions[Keys.Right] = () =>
-            {
-                canvasController.DragSelectedElements(new Point(1, 0));
-                canvasController.UndoStack.FinishGroup();
-            };
+                canvasController.UndoRedoIgnoreSnapCheck = ignoreSnapCheck;
+                canvasController.DragSelectedElements(dir.ReverseDirection(), true);
+            }
+            );
         }
 
         public void OnShown(object sender, EventArgs e)

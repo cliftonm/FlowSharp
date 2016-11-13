@@ -37,9 +37,18 @@ namespace FlowSharpLib
     /// <summary>A simple, general class for managing an undo-redo stack.</summary>
     public class UndoStack
     {
+        public enum ActionState
+        {
+            Do,
+            Undo,
+            Redo,
+        }
+
         public event EventHandler<EventArgs> AfterAction;
         // public virtual void AfterAction(bool @do) { }
         public virtual bool HasChanges { get { return _undoStack.Count != 0; } }
+
+        public ActionState Performing { get; protected set; }
 
         public virtual List<string> GetStackInfo()
         {
@@ -74,6 +83,21 @@ namespace FlowSharpLib
             _redoStack.Clear();
         }
 
+        public virtual void UndoRedo(string name, Action doit, Action undoit)
+        {
+            Do(name, (@do, redo) =>
+            {
+                if (@do || redo)
+                {
+                    doit();
+                }
+                else
+                {
+                    undoit();
+                }
+            });
+        }
+
         /// <summary>Executes an action and adds it to the undo stack.</summary>
         /// <param name="action">Action to take. Initially called with an argument of true.</param>
         /// <param name="finishGroup">If you want to group multiple actions together
@@ -83,6 +107,8 @@ namespace FlowSharpLib
         /// and grouped with this new action.</remarks>
         public virtual void Do(string name, DoOrUndo action, bool finishGroup = true)
         {
+            Performing = ActionState.Do;
+
             if (action != null)
             {
                 AcceptTentativeAction(false);
@@ -104,6 +130,7 @@ namespace FlowSharpLib
 
         public virtual bool Undo(bool run = true)
         {
+            Performing = ActionState.Undo;
             UndoTentativeAction();
             if (_undoStack.Count == 0)
                 return false;
@@ -122,6 +149,7 @@ namespace FlowSharpLib
 
         public virtual bool Redo(bool run = true)
         {
+            Performing = ActionState.Redo;
             if (_redoStack.Count == 0)
                 return false;
             if (run)

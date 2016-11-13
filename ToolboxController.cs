@@ -72,7 +72,8 @@ namespace FlowSharp
             }
             else if (args.Button == MouseButtons.Left && dragging)
             {
-                canvasController.UndoStack.FinishGroup();
+                // X1
+                // canvasController.UndoStack.FinishGroup();
             }
 
             dragging = false;

@@ -119,6 +119,9 @@ namespace FlowSharp
         protected void OnFormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = CheckForChanges();
+            ElementCache.Instance.ClearCache();
+            canvasController.Clear();
+            toolboxController.Clear();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

@@ -64,6 +64,7 @@ namespace FlowSharp
 			filename = String.Empty;
 			UpdateCaption();
             canvasController.UndoStack.ClearStacks();
+            ElementCache.Instance.ClearCache();
         }
 
         private void mnuOpen_Click(object sender, EventArgs e)
@@ -90,6 +91,7 @@ namespace FlowSharp
 			canvas.Invalidate();
 			UpdateCaption();
             canvasController.UndoStack.ClearStacks();
+            ElementCache.Instance.ClearCache();
         }
 
         private void mnuImport_Click(object sender, EventArgs e)

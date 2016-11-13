@@ -118,7 +118,9 @@ namespace FlowSharpLib
 
         public void Clear()
         {
+            elements.ForEach(el => el.Dispose());
             elements.Clear();
+            selectedElements.Clear();
         }
 
         public virtual void Undo()

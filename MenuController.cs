@@ -169,7 +169,8 @@ namespace FlowSharp
 
         private void mnuUngroup_Click(object sender, EventArgs e)
         {
-            if (canvasController.SelectedElements.Any())
+            // At this point, we can only ungroup one group.
+            if (canvasController.SelectedElements.Count == 1)
             {
                 FlowSharpLib.GroupBox groupBox = canvasController.SelectedElements[0] as FlowSharpLib.GroupBox;
 

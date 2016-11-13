@@ -43,6 +43,7 @@ namespace FlowSharp
             traceListener = new TraceListener();
             Trace.Listeners.Add(traceListener);
             Shown += OnShown;
+            FormClosing += OnFormClosing;
 
             // We have to initialize the menu event handlers here, rather than in the designer,
             // so that we can move the menu handlers to the MenuController partial class.
@@ -110,6 +111,11 @@ namespace FlowSharp
             InitializePluginsInToolbox();
             UpdateToolboxPaths();
             UpdateMenu(false);
+        }
+
+        protected void OnFormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = CheckForChanges();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

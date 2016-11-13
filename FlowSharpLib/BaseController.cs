@@ -324,31 +324,31 @@ namespace FlowSharpLib
             IEnumerable<GraphicElement> distinctIntersections = intersections.Distinct();
             List<GraphicElement> connectors = new List<GraphicElement>();
 
-            selectedElements.ForEach(el =>
-            {
-                el.Connections.ForEach(c =>
-                {
-                    if (!connectors.Contains(c.ToElement))
-                    {
-                        connectors.Add(c.ToElement);
-                    }
-                });
-            });
+            //selectedElements.ForEach(el =>
+            //{
+            //    el.Connections.ForEach(c =>
+            //    {
+            //        if (!connectors.Contains(c.ToElement))
+            //        {
+            //            connectors.Add(c.ToElement);
+            //        }
+            //    });
+            //});
 
             EraseTopToBottom(distinctIntersections);
 
-            connectors.ForEach(c =>
-            {
-                // X1
-                //c.MoveUndoRedo(delta, false);
-                c.Move(delta);
-                c.UpdatePath();
-            });
+            //connectors.ForEach(c =>
+            //{
+            //    // X1
+            //    //c.MoveUndoRedo(delta, false);
+            //    c.Move(delta);
+            //    c.UpdatePath();
+            //});
 
             selectedElements.ForEach(el =>
             {
                 // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
-                if (!el.IsConnector)
+                // if (!el.IsConnector)
                 {
                     // X1
                     //el.MoveUndoRedo(delta, false);

@@ -340,16 +340,28 @@ namespace FlowSharp
             if (editBox != null)
             {
                 editBox.KeyPress -= OnEditBoxKey;
-                // X1
-                //shapeBeingEdited.ChangePropertyWithUndoRedo<string>(nameof(editBox.Text), editBox.Text);
-                shapeBeingEdited.Text = editBox.Text;
-                canvasController.Redraw(shapeBeingEdited);
+                string oldVal = shapeBeingEdited.Text;
+                string newVal = editBox.Text;
                 TextBox tb = editBox;
                 editBox = null;     // set editBox to null so the remove, which fires a LoseFocus event, doesn't call into TerminateEditing again!
-                canvas.Controls.Remove(tb);
 
-                // Updates PropertyGrid:
-                canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
+                canvasController.UndoStack.UndoRedo("Inline edit",
+                    () =>
+                    {
+                        shapeBeingEdited.Text = newVal;
+                        canvasController.Redraw(shapeBeingEdited);
+                        // Updates PropertyGrid:
+                        canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
+                    },
+                    () =>
+                    {
+                        shapeBeingEdited.Text = oldVal;
+                        canvasController.Redraw(shapeBeingEdited);
+                        // Updates PropertyGrid:
+                        canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
+                    });
+
+                canvas.Controls.Remove(tb);
             }
         }
 

@@ -229,6 +229,10 @@ namespace FlowSharp
                 {
                     ret = !SaveOrSaveAs();   // override because of possible cancel in save operation.
                 }
+                else
+                {
+                    canvasController.UndoStack.ClearStacks();       // Prevents second "are you sure" when exiting with Ctrl+X
+                }
             }
 
             return ret;

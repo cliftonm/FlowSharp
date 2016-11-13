@@ -4,6 +4,7 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -60,14 +61,29 @@ namespace FlowSharp
             {
                 if (selectedElements.Any())
                 {
-                    GraphicElement selectedElement = selectedElements[0];
-                    GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas, new Point(xDisplacement, 0));
-                    el.UpdatePath();
-
-                    canvasController.Insert(el);
-                    canvasController.DeselectCurrentSelectedElements();
-                    canvasController.SelectElement(el);
+                    int where = xDisplacement;
                     xDisplacement += 80;
+                    // For undo, we need to preserve currently selected shapes.
+                    List<GraphicElement> currentSelectedShapes = canvasController.SelectedElements.ToList();
+                    GraphicElement selectedElement = selectedElements[0];
+                    GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas, new Point(where, 0));
+
+                    canvasController.UndoStack.UndoRedo("Create " + selectedElement.ToString(),
+                        () =>
+                        {
+                            ElementCache.Instance.Remove(el);
+                            el.UpdatePath();
+                            canvasController.Insert(el);
+                            canvasController.DeselectCurrentSelectedElements();
+                            canvasController.SelectElement(el);
+                        },
+                        () =>
+                        {
+                            ElementCache.Instance.Add(el);
+                            canvasController.DeselectCurrentSelectedElements();
+                            canvasController.DeleteElement(el, false);
+                            canvasController.SelectElements(currentSelectedShapes);
+                        });
                 }
             }
             else if (args.Button == MouseButtons.Left && dragging)

@@ -223,7 +223,7 @@ namespace FlowSharpLib
             canvas.Invalidate();
 		}
 
-        public void DeleteElement(GraphicElement el)
+        public void DeleteElement(GraphicElement el, bool dispose = true)
         {
             // TODO: don't redraw all the elements, only erase the current element and update the screen!
             // See how this is done with Ungroup.
@@ -234,7 +234,11 @@ namespace FlowSharpLib
             elsToRedraw.Remove(el);
             DrawBottomToTop(elsToRedraw);
             UpdateScreen(els);
-            el.Dispose();
+
+            if (dispose)
+            {
+                el.Dispose();
+            }
         }
 
         public void Redraw(GraphicElement el, int dx=0, int dy=0)

@@ -56,15 +56,7 @@ namespace FlowSharpLib
                 el.Connections.ForEach(c =>
                 {
                     // Issue #49.  Sort of a kludge here, resulting from removal of the MoveShapeOrAnchor method, which I really didn't like.
-                    // TODO: Improve this code, somehow.
-                    if (c.ToElement is Line)
-                    {
-                        c.ToElement.Move(delta);
-                    }
-                    else
-                    {
-                        c.ToElement.MoveAnchor(c.ToConnectionPoint.Type, delta);
-                    }
+                    MoveLineOrAnchor(c, delta);
                 });
 
                 if (!connectorAttached)

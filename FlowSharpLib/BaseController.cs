@@ -355,11 +355,35 @@ namespace FlowSharpLib
                     //el.MoveUndoRedo(delta, false);
                     el.Move(delta);
                     el.UpdatePath();
+
+                    // Issue #49 - multiple selected shapes don't move anchors/lines of connectors connectors/lines.
+                    el.Connections.ForEach(c =>
+                    {
+                        if (!selectedElements.Contains(c.ToElement))
+                        {
+                            MoveLineOrAnchor(c, delta);
+                        }
+                    });
+
+
                 }
             });
 
             DrawBottomToTop(distinctIntersections, dx, dy);
             UpdateScreen(distinctIntersections, dx, dy);
+        }
+
+        protected void MoveLineOrAnchor(Connection c, Point delta)
+        {
+            // TODO: Improve this code, somehow.
+            if (c.ToElement is Line)
+            {
+                c.ToElement.Move(delta);
+            }
+            else
+            {
+                c.ToElement.MoveAnchor(c.ToConnectionPoint.Type, delta);
+            }
         }
 
         public void MoveElement(GraphicElement el, Point delta)

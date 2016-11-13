@@ -40,7 +40,8 @@ namespace FlowSharp
         public void UpdateUndoStack(List<string> undoEvents)
         {
             tbUndoEvents.Clear();
-            undoEvents.Where(s=>s.EndsWith("F")).ForEach(s => tbUndoEvents.AppendText(s+"\r\n"));
+            //undoEvents.Where(s=>s.EndsWith("F")).ForEach(s => tbUndoEvents.AppendText(s+"\r\n"));
+            undoEvents.ForEach(s => tbUndoEvents.AppendText(s + "\r\n"));
         }
 
         public void UpdateShapeTree()

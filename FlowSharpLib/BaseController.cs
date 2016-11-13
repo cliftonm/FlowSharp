@@ -70,6 +70,7 @@ namespace FlowSharpLib
         // TODO: These empty base class methods are indicative of bad design.
         public virtual bool Snap(GripType type, ref Point delta) { return false; }
         public virtual void SelectElement(GraphicElement el) { }
+        public virtual void SelectOnlyElement(GraphicElement el) { }
         public virtual void SetAnchorCursor(GraphicElement el) { }
         public virtual void DragSelectedElements(Point delta) { }
         public virtual void DeselectCurrentSelectedElements() { }
@@ -254,7 +255,8 @@ namespace FlowSharpLib
 			int dx = delta.X.Abs();
 			int dy = delta.Y.Abs();
             var els = EraseIntersectionsTopToBottom(el, dx, dy);
-            el.ChangePropertyWithUndoRedo(nameof(el.DisplayRectangle), newRect, false);
+            // X1
+            // el.ChangePropertyWithUndoRedo(nameof(el.DisplayRectangle), newRect, false);
 			el.UpdatePath();
 			DrawBottomToTop(els, dx, dy);
 			UpdateScreen(els, dx, dy);
@@ -337,7 +339,8 @@ namespace FlowSharpLib
 
             connectors.ForEach(c =>
             {
-                c.MoveUndoRedo(delta, false);
+                // X1
+                //c.MoveUndoRedo(delta, false);
                 c.Move(delta);
                 c.UpdatePath();
             });
@@ -347,7 +350,8 @@ namespace FlowSharpLib
                 // TODO: Kludgy workaround for dealing with multiple shape dragging with connectors in the selection list.
                 if (!el.IsConnector)
                 {
-                    el.MoveUndoRedo(delta, false);
+                    // X1
+                    //el.MoveUndoRedo(delta, false);
                     el.Move(delta);
                     el.UpdatePath();
                 }
@@ -364,7 +368,8 @@ namespace FlowSharpLib
                 int dx = delta.X.Abs();
                 int dy = delta.Y.Abs();
                 var els = EraseIntersectionsTopToBottom(el, dx, dy);
-                el.MoveUndoRedo(delta, false);
+                // X1
+                //el.MoveUndoRedo(delta, false);
                 el.Move(delta);
 				el.UpdatePath();
 				DrawBottomToTop(els, dx, dy);
@@ -373,33 +378,14 @@ namespace FlowSharpLib
 			else
 			{
 				el.CancelBackground();
-                el.MoveUndoRedo(delta, false);
+                // X1
+                //el.MoveUndoRedo(delta, false);
                 el.Move(delta);
 				// TODO: Display element if moved back on screen at this point?
 			}
 		}
 
-        // Sort of kludgy workaround for Issue #40?
-        // TODO: Vertical / Horizontal shapes represent a sort of special case, which we might want to deal with at some point
-        // in the future.
-        public void MoveElementNoEraseNorRedraw(GraphicElement el, Point delta)
-        {
-            if (el.OnScreen())
-            {
-                int dx = delta.X.Abs();
-                int dy = delta.Y.Abs();
-                el.MoveUndoRedo(delta, false);
-                el.Move(delta);
-                el.UpdatePath();
-            }
-            else
-            {
-                el.MoveUndoRedo(delta, false);
-                el.Move(delta);
-            }
-        }
-
-        // "Smart" move, erases everything first, moves all elements, then redraws them.
+        // For canvas dragging.
         public void MoveAllElements(Point delta)
         {
             EraseTopToBottom(elements);

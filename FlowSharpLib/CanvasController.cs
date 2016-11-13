@@ -125,6 +125,32 @@ namespace FlowSharpLib
             }
         }
 
+        // Deselect all other elements.
+        public override void SelectOnlyElement(GraphicElement el)
+        {
+            List<GraphicElement> intersections = FindAllIntersections(el).ToList();
+            List<GraphicElement> deselectedElements = new List<GraphicElement>();
+            selectedElements.Where(e => e != el).ForEach(e =>
+            {
+                intersections.AddRange(FindAllIntersections(e));
+                e.Deselect();
+                deselectedElements.Add(e);
+            });
+
+            if (!selectedElements.Contains(el))
+            {
+                selectedElements.Add(el);
+                el.Select();
+            }
+
+            deselectedElements.ForEach(e => selectedElements.Remove(e));
+
+            EraseTopToBottom(intersections);
+            DrawBottomToTop(intersections);
+            UpdateScreen(intersections);
+            ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
+        }
+
         public override void DeselectElement(GraphicElement el)
         {
             IEnumerable<GraphicElement> intersections = FindAllIntersections(el);

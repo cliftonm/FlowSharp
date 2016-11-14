@@ -19,6 +19,7 @@ namespace FlowSharpLib
         public GraphicElement Element { get; set; }
         public int Index { get; set; }
         public List<GraphicElement> GroupChildren { get; set; }
+        public List<Connection> Connections { get; set; }
     }
 
     public abstract class BaseController
@@ -129,6 +130,7 @@ namespace FlowSharpLib
             {
                 ZOrderMap zom = new ZOrderMap() { Element = gc, Index = elements.IndexOf(gc) };
                 zom.GroupChildren = new List<GraphicElement>(gc.GroupChildren);
+                zom.Connections = new List<Connection>(gc.Connections);
                 zorder.Add(zom);
                 SaveChildZOrder(gc, zorder);
             });
@@ -142,6 +144,7 @@ namespace FlowSharpLib
             {
                 ZOrderMap zom = new ZOrderMap() { Element = el, Index = elements.IndexOf(el) };
                 zom.GroupChildren = new List<GraphicElement>(el.GroupChildren);
+                zom.Connections = new List<Connection>(el.Connections);
                 originalZOrder.Add(zom);
                 SaveChildZOrder(el, originalZOrder);
             });
@@ -207,6 +210,7 @@ namespace FlowSharpLib
         {
             // Insert them into the list in ascending order, so each insertion goes in the right place.
             zorder.OrderBy(zo => zo.Index).ForEach(zo => elements.Insert(zo.Index, zo.Element));
+            zorder.ForEach(zo => zo.Element.Connections = new List<Connection>(zo.Connections));
 
             zorder.ForEach(zo =>
             {
@@ -488,7 +492,7 @@ namespace FlowSharpLib
             UpdateScreen(distinctIntersections, dx, dy);
         }
 
-        protected void MoveLineOrAnchor(Connection c, Point delta)
+        public void MoveLineOrAnchor(Connection c, Point delta)
         {
             // TODO: Improve this code, somehow.
             if (c.ToElement is Line)

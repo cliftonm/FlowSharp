@@ -314,9 +314,24 @@ namespace FlowSharp
                     () =>
                     {
                         canvasController.RestoreZOrderWithHierarchy(originalZOrder);
+                        RestoreConnections(originalZOrder);
                         canvasController.DeselectCurrentSelectedElements();
                         canvasController.SelectElements(selectedElements);
                     });
+            }
+        }
+
+        protected void RestoreConnections(List<ZOrderMap> zomList)
+        {
+            foreach (ZOrderMap zom in zomList)
+            {
+                GraphicElement el = zom.Element;
+                List<Connection> connections = zom.Connections;
+
+                foreach (Connection conn in connections)
+                {
+                    conn.ToElement.SetConnection(conn.ToConnectionPoint.Type, el);
+                }
             }
         }
 

@@ -225,7 +225,7 @@ namespace FlowSharpLib
                             if (neardxsign != 0 || neardysign != 0)
                             {
                                 // Remove any current connections.  See issue #41
-                                Disconnect(selectedElement, type);
+                                // Disconnect(selectedElement, type);
                                 si.NearElement.Connections.Add(new Connection() { ToElement = selectedElement, ToConnectionPoint = si.LineConnectionPoint, ElementConnectionPoint = nearConnectionPoint });
                                 selectedElement.SetConnection(si.LineConnectionPoint.Type, si.NearElement);
                             }

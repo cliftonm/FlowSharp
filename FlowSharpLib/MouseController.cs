@@ -183,19 +183,23 @@ namespace FlowSharpLib
                 Condition = () => DraggingSurface && !DraggingSurfaceOccurred,
                 Action = (_) =>
                 {
+                    DraggingSurface = false;
+                    Controller.Canvas.Cursor = Cursors.Arrow;
                     List<GraphicElement> selectedShapes = Controller.SelectedElements.ToList();
-                    Controller.UndoStack.UndoRedo("Canvas",
-                        () =>
-                        {
-                            Controller.DeselectCurrentSelectedElements();
-                            DraggingSurface = false;
-                            Controller.Canvas.Cursor = Cursors.Arrow;
-                        },
-                        () =>
-                        {
-                            Controller.DeselectCurrentSelectedElements();
-                            Controller.SelectElements(selectedShapes);
-                        });
+
+                    if (selectedShapes.Count != 0)
+                    {
+                        Controller.UndoStack.UndoRedo("Canvas",
+                            () =>
+                            {
+                                Controller.DeselectCurrentSelectedElements();
+                            },
+                            () =>
+                            {
+                                Controller.DeselectCurrentSelectedElements();
+                                Controller.SelectElements(selectedShapes);
+                            });
+                    }
                 }
             });
 

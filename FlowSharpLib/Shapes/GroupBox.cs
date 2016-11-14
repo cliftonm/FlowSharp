@@ -35,7 +35,9 @@ namespace FlowSharpLib
                 // TODO: Kludgy workaround for issue #34.
                 if (!canvas.Controller.IsCanvasDragging)
                 {
-                    g.Connections.Where(c => c.ToElement.Parent == null).ForEach(c => c.ToElement.MoveAnchor(c.ToConnectionPoint.Type, delta));
+                    //g.Connections.Where(c => c.ToElement.Parent == null).ForEach(c => c.ToElement.MoveAnchor(c.ToConnectionPoint.Type, delta));
+                    // Issue #56
+                    g.Connections.Where(c => c.ToElement.Parent == null).ForEach(c => canvas.Controller.MoveLineOrAnchor(c, delta));
                 }
             });
         }

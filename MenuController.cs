@@ -100,11 +100,12 @@ namespace FlowSharp
 		{
             if (CheckForChanges()) return;
             canvasController.Clear();
-			canvas.Invalidate();
-			filename = String.Empty;
-			UpdateCaption();
             canvasController.UndoStack.ClearStacks();
             ElementCache.Instance.ClearCache();
+            mouseController.ClearState();
+            canvas.Invalidate();
+			filename = String.Empty;
+			UpdateCaption();
         }
 
         private void mnuOpen_Click(object sender, EventArgs e)
@@ -126,12 +127,13 @@ namespace FlowSharp
 			string data = File.ReadAllText(filename);
 			List<GraphicElement> els = Persist.Deserialize(canvas, data);
             canvasController.Clear();
+            canvasController.UndoStack.ClearStacks();
+            ElementCache.Instance.ClearCache();
+            mouseController.ClearState();
             canvasController.AddElements(els);
             canvasController.Elements.ForEach(el => el.UpdatePath());
 			canvas.Invalidate();
 			UpdateCaption();
-            canvasController.UndoStack.ClearStacks();
-            ElementCache.Instance.ClearCache();
         }
 
         private void mnuImport_Click(object sender, EventArgs e)

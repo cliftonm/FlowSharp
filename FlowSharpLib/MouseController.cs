@@ -111,6 +111,18 @@ namespace FlowSharpLib
             Controller.Canvas.MouseMove += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseMove, args));
         }
 
+        // After new/open action, clear state.
+        public void ClearState()
+        {
+            DraggingShapes = false;
+            DraggingAnchor = false;
+            DraggingOccurred = false;
+            DraggingSurfaceOccurred = false;
+            SelectingShapes = false;
+            DraggingSurface = false;
+            HoverShape = null;
+        }
+
         public void ShapeDeleted(GraphicElement el)
         {
             if (HoverShape == el)

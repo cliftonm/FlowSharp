@@ -25,7 +25,9 @@ using System.Linq;
 
 namespace FlowSharpLib
 {
-    // cliftonm - I added a redo flag to support handling of redo property changes.
+    // cliftonm - I added a redo flag to support handling of redo property changes.  After reworking my code, this seems unecessary now, but I'm
+    // leaving it in because it may be useful to know whether the action is a do or redo, if at most for debugging purposes.
+
     /// <summary>Represents an action that can be done once and then undone.
     /// The method must be called once to do the action and once to undo it.</summary>
     /// <param name="do">Whether to do or undo. @do is false to request undo.</param>
@@ -83,13 +85,17 @@ namespace FlowSharpLib
             _redoStack.Clear();
         }
 
-        public virtual void UndoRedo(string name, Action doit, Action undoit, bool finishGroup = true)
+        public virtual void UndoRedo(string name, Action doit, Action undoit, bool finishGroup = true, Action redoit = null)
         {
             Do(name, (@do, redo) =>
             {
-                if (@do || redo)
+                if (@do || (redo && redoit == null))
                 {
                     doit();
+                }
+                else if (redo && redoit != null)
+                {
+                    redoit();
                 }
                 else
                 {

@@ -18,31 +18,9 @@ namespace FlowSharp
 	{
 		protected string filename;
 
-        protected void SaveChildZOrder(GraphicElement el, List<ZOrderMap> zorder)
-        {
-            el.GroupChildren.ForEach(gc =>
-            {
-                zorder.Add(new ZOrderMap() { Element = gc, Index = canvasController.Elements.IndexOf(gc) });
-                SaveChildZOrder(gc, zorder);
-            });
-        }
-
-        protected List<ZOrderMap> GetZOrder()
-        {
-            List<ZOrderMap> originalZOrder = new List<ZOrderMap>();
-
-            canvasController.SelectedElements.ForEach(el =>
-            {
-                originalZOrder.Add(new ZOrderMap() { Element = el, Index = canvasController.Elements.IndexOf(el) });
-                SaveChildZOrder(el, originalZOrder);
-            });
-
-            return originalZOrder;
-        }
-
         private void mnuTopmost_Click(object sender, EventArgs e)
 		{
-            List<ZOrderMap> originalZOrder = GetZOrder();
+            List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
 
             canvasController.UndoStack.UndoRedo("Z-Top",
                 () =>
@@ -57,7 +35,7 @@ namespace FlowSharp
 
         private void mnuBottommost_Click(object sender, EventArgs e)
         {
-            List<ZOrderMap> originalZOrder = GetZOrder();
+            List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
 
             canvasController.UndoStack.UndoRedo("Z-Bottom",
                 () =>
@@ -72,7 +50,7 @@ namespace FlowSharp
 
         private void mnuMoveUp_Click(object sender, EventArgs e)
 		{
-            List<ZOrderMap> originalZOrder = GetZOrder();
+            List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
 
             canvasController.UndoStack.UndoRedo("Z-Up",
                 () =>
@@ -87,7 +65,7 @@ namespace FlowSharp
 
         private void mnuMoveDown_Click(object sender, EventArgs e)
 		{
-            List<ZOrderMap> originalZOrder = GetZOrder();
+            List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
 
             canvasController.UndoStack.UndoRedo("Z-Down",
                 () =>

@@ -300,9 +300,23 @@ namespace FlowSharp
         {
             if (canvasController.Canvas.Focused)
             {
+                List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
+                List<GraphicElement> selectedElements = canvasController.SelectedElements.ToList();
+
                 // TODO: Better implementation would be for the mouse controller to hook a shape deleted event?
                 canvasController.SelectedElements.ForEach(el => mouseController.ShapeDeleted(el));
-                canvasController.DeleteSelectedElements();
+
+                canvasController.UndoStack.UndoRedo("Delete",
+                    () =>
+                    {
+                        canvasController.DeleteSelectedElementsHierarchy(false);
+                    },
+                    () =>
+                    {
+                        canvasController.RestoreZOrderWithHierarchy(originalZOrder);
+                        canvasController.DeselectCurrentSelectedElements();
+                        canvasController.SelectElements(selectedElements);
+                    });
             }
         }
 

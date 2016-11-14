@@ -99,6 +99,8 @@ namespace FlowSharpLib
 		{
 			StartConnectedShape.IfNotNull(el => el.Connections.RemoveAll(c => c.ToElement == this));
 			EndConnectedShape.IfNotNull(el => el.Connections.RemoveAll(c => c.ToElement == this));
+            StartConnectedShape = null;
+            EndConnectedShape = null;
 		}
 	}
 }

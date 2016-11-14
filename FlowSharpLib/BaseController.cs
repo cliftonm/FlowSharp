@@ -18,6 +18,7 @@ namespace FlowSharpLib
     {
         public GraphicElement Element { get; set; }
         public int Index { get; set; }
+        public List<GraphicElement> GroupChildren { get; set; }
     }
 
     public abstract class BaseController
@@ -122,6 +123,32 @@ namespace FlowSharpLib
             elements.AddRange(els);
         }
 
+        public void SaveChildZOrder(GraphicElement el, List<ZOrderMap> zorder)
+        {
+            el.GroupChildren.ForEach(gc =>
+            {
+                ZOrderMap zom = new ZOrderMap() { Element = gc, Index = elements.IndexOf(gc) };
+                zom.GroupChildren = new List<GraphicElement>(gc.GroupChildren);
+                zorder.Add(zom);
+                SaveChildZOrder(gc, zorder);
+            });
+        }
+
+        public List<ZOrderMap> GetZOrderOfSelectedElements()
+        {
+            List<ZOrderMap> originalZOrder = new List<ZOrderMap>();
+
+            selectedElements.ForEach(el =>
+            {
+                ZOrderMap zom = new ZOrderMap() { Element = el, Index = elements.IndexOf(el) };
+                zom.GroupChildren = new List<GraphicElement>(el.GroupChildren);
+                originalZOrder.Add(zom);
+                SaveChildZOrder(el, originalZOrder);
+            });
+
+            return originalZOrder;
+        }
+
         public void Clear()
         {
             elements.ForEach(el => el.Dispose());
@@ -164,6 +191,7 @@ namespace FlowSharpLib
             els.ForEach(el => SelectElement(el));
         }
 
+        // Called when undo'ing a zorder move.
         public void RestoreZOrder(List<ZOrderMap> zorder)
         {
             // Remove all shapes from the elements list.
@@ -171,6 +199,21 @@ namespace FlowSharpLib
             // Insert them into the list in ascending order, so each insertion goes in the right place.
             zorder.OrderBy(zo => zo.Index).ForEach(zo => elements.Insert(zo.Index, zo.Element));
             // TODO: Redraw everything, because I'm lazy and because this actually might be the best way of getting all the pieces to play nice together.
+            canvas.Invalidate();
+        }
+
+        // Called when undo'ing a UI initiated delete of selected shapes.
+        public void RestoreZOrderWithHierarchy(List<ZOrderMap> zorder)
+        {
+            // Insert them into the list in ascending order, so each insertion goes in the right place.
+            zorder.OrderBy(zo => zo.Index).ForEach(zo => elements.Insert(zo.Index, zo.Element));
+
+            zorder.ForEach(zo =>
+            {
+                zo.Element.GroupChildren = new List<GraphicElement>(zo.GroupChildren);
+                zo.Element.GroupChildren.ForEach(gc => gc.Parent = zo.Element);
+            });
+
             canvas.Invalidate();
         }
 
@@ -228,19 +271,46 @@ namespace FlowSharpLib
             UpdateScreen(elements);
         }
 
-        public void DeleteSelectedElements()
+        // Used by UI "delete shape", this is a recursive destruction of shapes and, if they are groupboxes, their child shapes, etc.
+        public void DeleteSelectedElementsHierarchy(bool dispose = true)
 		{
             // TODO: Optimize for redrawing just selected elements (we remove call to DeleteElement when we do this)
             selectedElements.ForEach(el =>
             {
-                el.GroupChildren.ForEach(child => child.Parent = null);
-                DeleteElement(el);
+                DeleteElementHierarchy(el, dispose);
+                el.DetachAll();
+                el.Connections.ForEach(c => c.ToElement.RemoveConnection(c.ToConnectionPoint.Type));
+                el.Connections.Clear();
+                elements.Remove(el);
+
+                if (dispose)
+                {
+                    el.Dispose();
+                }
             });
 
             selectedElements.Clear();
             canvas.Invalidate();
 		}
 
+        protected void DeleteElementHierarchy(GraphicElement el, bool dispose)
+        {
+            el.GroupChildren.ForEach(gc =>
+            {
+                DeleteElementHierarchy(gc, dispose);
+                gc.DetachAll();
+                gc.Connections.ForEach(c => c.ToElement.RemoveConnection(c.ToConnectionPoint.Type));
+                gc.Connections.Clear();
+                elements.Remove(gc);
+
+                if (dispose)
+                {
+                    gc.Dispose();
+                }
+            });
+        }
+
+        // Used by secondary operations, particularly undo events, where we delete things we've pasted or dropped onto the canvas.
         public void DeleteElement(GraphicElement el, bool dispose = true)
         {
             // TODO: don't redraw all the elements, only erase the current element and update the screen!
@@ -250,6 +320,8 @@ namespace FlowSharpLib
             elements.Remove(el);
             List<GraphicElement> elsToRedraw = els.ToList();
             elsToRedraw.Remove(el);
+            el.Connections.ForEach(c => c.ToElement.RemoveConnection(c.ToConnectionPoint.Type));
+            el.Connections.Clear();
             DrawBottomToTop(elsToRedraw);
             UpdateScreen(els);
 

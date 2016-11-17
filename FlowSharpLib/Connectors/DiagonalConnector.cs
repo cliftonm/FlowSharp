@@ -44,13 +44,17 @@ namespace FlowSharpLib
             if (UpdateRectangle.Contains(p))
             {
                 // Then check how close the point is.
-                int a = p.X - UpdateRectangle.X;
-                int b = p.Y - UpdateRectangle.Y;
-                int c = UpdateRectangle.Width;
-                int d = UpdateRectangle.Height;
+                int a = p.X - StartPoint.X;
+                int b = p.Y - StartPoint.Y;
+                int c = EndPoint.X - StartPoint.X;
+                int d = EndPoint.Y - StartPoint.Y;
 
                 int dist = (int)(Math.Abs(a * d - c * b) / Math.Sqrt(c * c + d * d));
                 ret = dist <= BaseController.MIN_HEIGHT;
+
+                if (ret)
+                {
+                }
             }
 
             return ret;

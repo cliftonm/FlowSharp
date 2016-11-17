@@ -51,10 +51,6 @@ namespace FlowSharpLib
 
                 int dist = (int)(Math.Abs(a * d - c * b) / Math.Sqrt(c * c + d * d));
                 ret = dist <= BaseController.MIN_HEIGHT;
-
-                if (ret)
-                {
-                }
             }
 
             return ret;

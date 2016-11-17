@@ -49,6 +49,7 @@ namespace FlowSharpLib
         public event EventHandler<EventArgs> AfterAction;
         // public virtual void AfterAction(bool @do) { }
         public virtual bool HasChanges { get { return _undoStack.Count != 0; } }
+        public virtual int UndoStackSize { get { return _undoStack.Count; } }
 
         public ActionState Performing { get; protected set; }
 

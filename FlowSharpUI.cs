@@ -298,7 +298,17 @@ namespace FlowSharp
             // No longer needed, as editbox LostFocus event handles terminating itself now.
             // mouseController.MouseClick += (sndr, args) => TerminateEditing();
             canvasController.ElementSelected += (snd, args) => UpdateMenu(args.Element != null);
-            canvasController.UndoStack.AfterAction += (sndr, args) => UpdateDebugWindowUndoStack();
+            canvasController.UndoStack.AfterAction += (sndr, args) =>
+            {
+                // after an undo/redo, the save point is reset
+                // TODO: This still causes a prompt for save if the diagram is saved, then and undo-redo or redo-undo occurs,
+                // which results in an actual diagram hasn't changed.  But for now, this fixes the most common situation of
+                // saving then exiting, in which case we don't want to prompt for "save changes?" again because we know they've
+                // been saved.
+                savePoint = 0;
+                UpdateDebugWindowUndoStack();
+            };
+
 			toolboxController = new ToolboxController(toolboxCanvas, canvasController);
             toolboxCanvas.Controller = toolboxController;
             uiController = new UIController(pgElement, canvasController);

@@ -17,6 +17,7 @@ namespace FlowSharp
 	public partial class FlowSharpUI
 	{
 		protected string filename;
+        protected int savePoint = 0;
 
         private void mnuTopmost_Click(object sender, EventArgs e)
 		{
@@ -99,6 +100,7 @@ namespace FlowSharp
 		private void mnuNew_Click(object sender, EventArgs e)
 		{
             if (CheckForChanges()) return;
+            savePoint = 0;
             canvasController.Clear();
             canvasController.UndoStack.ClearStacks();
             ElementCache.Instance.ClearCache();
@@ -124,7 +126,8 @@ namespace FlowSharp
 				return;
 			}
 
-			string data = File.ReadAllText(filename);
+            savePoint = 0;
+            string data = File.ReadAllText(filename);
 			List<GraphicElement> els = Persist.Deserialize(canvas, data);
             canvasController.Clear();
             canvasController.UndoStack.ClearStacks();
@@ -277,7 +280,7 @@ namespace FlowSharp
         {
             bool ret = false;
 
-            if (canvasController.UndoStack.HasChanges)
+            if (savePoint != canvasController.UndoStack.UndoStackSize)
             {
                 DialogResult res = MessageBox.Show("Do you wish to save changes to this drawing?", "Save Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 ret = res == DialogResult.Cancel;
@@ -305,8 +308,7 @@ namespace FlowSharp
             }
             else
             {
-                string data = Persist.Serialize(canvasController.Elements);
-                File.WriteAllText(filename, data);
+                SaveDiagram(filename);
             }
 
             return ret;
@@ -330,13 +332,19 @@ namespace FlowSharp
                 else
                 {
                     filename = sfd.FileName;
-                    string data = Persist.Serialize(canvasController.Elements);
-                    File.WriteAllText(filename, data);
+                    SaveDiagram(filename);
                     UpdateCaption();
                 }
             }
 
             return res == DialogResult.OK && ext != ".png";
+        }
+
+        protected void SaveDiagram(string filename)
+        {
+            string data = Persist.Serialize(canvasController.Elements);
+            File.WriteAllText(filename, data);
+            savePoint = canvasController.UndoStack.UndoStackSize;
         }
     }
 }

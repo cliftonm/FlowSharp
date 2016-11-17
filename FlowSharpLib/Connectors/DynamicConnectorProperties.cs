@@ -27,7 +27,7 @@ namespace FlowSharpLib
             //(label == nameof(StartCap)).If(()=> this.ChangePropertyWithUndoRedo<AvailableLineCap>(el, nameof(StartCap), nameof(StartCap)));
             //(label == nameof(StartCap)).If(() => this.ChangePropertyWithUndoRedo<AvailableLineCap>(el, nameof(EndCap), nameof(EndCap)));
             (label == nameof(StartCap)).If(() => ((Connector)el).StartCap = StartCap);
-            (label == nameof(StartCap)).If(() => ((Connector)el).EndCap = EndCap);
+            (label == nameof(EndCap)).If(() => ((Connector)el).EndCap = EndCap);
             base.Update(el, label);
 		}
 	}

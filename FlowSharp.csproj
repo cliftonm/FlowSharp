@@ -68,6 +68,9 @@
     <Compile Include="MenuController.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Operations.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PluginManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

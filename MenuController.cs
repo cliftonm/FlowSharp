@@ -107,6 +107,7 @@ namespace FlowSharp
             mouseController.ClearState();
             canvas.Invalidate();
 			filename = String.Empty;
+            canvasController.Filename = filename;
 			UpdateCaption();
         }
 
@@ -126,6 +127,7 @@ namespace FlowSharp
 				return;
 			}
 
+            canvasController.Filename = filename;       // set now, in case of relative image files, etc...
             savePoint = 0;
             string data = File.ReadAllText(filename);
 			List<GraphicElement> els = Persist.Deserialize(canvas, data);
@@ -136,7 +138,7 @@ namespace FlowSharp
             canvasController.AddElements(els);
             canvasController.Elements.ForEach(el => el.UpdatePath());
 			canvas.Invalidate();
-			UpdateCaption();
+            UpdateCaption();
         }
 
         private void mnuImport_Click(object sender, EventArgs e)
@@ -175,7 +177,8 @@ namespace FlowSharp
 			if (canvasController.Elements.Count > 0)
 			{
                 SaveOrSaveAs();
-				UpdateCaption();
+                canvasController.Filename = filename;
+                UpdateCaption();
 			}
 			else
 			{
@@ -188,6 +191,7 @@ namespace FlowSharp
 			if (canvasController.Elements.Count > 0)
 			{
                 SaveOrSaveAs(true);
+                canvasController.Filename = filename;
                 UpdateCaption();
 			}
 			else
@@ -333,6 +337,7 @@ namespace FlowSharp
                 {
                     filename = sfd.FileName;
                     SaveDiagram(filename);
+                    canvasController.Filename = filename;
                     UpdateCaption();
                 }
             }

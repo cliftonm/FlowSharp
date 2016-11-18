@@ -96,11 +96,21 @@ namespace PluginExample
         {
             try
             {
-                if (File.Exists(filename))
+                string fn = filename;
+
+                if (!File.Exists(filename))
+                {
+                    // Try relative path...
+                    fn = Path.Combine(Path.GetDirectoryName(canvas.Controller.Filename), filename);
+                }
+
+                if (File.Exists(fn))
                 {
                     image?.Dispose();
                     image = null;
-                    image = Image.FromFile(filename);
+
+
+                    image = Image.FromFile(fn);
                 }
                 else
                 {

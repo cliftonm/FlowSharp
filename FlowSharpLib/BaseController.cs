@@ -41,6 +41,7 @@ namespace FlowSharpLib
         public EventHandler<ElementEventArgs> UpdateSelectedElement;
 
         public Canvas Canvas { get { return canvas; } }
+        public string Filename { get; set; }
 
         // TODO: Return back to ReadOnlyCollection and implement the functions that the menu controller needs.
         public ReadOnlyCollection<GraphicElement> Elements { get { return elements.AsReadOnly(); } }

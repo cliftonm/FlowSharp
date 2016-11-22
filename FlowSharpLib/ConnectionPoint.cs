@@ -41,5 +41,56 @@ namespace FlowSharpLib
 			Type = pos;
 			Point = p;
 		}
-	}
+
+        public static bool operator ==(ConnectionPoint cp1, ConnectionPoint cp2)
+        {
+            bool ret = false;
+
+            // Alternate: object.ReferenceEquals(cp1, null), etc...
+            if ((object)cp1 == null || (object)cp2 == null)
+            {
+                ret = (object)cp1 == (object)cp2;
+            }
+            else
+            {
+                return cp1.Type == cp2.Type && cp1.Point == cp2.Point;
+            }
+
+            return ret;
+        }
+
+        public static bool operator !=(ConnectionPoint cp1, ConnectionPoint cp2)
+        {
+            bool ret = false;
+
+            // Alternate: object.ReferenceEquals(cp1, null), etc...
+            if ((object)cp1 == null || (object)cp2 == null)
+            {
+                ret = (object)cp1 != (object)cp2;
+            }
+            else
+            {
+                ret = cp1.Type != cp2.Type || cp1.Point != cp2.Point;
+            }
+
+            return ret;
+        }
+
+        public override bool Equals(object obj)
+        {
+            bool ret = false;
+
+            if (obj is ConnectionPoint)
+            {
+                ret = this == (ConnectionPoint)obj;
+            }
+
+            return ret;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+    }
 }

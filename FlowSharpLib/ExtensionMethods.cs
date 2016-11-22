@@ -204,6 +204,14 @@ namespace FlowSharpLib
             }
         }
 
+        public static void ForEachReverse<T>(this IList<T> collection, Action<T> action)
+        {
+            for (int i = collection.Count - 1; i >= 0; i--)
+            {
+                action(collection[i]);
+            }
+        }
+
         public static void Fire<TEventArgs>(this EventHandler<TEventArgs> theEvent, object sender, TEventArgs e = null) where TEventArgs : EventArgs
         {
             theEvent?.Invoke(sender, e);

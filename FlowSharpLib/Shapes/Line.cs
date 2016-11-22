@@ -42,32 +42,5 @@ namespace FlowSharpLib
 
             base.UpdateProperties();
         }
-
-        public override bool SnapCheck(ShapeAnchor anchor, Point delta, bool isByKeyPress)
-		{
-            if (canvas.Controller.IsSnapToBeIgnored) return false;
-
-            bool ret = canvas.Controller.Snap(anchor.Type, ref delta, isByKeyPress);
-
-			if (ret)
-			{
-                // Allow the entire line to move if snapped.
-                Move(delta);
-			}
-			else
-			{
-                // Otherwise, move just the anchor point with axis constraints.
-                ret = base.SnapCheck(anchor, delta, isByKeyPress);
-			}
-
-			return ret;
-		}
-
-		public override bool SnapCheck(GripType gt, ref Point delta, bool isByKeyPress)
-		{
-            if (canvas.Controller.IsSnapToBeIgnored) return false;
-
-            return canvas.Controller.Snap(GripType.None, ref delta, isByKeyPress);
-		}
     }
 }

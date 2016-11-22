@@ -94,11 +94,11 @@ namespace FlowSharp
             bool ignoreSnapCheck = canvasController.IsSnapToBeIgnored;      // preserve ignore snap state
             canvasController.UndoStack.UndoRedo(
             "Move",
-            () => canvasController.DragSelectedElements(dir, true),
+            () => canvasController.DragSelectedElements(dir),
             () =>
             {
                 canvasController.UndoRedoIgnoreSnapCheck = ignoreSnapCheck;
-                canvasController.DragSelectedElements(dir.ReverseDirection(), true);
+                canvasController.DragSelectedElements(dir.ReverseDirection());
             }
             );
         }
@@ -117,9 +117,13 @@ namespace FlowSharp
         protected void OnFormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = CheckForChanges();
-            ElementCache.Instance.ClearCache();
-            canvasController.Clear();
-            toolboxController.Clear();
+
+            if (!e.Cancel)
+            {
+                ElementCache.Instance.ClearCache();
+                canvasController.Clear();
+                toolboxController.Clear();
+            }
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

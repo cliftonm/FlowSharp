@@ -97,38 +97,6 @@ namespace FlowSharpLib
 			});
 		}
 
-		public override bool SnapCheck(ShapeAnchor anchor, Point delta, bool isByKeyPress)
-		{
-            bool ret = false;
-
-            if (canvas.Controller.IsSnapToBeIgnored)
-            {
-                ret = base.SnapCheck(anchor, delta, isByKeyPress);
-            }
-            else
-            {
-                ret = canvas.Controller.Snap(anchor.Type, ref delta, isByKeyPress);
-
-                if (ret)
-                {
-                    MoveAnchor(anchor.Type, delta);
-                }
-                else
-                {
-                    ret = base.SnapCheck(anchor, delta, isByKeyPress);
-                }
-            }
-
-			return ret;
-		}
-
-		public override bool SnapCheck(GripType gt, ref Point delta, bool isByKeyPress)
-		{
-            if (canvas.Controller.IsSnapToBeIgnored) return false;
-
-            return canvas.Controller.Snap(GripType.None, ref delta, isByKeyPress);
-		}
-
 		public override void SetCanvas(Canvas canvas)
 		{
 			lines.ForEach(l => l.SetCanvas(canvas));

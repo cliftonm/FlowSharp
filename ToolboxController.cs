@@ -24,8 +24,9 @@ namespace FlowSharp
         protected Point currentDragPosition;
         protected bool setup;
         protected bool dragging;
+        protected Point startedDraggingShapesAt;
 
-		public ToolboxController(Canvas canvas, CanvasController canvasController) : base(canvas)
+        public ToolboxController(Canvas canvas, CanvasController canvasController) : base(canvas)
 		{
 			this.canvasController = canvasController;
 			canvas.PaintComplete = CanvasPaintComplete;
@@ -67,12 +68,21 @@ namespace FlowSharp
             }
             else if (args.Button == MouseButtons.Left && dragging)
             {
-                canvasController.UndoStack.FinishGroup();       // Finish any move operation from click-drag process.
+                Point delta = Cursor.Position.Delta(startedDraggingShapesAt);
+
+                canvasController.UndoStack.UndoRedo("Move " + selectedElements[0].ToString(),
+                    () => { },
+                    () => canvasController.DragSelectedElements(delta.ReverseDirection()),
+                    true,
+                    () => canvasController.DragSelectedElements(delta)
+                    );
+
+                // canvasController.UndoStack.FinishGroup();       // Finish any move operation from click-drag process.
             }
 
             dragging = false;
             mouseDown = false;
-            canvasController.HideConnectionPoints();
+            canvasController.SnapController.HideConnectionPoints();
             DeselectCurrentSelectedElement();
             selectedElements.Clear();
             canvas.Cursor = Cursors.Arrow;
@@ -90,6 +100,7 @@ namespace FlowSharp
                     setup = true;
                     ResetDisplacement();
                     CreateShape();
+                    startedDraggingShapesAt = Cursor.Position;
                     canvas.Cursor = Cursors.SizeAll;
                 }
             }
@@ -110,10 +121,7 @@ namespace FlowSharp
 
                     if (delta != Point.Empty)
                     {
-                        canvasController.UndoStack.UndoRedo("Move " + selectedElements[0].ToString(),
-                            () => canvasController.DragSelectedElements(delta),
-                            () => canvasController.DragSelectedElements(delta.ReverseDirection(), true) // simulate by keypress, so connector immediately disconnects.
-                            , false);
+                        canvasController.DragSelectedElements(delta);
                     }
 
                     currentDragPosition = args.Location;

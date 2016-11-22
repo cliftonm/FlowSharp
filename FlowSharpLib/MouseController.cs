@@ -63,6 +63,11 @@ namespace FlowSharpLib
 
         protected List<MouseRouter> router;
         protected List<GraphicElement> justAddedShape = new List<GraphicElement>();
+        protected Point startedDraggingShapesAt;
+        // protected Point attachedCompensation;
+        protected Point runningDelta;
+        protected SnapAction currentSnapAction;
+        protected List<SnapAction> snapActions = new List<SnapAction>();
 
         public enum MouseEvent
         {
@@ -84,6 +89,8 @@ namespace FlowSharpLib
             DragSelectionBox,
             StartShapeDrag,
             EndShapeDrag,
+            StartAnchorDrag,
+            EndAnchorDrag,
             DragShapes,
             DragAnchor,
             HoverOverShape,
@@ -108,7 +115,12 @@ namespace FlowSharpLib
         {
             Controller.Canvas.MouseDown += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseDown, args));
             Controller.Canvas.MouseUp += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseUp, args));
-            Controller.Canvas.MouseMove += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseMove, args));
+            Controller.Canvas.MouseMove += HandleMouseMoveEvent;        // Actual instance, so we can detach it and re-attach it for the "Attached" condition when doing a snap check.
+        }
+
+        protected void HandleMouseMoveEvent(object sender, MouseEventArgs args)
+        {
+            HandleEvent(new MouseAction(MouseEvent.MouseMove, args));
         }
 
         // After new/open action, clear state.
@@ -243,37 +255,100 @@ namespace FlowSharpLib
                     !Controller.IsChildShapeSelectable(CurrentMousePosition),       // can't drag a grouped shape
                 Action = (_) =>
                 {
+                    snapActions.Clear();
+                    // attachedCompensation = Point.Empty;
+                    runningDelta = Point.Empty;
                     Controller.DeselectGroupedElements();
                     DraggingShapes = true;
+                    startedDraggingShapesAt = CurrentMousePosition;
                 },
             });
 
             // Start anchor drag:
             router.Add(new MouseRouter()
             {
-                RouteName = RouteName.StartShapeDrag,
+                RouteName = RouteName.StartAnchorDrag,
                 MouseEvent = MouseEvent.MouseDown,
                 Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
                     CurrentButtons == MouseButtons.Left &&
                     Controller.GetRootShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) != null,
                 Action = (_) =>
                 {
+                    snapActions.Clear();
+                    runningDelta = Point.Empty;
                     DraggingAnchor = true;
                     SelectedAnchor = HoverShape.GetAnchors().First(a => a.Near(CurrentMousePosition));
                 },
             });
 
-            // End shape/anchor dragging:
+            // End shape dragging:
             router.Add(new MouseRouter()
             {
                 RouteName = RouteName.EndShapeDrag,
                 MouseEvent = MouseEvent.MouseUp,
-                Condition = () => DraggingShapes || DraggingAnchor,
+                Condition = () => DraggingShapes,
                 Action = (_) =>
                 {
-                    // X1
-                    Controller.UndoStack.FinishGroup();
-                    Controller.HideConnectionPoints();
+                    DoUndoSnapActions();
+
+                    if (runningDelta != Point.Empty)
+                    {
+                        Point delta = runningDelta;     // for closure
+
+                        Controller.UndoStack.UndoRedo("ShapeMove",
+                            () => { },      // Our "do" action is actually nothing, since all the "doing" has been done.
+                            () =>           // Undo
+                            {
+                            Controller.DragSelectedElements(delta.ReverseDirection());
+                            },
+                            true,       // We finish the move.
+                            () =>           // Redo
+                            {
+                                Controller.DragSelectedElements(delta);
+                            });
+                    }
+
+                    Controller.SnapController.HideConnectionPoints();
+                    currentSnapAction = null;
+                    DraggingShapes = false;
+                    // DraggingOccurred = false;        / Will be cleared by RemoveSelectedShape but this is order dependent!  TODO: Fix this somehow! :)
+                    DraggingAnchor = false;
+                    SelectedAnchor = null;
+                    Controller.Canvas.Cursor = Cursors.Arrow;
+                }
+            });
+
+            // End anchor dragging:
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.EndAnchorDrag,
+                MouseEvent = MouseEvent.MouseUp,
+                Condition = () => DraggingAnchor,
+                Action = (_) =>
+                {
+                    DoUndoSnapActions();
+
+                    if (runningDelta != Point.Empty)
+                    {
+                        Point delta = runningDelta;     // for closure
+                        GraphicElement hoverShape = HoverShape;
+                        ShapeAnchor selectedAnchor = SelectedAnchor;
+
+                        Controller.UndoStack.UndoRedo("AnchorMove",
+                            () => { },      // Our "do" action is actually nothing, since all the "doing" has been done.
+                            () =>           // Undo
+                            {
+                                hoverShape.UpdateSize(selectedAnchor, delta.ReverseDirection());
+                            },
+                            true,       // We finish the anchor drag.
+                            () =>           // Redo
+                            {
+                                hoverShape.UpdateSize(selectedAnchor, delta);
+                            });
+                    }
+
+                    Controller.SnapController.HideConnectionPoints();
+                    currentSnapAction = null;
                     DraggingShapes = false;
                     // DraggingOccurred = false;        / Will be cleared by RemoveSelectedShape but this is order dependent!  TODO: Fix this somehow! :)
                     DraggingAnchor = false;
@@ -287,14 +362,13 @@ namespace FlowSharpLib
             {
                 RouteName = RouteName.DragShapes,
                 MouseEvent = MouseEvent.MouseMove,
-                Condition = () => DraggingShapes && 
-                    HoverShape != null && 
+                Condition = () => DraggingShapes &&
+                    HoverShape != null &&
                     HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null,
                 Action = (_) =>
                 {
                     DragShapes();
                     DraggingOccurred = true;
-                    Trace.WriteLine("Route:Dragging Occurred!");
                 },
             });
 
@@ -632,23 +706,112 @@ namespace FlowSharpLib
 
         protected void DragShapes()
         {
+            Controller.Canvas.Cursor = Cursors.SizeAll;
             Point delta = CurrentMousePosition.Delta(LastMousePosition);
 
-            if (delta != Point.Empty)
+            if (Controller.SelectedElements.Count == 1 && Controller.SelectedElements[0].IsConnector)
             {
-                Cursor lastCursor = Controller.Canvas.Cursor;
-
-                Controller.UndoStack.UndoRedo("Move",
-                    () =>
+                // Check both ends of any connector being moved.
+                if (!SnapCheck(GripType.Start, delta, (snapDelta) => Controller.DragSelectedElements(snapDelta)))
+                {
+                    if (!SnapCheck(GripType.End, delta, (snapDelta) => Controller.DragSelectedElements(snapDelta)))
                     {
                         Controller.DragSelectedElements(delta);
-                        Controller.Canvas.Cursor = Cursors.SizeAll;
-                    },
-                    () =>
-                    {
-                        Controller.DragSelectedElements(delta.ReverseDirection(), true);    // simulate keypress so we disconnect connectors immediately.
-                        Controller.Canvas.Cursor = lastCursor;
-                    }, false);
+                        runningDelta = runningDelta.Add(delta);
+                    }
+                }
+            }
+            else
+            {
+                Controller.DragSelectedElements(delta);
+                runningDelta = runningDelta.Add(delta);
+            }
+        }
+
+        protected bool SnapCheck(GripType gripType, Point delta, Action<Point> update)
+        {
+            SnapAction action = Controller.SnapController.Snap(gripType, delta);
+
+            if (action != null)
+            {
+                if (action.SnapType == SnapAction.Action.Attach)
+                {
+                    runningDelta = runningDelta.Add(action.Delta);
+                    update(action.Delta);
+                    // Controller.DragSelectedElements(action.Delta);
+                    // Don't attach at this point, as this will be handled by the mouse-up action.
+                    SetCurrentAction(action);
+
+                }
+                else if (action.SnapType == SnapAction.Action.Detach)
+                {
+                    runningDelta = runningDelta.Add(action.Delta);
+                    update(action.Delta);
+                    // Controller.DragSelectedElements(action.Delta);
+                    // Don't detach at this point, as this will be handled by the mouse-up action.
+                    SetCurrentAction(action);
+                }
+                else // Attached
+                {
+                    // The mouse move had no affect in detaching because it didn't have sufficient velocity.
+                    // The problem here is that the mouse moves, affecting the total delta, but the shape doesn't move.
+                    // This affects the computation in the MouseUp handler:
+                    // Point delta = CurrentMousePosition.Delta(startedDraggingShapesAt);
+
+                    // ===================
+                    // We could set the mouse cursor position, which isn't a bad idea, as it keeps the mouse with the shape:
+
+                    //Controller.Canvas.MouseMove -= HandleMouseMoveEvent;
+                    //Cursor.Position = Controller.Canvas.PointToScreen(LastMousePosition);
+                    //Application.DoEvents();         // sigh - we need the event to trigger, even though it's unwired.
+                    //Controller.Canvas.MouseMove += HandleMouseMoveEvent;
+
+                    // The above really doesn't work well because I think we can get multiple move events, and this only handles the first event.
+                    // ===================
+
+                    // ===================
+                    // Or we could add a "compensation" accumulator for dealing with the deltas that don't move the shape.
+                    // This works better, except the attached compensation has to be stored for each detach.
+                    // attachedCompensation = attachedCompensation.Add(delta);
+
+                    // That doesn't work either, as the attachedCompensation is treated as a move even though there is no actual movement of the connector!
+                    // ===================
+
+                    // Final implementation is to use the runningDelta instead of the CurrentMouseMosition - startDraggingShapesAt difference.
+
+                    // startedDraggingShapesAt = CurrentMousePosition;
+                }
+            }
+
+            return action != null;
+        }
+
+        // If no current snap action, set it to the action.
+        // Otherwise, if set, we're undoing the last snap action (these are always opposite attach/detach actions),
+        // so set it back to null.
+        protected void SetCurrentAction(SnapAction action)
+        {
+            if (currentSnapAction == null)
+            {
+                currentSnapAction = action;
+            }
+            else
+            {
+                // Connecting to a different shape?
+                if (action.TargetShape != currentSnapAction.TargetShape
+                    // connecting to a different endpoint on the connector?
+                    || action.GripType != currentSnapAction.GripType
+                    // connecting to a different connection point on the shape?
+                    || action.ShapeConnectionPoint != currentSnapAction.ShapeConnectionPoint)
+                {
+                    snapActions.Add(currentSnapAction);
+                    currentSnapAction = action;
+                }
+                else
+                {
+                    // User is undoing the last action by re-connecting or disconnecting from the shape to which we just connected / disconnected.
+                    currentSnapAction = null;
+                }
             }
         }
 
@@ -674,27 +837,11 @@ namespace FlowSharpLib
             GraphicElement hoverShape = HoverShape;
             ShapeAnchor selectedAnchor = SelectedAnchor;
 
-            Controller.UndoStack.UndoRedo("Drag Anchor",
-                () =>
-                {
-                    bool connectorAttached = hoverShape.SnapCheck(selectedAnchor, delta);
-
-                    if (!connectorAttached)
-                    {
-                        hoverShape.DisconnectShapeFromConnector(selectedAnchor.Type);
-                        hoverShape.RemoveConnection(selectedAnchor.Type);
-                    }
-                },
-                () =>
-                {
-                    bool connectorAttached = hoverShape.SnapCheck(selectedAnchor, delta.ReverseDirection(), true); // force disconnect in reverse direction.
-
-                    if (!connectorAttached)
-                    {
-                        hoverShape.DisconnectShapeFromConnector(selectedAnchor.Type);
-                        hoverShape.RemoveConnection(selectedAnchor.Type);
-                    }
-                }, false);
+            if (!SnapCheck(selectedAnchor.Type, delta, (snapDelta) => hoverShape.UpdateSize(selectedAnchor, snapDelta)))
+            {
+                hoverShape.UpdateSize(selectedAnchor, delta);
+                runningDelta = runningDelta.Add(delta);
+            }
         }
 
         protected void CreateSelectionBox()
@@ -742,6 +889,39 @@ namespace FlowSharpLib
             Rectangle newRect = new Rectangle(x, y, w, h);
             Point delta = CurrentMousePosition.Delta(LastMousePosition);
             Controller.UpdateDisplayRectangle(SelectionBox, newRect, delta);
+        }
+
+        protected void DoUndoSnapActions()
+        {
+            snapActions.ForEachReverse(act => DoUndoSnapAction(act));
+
+            if (currentSnapAction != null)
+            {
+                DoUndoSnapAction(currentSnapAction);
+            }
+
+            snapActions.Clear();
+        }
+
+        protected void DoUndoSnapAction(SnapAction action)
+        {
+            SnapAction closureAction = action.Clone();
+
+            // Do/undo/redo as part of of the move group.
+            if (closureAction.SnapType == SnapAction.Action.Attach)
+            {
+                Controller.UndoStack.UndoRedo("Attach",
+                () => closureAction.Attach(),
+                () => closureAction.Detach(),
+                false);
+            }
+            else
+            {
+                Controller.UndoStack.UndoRedo("Detach",
+                () => closureAction.Detach(),
+                () => closureAction.Attach(),
+                false);
+            }
         }
     }
 }

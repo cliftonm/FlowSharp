@@ -305,17 +305,6 @@ namespace FlowSharpLib
 			canvas.Controller.UpdateSize(this, anchor, delta);
 		}
 
-		public virtual bool SnapCheck(ShapeAnchor anchor, Point delta, bool isByKeyPress = false)
-		{
-			UpdateSize(anchor, delta);
-			canvas.Controller.UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = this });
-
-			return false;
-		}
-
-		// Default returns true so we don't detach a shape's connectors when moving a shape.
-		public virtual bool SnapCheck(GripType gt, ref Point delta, bool isByKeyPress) { return false; }
-
 		// Placeholders:
 		public virtual void SetConnection(GripType gt, GraphicElement shape) { }
 		public virtual void DisconnectShapeFromConnector(GripType gt) { }

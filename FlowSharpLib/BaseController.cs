@@ -27,10 +27,6 @@ namespace FlowSharpLib
         public const int MIN_WIDTH = 20;
         public const int MIN_HEIGHT = 20;
 
-        public const int SNAP_ELEMENT_RANGE = 20;
-		public const int SNAP_CONNECTION_POINT_RANGE = 10;
-		public const int SNAP_DETACH_VELOCITY = 5;
-
 		public const int CONNECTION_POINT_SIZE = 3;		// this is actually the length from center.
         public const int GROUPBOX_INFLATE = 15;
 
@@ -78,6 +74,8 @@ namespace FlowSharpLib
         public UndoStack UndoStack { get { return undoStack; } }
         public ReadOnlyCollection<GraphicElement> SelectedElements { get { return selectedElements.AsReadOnly(); } }
 
+        public SnapController SnapController { get; protected set; }
+
         protected List<GraphicElement> elements;
 		protected Canvas canvas;
         protected UndoStack undoStack;
@@ -92,6 +90,7 @@ namespace FlowSharpLib
 			this.canvas = canvas;
             elements = new List<GraphicElement>();
             selectedElements = new List<GraphicElement>();
+            SnapController = new SnapController(this);
 		}
 
         public virtual bool IsMultiSelect()
@@ -100,15 +99,13 @@ namespace FlowSharpLib
         }
 
         // TODO: These empty base class methods are indicative of bad design.
-        public virtual bool Snap(GripType type, ref Point delta, bool isByKeyPress) { return false; }
         public virtual void SelectElement(GraphicElement el) { }
         public virtual void SelectOnlyElement(GraphicElement el) { }
         public virtual void SetAnchorCursor(GraphicElement el) { }
-        public virtual void DragSelectedElements(Point delta, bool isByKeyPress = false) { }
+        public virtual void DragSelectedElements(Point delta) { }
         public virtual void DeselectCurrentSelectedElements() { }
         public virtual void DeselectGroupedElements() { }
         public virtual void DeselectElement(GraphicElement el) { }
-        public virtual void HideConnectionPoints() { }
 
         public void Insert(int idx, GraphicElement el)
         {
@@ -759,5 +756,5 @@ namespace FlowSharpLib
             eraseCount = 1;         // Diagnostics
 			DrawBottomToTop(elements);
 		}
-	}
+    }
 }

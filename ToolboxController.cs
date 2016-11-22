@@ -24,7 +24,6 @@ namespace FlowSharp
         protected Point currentDragPosition;
         protected bool setup;
         protected bool dragging;
-        protected Point startedDraggingShapesAt;
 
         public ToolboxController(Canvas canvas, CanvasController canvasController) : base(canvas)
 		{
@@ -68,16 +67,25 @@ namespace FlowSharp
             }
             else if (args.Button == MouseButtons.Left && dragging)
             {
-                Point delta = Cursor.Position.Delta(startedDraggingShapesAt);
+                // TODO: Similar to MouseController EndShapeDrag/EndAnchorDrag
+                canvasController.SnapController.DoUndoSnapActions(canvasController.UndoStack);
 
-                canvasController.UndoStack.UndoRedo("Move " + selectedElements[0].ToString(),
-                    () => { },
-                    () => canvasController.DragSelectedElements(delta.ReverseDirection()),
-                    true,
-                    () => canvasController.DragSelectedElements(delta)
-                    );
+                if (canvasController.SnapController.RunningDelta != Point.Empty)
+                {
+                    Point delta = canvasController.SnapController.RunningDelta;     // for closure
 
-                // canvasController.UndoStack.FinishGroup();       // Finish any move operation from click-drag process.
+                    canvasController.UndoStack.UndoRedo("ShapeMove",
+                        () => { },      // Our "do" action is actually nothing, since all the "doing" has been done.
+                        () =>           // Undo
+                        {
+                                canvasController.DragSelectedElements(delta.ReverseDirection());
+                        },
+                        true,       // We finish the move.
+                        () =>           // Redo
+                        {
+                                canvasController.DragSelectedElements(delta);
+                        });
+                }
             }
 
             dragging = false;
@@ -100,7 +108,6 @@ namespace FlowSharp
                     setup = true;
                     ResetDisplacement();
                     CreateShape();
-                    startedDraggingShapesAt = Cursor.Position;
                     canvas.Cursor = Cursors.SizeAll;
                 }
             }
@@ -113,18 +120,34 @@ namespace FlowSharp
                 {
                     currentDragPosition = args.Location;
                     setup = false;
+                    canvasController.SnapController.Reset();
                 }
                 else
                 {
                     // Toolbox controller still has control, so simulate dragging on the canvas.
                     Point delta = args.Location.Delta(currentDragPosition);
+                    currentDragPosition = args.Location;
 
                     if (delta != Point.Empty)
                     {
-                        canvasController.DragSelectedElements(delta);
+                        if (selectedElements[0].IsConnector)
+                        {
+                            // Check both ends of any connector being moved.
+                            if (!canvasController.SnapController.SnapCheck(GripType.Start, delta, (snapDelta) => canvasController.DragSelectedElements(snapDelta)))
+                            {
+                                if (!canvasController.SnapController.SnapCheck(GripType.End, delta, (snapDelta) => canvasController.DragSelectedElements(snapDelta)))
+                                {
+                                    canvasController.DragSelectedElements(delta);
+                                    canvasController.SnapController.UpdateRunningDelta(delta);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            canvasController.DragSelectedElements(delta);
+                            canvasController.SnapController.UpdateRunningDelta(delta);
+                        }
                     }
-
-                    currentDragPosition = args.Location;
                 }
             }
         }

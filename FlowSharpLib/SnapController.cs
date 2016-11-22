@@ -80,7 +80,14 @@ namespace FlowSharpLib
 
     public class SnapController
     {
+        public Point RunningDelta { get { return runningDelta; } }
+        public List<SnapAction> SnapActions { get { return snapActions; } }
+
         protected BaseController controller;
+        protected Point runningDelta;
+        protected SnapAction currentSnapAction;
+        protected List<SnapAction> snapActions = new List<SnapAction>();
+
 
         public SnapController(BaseController controller)
         {
@@ -96,6 +103,18 @@ namespace FlowSharpLib
         // TODO: This could actually be in a separate controller?
         protected List<SnapInfo> currentlyNear = new List<SnapInfo>();
         protected List<SnapInfo> nearElements = new List<SnapInfo>();
+
+        public void UpdateRunningDelta(Point delta)
+        {
+            runningDelta = runningDelta.Add(delta);
+        }
+
+        public void Reset()
+        {
+            snapActions.Clear();
+            runningDelta = Point.Empty;
+            currentSnapAction = null;
+        }
 
         public SnapAction Snap(GripType type, Point delta, bool isByKeyPress = false)
         {
@@ -182,6 +201,97 @@ namespace FlowSharpLib
             nearElements.Clear();
         }
 
+        public bool SnapCheck(GripType gripType, Point delta, Action<Point> update)
+        {
+            SnapAction action = Snap(gripType, delta);
+
+            if (action != null)
+            {
+                if (action.SnapType == SnapAction.Action.Attach)
+                {
+                    runningDelta = runningDelta.Add(action.Delta);
+                    update(action.Delta);
+                    // Controller.DragSelectedElements(action.Delta);
+                    // Don't attach at this point, as this will be handled by the mouse-up action.
+                    SetCurrentAction(action);
+
+                }
+                else if (action.SnapType == SnapAction.Action.Detach)
+                {
+                    runningDelta = runningDelta.Add(action.Delta);
+                    update(action.Delta);
+                    // Controller.DragSelectedElements(action.Delta);
+                    // Don't detach at this point, as this will be handled by the mouse-up action.
+                    SetCurrentAction(action);
+                }
+                else // Attached
+                {
+                    // The mouse move had no affect in detaching because it didn't have sufficient velocity.
+                    // The problem here is that the mouse moves, affecting the total delta, but the shape doesn't move.
+                    // This affects the computation in the MouseUp handler:
+                    // Point delta = CurrentMousePosition.Delta(startedDraggingShapesAt);
+
+                    // ===================
+                    // We could set the mouse cursor position, which isn't a bad idea, as it keeps the mouse with the shape:
+
+                    //Controller.Canvas.MouseMove -= HandleMouseMoveEvent;
+                    //Cursor.Position = Controller.Canvas.PointToScreen(LastMousePosition);
+                    //Application.DoEvents();         // sigh - we need the event to trigger, even though it's unwired.
+                    //Controller.Canvas.MouseMove += HandleMouseMoveEvent;
+
+                    // The above really doesn't work well because I think we can get multiple move events, and this only handles the first event.
+                    // ===================
+
+                    // ===================
+                    // Or we could add a "compensation" accumulator for dealing with the deltas that don't move the shape.
+                    // This works better, except the attached compensation has to be stored for each detach.
+                    // attachedCompensation = attachedCompensation.Add(delta);
+
+                    // That doesn't work either, as the attachedCompensation is treated as a move even though there is no actual movement of the connector!
+                    // ===================
+
+                    // Final implementation is to use the runningDelta instead of the CurrentMouseMosition - startDraggingShapesAt difference.
+
+                    // startedDraggingShapesAt = CurrentMousePosition;
+                }
+            }
+
+            return action != null;
+        }
+
+        public void DoUndoSnapActions(UndoStack undoStack)
+        {
+            snapActions.ForEachReverse(act => DoUndoSnapAction(undoStack, act));
+
+            if (currentSnapAction != null)
+            {
+                DoUndoSnapAction(undoStack, currentSnapAction);
+            }
+
+            snapActions.Clear();
+        }
+
+        protected void DoUndoSnapAction(UndoStack undoStack, SnapAction action)
+        {
+            SnapAction closureAction = action.Clone();
+
+            // Do/undo/redo as part of of the move group.
+            if (closureAction.SnapType == SnapAction.Action.Attach)
+            {
+                undoStack.UndoRedo("Attach",
+                () => closureAction.Attach(),
+                () => closureAction.Detach(),
+                false);
+            }
+            else
+            {
+                undoStack.UndoRedo("Detach",
+                () => closureAction.Detach(),
+                () => closureAction.Attach(),
+                false);
+            }
+        }
+
         /// <summary>
         /// Update the SnapInfo structure with the deltas of the connector's connection point to the first nearby shape connection point found.
         /// </summary>
@@ -239,6 +349,35 @@ namespace FlowSharpLib
                 e.ShowConnectionPoints = state;
                 controller.Redraw(e, CONNECTION_POINT_SIZE, CONNECTION_POINT_SIZE);
             });
+        }
+
+        // If no current snap action, set it to the action.
+        // Otherwise, if set, we're undoing the last snap action (these are always opposite attach/detach actions),
+        // so set it back to null.
+        protected void SetCurrentAction(SnapAction action)
+        {
+            if (currentSnapAction == null)
+            {
+                currentSnapAction = action;
+            }
+            else
+            {
+                // Connecting to a different shape?
+                if (action.TargetShape != currentSnapAction.TargetShape
+                    // connecting to a different endpoint on the connector?
+                    || action.GripType != currentSnapAction.GripType
+                    // connecting to a different connection point on the shape?
+                    || action.ShapeConnectionPoint != currentSnapAction.ShapeConnectionPoint)
+                {
+                    snapActions.Add(currentSnapAction);
+                    currentSnapAction = action;
+                }
+                else
+                {
+                    // User is undoing the last action by re-connecting or disconnecting from the shape to which we just connected / disconnected.
+                    currentSnapAction = null;
+                }
+            }
         }
     }
 }

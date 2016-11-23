@@ -1,4 +1,10 @@
-﻿using System;
+﻿/* 
+* Copyright (c) Marc Clifton
+* The Code Project Open License (CPOL) 1.02
+* http://www.codeproject.com/info/cpol10.aspx
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -163,8 +169,8 @@ namespace FlowSharpLib
                         if (neardxsign == 0 && neardxsign == 0 && ((delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY) ||
                             (isByKeyPress && (neardxsign != deltaxsign || neardysign != deltaysign))))
                         {
+                            // Detach:
                             action = new SnapAction(SnapAction.Action.Detach, selectedElement, type, si.NearElement, si.LineConnectionPoint, nearConnectionPoint, delta);
-                            // Disconnect(selectedElement, type);
                             break;
                         }
                         else
@@ -172,11 +178,8 @@ namespace FlowSharpLib
                             // Not already connected?
                             if (neardxsign != 0 || neardysign != 0)
                             {
-                                // Remove any current connections.  See issue #41
-                                // Disconnect(selectedElement, type);
+                                // Attach:
                                 action = new SnapAction(SnapAction.Action.Attach, selectedElement, type, si.NearElement, si.LineConnectionPoint, nearConnectionPoint, new Point(neardx, neardy));
-                                //si.NearElement.Connections.Add(new Connection() { ToElement = selectedElement, ToConnectionPoint = si.LineConnectionPoint, ElementConnectionPoint = nearConnectionPoint });
-                                //selectedElement.SetConnection(si.LineConnectionPoint.Type, si.NearElement);
                             }
                             else
                             {

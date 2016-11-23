@@ -17,7 +17,7 @@ namespace FlowSharp
 	{
         public const int MIN_DRAG = 3;
 
-		protected CanvasController canvasController;
+		protected BaseController canvasController;
         protected int xDisplacement = 0;
         protected bool mouseDown = false;
         protected Point mouseDownPosition;
@@ -25,7 +25,7 @@ namespace FlowSharp
         protected bool setup;
         protected bool dragging;
 
-        public ToolboxController(Canvas canvas, CanvasController canvasController) : base(canvas)
+        public ToolboxController(Canvas canvas, BaseController canvasController) : base(canvas)
 		{
 			this.canvasController = canvasController;
 			canvas.PaintComplete = CanvasPaintComplete;

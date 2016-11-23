@@ -16,6 +16,7 @@
             if (disposing && (components != null))
             {
                 components.Dispose();
+                traceListener.Dispose();
             }
             base.Dispose(disposing);
         }

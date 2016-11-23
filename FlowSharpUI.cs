@@ -253,16 +253,12 @@ namespace FlowSharp
                 canvasController.UndoStack.UndoRedo("Inline edit",
                     () =>
                     {
-                        shapeBeingEdited.Text = newVal;
-                        canvasController.Redraw(shapeBeingEdited);
-                        // Updates PropertyGrid:
+                        canvasController.Redraw(shapeBeingEdited, (el) => el.Text = newVal);
                         canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
                     },
                     () =>
                     {
-                        shapeBeingEdited.Text = oldVal;
-                        canvasController.Redraw(shapeBeingEdited);
-                        // Updates PropertyGrid:
+                        canvasController.Redraw(shapeBeingEdited, (el) => el.Text = oldVal);
                         canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
                     });
 

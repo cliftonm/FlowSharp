@@ -18,6 +18,12 @@ namespace FlowSharp
     {
         protected void Copy()
         {
+            if (editBox != null)
+            {
+                Clipboard.SetText(editBox.SelectedText);
+                return;
+            }
+
             if (canvasController.SelectedElements.Any())
             {
                 List<GraphicElement> elementsToCopy = new List<GraphicElement>();
@@ -49,6 +55,13 @@ namespace FlowSharp
 
         protected void Paste()
         {
+            // TODO: This seems klunky.
+            if (editBox != null && Clipboard.ContainsText())
+            {
+                editBox.SelectedText = Clipboard.GetText();
+                return;
+            }
+
             string copyBuffer = Clipboard.GetData("FlowSharp")?.ToString();
 
             if (copyBuffer == null)

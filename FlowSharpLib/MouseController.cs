@@ -721,7 +721,6 @@ namespace FlowSharpLib
                 Controller.DragSelectedElements(delta);
                 Controller.SnapController.UpdateRunningDelta(delta);
             }
-
         }
 
         protected void ClearAnchorCursor()

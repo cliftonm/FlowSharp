@@ -14,13 +14,8 @@
 
 <p><b><a href="#110616">Reason for this update:</a></b></p>
 <ul>
-	<li>Numerous bug fixes (see
-	<a href="https://github.com/cliftonm/FlowSharp/issues?q=is:issue+is:closed">
-	Closed Issues</a>)</li>
-	<li>Added plug-in shape capability</li>
-	<li>Added ImageShape as a plug-in example</li>
-	<li>Added diagonal connector</li>
-	<li>Text alignment<br></li>
+	<li><a href="#112216">Added Undo/Redo</a>, and valuable lessons learned</li>
+	<li><a href="#110616">Added Diagonal Connector</a></li>
 </ul>
 
 <p align="center"><img border="0" height="400" src="flowsharp2.png" width="754" /></p>
@@ -127,29 +122,28 @@
 	</ul>
 	</li>
 	<li><a href="#revisions">Revisions</a>
+	
+<ul>
+	<li><a href="#112216">11/22/16 - Undo/Redo</a></li>
+	<li><a href="#102316">10/23/16 - Grouping</a></li>
+	<li><a href="#101816">10/18/16 - Bug Fixes</a></li>
+	<li><a href="#101316">10/15/16</a>
 	<ul>
-		<li><a href="#102316">10/23/16 - Grouping</a></li>
-		<li><a href="#101816">10/18/16 - Bug Fixes</a></li>
-		<li><a href="#101316">10/15/16</a>
-		<ul>
-			<li><a href="#debugging">Debugging</a></li>
-			<li><a href="#groupselect">Group Select</a></li>
-			<li><a href="#ux">Group Select User Experience and the Need for a <b>Mouse Router</b></a></li>
-			<li><a href="#issues1">Issues Encountered</a></li>
-			<li><a href="#cursors">Cursors</a></li>
-			<li><a href="#candp">Copy and Paste</a></li>
-		</ul>
-		</li>
-	</ul>
+		<li><a href="#debugging">Debugging</a></li>
+		<li><a href="#groupselect">Group Select</a></li>
+		<li><a href="#ux">Group Select User Experience and the Need for a <b>Mouse Router</b></a></li>
+		<li><a href="#issues1">Issues Encountered</a></li>
+		<li><a href="#cursors">Cursors</a></li>
+		<li><a href="#candp">Copy and Paste</a></li>
+	</ul></li>
+</ul>
 
 	<ul>
 		<li><a href="#101016">10/10/16</a>
-
 		<ul>
 			<li><a href="#dand">Toolbox Drag &amp; Drop and minor stuff</a></li>
 			<li><a href="#import">Import</a></li>
-		</ul>
-		</li>
+		</ul></li>
 		<li><a href="#100516">10/5/16 - Nothing Exciting</a></li>
 	</ul>
 	</li>
@@ -1794,12 +1788,363 @@ canvasController.SelectElement(el);</pre>
 <p>It was also interesting writing this article, as there was actually a substantial amount of code cleanup / refactoring that took place as, while writing this, I realized, wow, this can be done better.</p>
 
 <h3><a name="KnownBugs56">Known Bugs</a></h3>
-
-<p>Copying a group with an non-grouped shape that is connected to an inner grouped shape results in double motion of the connector when the entire pasted collection of shapes is moved.</p>
-
-<p>And probably other things!</p>
+<p>See the
+<a href="https://github.com/cliftonm/FlowSharp/issues?q=is:open+is:issue">GitHub 
+Issues</a> page.</p>
 
 <h2><a name="revisions">Revisions</a></h2>
+<p><a name="112216">11/22/2016</a></p>
+<h3>Undo/Redo</h3>
+<p><img border="0" src="undo1.png" width="998" height="497"></p>
+<p>Implementing undo/redo required a significant refactoring of the code 
+responsible for moving shapes, anchors, and performing snap activity.&nbsp; 
+There is now a completely separate controller, the <code>SnapController</code>, that is 
+responsible for managing the snap behavior.&nbsp; As the above screenshot shows:</p>
+<ul>
+	<li>The debug window lets you inspect the undo buffer</li>
+	<li>The edit menu exposes the undo/redo functions</li>
+</ul>
+<p>Special thanks go to CPian
+<a href="http://www.codeproject.com/script/Membership/View.aspx?mid=3453924">
+Qwertie</a> for sharing the code that manages the undo / redo stack.</p>
+<p>The undo/redo stack operates on the principle of passing in an actions for 
+the do (and redo) operation as well as the undo operation.&nbsp; A straight 
+forward example is selecting a shape:</p>
+<p>(MouseController.cs)</p>
+<pre>protected void AddShapeToSelectionList()
+{
+  // Preserve for undo:
+  List&lt;GraphicElement&gt; selectedShapes = Controller.SelectedElements.ToList();
+
+  GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
+  Controller.UndoStack.UndoRedo(&quot;Select &quot; + el.ToString(),
+  () =&gt; // &quot;Do/Redo&quot; action
+  {
+    Controller.DeselectGroupedElements();
+    Controller.SelectElement(el);
+    justAddedShape.Add(el);
+  },
+  () =&gt; // &quot;Undo&quot; action
+  {
+    Controller.DeselectCurrentSelectedElements();
+    Controller.SelectElements(selectedShapes);
+  });
+}</pre>
+<p>Typically, you pass in both do/redo and undo actions.&nbsp; These must be 
+100% symmetrical -- the undo must leave the application in exactly the state it 
+was in before the action, and the redo must leave the application in exactly the 
+same state as after the action.</p>
+<p>One of the nifty features of Qwertie's <code>UndoStack</code> is the ability 
+to specify a do/redo/undo group:</p>
+<p><img border="0" src="undo2.png" width="168" height="110"></p>
+<p>In the debug window, a do/undo (&quot;do&quot; also implies &quot;redo&quot;, so I'll avoid 
+explicitly stating that from now on), a group is designated by the letter &quot;F&quot;.&nbsp; 
+In the above screenshot, the actions &quot;Attach&quot; and &quot;ShapeMove&quot; are a group (as 
+well as &quot;Attach&quot; and &quot;AnchorMove&quot;) -- the movement of a shape or anchor that 
+resulted in a connector attaching to a shape.&nbsp; This is a really useful 
+feature for undoing/redoing associated actions, particularly connector moves 
+that result in attaching/detaching to/from a shape.</p>
+<p>Under certain conditions, managing undo/redo operations gets rather 
+complicated.&nbsp; Consider moving a shape.&nbsp; It is natural to expect that 
+all the mouse moves, starting from when the user clicks the shape, to when the 
+user, after dragging the shape, releases the button -- all those mouse moves are 
+actually accumulated into a single move action.&nbsp; Easier said than done, as 
+this can also include attach/detach/re-attach/re-detach operations:</p>
+<p>(MouseController.cs)</p>
+<pre>protected void DragShapes()
+{
+  Controller.Canvas.Cursor = Cursors.SizeAll;
+  Point delta = CurrentMousePosition.Delta(LastMousePosition);
+
+  if (Controller.SelectedElements.Count == 1 &amp;&amp; Controller.SelectedElements[0].IsConnector)
+  {
+    // Check both ends of any connector being moved.
+    if (!Controller.SnapController.SnapCheck(GripType.Start, delta, (snapDelta) =&gt; Controller.DragSelectedElements(snapDelta)))
+    {
+      if (!Controller.SnapController.SnapCheck(GripType.End, delta, (snapDelta) =&gt; Controller.DragSelectedElements(snapDelta)))
+      {
+        Controller.DragSelectedElements(delta);
+        Controller.SnapController.UpdateRunningDelta(delta);
+      }
+    }
+  }
+  else
+  {
+    Controller.DragSelectedElements(delta);
+    Controller.SnapController.UpdateRunningDelta(delta);
+  }
+}</pre>
+<p>Notice that there are no do/undo calls made here!&nbsp; Instead, the 
+SnapController is used to manage a running delta of all mouse movements.&nbsp; 
+Furthermore, the <code>SnapController</code> manages a list of &quot;detach from one connection 
+point and attach to a different connection point&quot; actions:</p>
+<pre>// If no current snap action, set it to the action.
+// Otherwise, if set, we're possibly undoing the last snap action (these are always opposite attach/detach actions),
+// if re-attaching or re-detaching from the connection point. 
+// Lastly, if attaching to a different connection point, buffer the last snap action (which would always be a detach)
+// and set the current snap action to what will always be the attach to another connection point.
+protected void SetCurrentAction(SnapAction action)
+{
+  if (currentSnapAction == null)
+  {
+    currentSnapAction = action;
+  }
+  else
+  {
+    // Connecting to a different shape?
+    if (action.TargetShape != currentSnapAction.TargetShape
+    // connecting to a different endpoint on the connector?
+    || action.GripType != currentSnapAction.GripType
+    // connecting to a different connection point on the shape?
+    || action.ShapeConnectionPoint != currentSnapAction.ShapeConnectionPoint)
+    {
+      snapActions.Add(currentSnapAction);
+      currentSnapAction = action;
+    }
+    else
+    {
+      // User is undoing the last action by re-connecting or disconnecting from the shape to which we just connected / disconnected.
+      currentSnapAction = null;
+    }
+  }
+}</pre>
+<p>It is only when the mouse button is released that all the snap actions and 
+accumulated mouse movements are placed into the undo stack.&nbsp; But notice!&nbsp; 
+In this case, there is no &quot;Do&quot; action because all the actions have already been 
+performed.&nbsp; Instead, there is a separate &quot;redo&quot; action, which &quot;normally&quot; 
+would be the same as the &quot;do&quot; action, but in this case has to be managed 
+separately:</p>
+<p>(MouseController.cs)</p>
+<pre>// End shape dragging:
+router.Add(new MouseRouter()
+{
+  // TODO: Similar to EndAnchorDrag and Toolbox.OnMouseUp
+  RouteName = RouteName.EndShapeDrag,
+  MouseEvent = MouseEvent.MouseUp,
+  Condition = () =&gt; DraggingShapes,
+  Action = (_) =&gt;
+  {
+    Controller.SnapController.DoUndoSnapActions(Controller.UndoStack);
+
+    if (Controller.SnapController.RunningDelta != Point.Empty)
+    {
+      Point delta = Controller.SnapController.RunningDelta; // for closure
+
+      Controller.UndoStack.UndoRedo(&quot;ShapeMove&quot;,
+        () =&gt; { }, // Our &quot;do&quot; action is actually nothing, since all the &quot;doing&quot; has been done.
+        () =&gt; // Undo
+        {
+          Controller.DragSelectedElements(delta.ReverseDirection());
+        },
+        true, // We finish the move.
+        () =&gt; // Redo
+        {
+          Controller.DragSelectedElements(delta);
+        });
+    }
+
+    Controller.SnapController.HideConnectionPoints();
+    Controller.SnapController.Reset();
+    DraggingShapes = false;
+    // DraggingOccurred = false; / Will be cleared by RemoveSelectedShape but this is order dependent! TODO: Fix this somehow! :)
+    DraggingAnchor = false;
+    SelectedAnchor = null;
+    Controller.Canvas.Cursor = Cursors.Arrow;
+  }
+});</pre>
+<p>The <code>SnapController</code> has a method for queuing up the do/undo actions for the 
+attaching/detaching operation:</p>
+<p>(SnapController.cs)</p>
+<pre>protected void DoUndoSnapAction(UndoStack undoStack, SnapAction action)
+{
+  SnapAction closureAction = action.Clone();
+
+  // Do/undo/redo as part of of the move group.
+  if (closureAction.SnapType == SnapAction.Action.Attach)
+  {
+    undoStack.UndoRedo(&quot;Attach&quot;,
+    () =&gt; closureAction.Attach(),
+    () =&gt; closureAction.Detach(),
+    false);
+  }
+  else
+  {
+    undoStack.UndoRedo(&quot;Detach&quot;,
+    () =&gt; closureAction.Detach(),
+    () =&gt; closureAction.Attach(),
+    false);
+  }
+}</pre>
+<p>Notice that the <code>false</code> indicates that these actions are part of a group -- 
+they are always associated with the user moving a connector or a connector's 
+anchor, so they are always grouped with that activity.&nbsp; Also notice how 
+closures are used to preserve the state of the action.</p>
+<p>A helper class, <code>SnapAction</code>, maintains everything necessary to attach or 
+detach a connector to/from a shape:</p>
+<p>(SnapController.cs)</p>
+<pre>public class SnapAction
+{
+  public enum Action
+  {
+    Attached,
+    Attach,
+    Detach,
+  }
+
+  public Point Delta { get; protected set; }
+  public Action SnapType { get; protected set; }
+
+  // Exposed primarily for debugging purposes:
+  public GraphicElement Connector { get { return connector; } }
+  public GraphicElement TargetShape { get { return targetShape; } }
+  public GripType GripType { get { return gripType; } }
+  public ConnectionPoint ShapeConnectionPoint { get { return shapeConnectionPoint; } }
+
+  protected GraphicElement connector;
+  protected GraphicElement targetShape;
+  protected GripType gripType;
+  protected ConnectionPoint lineConnectionPoint;
+  protected ConnectionPoint shapeConnectionPoint;
+
+  /// &lt;summary&gt;
+  /// Used for specifying ignore mouse move, for when connector is attached but velocity is not sufficient to detach.
+  /// &lt;/summary&gt;
+  /// &lt;param name=&quot;action&quot;&gt;&lt;/param&gt;
+  public SnapAction()
+  {
+    SnapType = Action.Attached;
+  }
+
+  public SnapAction(Action action, GraphicElement lineShape, GripType gripType, GraphicElement targetShape, ConnectionPoint lineConnectionPoint, ConnectionPoint shapeConnectionPoint, Point delta)
+  {
+    SnapType = action;
+    this.connector = lineShape;
+    this.gripType = gripType;
+    this.targetShape = targetShape;
+    this.lineConnectionPoint = lineConnectionPoint;
+    this.shapeConnectionPoint = shapeConnectionPoint;
+    Delta = delta;
+  }
+
+  public void Attach()
+  {
+    targetShape.Connections.Add(new Connection() 
+    { 
+      ToElement = connector, 
+      ToConnectionPoint = lineConnectionPoint, 
+      ElementConnectionPoint = shapeConnectionPoint 
+    });
+    connector.SetConnection(lineConnectionPoint.Type, targetShape);
+}
+
+  public void Detach()
+  {
+    connector.DisconnectShapeFromConnector(gripType);
+    connector.RemoveConnection(gripType);
+  }
+
+  public SnapAction Clone()
+  {
+    SnapAction ret = new SnapAction();
+    ret.SnapType = SnapType;
+    ret.connector = connector;
+    ret.gripType = gripType;
+    ret.targetShape = targetShape;
+    ret.lineConnectionPoint = lineConnectionPoint;
+    ret.shapeConnectionPoint = shapeConnectionPoint;
+    ret.Delta = Delta;
+
+    return ret;
+  }
+}</pre>
+<h4>Lessons Learned</h4>
+<p>The reason that the code for shape/anchor movement and snap checking had to 
+be refactored is that originally, the snap check was buried inside connector 
+shape and connector anchor move operations.&nbsp; When implementing undo/redo, 
+it is critical that actions are not entangled -- they need to be discrete 
+activities that are managed by the top level user event handlers -- in this 
+case, keyboard and mouse events, which is why the code examples above show how 
+the <code>UndoStack</code> is utilized in the <code>MouseController</code> class.</p>
+<p>If I had started implementing FlowSharp with undo/redo in mind, I probably 
+could have saved myself a lot of grief, as well as some ugly code that, after 
+implementing actions as discrete activities, was eliminated.&nbsp; So I cannot 
+over-emphasize:</p>
+<ul>
+	<li>Methods should do one thing and one thing only</li>
+	<li>Do not entangle orthogonal activities </li>
+</ul>
+<p><img border="0" src="undo3.jpg" width="500" height="374"></p>
+<p><i>After a time, you may find that having is not so pleasing a thing after 
+all as wanting - Star Trek, Amok Time</i></p>
+<p>And most importantly:</p>
+<ul>
+	<li>Do not mix &quot;can I do something&quot; with &quot;do something if I can&quot; - the 
+	determination of whether you can do something, and doing that thing, are two 
+	separate things.</li>
+</ul>
+<p>Besides creating hidden side-effects which are difficult to debug, it also 
+makes implementing certain behaviors like undo/redo a nightmare which will force 
+you, if you want to do it right, rewriting potentially vast sections of the 
+code.&nbsp; Fortunately, in my case, the rewrite was minimal and I was able to 
+re-use the much of the critical &quot;activity&quot; code and throw out much of the 
+&quot;control logic&quot; code because the separation of activities was now much cleaner.</p>
+<p>One of the keys to a successful detangling of activities is, instead of 
+immediately performing an action, instead return a packet of data containing 
+everything needed to &quot;do&quot; (and &quot;undo&quot;) the action.&nbsp; Compare this truncated 
+fragment of the new code:</p>
+<p>(SnapController.cs)</p>
+<pre>if...
+{
+  // Detach:
+  action = new SnapAction(SnapAction.Action.Detach, 
+                 selectedElement, 
+                 type, 
+                 si.NearElement, 
+                 si.LineConnectionPoint, 
+                 nearConnectionPoint, 
+                 delta);
+  break;
+}
+else
+{
+  // Attach:
+  action = new SnapAction(SnapAction.Action.Attach, 
+                 selectedElement, 
+                 type, 
+                 si.NearElement, 
+                 si.LineConnectionPoint, 
+                 nearConnectionPoint, 
+                 new Point(neardx, neardy));
+}
+...
+return action;</pre>
+<p>with the old code:</p>
+<pre>if...
+{
+  // Detach:
+  el.DisconnectShapeFromConnector(gripType);
+  el.RemoveConnection(gripType);
+}
+else
+{
+  // Attach:
+  si.NearElement.Connections.Add(
+    new Connection() 
+      { 
+        ToElement = selectedElement, 
+        ToConnectionPoint = si.LineConnectionPoint, 
+        ElementConnectionPoint = nearConnectionPoint 
+      });
+  selectedElement.SetConnection(si.LineConnectionPoint.Type, si.NearElement);
+}</pre>
+<p>While that looks reasonable enough, the old code was not just determining <i>
+whether a snap could take place</i>, it was <i>performing the attach/detach</i>.&nbsp; 
+This error in mixing &quot;can I do this&quot; with &quot;and if I can, do it&quot; was ultimately 
+the source of much gnashing of teeth.&nbsp; Notice with the new code, what is 
+returned is what is needed for doing/undoing the activity, in addition to the 
+state information of whether the the snap action is possible.&nbsp; This exposes 
+the activity such that the top level (the UI event handler) can determine 
+where/when the action is to actually take place.</p>
 <p><a name="110616">11/06/2016</a></p>
 <h3>Diagonal Connector</h3>
 <p><img border="0" src="img38.png" width="405" height="277"></p>

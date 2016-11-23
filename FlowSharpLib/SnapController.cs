@@ -352,8 +352,10 @@ namespace FlowSharpLib
         }
 
         // If no current snap action, set it to the action.
-        // Otherwise, if set, we're undoing the last snap action (these are always opposite attach/detach actions),
-        // so set it back to null.
+        // Otherwise, if set, we're possibly undoing the last snap action (these are always opposite attach/detach actions),
+        // if re-attaching or re-detaching from the connection point.  
+        // Lastly, if attaching to a different connection point, buffer the last snap action (which would always be a detach)
+        // and set the current snap action to what will always be the attach to another connection point.
         protected void SetCurrentAction(SnapAction action)
         {
             if (currentSnapAction == null)

@@ -34,6 +34,12 @@ namespace FlowSharp
                 {
                     tbTrace.AppendText(msg);
                 }
+
+                // Always emit messages starting with *** as this is an important notification of a possible error.
+                if (msg.StartsWith("***"))
+                {
+                    tbTrace.AppendText(msg);
+                }
             }
         }
 

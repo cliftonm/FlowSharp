@@ -130,6 +130,7 @@ namespace FlowSharpToolboxService
 
                     if (delta != Point.Empty)
                     {
+                        // TODO: Duplicate code in FlowSharpUI.DoMove and MouseController
                         if (selectedElements[0].IsConnector)
                         {
                             // Check both ends of any connector being moved.

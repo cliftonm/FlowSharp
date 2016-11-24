@@ -165,6 +165,7 @@ namespace FlowSharpLib
                             (neardysign == 0 || deltaysign == 0 || neardysign == deltaysign))
                     {
                         // If attached, are we moving away from the connection point to detach it?
+                        // Keyboard overrides the velocity check so we immediately detach if moving away.
                         if (neardxsign == 0 && neardxsign == 0 && ((delta.X.Abs() >= SNAP_DETACH_VELOCITY || delta.Y.Abs() >= SNAP_DETACH_VELOCITY) ||
                             (isByKeyPress && (neardxsign != deltaxsign || neardysign != deltaysign))))
                         {

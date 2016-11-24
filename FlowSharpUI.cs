@@ -94,16 +94,51 @@ namespace FlowSharp
 
         protected void DoMove(Point dir)
         {
-            bool ignoreSnapCheck = canvasController.IsSnapToBeIgnored;      // preserve ignore snap state
-            canvasController.UndoStack.UndoRedo(
-            "Move",
-            () => canvasController.DragSelectedElements(dir),
-            () =>
+            if (canvasController.SelectedElements.Count == 1 && canvasController.SelectedElements[0].IsConnector)
             {
-                canvasController.UndoRedoIgnoreSnapCheck = ignoreSnapCheck;
-                canvasController.DragSelectedElements(dir.ReverseDirection());
+                // TODO: Duplicate code in FlowSharpToolboxService.ToolboxController.OnMouseMove and MouseController
+                // Check both ends of any connector being moved.
+                if (!canvasController.SnapController.SnapCheck(GripType.Start, dir, (snapDelta) => canvasController.DragSelectedElements(snapDelta)))
+                {
+                    if (!canvasController.SnapController.SnapCheck(GripType.End, dir, (snapDelta) => canvasController.DragSelectedElements(snapDelta)))
+                    {
+                        canvasController.DragSelectedElements(dir);
+                        canvasController.SnapController.UpdateRunningDelta(dir);
+                    }
+                }
             }
-            );
+            else
+            {
+                bool ignoreSnapCheck = canvasController.IsSnapToBeIgnored;      // for closure
+                canvasController.UndoStack.UndoRedo(
+                "KeyboardMove",
+                () => canvasController.DragSelectedElements(dir),
+                () =>
+                {
+                    canvasController.UndoRedoIgnoreSnapCheck = ignoreSnapCheck;
+                    canvasController.DragSelectedElements(dir.ReverseDirection());
+                });
+            }
+
+            canvasController.SnapController.DoUndoSnapActions(canvasController.UndoStack);
+
+            if (canvasController.SnapController.RunningDelta != Point.Empty)
+            {
+                Point delta = canvasController.SnapController.RunningDelta;     // for closure
+                bool ignoreSnapCheck = canvasController.IsSnapToBeIgnored;      // for closure
+
+                canvasController.UndoStack.UndoRedo(
+                "KeyboardMove",
+                () => { },  // Doing is already done.
+                () =>
+                {
+                    canvasController.UndoRedoIgnoreSnapCheck = ignoreSnapCheck;
+                    canvasController.DragSelectedElements(dir.ReverseDirection());
+                },
+                true,
+                () => canvasController.DragSelectedElements(dir)
+                );
+            }
         }
 
         public void OnShown(object sender, EventArgs e)

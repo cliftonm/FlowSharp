@@ -42,12 +42,9 @@ namespace FlowSharpLib
 		{
 			Size szAnchor = new Size(anchorWidthHeight, anchorWidthHeight);
 
-			int startyOffset = StartPoint.Y < EndPoint.Y ? 0 : -anchorWidthHeight;
-			int endyOffset = StartPoint.Y < EndPoint.Y ? -anchorWidthHeight : 0;
-
 			return new List<ShapeAnchor>() {
-				new ShapeAnchor(GripType.Start, new Rectangle(StartPoint.Move(-anchorWidthHeight/2, startyOffset), szAnchor), Cursors.Arrow),
-				new ShapeAnchor(GripType.End, new Rectangle(EndPoint.Move(-anchorWidthHeight/2, endyOffset), szAnchor), Cursors.Arrow),
+				new ShapeAnchor(GripType.Start, new Rectangle(StartPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
+				new ShapeAnchor(GripType.End, new Rectangle(EndPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
 			};
 		}
 

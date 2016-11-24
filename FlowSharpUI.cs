@@ -22,7 +22,7 @@ namespace FlowSharp
 
         // protected MouseController mouseController;
         protected BaseController canvasController;
-        protected ToolboxController toolboxController;
+        protected BaseController toolboxController;
         protected UIController uiController;
         protected Canvas canvas;
 
@@ -288,14 +288,18 @@ namespace FlowSharp
         protected void InitializeCanvas()
 		{
             IFlowSharpCanvasService canvasService = Program.ServiceManager.Get<IFlowSharpCanvasService>();
-            Program.ServiceManager.Get<IFlowSharpCanvasService>().CreateCanvas(pnlCanvas);
+            canvasService.CreateCanvas(pnlCanvas);
             canvasController = canvasService.Controller;
             canvas = canvasController.Canvas;
 			// canvas = new Canvas();
 			// canvas.Initialize(pnlCanvas);
             // Once the user clicks on the canvas, the displacement for copying elements from the toolbox onto the canvas is reset.
-            canvas.MouseClick += (sndr, args) => toolboxController.ResetDisplacement();
-            toolboxCanvas = new ToolboxCanvas();
+            canvas.MouseClick += (sndr, args) => Program.ServiceManager.Get<IFlowSharpToolboxService>().ResetDisplacement();
+
+            IFlowSharpToolboxService toolboxService = Program.ServiceManager.Get<IFlowSharpToolboxService>();
+            toolboxService.CreateToolbox(pnlToolbox);
+            toolboxController = toolboxService.Controller;
+            toolboxCanvas = toolboxController.Canvas;
         }
 
         protected void InitializeControllers()
@@ -316,8 +320,8 @@ namespace FlowSharp
                 UpdateDebugWindowUndoStack();
             };
 
-			toolboxController = new ToolboxController(toolboxCanvas, canvasController);
-            toolboxCanvas.Controller = toolboxController;
+			// toolboxController = new ToolboxController(toolboxCanvas, canvasController);
+            // toolboxCanvas.Controller = toolboxController;
             uiController = new UIController(pgElement, canvasController);
             // mouseController.HookMouseEvents();
             // mouseController.InitializeBehavior();
@@ -347,7 +351,7 @@ namespace FlowSharp
 
         protected void InitializeToolbox()
         {
-            toolboxCanvas.Initialize(pnlToolbox);
+            // toolboxCanvas.Initialize(pnlToolbox);
             int x = pnlToolbox.Width / 2 - 12;
             toolboxController.AddElement(new Box(toolboxCanvas) { DisplayRectangle = new Rectangle(x - 50, 15, 25, 25) });
             toolboxController.AddElement(new Ellipse(toolboxCanvas) { DisplayRectangle = new Rectangle(x, 15, 25, 25) });

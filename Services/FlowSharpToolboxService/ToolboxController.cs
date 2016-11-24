@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 using FlowSharpLib;
 
-namespace FlowSharp
+namespace FlowSharpToolboxService
 {
 	public class ToolboxController : BaseController
 	{

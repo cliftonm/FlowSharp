@@ -82,10 +82,6 @@
     <Compile Include="PluginManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ToolboxCanvas.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ToolboxController.cs" />
     <Compile Include="TraceListener.cs" />
     <Compile Include="UIController.cs" />
     <EmbeddedResource Include="DlgDebugWindow.resx">

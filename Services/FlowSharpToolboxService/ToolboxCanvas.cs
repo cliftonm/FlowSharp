@@ -8,7 +8,7 @@ using System.Drawing;
 
 using FlowSharpLib;
 
-namespace FlowSharp
+namespace FlowSharpToolboxService
 {
 	public class ToolboxCanvas : Canvas
 	{

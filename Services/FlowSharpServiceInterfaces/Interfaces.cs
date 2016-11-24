@@ -8,7 +8,6 @@ namespace FlowSharpServiceInterfaces
 {
     public interface IFlowSharpCanvasService : IService
     {
-        // MouseController MouseController { get; }
         BaseController Controller { get; }
 
         void CreateCanvas(Control parent);
@@ -16,7 +15,10 @@ namespace FlowSharpServiceInterfaces
 
     public interface IFlowSharpToolboxService : IService
     {
-        void CreateToolbox(Control parent, BaseController canvasController);
+        BaseController Controller { get; }
+
+        void CreateToolbox(Control parent);
+        void ResetDisplacement();
     }
 
     public interface IFlowSharpMouseControllerService : IService

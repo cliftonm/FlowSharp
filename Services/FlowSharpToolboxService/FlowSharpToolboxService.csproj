@@ -36,6 +36,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -45,9 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FlowSharpToolboxService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ToolboxCanvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolboxController.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\FlowSharpLib\FlowSharpLib.csproj">
+      <Project>{07f65ca7-b8d3-4716-bfbf-812ef4da68be}</Project>
+      <Name>FlowSharpLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FlowSharpServiceInterfaces\FlowSharpServiceInterfaces.csproj">
       <Project>{caa4fd23-1392-4dee-907a-cb3dc7315a98}</Project>
       <Name>FlowSharpServiceInterfaces</Name>

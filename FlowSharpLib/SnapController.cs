@@ -117,15 +117,94 @@ namespace FlowSharpLib
         public void Reset()
         {
             snapActions.Clear();
+            nearElements.Clear();
+            currentlyNear.Clear();
             runningDelta = Point.Empty;
             currentSnapAction = null;
         }
 
-        public SnapAction Snap(GripType type, Point delta, bool isByKeyPress = false)
+        public void HideConnectionPoints()
+        {
+            ShowConnectionPoints(nearElements.Select(e => e.NearElement), false);
+            nearElements.Clear();
+        }
+
+        public bool SnapCheck(GripType gripType, Point delta, Action<Point> update, bool isByKeyPress = false)
+        {
+            SnapAction action = Snap(gripType, delta, isByKeyPress);
+
+            if (action != null)
+            {
+                if (action.SnapType == SnapAction.Action.Attach)
+                {
+                    runningDelta = runningDelta.Add(action.Delta);
+                    update(action.Delta);
+                    // Controller.DragSelectedElements(action.Delta);
+                    // Don't attach at this point, as this will be handled by the mouse-up action.
+                    SetCurrentAction(action);
+
+                }
+                else if (action.SnapType == SnapAction.Action.Detach)
+                {
+                    runningDelta = runningDelta.Add(action.Delta);
+                    update(action.Delta);
+                    // Controller.DragSelectedElements(action.Delta);
+                    // Don't detach at this point, as this will be handled by the mouse-up action.
+                    SetCurrentAction(action);
+                }
+                else // Attached
+                {
+                    // The mouse move had no affect in detaching because it didn't have sufficient velocity.
+                    // The problem here is that the mouse moves, affecting the total delta, but the shape doesn't move.
+                    // This affects the computation in the MouseUp handler:
+                    // Point delta = CurrentMousePosition.Delta(startedDraggingShapesAt);
+
+                    // ===================
+                    // We could set the mouse cursor position, which isn't a bad idea, as it keeps the mouse with the shape:
+
+                    //Controller.Canvas.MouseMove -= HandleMouseMoveEvent;
+                    //Cursor.Position = Controller.Canvas.PointToScreen(LastMousePosition);
+                    //Application.DoEvents();         // sigh - we need the event to trigger, even though it's unwired.
+                    //Controller.Canvas.MouseMove += HandleMouseMoveEvent;
+
+                    // The above really doesn't work well because I think we can get multiple move events, and this only handles the first event.
+                    // ===================
+
+                    // ===================
+                    // Or we could add a "compensation" accumulator for dealing with the deltas that don't move the shape.
+                    // This works better, except the attached compensation has to be stored for each detach.
+                    // attachedCompensation = attachedCompensation.Add(delta);
+
+                    // That doesn't work either, as the attachedCompensation is treated as a move even though there is no actual movement of the connector!
+                    // ===================
+
+                    // Final implementation is to use the runningDelta instead of the CurrentMouseMosition - startDraggingShapesAt difference.
+
+                    // startedDraggingShapesAt = CurrentMousePosition;
+                }
+            }
+
+            return action != null;
+        }
+
+        public void DoUndoSnapActions(UndoStack undoStack)
+        {
+            snapActions.ForEachReverse(act => DoUndoSnapAction(undoStack, act));
+
+            if (currentSnapAction != null)
+            {
+                DoUndoSnapAction(undoStack, currentSnapAction);
+            }
+
+            snapActions.Clear();
+        }
+
+        protected SnapAction Snap(GripType type, Point delta, bool isByKeyPress)
         {
             SnapAction action = null;
             // Snapping permitted only when one and only one element is selected.
             if (controller.SelectedElements.Count != 1) return null;
+            if (controller.IsSnapToBeIgnored) return null;
 
             // bool snapped = false;
             GraphicElement selectedElement = controller.SelectedElements[0];
@@ -196,82 +275,6 @@ namespace FlowSharpLib
             }
 
             return action;
-        }
-
-        public void HideConnectionPoints()
-        {
-            ShowConnectionPoints(nearElements.Select(e => e.NearElement), false);
-            nearElements.Clear();
-        }
-
-        public bool SnapCheck(GripType gripType, Point delta, Action<Point> update)
-        {
-            SnapAction action = Snap(gripType, delta);
-
-            if (action != null)
-            {
-                if (action.SnapType == SnapAction.Action.Attach)
-                {
-                    runningDelta = runningDelta.Add(action.Delta);
-                    update(action.Delta);
-                    // Controller.DragSelectedElements(action.Delta);
-                    // Don't attach at this point, as this will be handled by the mouse-up action.
-                    SetCurrentAction(action);
-
-                }
-                else if (action.SnapType == SnapAction.Action.Detach)
-                {
-                    runningDelta = runningDelta.Add(action.Delta);
-                    update(action.Delta);
-                    // Controller.DragSelectedElements(action.Delta);
-                    // Don't detach at this point, as this will be handled by the mouse-up action.
-                    SetCurrentAction(action);
-                }
-                else // Attached
-                {
-                    // The mouse move had no affect in detaching because it didn't have sufficient velocity.
-                    // The problem here is that the mouse moves, affecting the total delta, but the shape doesn't move.
-                    // This affects the computation in the MouseUp handler:
-                    // Point delta = CurrentMousePosition.Delta(startedDraggingShapesAt);
-
-                    // ===================
-                    // We could set the mouse cursor position, which isn't a bad idea, as it keeps the mouse with the shape:
-
-                    //Controller.Canvas.MouseMove -= HandleMouseMoveEvent;
-                    //Cursor.Position = Controller.Canvas.PointToScreen(LastMousePosition);
-                    //Application.DoEvents();         // sigh - we need the event to trigger, even though it's unwired.
-                    //Controller.Canvas.MouseMove += HandleMouseMoveEvent;
-
-                    // The above really doesn't work well because I think we can get multiple move events, and this only handles the first event.
-                    // ===================
-
-                    // ===================
-                    // Or we could add a "compensation" accumulator for dealing with the deltas that don't move the shape.
-                    // This works better, except the attached compensation has to be stored for each detach.
-                    // attachedCompensation = attachedCompensation.Add(delta);
-
-                    // That doesn't work either, as the attachedCompensation is treated as a move even though there is no actual movement of the connector!
-                    // ===================
-
-                    // Final implementation is to use the runningDelta instead of the CurrentMouseMosition - startDraggingShapesAt difference.
-
-                    // startedDraggingShapesAt = CurrentMousePosition;
-                }
-            }
-
-            return action != null;
-        }
-
-        public void DoUndoSnapActions(UndoStack undoStack)
-        {
-            snapActions.ForEachReverse(act => DoUndoSnapAction(undoStack, act));
-
-            if (currentSnapAction != null)
-            {
-                DoUndoSnapAction(undoStack, currentSnapAction);
-            }
-
-            snapActions.Clear();
         }
 
         protected void DoUndoSnapAction(UndoStack undoStack, SnapAction action)

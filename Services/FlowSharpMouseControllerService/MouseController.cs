@@ -131,6 +131,7 @@ namespace FlowSharpMouseControllerService
             SelectingShapes = false;
             DraggingSurface = false;
             HoverShape = null;
+            justAddedShape.Clear();
         }
 
         public void ShapeDeleted(GraphicElement el)

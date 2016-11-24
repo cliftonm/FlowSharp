@@ -9,6 +9,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpLib", "FlowSharpLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginExample", "Plugins\PluginExample\PluginExample.csproj", "{DF4BC6E3-E126-4A81-A1F1-79C4F6C6E784}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCanvasService", "Services\FlowSharpCanvasService\FlowSharpCanvasService.csproj", "{8072DC59-F5DE-46C3-98A2-E483484B253C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpToolboxService", "Services\FlowSharpToolboxService\FlowSharpToolboxService.csproj", "{AAE37A5E-07FE-4CDB-B4D4-A176213FCE2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpPropertyGridService", "Services\FlowSharpPropertyGridService\FlowSharpPropertyGridService.csproj", "{AD2B1B25-B4F5-4EAE-867E-636C58AF0F57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpServiceInterfaces", "Services\FlowSharpServiceInterfaces\FlowSharpServiceInterfaces.csproj", "{CAA4FD23-1392-4DEE-907A-CB3DC7315A98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpMouseControllerService", "Services\FlowSharpMouseControllerService\FlowSharpMouseControllerService.csproj", "{51BAE79C-A873-4885-A39E-70D66155F78D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +39,35 @@ Global
 		{DF4BC6E3-E126-4A81-A1F1-79C4F6C6E784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF4BC6E3-E126-4A81-A1F1-79C4F6C6E784}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF4BC6E3-E126-4A81-A1F1-79C4F6C6E784}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8072DC59-F5DE-46C3-98A2-E483484B253C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8072DC59-F5DE-46C3-98A2-E483484B253C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8072DC59-F5DE-46C3-98A2-E483484B253C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8072DC59-F5DE-46C3-98A2-E483484B253C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAE37A5E-07FE-4CDB-B4D4-A176213FCE2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAE37A5E-07FE-4CDB-B4D4-A176213FCE2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAE37A5E-07FE-4CDB-B4D4-A176213FCE2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAE37A5E-07FE-4CDB-B4D4-A176213FCE2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD2B1B25-B4F5-4EAE-867E-636C58AF0F57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD2B1B25-B4F5-4EAE-867E-636C58AF0F57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD2B1B25-B4F5-4EAE-867E-636C58AF0F57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD2B1B25-B4F5-4EAE-867E-636C58AF0F57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAA4FD23-1392-4DEE-907A-CB3DC7315A98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAA4FD23-1392-4DEE-907A-CB3DC7315A98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAA4FD23-1392-4DEE-907A-CB3DC7315A98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAA4FD23-1392-4DEE-907A-CB3DC7315A98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51BAE79C-A873-4885-A39E-70D66155F78D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51BAE79C-A873-4885-A39E-70D66155F78D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51BAE79C-A873-4885-A39E-70D66155F78D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51BAE79C-A873-4885-A39E-70D66155F78D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8072DC59-F5DE-46C3-98A2-E483484B253C} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
+		{AAE37A5E-07FE-4CDB-B4D4-A176213FCE2B} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
+		{AD2B1B25-B4F5-4EAE-867E-636C58AF0F57} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
+		{CAA4FD23-1392-4DEE-907A-CB3DC7315A98} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
+		{51BAE79C-A873-4885-A39E-70D66155F78D} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
 	EndGlobalSection
 EndGlobal

@@ -15,12 +15,12 @@ namespace FlowSharp
 {
 	public class UIController
 	{
-		protected CanvasController canvasController;
+		protected BaseController canvasController;
 		protected ElementProperties elementProperties;
 		protected PropertyGrid pgElement;
         protected Action onFocus;
 
-		public UIController(PropertyGrid pgElement, CanvasController canvasController)
+		public UIController(PropertyGrid pgElement, BaseController canvasController)
 		{
 			this.pgElement = pgElement;
 			this.canvasController = canvasController;

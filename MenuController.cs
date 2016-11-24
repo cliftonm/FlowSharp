@@ -11,6 +11,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using FlowSharpLib;
+using FlowSharpServiceInterfaces;
 
 namespace FlowSharp
 {
@@ -104,7 +105,7 @@ namespace FlowSharp
             canvasController.Clear();
             canvasController.UndoStack.ClearStacks();
             ElementCache.Instance.ClearCache();
-            mouseController.ClearState();
+            Program.ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
             canvas.Invalidate();
 			filename = String.Empty;
             canvasController.Filename = filename;
@@ -134,7 +135,7 @@ namespace FlowSharp
             canvasController.Clear();
             canvasController.UndoStack.ClearStacks();
             ElementCache.Instance.ClearCache();
-            mouseController.ClearState();
+            Program.ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
             canvasController.AddElements(els);
             canvasController.Elements.ForEach(el => el.UpdatePath());
 			canvas.Invalidate();

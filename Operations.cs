@@ -11,6 +11,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using FlowSharpLib;
+using FlowSharpServiceInterfaces;
 
 namespace FlowSharp
 {
@@ -142,6 +143,7 @@ namespace FlowSharp
                 List<GraphicElement> selectedElements = canvasController.SelectedElements.ToList();
 
                 // TODO: Better implementation would be for the mouse controller to hook a shape deleted event?
+                IFlowSharpMouseControllerService mouseController = Program.ServiceManager.Get<IFlowSharpMouseControllerService>();
                 canvasController.SelectedElements.ForEach(el => mouseController.ShapeDeleted(el));
 
                 canvasController.UndoStack.UndoRedo("Delete",

@@ -43,7 +43,7 @@ namespace FlowSharpLib
         public ReadOnlyCollection<GraphicElement> Elements { get { return elements.AsReadOnly(); } }
         
         // TODO: Implement as interface
-        public MouseController MouseController { get; set; }
+        // public MouseController MouseController { get; set; }
 
         // TODO: Kludgy workaround for issue #34.
         public bool IsCanvasDragging { get; set; }

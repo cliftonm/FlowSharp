@@ -12,6 +12,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using FlowSharpLib;
+using FlowSharpServiceInterfaces;
 
 namespace FlowSharp
 {
@@ -19,8 +20,8 @@ namespace FlowSharp
     {
         public const string PLUGIN_FILE_LIST = "plugins.txt";
 
-        protected MouseController mouseController;
-        protected CanvasController canvasController;
+        // protected MouseController mouseController;
+        protected BaseController canvasController;
         protected ToolboxController toolboxController;
         protected UIController uiController;
         protected Canvas canvas;
@@ -286,8 +287,12 @@ namespace FlowSharp
 
         protected void InitializeCanvas()
 		{
-			canvas = new Canvas();
-			canvas.Initialize(pnlCanvas);
+            IFlowSharpCanvasService canvasService = Program.ServiceManager.Get<IFlowSharpCanvasService>();
+            Program.ServiceManager.Get<IFlowSharpCanvasService>().CreateCanvas(pnlCanvas);
+            canvasController = canvasService.Controller;
+            canvas = canvasController.Canvas;
+			// canvas = new Canvas();
+			// canvas.Initialize(pnlCanvas);
             // Once the user clicks on the canvas, the displacement for copying elements from the toolbox onto the canvas is reset.
             canvas.MouseClick += (sndr, args) => toolboxController.ResetDisplacement();
             toolboxCanvas = new ToolboxCanvas();
@@ -295,8 +300,8 @@ namespace FlowSharp
 
         protected void InitializeControllers()
 		{ 
-			canvasController = new CanvasController(canvas);
-            mouseController = new MouseController(canvasController);
+			// canvasController = new CanvasController(canvas);
+            // mouseController = new MouseController(canvasController);
             // No longer needed, as editbox LostFocus event handles terminating itself now.
             // mouseController.MouseClick += (sndr, args) => TerminateEditing();
             canvasController.ElementSelected += (snd, args) => UpdateMenu(args.Element != null);
@@ -314,8 +319,8 @@ namespace FlowSharp
 			toolboxController = new ToolboxController(toolboxCanvas, canvasController);
             toolboxCanvas.Controller = toolboxController;
             uiController = new UIController(pgElement, canvasController);
-            mouseController.HookMouseEvents();
-            mouseController.InitializeBehavior();
+            // mouseController.HookMouseEvents();
+            // mouseController.InitializeBehavior();
 		}
 
 		protected void UpdateMenu(bool elementSelected)

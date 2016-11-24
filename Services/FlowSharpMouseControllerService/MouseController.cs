@@ -11,7 +11,9 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace FlowSharpLib
+using FlowSharpLib;
+
+namespace FlowSharpMouseControllerService
 {
     public class MouseAction
     {

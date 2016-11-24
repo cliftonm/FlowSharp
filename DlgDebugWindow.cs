@@ -9,9 +9,9 @@ namespace FlowSharp
 {
     public partial class DlgDebugWindow : Form
     {
-        protected CanvasController controller;
+        protected BaseController controller;
 
-        public DlgDebugWindow(CanvasController controller)
+        public DlgDebugWindow(BaseController controller)
         {
             this.controller = controller;
             InitializeComponent();

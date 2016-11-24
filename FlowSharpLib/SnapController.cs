@@ -94,7 +94,6 @@ namespace FlowSharpLib
         protected SnapAction currentSnapAction;
         protected List<SnapAction> snapActions = new List<SnapAction>();
 
-
         public SnapController(BaseController controller)
         {
             this.controller = controller;

@@ -43,6 +43,8 @@ namespace FlowSharp
             Shown += OnShown;
             FormClosing += OnFormClosing;
 
+            Icon = Properties.Resources.FlowSharp;
+
             // We have to initialize the menu event handlers here, rather than in the designer,
             // so that we can move the menu handlers to the MenuController partial class.
             mnuNew.Click += mnuNew_Click;

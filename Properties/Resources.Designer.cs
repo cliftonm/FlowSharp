@@ -59,5 +59,15 @@ namespace FlowSharp.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon FlowSharp {
+            get {
+                object obj = ResourceManager.GetObject("FlowSharp", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

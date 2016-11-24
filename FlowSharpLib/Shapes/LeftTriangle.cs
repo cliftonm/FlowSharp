@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace FlowSharpLib
 {
@@ -39,10 +40,35 @@ namespace FlowSharpLib
             };
         }
 
+        protected Point[] ZPath()
+        {
+            Rectangle r = DisplayRectangle;
+            r.X = 0;
+            r.Y = 0;
+            int adjust = (int)((BorderPen.Width + 0) / 2);
+            Point[] path = new Point[]
+            {
+                new Point(r.X + adjust,           r.Y + r.Height/2),
+                new Point(r.X + r.Width - adjust, r.Y + adjust),
+                new Point(r.X + r.Width - adjust, r.Y + r.Height - adjust),
+                new Point(r.X + adjust,           r.Y + r.Height/2),
+            };
+
+            return path;
+        }
+
         public override void Draw(Graphics gr)
         {
-            gr.FillPolygon(FillBrush, path);
-            gr.DrawPolygon(BorderPen, path);
+            Rectangle r = DisplayRectangle.Grow(1);
+            Bitmap bitmap = new Bitmap(r.Width, r.Height);
+            Graphics g2 = Graphics.FromImage(bitmap);
+            g2.SmoothingMode = SmoothingMode.AntiAlias;
+            Point[] path = ZPath();
+            g2.FillPolygon(FillBrush, path);
+            g2.DrawPolygon(BorderPen, path);
+            gr.DrawImage(bitmap, DisplayRectangle.X, DisplayRectangle.Y);
+            bitmap.Dispose();
+            g2.Dispose();
             base.Draw(gr);
         }
     }

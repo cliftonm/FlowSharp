@@ -34,24 +34,25 @@ namespace FlowSharpLib
             Rectangle r = DisplayRectangle;
             path = new Point[]
             {
-                new Point(r.X + r.Width,          r.Y + r.Height/2),        // right, middle
-                new Point(r.X,          r.Y),                              // left, top
-                new Point(r.X,          r.Y + r.Height),          // left, bottom
-                new Point(r.X + r.Width,                             r.Y + r.Height/2),        // right, middle
+                new Point(r.X + r.Width, r.Y + r.Height/2),        // right, middle
+                new Point(r.X,           r.Y),                              // left, top
+                new Point(r.X,           r.Y + r.Height),          // left, bottom
+                new Point(r.X + r.Width, r.Y + r.Height/2),        // right, middle
             };
         }
 
         protected Point[] ZPath()
         {
-            Rectangle r = DisplayRectangle;
+            Rectangle r = DisplayRectangle; 
             r.X = 0;
             r.Y = 0;
+            int adjust = (int)((BorderPen.Width + 0) / 2);
             Point[] path = new Point[]
             {
-                new Point(r.X + r.Width, r.Y + r.Height/2),        // right, middle
-                new Point(r.X,           r.Y),                              // left, top
-                new Point(r.X,           r.Y + r.Height),          // left, bottom
-                new Point(r.X + r.Width, r.Y + r.Height/2),        // right, middle
+                new Point(r.X + r.Width - adjust, r.Y + r.Height/2),        // right, middle
+                new Point(r.X + adjust,           r.Y + adjust),                              // left, top
+                new Point(r.X + adjust,           r.Y + r.Height - adjust),          // left, bottom
+                new Point(r.X + r.Width - adjust, r.Y + r.Height/2),        // right, middle
             };
 
             return path;

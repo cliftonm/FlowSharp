@@ -94,32 +94,41 @@ namespace FlowSharp
 
         protected void DoMove(Point dir)
         {
+            // Always reset the snap controller before a keyboard move.  This ensures that, among other things, the running delta is zero'd.
+            canvasController.SnapController.Reset();
+
             if (canvasController.SelectedElements.Count == 1 && canvasController.SelectedElements[0].IsConnector)
             {
                 // TODO: Duplicate code in FlowSharpToolboxService.ToolboxController.OnMouseMove and MouseController
                 // Check both ends of any connector being moved.
-                if (!canvasController.SnapController.SnapCheck(GripType.Start, dir, (snapDelta) => canvasController.DragSelectedElements(snapDelta)))
+                if (!canvasController.SnapController.SnapCheck(GripType.Start, dir, (snapDelta) => canvasController.DragSelectedElements(snapDelta), true))
                 {
-                    if (!canvasController.SnapController.SnapCheck(GripType.End, dir, (snapDelta) => canvasController.DragSelectedElements(snapDelta)))
+                    if (!canvasController.SnapController.SnapCheck(GripType.End, dir, (snapDelta) => canvasController.DragSelectedElements(snapDelta), true))
                     {
-                        canvasController.DragSelectedElements(dir);
-                        canvasController.SnapController.UpdateRunningDelta(dir);
+                        // No snap occurred.
+                        DoJustKeyboardMove(dir);
                     }
+                    else
+                    {
+                        // Snapped grip end.
+                        DoKeyboardSnapWithMove(dir);
+                    }
+                }
+                else
+                {
+                    // Snapped grip start.
+                    DoKeyboardSnapWithMove(dir);
                 }
             }
             else
             {
-                bool ignoreSnapCheck = canvasController.IsSnapToBeIgnored;      // for closure
-                canvasController.UndoStack.UndoRedo(
-                "KeyboardMove",
-                () => canvasController.DragSelectedElements(dir),
-                () =>
-                {
-                    canvasController.UndoRedoIgnoreSnapCheck = ignoreSnapCheck;
-                    canvasController.DragSelectedElements(dir.ReverseDirection());
-                });
+                // Moving shape, or multiple shapes, not a single connector.
+                DoJustKeyboardMove(dir);
             }
+        }
 
+        protected void DoKeyboardSnapWithMove(Point dir)
+        {
             canvasController.SnapController.DoUndoSnapActions(canvasController.UndoStack);
 
             if (canvasController.SnapController.RunningDelta != Point.Empty)
@@ -133,12 +142,28 @@ namespace FlowSharp
                 () =>
                 {
                     canvasController.UndoRedoIgnoreSnapCheck = ignoreSnapCheck;
-                    canvasController.DragSelectedElements(dir.ReverseDirection());
+                    canvasController.DragSelectedElements(delta.ReverseDirection());
+                    canvasController.UndoRedoIgnoreSnapCheck = false;
                 },
                 true,
-                () => canvasController.DragSelectedElements(dir)
+                () => canvasController.DragSelectedElements(delta)
                 );
             }
+        }
+
+        protected void DoJustKeyboardMove(Point dir)
+        {
+            bool ignoreSnapCheck = canvasController.IsSnapToBeIgnored;      // for closure
+            canvasController.UndoStack.UndoRedo(
+            "KeyboardMove",
+            () => canvasController.DragSelectedElements(dir),
+            () =>
+            {
+                canvasController.UndoRedoIgnoreSnapCheck = ignoreSnapCheck;
+                canvasController.DragSelectedElements(dir.ReverseDirection());
+                canvasController.UndoRedoIgnoreSnapCheck = false;
+            }
+            );
         }
 
         public void OnShown(object sender, EventArgs e)

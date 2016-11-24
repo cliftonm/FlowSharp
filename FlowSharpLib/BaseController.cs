@@ -52,24 +52,7 @@ namespace FlowSharpLib
         // Undo/redo is more complicated, especially since it can be activated with a keyboard Ctrl+Z or Ctrl+Y
         // which means the ctrl key is pressed.  Furthermore, the original ignore snap needs to be preserved.
         public bool UndoRedoIgnoreSnapCheck { get; set; }
-        public virtual bool IsSnapToBeIgnored
-        {
-            get
-            {
-                bool ret;
-
-                if (UndoStack.Performing == UndoStack.ActionState.Do)
-                {
-                    ret = (Control.ModifierKeys & Keys.Control) == Keys.Control;
-                }
-                else
-                {
-                    ret = UndoRedoIgnoreSnapCheck;
-                }
-
-                return ret;
-            }
-        }
+        public bool IsSnapToBeIgnored { get { return ((Control.ModifierKeys & Keys.Control) == Keys.Control) || UndoRedoIgnoreSnapCheck; } }
 
         public UndoStack UndoStack { get { return undoStack; } }
         public ReadOnlyCollection<GraphicElement> SelectedElements { get { return selectedElements.AsReadOnly(); } }
@@ -592,7 +575,7 @@ namespace FlowSharpLib
         {
             if (++eraseCount > 1)
             {
-                Trace.WriteLine("Shape:*** TOO MANY ERASE " + eraseCount + " ***");
+                Trace.WriteLine("*** TOO MANY ERASE " + eraseCount + " ***");
             }
 
             Trace.WriteLine("Shape:EraseTopToBottom " + eraseCount);
@@ -603,7 +586,7 @@ namespace FlowSharpLib
         {
             if (--eraseCount < 0)
             {
-                Trace.WriteLine("Shape:*** TOO MANY DRAW " + eraseCount + " ***");
+                Trace.WriteLine("*** TOO MANY DRAW " + eraseCount + " ***");
             }
 
             Trace.WriteLine("Shape:DrawBottomToTop " + eraseCount);

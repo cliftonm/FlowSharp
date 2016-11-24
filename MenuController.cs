@@ -295,7 +295,10 @@ namespace FlowSharp
                 }
                 else
                 {
-                    canvasController.UndoStack.ClearStacks();       // Prevents second "are you sure" when exiting with Ctrl+X
+                    if (!ret)       // Not cancelled.
+                    {
+                        canvasController.UndoStack.ClearStacks();       // Prevents second "are you sure" when exiting with Ctrl+X
+                    }
                 }
             }
 

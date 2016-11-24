@@ -172,6 +172,25 @@ namespace FlowSharp
                 {
                     conn.ToElement.SetConnection(conn.ToConnectionPoint.Type, el);
                 }
+
+                if (el.IsConnector)
+                {
+                    Connector connector = el as Connector;
+                    connector.StartConnectedShape = zom.StartConnectedShape;
+                    connector.EndConnectedShape = zom.EndConnectedShape;
+
+                    if (connector.StartConnectedShape != null)
+                    {
+                        connector.StartConnectedShape.SetConnection(GripType.Start, connector);
+                        connector.StartConnectedShape.Connections.Add(zom.StartConnection);
+                    }
+
+                    if (connector.EndConnectedShape != null)
+                    {
+                        connector.EndConnectedShape.SetConnection(GripType.End, connector);
+                        connector.EndConnectedShape.Connections.Add(zom.EndConnection);
+                    }
+                }
             }
         }
 

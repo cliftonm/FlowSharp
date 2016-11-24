@@ -20,6 +20,12 @@ namespace FlowSharpLib
         public int Index { get; set; }
         public List<GraphicElement> GroupChildren { get; set; }
         public List<Connection> Connections { get; set; }
+
+        // For connectors:
+        public GraphicElement StartConnectedShape { get; set; }
+        public GraphicElement EndConnectedShape { get; set; }
+        public Connection StartConnection { get; set; }
+        public Connection EndConnection { get; set; }
     }
 
     public abstract class BaseController
@@ -117,6 +123,8 @@ namespace FlowSharpLib
             });
         }
 
+        // TODO: This does more than just getting the zorder - it also saves connection information for connectors, 
+        // which is critical to wire up connectors to shapes after a delete has been undone.
         public List<ZOrderMap> GetZOrderOfSelectedElements()
         {
             List<ZOrderMap> originalZOrder = new List<ZOrderMap>();
@@ -126,6 +134,23 @@ namespace FlowSharpLib
                 ZOrderMap zom = new ZOrderMap() { Element = el, Index = elements.IndexOf(el) };
                 zom.GroupChildren = new List<GraphicElement>(el.GroupChildren);
                 zom.Connections = new List<Connection>(el.Connections);
+
+                if (el.IsConnector)
+                {
+                    zom.StartConnectedShape = ((Connector)el).StartConnectedShape;
+                    zom.EndConnectedShape = ((Connector)el).EndConnectedShape;
+
+                    if (zom.StartConnectedShape != null)
+                    {
+                        zom.StartConnection = zom.StartConnectedShape.Connections.SingleOrDefault(conn => conn.ToElement == el);
+                    }
+
+                    if (zom.EndConnectedShape != null)
+                    {
+                        zom.EndConnection = zom.EndConnectedShape.Connections.SingleOrDefault(conn => conn.ToElement == el);
+                    }
+                }
+
                 originalZOrder.Add(zom);
                 SaveChildZOrder(el, originalZOrder);
             });

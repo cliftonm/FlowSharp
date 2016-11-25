@@ -31,6 +31,7 @@ namespace FlowSharpEditService
     {
         protected TextBox editBox;
         protected BaseController canvasController;
+        protected int savePoint;
 
         public override void Initialize(IServiceManager svcMgr)
         {
@@ -182,6 +183,43 @@ namespace FlowSharpEditService
         public void Redo()
         {
             canvasController.Redo();
+        }
+
+        public ClosingState CheckForChanges()
+        {
+            ClosingState ret = ClosingState.NoChanges;
+
+            if (savePoint != canvasController.UndoStack.UndoStackSize)
+            {
+                DialogResult res = MessageBox.Show("Do you wish to save changes to this drawing?", "Save Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+                switch (res)
+                {
+                    case DialogResult.Cancel:
+                        ret = ClosingState.CancelClose;
+                        break;
+
+                    case DialogResult.Yes:
+                        ret = ClosingState.SaveChanges;
+                        break;
+
+                    case DialogResult.No:
+                        ret = ClosingState.ExitWithoutSaving;
+                        break;
+                }
+            }
+
+            return ret;
+        }
+
+        public void ResetSavePoint()
+        {
+            savePoint = 0;
+        }
+
+        public void SetSavePoint()
+        {
+            savePoint = canvasController.UndoStack.UndoStackSize;
         }
 
         protected List<GraphicElement> IncludeChildren(List<GraphicElement> parents)

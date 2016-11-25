@@ -20,7 +20,6 @@ namespace FlowSharpMenuService
     public partial class MenuController
     {
         protected string filename;
-        protected int savePoint = 0;
         protected BaseController canvasController;
         protected IServiceManager serviceManager;
         protected Form mainForm;
@@ -32,6 +31,23 @@ namespace FlowSharpMenuService
             this.mainForm = mainForm;
             Initialize();
             InitializeMenuHandlers();
+        }
+
+        // TODO: The save/load operations might be best moved to the edit service?
+        public bool SaveOrSaveAs(bool forceSaveAs = false)
+        {
+            bool ret = true;
+
+            if (String.IsNullOrEmpty(filename) || forceSaveAs)
+            {
+                ret = SaveAs();
+            }
+            else
+            {
+                SaveDiagram(filename);
+            }
+
+            return ret;
         }
 
         protected void InitializeMenuHandlers()
@@ -142,7 +158,7 @@ namespace FlowSharpMenuService
         private void mnuNew_Click(object sender, EventArgs e)
         {
             if (CheckForChanges()) return;
-            savePoint = 0;
+            serviceManager.Get<IFlowSharpEditService>().ResetSavePoint();
             canvasController.Clear();
             canvasController.UndoStack.ClearStacks();
             ElementCache.Instance.ClearCache();
@@ -170,7 +186,7 @@ namespace FlowSharpMenuService
             }
 
             canvasController.Filename = filename;       // set now, in case of relative image files, etc...
-            savePoint = 0;
+            serviceManager.Get<IFlowSharpEditService>().ResetSavePoint();
             string data = File.ReadAllText(filename);
             List<GraphicElement> els = Persist.Deserialize(canvasController.Canvas, data);
             canvasController.Clear();
@@ -326,40 +342,18 @@ namespace FlowSharpMenuService
         /// </summary>
         protected bool CheckForChanges()
         {
-            bool ret = false;
-
-            if (savePoint != canvasController.UndoStack.UndoStackSize)
-            {
-                DialogResult res = MessageBox.Show("Do you wish to save changes to this drawing?", "Save Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                ret = res == DialogResult.Cancel;
-
-                if (res == DialogResult.Yes)
-                {
-                    ret = !SaveOrSaveAs();   // override because of possible cancel in save operation.
-                }
-                else
-                {
-                    if (!ret)       // Not cancelled.
-                    {
-                        canvasController.UndoStack.ClearStacks();       // Prevents second "are you sure" when exiting with Ctrl+X
-                    }
-                }
-            }
-
-            return ret;
-        }
-
-        protected bool SaveOrSaveAs(bool forceSaveAs = false)
-        {
             bool ret = true;
 
-            if (String.IsNullOrEmpty(filename) || forceSaveAs)
+            ClosingState state = serviceManager.Get<IFlowSharpEditService>().CheckForChanges();
+
+            if (state == ClosingState.SaveChanges)
             {
-                ret = SaveAs();
+                ret = !SaveOrSaveAs();   // override because of possible cancel in save operation.
             }
-            else
+            else if (state != ClosingState.CancelClose)
             {
-                SaveDiagram(filename);
+                canvasController.UndoStack.ClearStacks();       // Prevents second "are you sure" when exiting with Ctrl+X
+                ret = false;
             }
 
             return ret;
@@ -396,7 +390,7 @@ namespace FlowSharpMenuService
         {
             string data = Persist.Serialize(canvasController.Elements);
             File.WriteAllText(filename, data);
-            savePoint = canvasController.UndoStack.UndoStackSize;
+            serviceManager.Get<IFlowSharpEditService>().SetSavePoint();
         }
 
         protected void UpdateCaption()

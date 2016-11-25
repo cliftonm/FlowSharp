@@ -44,6 +44,7 @@ namespace FlowSharpServiceInterfaces
     public interface IFlowSharpMenuService : IService
     {
         void Initialize(Form mainForm);
+        bool SaveOrSaveAs();
     }
 
     public interface IFlowSharpEditService : IService
@@ -53,5 +54,8 @@ namespace FlowSharpServiceInterfaces
         void Delete();
         void Undo();
         void Redo();
+        ClosingState CheckForChanges();
+        void ResetSavePoint();
+        void SetSavePoint();
     }
 }

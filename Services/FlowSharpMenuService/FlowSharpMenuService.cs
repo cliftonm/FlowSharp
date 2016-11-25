@@ -45,6 +45,11 @@ namespace FlowSharpMenuService
             menuController = new MenuController(canvasController, ServiceManager, mainForm);
             mainForm.Controls.Add(menuController.MenuStrip);
         }
+
+        public bool SaveOrSaveAs()
+        {
+            return menuController.SaveOrSaveAs();
+        }
     }
 
     public class FlowSharpMenuReceptor : IReceptor

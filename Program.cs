@@ -44,6 +44,24 @@ namespace FlowSharp
             form.Icon = Properties.Resources.FlowSharp;
             form.Size = new Size(1200, 800);
             form.Shown += OnShown;
+            form.FormClosing += OnFormClosing;
+        }
+
+        private static void OnFormClosing(object sender, FormClosingEventArgs e)
+        {
+            ClosingState state = ServiceManager.Get<IFlowSharpEditService>().CheckForChanges();
+
+            if (state == ClosingState.SaveChanges)
+            {
+                if (!ServiceManager.Get<IFlowSharpMenuService>().SaveOrSaveAs())
+                {
+                    e.Cancel = true;
+                }
+            }
+            else
+            {
+                e.Cancel = state == ClosingState.CancelClose;
+            }
         }
 
         private static void OnShown(object sender, EventArgs e)

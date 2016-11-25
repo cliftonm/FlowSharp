@@ -26,4 +26,9 @@ namespace FlowSharpServiceInterfaces
         void ClearState();
         void ShapeDeleted(GraphicElement el);
     }
+
+    public interface IFlowSharpPropertyGridService : IService
+    {
+        void Initialize(PropertyGrid propertyGrid);
+    }
 }

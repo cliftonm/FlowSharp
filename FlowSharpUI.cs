@@ -23,7 +23,6 @@ namespace FlowSharp
         // protected MouseController mouseController;
         protected BaseController canvasController;
         protected BaseController toolboxController;
-        protected UIController uiController;
         protected Canvas canvas;
 
         protected Canvas toolboxCanvas;
@@ -380,9 +379,11 @@ namespace FlowSharp
                 UpdateDebugWindowUndoStack();
             };
 
-			// toolboxController = new ToolboxController(toolboxCanvas, canvasController);
+            // toolboxController = new ToolboxController(toolboxCanvas, canvasController);
             // toolboxCanvas.Controller = toolboxController;
-            uiController = new UIController(pgElement, canvasController);
+            IFlowSharpPropertyGridService pgService = Program.ServiceManager.Get<IFlowSharpPropertyGridService>();
+            pgService.Initialize(pgElement);
+            // uiController = new UIController(pgElement, canvasController);
             // mouseController.HookMouseEvents();
             // mouseController.InitializeBehavior();
 		}

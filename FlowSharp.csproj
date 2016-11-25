@@ -83,7 +83,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TraceListener.cs" />
-    <Compile Include="UIController.cs" />
     <EmbeddedResource Include="DlgDebugWindow.resx">
       <DependentUpon>DlgDebugWindow.cs</DependentUpon>
     </EmbeddedResource>

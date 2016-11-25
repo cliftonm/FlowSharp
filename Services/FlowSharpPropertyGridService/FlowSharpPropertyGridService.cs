@@ -13,39 +13,35 @@ using Clifton.Core.ServiceManagement;
 using FlowSharpLib;
 using FlowSharpServiceInterfaces;
 
-namespace FlowSharpCanvasService
+namespace FlowSharpPropertyGridService
 {
-    public class FlowSharpCanvasModule : IModule
+    public class FlowSharpPropertyGridSModule : IModule
     {
         public void InitializeServices(IServiceManager serviceManager)
         {
-            serviceManager.RegisterSingleton<IFlowSharpCanvasService, FlowSharpCanvasService>();
+            serviceManager.RegisterSingleton<IFlowSharpPropertyGridService, FlowSharpPropertyGridService>();
         }
     }
 
-    public class FlowSharpCanvasService : ServiceBase, IFlowSharpCanvasService
+    public class FlowSharpPropertyGridService : ServiceBase, IFlowSharpPropertyGridService
     {
-        public BaseController Controller { get { return canvasController; } }
-        protected CanvasController canvasController;
-        protected Canvas canvas;
-        // protected List<GraphicElement> elements;
+        protected PropertyGridController pgController;
+        protected BaseController canvasController;
 
         public override void Initialize(IServiceManager svcMgr)
         {
             base.Initialize(svcMgr);
-            ServiceManager.Get<ISemanticProcessor>().Register<FlowSharpMembrane, FlowSharpCanvasControllerReceptor>();
-            canvas = new Canvas();
-            canvasController = new CanvasController(canvas);
         }
 
         public override void FinishedInitialization()
         {
             base.FinishedInitialization();
+            canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
         }
 
-        public void CreateCanvas(Control parent)
+        public void Initialize(PropertyGrid propertyGrid)
         {
-            canvas.Initialize(parent);
+            pgController = new PropertyGridController(propertyGrid, canvasController);
         }
     }
 

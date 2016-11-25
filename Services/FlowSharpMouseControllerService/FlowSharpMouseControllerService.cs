@@ -29,7 +29,6 @@ namespace FlowSharpMouseControllerService
         {
             base.FinishedInitialization();
             ServiceManager.Get<ISemanticProcessor>().Register<FlowSharpMembrane, FlowSharpMouseControllerReceptor>();
-
             BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
             mouseController = new MouseController(canvasController);
             mouseController.HookMouseEvents();

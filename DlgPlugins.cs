@@ -2,6 +2,8 @@
 using System.IO;
 using System.Windows.Forms;
 
+using FlowSharpServiceInterfaces;
+
 namespace FlowSharp
 {
     public partial class DlgPlugins : Form
@@ -9,13 +11,13 @@ namespace FlowSharp
         public DlgPlugins()
         {
             InitializeComponent();
-            string plugins = File.ReadAllText(FlowSharpUI.PLUGIN_FILE_LIST);
+            string plugins = File.ReadAllText(Constants.PLUGIN_FILE_LIST);
             tbPlugins.Text = plugins;
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            File.WriteAllText(FlowSharpUI.PLUGIN_FILE_LIST, tbPlugins.Text);
+            File.WriteAllText(Constants.PLUGIN_FILE_LIST, tbPlugins.Text);
             Close();
         }
     }

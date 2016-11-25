@@ -6,8 +6,9 @@ using System.Reflection;
 using System.Windows.Forms;
 
 using FlowSharpLib;
+using FlowSharpServiceInterfaces;
 
-namespace FlowSharp
+namespace FlowSharpToolboxService
 {
     public class PluginManager
     {
@@ -23,9 +24,9 @@ namespace FlowSharp
 
         public void InitializePlugins()
         {
-            if (File.Exists(FlowSharpUI.PLUGIN_FILE_LIST))
+            if (File.Exists(Constants.PLUGIN_FILE_LIST))
             {
-                string[] plugins = File.ReadAllLines(FlowSharpUI.PLUGIN_FILE_LIST);
+                string[] plugins = File.ReadAllLines(Constants.PLUGIN_FILE_LIST);
 
                 foreach (string plugin in plugins.Where(p => !String.IsNullOrWhiteSpace(p)))
                 {
@@ -36,9 +37,9 @@ namespace FlowSharp
 
         public void UpdatePlugins()
         {
-            if (File.Exists(FlowSharpUI.PLUGIN_FILE_LIST))
+            if (File.Exists(Constants.PLUGIN_FILE_LIST))
             {
-                string[] plugins = File.ReadAllLines(FlowSharpUI.PLUGIN_FILE_LIST);
+                string[] plugins = File.ReadAllLines(Constants.PLUGIN_FILE_LIST);
 
                 foreach (string plugin in plugins.Where(p => !String.IsNullOrWhiteSpace(p) && !pluginFiles.Contains(p)))
                 {

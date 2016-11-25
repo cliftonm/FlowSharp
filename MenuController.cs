@@ -265,7 +265,8 @@ namespace FlowSharp
         private void mnuPlugins_Click(object sender, EventArgs e)
         {
             new DlgPlugins().ShowDialog();
-            pluginManager.UpdatePlugins();
+            // TODO: Toolbox needs to update when plugins change.
+            // pluginManager.UpdatePlugins();
         }
 
         private void mnuUndo_Click(object sender, EventArgs e)

@@ -45,6 +45,12 @@ namespace FlowSharp
             form.Size = new Size(1200, 800);
             form.Shown += OnShown;
             form.FormClosing += OnFormClosing;
+            ((IBaseForm)form).ProcessCmdKeyEvent += OnProcessCmdKeyEvent;
+        }
+
+        private static void OnProcessCmdKeyEvent(object sender, ProcessCmdKeyEventArgs e)
+        {
+            e.Handled = ServiceManager.Get<IFlowSharpEditService>().ProcessCmdKey(e.KeyData);
         }
 
         private static void OnFormClosing(object sender, FormClosingEventArgs e)

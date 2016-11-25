@@ -54,8 +54,10 @@ namespace FlowSharpServiceInterfaces
         void Delete();
         void Undo();
         void Redo();
+        void EditText();
         ClosingState CheckForChanges();
         void ResetSavePoint();
         void SetSavePoint();
+        bool ProcessCmdKey(Keys keyData);
     }
 }

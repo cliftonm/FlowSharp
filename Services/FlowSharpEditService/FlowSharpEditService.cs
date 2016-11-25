@@ -29,9 +29,11 @@ namespace FlowSharpEditService
 
     public class FlowSharpEditService : ServiceBase, IFlowSharpEditService
     {
+        protected Dictionary<Keys, Action> keyActions = new Dictionary<Keys, Action>();
         protected TextBox editBox;
         protected BaseController canvasController;
         protected int savePoint;
+        protected GraphicElement shapeBeingEdited;
 
         public override void Initialize(IServiceManager svcMgr)
         {
@@ -42,6 +44,7 @@ namespace FlowSharpEditService
         {
             base.FinishedInitialization();
             canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
+            InitializeKeyIntercepts();
         }
 
         public void Copy()
@@ -222,6 +225,83 @@ namespace FlowSharpEditService
             savePoint = canvasController.UndoStack.UndoStackSize;
         }
 
+        public bool ProcessCmdKey(Keys keyData)
+        {
+            Action act;
+            bool ret = false;
+
+            if (editBox == null)
+            {
+                if (canvasController.Canvas.Focused && keyActions.TryGetValue(keyData, out act))
+                {
+                    act();
+                    ret = true;
+                }
+                else
+                {
+                    if (canvasController.Canvas.Focused &&
+                        canvasController.SelectedElements.Count == 1 &&
+                        !canvasController.SelectedElements[0].IsConnector &&
+                        CanStartEditing(keyData))
+                    {
+                        EditText();
+                        // TODO: THIS IS SUCH A MESS!
+
+                        // Will return upper case letter always, regardless of shift key....
+                        string firstKey = ((char)keyData).ToString();
+
+                        // ... so we have to fix it.  Sigh.
+                        if ((keyData & Keys.Shift) != Keys.Shift)
+                        {
+                            firstKey = firstKey.ToLower();
+                        }
+                        else
+                        {
+                            // Handle shift of number keys on main keyboard
+                            if (char.IsDigit(firstKey[0]))
+                            {
+                                // TODO: Probably doesn't handle non-American keyboards!
+                                // Note index 0 is ")"
+                                string key = ")!@#$%^&*(";
+                                int n;
+
+                                if (int.TryParse(firstKey, out n))
+                                {
+                                    firstKey = key[n].ToString();
+                                }
+                            }
+                            // TODO: This is such a PITA.  Other symbols and shift combinations do not produce the correct first character!
+                        }
+
+                        editBox.Text = firstKey;
+                        editBox.SelectionStart = 1;
+                        editBox.SelectionLength = 0;
+                        ret = true;
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        public void EditText()
+        {
+            if (canvasController.SelectedElements.Count == 1)
+            {
+                // TODO: At the moment, connectors do not support text.
+                if (!canvasController.SelectedElements[0].IsConnector)
+                {
+                    shapeBeingEdited = canvasController.SelectedElements[0];
+                    editBox = CreateTextBox(shapeBeingEdited);
+                    canvasController.Canvas.Controls.Add(editBox);
+                    editBox.Visible = true;
+                    editBox.Focus();
+                    editBox.KeyPress += OnEditBoxKey;
+                    editBox.LostFocus += (sndr, args) => TerminateEditing();
+                }
+            }
+        }
+
         protected List<GraphicElement> IncludeChildren(List<GraphicElement> parents)
         {
             List<GraphicElement> els = new List<GraphicElement>();
@@ -266,6 +346,163 @@ namespace FlowSharpEditService
                     }
                 }
             }
+        }
+
+        protected void InitializeKeyIntercepts()
+        {
+            keyActions[Keys.F2] = EditText;
+
+            // TODO: Don't finish the group until another action other than cursor movement of a shape occurs.
+
+            keyActions[Keys.Up] = () => DoMove(new Point(0, -1));
+            keyActions[Keys.Down] = () => DoMove(new Point(0, 1));
+            keyActions[Keys.Left] = () => DoMove(new Point(-1, 0));
+            keyActions[Keys.Right] = () => DoMove(new Point(1, 0));
+
+            // Also allow keyboard move with Ctrl key pressed, which ignores snap check.
+            keyActions[Keys.Control | Keys.Up] = () => DoMove(new Point(0, -1));
+            keyActions[Keys.Control | Keys.Down] = () => DoMove(new Point(0, 1));
+            keyActions[Keys.Control | Keys.Left] = () => DoMove(new Point(-1, 0));
+            keyActions[Keys.Control | Keys.Right] = () => DoMove(new Point(1, 0));
+        }
+
+        protected void DoMove(Point dir)
+        {
+            // Always reset the snap controller before a keyboard move.  This ensures that, among other things, the running delta is zero'd.
+            canvasController.SnapController.Reset();
+
+            if (canvasController.SelectedElements.Count == 1 && canvasController.SelectedElements[0].IsConnector)
+            {
+                // TODO: Duplicate code in FlowSharpToolboxService.ToolboxController.OnMouseMove and MouseController
+                // Check both ends of any connector being moved.
+                if (!canvasController.SnapController.SnapCheck(GripType.Start, dir, (snapDelta) => canvasController.DragSelectedElements(snapDelta), true))
+                {
+                    if (!canvasController.SnapController.SnapCheck(GripType.End, dir, (snapDelta) => canvasController.DragSelectedElements(snapDelta), true))
+                    {
+                        // No snap occurred.
+                        DoJustKeyboardMove(dir);
+                    }
+                    else
+                    {
+                        // Snapped grip end.
+                        DoKeyboardSnapWithMove(dir);
+                    }
+                }
+                else
+                {
+                    // Snapped grip start.
+                    DoKeyboardSnapWithMove(dir);
+                }
+            }
+            else
+            {
+                // Moving shape, or multiple shapes, not a single connector.
+                DoJustKeyboardMove(dir);
+            }
+        }
+
+        protected void DoKeyboardSnapWithMove(Point dir)
+        {
+            canvasController.SnapController.DoUndoSnapActions(canvasController.UndoStack);
+
+            if (canvasController.SnapController.RunningDelta != Point.Empty)
+            {
+                Point delta = canvasController.SnapController.RunningDelta;     // for closure
+                bool ignoreSnapCheck = canvasController.IsSnapToBeIgnored;      // for closure
+
+                canvasController.UndoStack.UndoRedo(
+                "KeyboardMove",
+                () => { },  // Doing is already done.
+                () =>
+                {
+                    canvasController.UndoRedoIgnoreSnapCheck = ignoreSnapCheck;
+                    canvasController.DragSelectedElements(delta.ReverseDirection());
+                    canvasController.UndoRedoIgnoreSnapCheck = false;
+                },
+                true,
+                () => canvasController.DragSelectedElements(delta)
+                );
+            }
+        }
+
+        protected void DoJustKeyboardMove(Point dir)
+        {
+            bool ignoreSnapCheck = canvasController.IsSnapToBeIgnored;      // for closure
+            canvasController.UndoStack.UndoRedo(
+            "KeyboardMove",
+            () => canvasController.DragSelectedElements(dir),
+            () =>
+            {
+                canvasController.UndoRedoIgnoreSnapCheck = ignoreSnapCheck;
+                canvasController.DragSelectedElements(dir.ReverseDirection());
+                canvasController.UndoRedoIgnoreSnapCheck = false;
+            }
+            );
+        }
+
+        protected bool CanStartEditing(Keys keyData)
+        {
+            bool ret = false;
+
+            if (((keyData & Keys.Control) != Keys.Control) &&              // any control + key is not valid
+                 ((keyData & Keys.Alt) != Keys.Alt))                       // any alt + key is not valid
+            {
+                Keys k2 = (keyData & ~(Keys.Control | Keys.Shift | Keys.ShiftKey | Keys.Alt | Keys.Menu));
+
+                if ((k2 != Keys.None) && (k2 < Keys.F1 || k2 > Keys.F12))
+                {
+                    // Here we assume we have a viable character.
+                    // TODO: Probably more logic is required here.
+                    ret = true;
+                }
+            }
+
+            return ret;
+        }
+
+        protected void OnEditBoxKey(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 27 || e.KeyChar == 13)
+            {
+                TerminateEditing();
+                e.Handled = true;       // Suppress beep.
+            }
+        }
+
+        protected void TerminateEditing()
+        {
+            if (editBox != null)
+            {
+                editBox.KeyPress -= OnEditBoxKey;
+                string oldVal = shapeBeingEdited.Text;
+                string newVal = editBox.Text;
+                TextBox tb = editBox;
+                editBox = null;     // set editBox to null so the remove, which fires a LoseFocus event, doesn't call into TerminateEditing again!
+
+                canvasController.UndoStack.UndoRedo("Inline edit",
+                    () =>
+                    {
+                        canvasController.Redraw(shapeBeingEdited, (el) => el.Text = newVal);
+                        canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
+                    },
+                    () =>
+                    {
+                        canvasController.Redraw(shapeBeingEdited, (el) => el.Text = oldVal);
+                        canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
+                    });
+
+                canvasController.Canvas.Controls.Remove(tb);
+            }
+        }
+
+        protected TextBox CreateTextBox(GraphicElement el)
+        {
+            TextBox tb = new TextBox();
+            tb.Location = el.DisplayRectangle.LeftMiddle().Move(0, -10);
+            tb.Size = new Size(el.DisplayRectangle.Width, 20);
+            tb.Text = el.Text;
+
+            return tb;
         }
     }
 

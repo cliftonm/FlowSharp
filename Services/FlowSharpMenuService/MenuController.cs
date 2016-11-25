@@ -73,8 +73,7 @@ namespace FlowSharpMenuService
             mnuPlugins.Click += mnuPlugins_Click;
             mnuUndo.Click += mnuUndo_Click;
             mnuRedo.Click += mnuRedo_Click;
-            // TODO:
-            // mnuEdit.Click += (sndr, args) => EditText();
+            mnuEdit.Click += (sndr, args) => serviceManager.Get<IFlowSharpEditService>().EditText();
         }
 
         private void mnuTopmost_Click(object sender, EventArgs e)

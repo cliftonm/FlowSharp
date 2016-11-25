@@ -51,6 +51,7 @@ namespace FlowSharp
             CreateCanvas();
             CreateToolbar();
             CreatePropertyGrid();
+            InitializeMenu();
         }
 
         static void CreateCanvas()
@@ -80,6 +81,11 @@ namespace FlowSharp
             PropertyGrid propGrid = new PropertyGrid() { Dock = DockStyle.Fill };
             ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(propGrid);
             propGridToolbar.Controls.Add(propGrid);
+        }
+
+        static void InitializeMenu()
+        {
+            ServiceManager.Get<IFlowSharpMenuService>().Initialize(form);
         }
     }
 }

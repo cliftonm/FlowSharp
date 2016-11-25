@@ -45,7 +45,7 @@ namespace FlowSharpPropertyGridService
         }
     }
 
-    public class FlowSharpCanvasControllerReceptor : IReceptor
+    public class FlowSharpPropertyGridReceptor : IReceptor
     {
 
     }

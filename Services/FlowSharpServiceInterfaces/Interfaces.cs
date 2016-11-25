@@ -1,4 +1,10 @@
-﻿using System.Windows.Forms;
+﻿/* 
+* Copyright (c) Marc Clifton
+* The Code Project Open License (CPOL) 1.02
+* http://www.codeproject.com/info/cpol10.aspx
+*/
+
+using System.Windows.Forms;
 
 using Clifton.Core.ServiceManagement;
 
@@ -6,11 +12,6 @@ using FlowSharpLib;
 
 namespace FlowSharpServiceInterfaces
 {
-    public static class Constants
-    {
-        public const string PLUGIN_FILE_LIST = "plugins.txt";
-    }
-
     public interface IFlowSharpCanvasService : IService
     {
         BaseController Controller { get; }
@@ -38,5 +39,19 @@ namespace FlowSharpServiceInterfaces
     public interface IFlowSharpPropertyGridService : IService
     {
         void Initialize(PropertyGrid propertyGrid);
+    }
+
+    public interface IFlowSharpMenuService : IService
+    {
+        void Initialize(Form mainForm);
+    }
+
+    public interface IFlowSharpEditService : IService
+    {
+        void Copy();
+        void Paste();
+        void Delete();
+        void Undo();
+        void Redo();
     }
 }

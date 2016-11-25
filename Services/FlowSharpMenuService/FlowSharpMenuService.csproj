@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CAA4FD23-1392-4DEE-907A-CB3DC7315A98}</ProjectGuid>
+    <ProjectGuid>{4143C634-39F8-4143-98BA-5F20E533D7AF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FlowSharpServiceInterfaces</RootNamespace>
-    <AssemblyName>FlowSharpServiceInterfaces</AssemblyName>
+    <RootNamespace>FlowSharpMenuService</RootNamespace>
+    <AssemblyName>FlowSharpMenuService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -36,6 +36,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -45,15 +46,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
-    <Compile Include="Interfaces.cs" />
-    <Compile Include="Membranes.cs" />
+    <Compile Include="FlowSharpMenuService.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="MenuController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FlowSharpLib\FlowSharpLib.csproj">
       <Project>{07f65ca7-b8d3-4716-bfbf-812ef4da68be}</Project>
       <Name>FlowSharpLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlowSharpServiceInterfaces\FlowSharpServiceInterfaces.csproj">
+      <Project>{caa4fd23-1392-4dee-907a-cb3dc7315a98}</Project>
+      <Name>FlowSharpServiceInterfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

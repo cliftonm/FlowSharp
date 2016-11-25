@@ -10,14 +10,40 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using Clifton.Core.ModuleManagement;
+using Clifton.Core.Semantics;
+using Clifton.Core.ServiceManagement;
+
 using FlowSharpLib;
 using FlowSharpServiceInterfaces;
 
-namespace FlowSharp
+namespace FlowSharpEditService
 {
-    public partial class FlowSharpUI
+    public class FlowSharpEditModule : IModule
     {
-        protected void Copy()
+        public void InitializeServices(IServiceManager serviceManager)
+        {
+            serviceManager.RegisterSingleton<IFlowSharpEditService, FlowSharpEditService>();
+        }
+    }
+
+    public class FlowSharpEditService : ServiceBase, IFlowSharpEditService
+    {
+        protected TextBox editBox;
+        protected BaseController canvasController;
+
+        public override void Initialize(IServiceManager svcMgr)
+        {
+            base.Initialize(svcMgr);
+        }
+
+        public override void FinishedInitialization()
+        {
+            base.FinishedInitialization();
+            canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
+        }
+
+        public void Copy()
         {
             if (editBox != null)
             {
@@ -41,20 +67,7 @@ namespace FlowSharp
             }
         }
 
-        protected List<GraphicElement> IncludeChildren(List<GraphicElement> parents)
-        {
-            List<GraphicElement> els = new List<GraphicElement>();
-
-            parents.ForEach(p =>
-            {
-                els.AddRange(p.GroupChildren);
-                els.AddRange(IncludeChildren(p.GroupChildren));
-            });
-
-            return els;
-        }
-
-        protected void Paste()
+        public void Paste()
         {
             // TODO: This seems klunky.
             if (editBox != null && Clipboard.ContainsText())
@@ -73,7 +86,7 @@ namespace FlowSharp
             {
                 try
                 {
-                    List<GraphicElement> els = Persist.Deserialize(canvas, copyBuffer);
+                    List<GraphicElement> els = Persist.Deserialize(canvasController.Canvas, copyBuffer);
                     List<GraphicElement> selectedElements = canvasController.SelectedElements.ToList();
 
                     // After deserialization, only move and select elements without parents -
@@ -135,7 +148,7 @@ namespace FlowSharp
             }
         }
 
-        protected void Delete()
+        public void Delete()
         {
             if (canvasController.Canvas.Focused)
             {
@@ -143,7 +156,7 @@ namespace FlowSharp
                 List<GraphicElement> selectedElements = canvasController.SelectedElements.ToList();
 
                 // TODO: Better implementation would be for the mouse controller to hook a shape deleted event?
-                IFlowSharpMouseControllerService mouseController = Program.ServiceManager.Get<IFlowSharpMouseControllerService>();
+                IFlowSharpMouseControllerService mouseController = ServiceManager.Get<IFlowSharpMouseControllerService>();
                 canvasController.SelectedElements.ForEach(el => mouseController.ShapeDeleted(el));
 
                 canvasController.UndoStack.UndoRedo("Delete",
@@ -159,6 +172,29 @@ namespace FlowSharp
                         canvasController.SelectElements(selectedElements);
                     });
             }
+        }
+
+        public void Undo()
+        {
+            canvasController.Undo();
+        }
+
+        public void Redo()
+        {
+            canvasController.Redo();
+        }
+
+        protected List<GraphicElement> IncludeChildren(List<GraphicElement> parents)
+        {
+            List<GraphicElement> els = new List<GraphicElement>();
+
+            parents.ForEach(p =>
+            {
+                els.AddRange(p.GroupChildren);
+                els.AddRange(IncludeChildren(p.GroupChildren));
+            });
+
+            return els;
         }
 
         protected void RestoreConnections(List<ZOrderMap> zomList)
@@ -193,20 +229,9 @@ namespace FlowSharp
                 }
             }
         }
+    }
 
-        protected void Undo()
-        {
-            canvasController.Undo();
-        }
-
-        protected void Redo()
-        {
-            canvasController.Redo();
-        }
-
-        protected void UpdateCaption()
-        {
-            Text = "FlowSharp" + (String.IsNullOrEmpty(filename) ? "" : " - ") + filename;
-        }
+    public class FlowSharpEditReceptor : IReceptor
+    {
     }
 }

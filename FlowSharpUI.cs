@@ -44,34 +44,12 @@ namespace FlowSharp
 
             // We have to initialize the menu event handlers here, rather than in the designer,
             // so that we can move the menu handlers to the MenuController partial class.
-            mnuNew.Click += mnuNew_Click;
-            mnuOpen.Click += mnuOpen_Click;
-            mnuImport.Click += (sndr, args) =>
-            {
-                mnuImport_Click(sndr, args);
-            };
-            mnuSave.Click += mnuSave_Click;
-            mnuSaveAs.Click += mnuSaveAs_Click;
-            mnuExit.Click += mnuExit_Click;
-            mnuCopy.Click += mnuCopy_Click;
-            mnuPaste.Click += mnuPaste_Click;
-            mnuDelete.Click += mnuDelete_Click;
-            mnuTopmost.Click += mnuTopmost_Click;
-            mnuBottommost.Click += mnuBottommost_Click;
-            mnuMoveUp.Click += mnuMoveUp_Click;
-            mnuMoveDown.Click += mnuMoveDown_Click;
-            mnuGroup.Click += mnuGroup_Click;
-            mnuUngroup.Click += mnuUngroup_Click;
-            mnuPlugins.Click += mnuPlugins_Click;
-            mnuUndo.Click += mnuUndo_Click;
-            mnuRedo.Click += mnuRedo_Click;
             mnuEdit.Click += (sndr, args) => EditText();
 
             //keyActions[Keys.Control | Keys.C] = Copy;
             //keyActions[Keys.Control | Keys.V] = Paste;
             //keyActions[Keys.Control | Keys.Z] = Undo;
             //keyActions[Keys.Control | Keys.Y] = Redo;
-            keyActions[Keys.Delete] = Delete;
             keyActions[Keys.F2] = EditText;
 
             // TODO: Don't finish the group until another action other than cursor movement of a shape occurs.
@@ -172,14 +150,14 @@ namespace FlowSharp
 
         protected void OnFormClosing(object sender, FormClosingEventArgs e)
         {
-            e.Cancel = CheckForChanges();
+            //e.Cancel = CheckForChanges();
 
-            if (!e.Cancel)
-            {
-                ElementCache.Instance.ClearCache();
-                canvasController.Clear();
-                toolboxController.Clear();
-            }
+            //if (!e.Cancel)
+            //{
+            //    ElementCache.Instance.ClearCache();
+            //    canvasController.Clear();
+            //    toolboxController.Clear();
+            //}
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -363,7 +341,7 @@ namespace FlowSharp
                 // which results in an actual diagram hasn't changed.  But for now, this fixes the most common situation of
                 // saving then exiting, in which case we don't want to prompt for "save changes?" again because we know they've
                 // been saved.
-                savePoint = 0;
+                // savePoint = 0;
                 UpdateDebugWindowUndoStack();
             };
 

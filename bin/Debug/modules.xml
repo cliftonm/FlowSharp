@@ -7,4 +7,6 @@
   <Module AssemblyName='FlowSharpToolboxService.dll'/>
   <Module AssemblyName='FlowSharpMouseControllerService.dll'/>
   <Module AssemblyName='FlowSharpPropertyGridService.dll'/>
+  <Module AssemblyName='FlowSharpMenuService.dll'/>
+  <Module AssemblyName='FlowSharpEditService.dll'/>
 </Modules>

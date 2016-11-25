@@ -10,18 +10,59 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
+using Clifton.Core.ServiceManagement;
+
 using FlowSharpLib;
 using FlowSharpServiceInterfaces;
 
-namespace FlowSharp
+namespace FlowSharpMenuService
 {
-	public partial class FlowSharpUI
-	{
-		protected string filename;
+    public partial class MenuController
+    {
+        protected string filename;
         protected int savePoint = 0;
+        protected BaseController canvasController;
+        protected IServiceManager serviceManager;
+        protected Form mainForm;
+
+        public MenuController(BaseController canvasController, IServiceManager serviceManager, Form mainForm)
+        {
+            this.canvasController = canvasController;
+            this.serviceManager = serviceManager;
+            this.mainForm = mainForm;
+            Initialize();
+            InitializeMenuHandlers();
+        }
+
+        protected void InitializeMenuHandlers()
+        {
+            mnuNew.Click += mnuNew_Click;
+            mnuOpen.Click += mnuOpen_Click;
+            mnuImport.Click += (sndr, args) =>
+            {
+                mnuImport_Click(sndr, args);
+            };
+            mnuSave.Click += mnuSave_Click;
+            mnuSaveAs.Click += mnuSaveAs_Click;
+            mnuExit.Click += mnuExit_Click;
+            mnuCopy.Click += mnuCopy_Click;
+            mnuPaste.Click += mnuPaste_Click;
+            mnuDelete.Click += mnuDelete_Click;
+            mnuTopmost.Click += mnuTopmost_Click;
+            mnuBottommost.Click += mnuBottommost_Click;
+            mnuMoveUp.Click += mnuMoveUp_Click;
+            mnuMoveDown.Click += mnuMoveDown_Click;
+            mnuGroup.Click += mnuGroup_Click;
+            mnuUngroup.Click += mnuUngroup_Click;
+            mnuPlugins.Click += mnuPlugins_Click;
+            mnuUndo.Click += mnuUndo_Click;
+            mnuRedo.Click += mnuRedo_Click;
+            // TODO:
+            // mnuEdit.Click += (sndr, args) => EditText();
+        }
 
         private void mnuTopmost_Click(object sender, EventArgs e)
-		{
+        {
             List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
 
             canvasController.UndoStack.UndoRedo("Z-Top",
@@ -33,7 +74,7 @@ namespace FlowSharp
                 {
                     canvasController.RestoreZOrder(originalZOrder);
                 });
-		}
+        }
 
         private void mnuBottommost_Click(object sender, EventArgs e)
         {
@@ -51,7 +92,7 @@ namespace FlowSharp
         }
 
         private void mnuMoveUp_Click(object sender, EventArgs e)
-		{
+        {
             List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
 
             canvasController.UndoStack.UndoRedo("Z-Up",
@@ -66,7 +107,7 @@ namespace FlowSharp
         }
 
         private void mnuMoveDown_Click(object sender, EventArgs e)
-		{
+        {
             List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
 
             canvasController.UndoStack.UndoRedo("Z-Down",
@@ -81,64 +122,64 @@ namespace FlowSharp
         }
 
         private void mnuCopy_Click(object sender, EventArgs e)
-		{
-			if (canvasController.SelectedElements.Count > 0)
-			{
-				Copy();
-			}
-		}
+        {
+            if (canvasController.SelectedElements.Count > 0)
+            {
+                serviceManager.Get<IFlowSharpEditService>().Copy();
+            }
+        }
 
-		private void mnuPaste_Click(object sender, EventArgs e)
-		{
-			Paste();
-		}
+        private void mnuPaste_Click(object sender, EventArgs e)
+        {
+            serviceManager.Get<IFlowSharpEditService>().Paste();
+        }
 
-		private void mnuDelete_Click(object sender, EventArgs e)
-		{
-			Delete();
-		}
+        private void mnuDelete_Click(object sender, EventArgs e)
+        {
+            serviceManager.Get<IFlowSharpEditService>().Delete();
+        }
 
-		private void mnuNew_Click(object sender, EventArgs e)
-		{
+        private void mnuNew_Click(object sender, EventArgs e)
+        {
             if (CheckForChanges()) return;
             savePoint = 0;
             canvasController.Clear();
             canvasController.UndoStack.ClearStacks();
             ElementCache.Instance.ClearCache();
-            Program.ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
-            canvas.Invalidate();
-			filename = String.Empty;
+            serviceManager.Get<IFlowSharpMouseControllerService>().ClearState();
+            canvasController.Canvas.Invalidate();
+            filename = String.Empty;
             canvasController.Filename = filename;
-			UpdateCaption();
+            UpdateCaption();
         }
 
         private void mnuOpen_Click(object sender, EventArgs e)
-		{
+        {
             if (CheckForChanges()) return;
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.Filter = "FlowSharp (*.fsd)|*.fsd";
-			DialogResult res = ofd.ShowDialog();
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "FlowSharp (*.fsd)|*.fsd";
+            DialogResult res = ofd.ShowDialog();
 
-			if (res == DialogResult.OK)
-			{
-				filename = ofd.FileName;
-			}
-			else
-			{
-				return;
-			}
+            if (res == DialogResult.OK)
+            {
+                filename = ofd.FileName;
+            }
+            else
+            {
+                return;
+            }
 
             canvasController.Filename = filename;       // set now, in case of relative image files, etc...
             savePoint = 0;
             string data = File.ReadAllText(filename);
-			List<GraphicElement> els = Persist.Deserialize(canvas, data);
+            List<GraphicElement> els = Persist.Deserialize(canvasController.Canvas, data);
             canvasController.Clear();
             canvasController.UndoStack.ClearStacks();
             ElementCache.Instance.ClearCache();
-            Program.ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
+            serviceManager.Get<IFlowSharpMouseControllerService>().ClearState();
             canvasController.AddElements(els);
             canvasController.Elements.ForEach(el => el.UpdatePath());
-			canvas.Invalidate();
+            canvasController.Canvas.Invalidate();
             UpdateCaption();
         }
 
@@ -152,7 +193,7 @@ namespace FlowSharp
             {
                 string importFilename = ofd.FileName;
                 string data = File.ReadAllText(importFilename);
-                List<GraphicElement> els = Persist.Deserialize(canvas, data);
+                List<GraphicElement> els = Persist.Deserialize(canvasController.Canvas, data);
                 List<GraphicElement> selectedElements = canvasController.SelectedElements.ToList();
 
                 canvasController.UndoStack.UndoRedo("Import",
@@ -162,7 +203,7 @@ namespace FlowSharp
                         canvasController.AddElements(els);
                         canvasController.Elements.ForEach(el => el.UpdatePath());
                         canvasController.SelectElements(els);
-                        canvas.Invalidate();
+                        canvasController.Canvas.Invalidate();
                     },
                     () =>
                     {
@@ -174,45 +215,45 @@ namespace FlowSharp
         }
 
         private void mnuSave_Click(object sender, EventArgs e)
-		{
-			if (canvasController.Elements.Count > 0)
-			{
+        {
+            if (canvasController.Elements.Count > 0)
+            {
                 SaveOrSaveAs();
                 canvasController.Filename = filename;
                 UpdateCaption();
-			}
-			else
-			{
-				MessageBox.Show("Nothing to save.", "Empty Canvas", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
-		}
+            }
+            else
+            {
+                MessageBox.Show("Nothing to save.", "Empty Canvas", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
 
-		private void mnuSaveAs_Click(object sender, EventArgs e)
-		{
-			if (canvasController.Elements.Count > 0)
-			{
+        private void mnuSaveAs_Click(object sender, EventArgs e)
+        {
+            if (canvasController.Elements.Count > 0)
+            {
                 SaveOrSaveAs(true);
                 canvasController.Filename = filename;
                 UpdateCaption();
-			}
-			else
-			{
-				MessageBox.Show("Nothing to save.", "Empty Canvas", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
-		}
+            }
+            else
+            {
+                MessageBox.Show("Nothing to save.", "Empty Canvas", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
 
-		private void mnuExit_Click(object sender, EventArgs e)
-		{
+        private void mnuExit_Click(object sender, EventArgs e)
+        {
             if (CheckForChanges()) return;
-            Close();
-		}
+            mainForm.Close();
+        }
 
         private void mnuGroup_Click(object sender, EventArgs e)
         {
             if (canvasController.SelectedElements.Any())
             {
                 List<GraphicElement> selectedShapes = canvasController.SelectedElements.ToList();
-                FlowSharpLib.GroupBox groupBox = new FlowSharpLib.GroupBox(canvas);
+                FlowSharpLib.GroupBox groupBox = new FlowSharpLib.GroupBox(canvasController.Canvas);
 
                 canvasController.UndoStack.UndoRedo("Group",
                     () =>
@@ -264,19 +305,20 @@ namespace FlowSharp
 
         private void mnuPlugins_Click(object sender, EventArgs e)
         {
-            new DlgPlugins().ShowDialog();
+            // TODO:
+            // new DlgPlugins().ShowDialog();
             // TODO: Toolbox needs to update when plugins change.
             // pluginManager.UpdatePlugins();
         }
 
         private void mnuUndo_Click(object sender, EventArgs e)
         {
-            Undo();
+            serviceManager.Get<IFlowSharpEditService>().Undo();
         }
 
         private void mnuRedo_Click(object sender, EventArgs e)
         {
-            Redo();
+            serviceManager.Get<IFlowSharpEditService>().Redo();
         }
 
         /// <summary>
@@ -355,6 +397,11 @@ namespace FlowSharp
             string data = Persist.Serialize(canvasController.Elements);
             File.WriteAllText(filename, data);
             savePoint = canvasController.UndoStack.UndoStackSize;
+        }
+
+        protected void UpdateCaption()
+        {
+            mainForm.Text = "FlowSharp" + (String.IsNullOrEmpty(filename) ? "" : " - ") + filename;
         }
     }
 }

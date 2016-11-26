@@ -51,6 +51,9 @@ namespace FlowSharpLib
         public virtual bool HasChanges { get { return _undoStack.Count != 0; } }
         public virtual int UndoStackSize { get { return _undoStack.Count; } }
 
+        public bool CanUndo { get { return _undoStack.Count > 0; } }
+        public bool CanRedo { get { return _redoStack.Count > 0; } }
+
         public ActionState Performing { get; protected set; }
 
         public virtual List<string> GetStackInfo()

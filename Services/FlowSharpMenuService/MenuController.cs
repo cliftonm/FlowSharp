@@ -31,6 +31,9 @@ namespace FlowSharpMenuService
             this.mainForm = mainForm;
             Initialize();
             InitializeMenuHandlers();
+            canvasController.ElementSelected += (snd, args) => UpdateMenu(args.Element != null);
+            canvasController.UndoStack.AfterAction += (snd, args) => UpdateMenu(canvasController.SelectedElements.Any());
+            UpdateMenu(false);
         }
 
         // TODO: The save/load operations might be best moved to the edit service?
@@ -48,6 +51,20 @@ namespace FlowSharpMenuService
             }
 
             return ret;
+        }
+
+        protected void UpdateMenu(bool elementSelected)
+        {
+            mnuBottommost.Enabled = elementSelected;
+            mnuTopmost.Enabled = elementSelected;
+            mnuMoveUp.Enabled = elementSelected;
+            mnuMoveDown.Enabled = elementSelected;
+            mnuCopy.Enabled = elementSelected;
+            mnuDelete.Enabled = elementSelected;
+            mnuGroup.Enabled = elementSelected && !canvasController.SelectedElements.Any(el => el.Parent != null);
+            mnuUngroup.Enabled = canvasController.SelectedElements.Count == 1 && canvasController.SelectedElements[0].GroupChildren.Any();
+            mnuUndo.Enabled = canvasController.UndoStack.CanUndo;
+            mnuRedo.Enabled = canvasController.UndoStack.CanRedo;
         }
 
         protected void InitializeMenuHandlers()

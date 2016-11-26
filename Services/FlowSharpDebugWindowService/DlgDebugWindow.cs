@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 using FlowSharpLib;
 
-namespace FlowSharp
+namespace FlowSharpDebugWindowService
 {
     public partial class DlgDebugWindow : Form
     {

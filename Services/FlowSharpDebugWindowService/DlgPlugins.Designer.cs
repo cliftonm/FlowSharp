@@ -1,4 +1,4 @@
-﻿namespace FlowSharp
+﻿namespace FlowSharpDebugWindowService
 {
     partial class DlgPlugins
     {

@@ -60,4 +60,10 @@ namespace FlowSharpServiceInterfaces
         void SetSavePoint();
         bool ProcessCmdKey(Keys keyData);
     }
+
+    public interface IFlowSharpDebugWindowService : IService
+    {
+        void ShowDebugWindow();
+        void EditPlugins();     // TODO: Not really a debug window!
+    }
 }

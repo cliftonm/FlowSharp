@@ -16,7 +16,7 @@
             if (disposing && (components != null))
             {
                 components.Dispose();
-                traceListener.Dispose();
+                // traceListener.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -288,7 +288,7 @@
             this.mnuDebugWindow.Name = "mnuDebugWindow";
             this.mnuDebugWindow.Size = new System.Drawing.Size(159, 24);
             this.mnuDebugWindow.Text = "&Debug Window";
-            this.mnuDebugWindow.Click += new System.EventHandler(this.mnuDebugWindow_Click);
+            // this.mnuDebugWindow.Click += new System.EventHandler(this.mnuDebugWindow_Click);
             // 
             // orderToolStripMenuItem
             // 

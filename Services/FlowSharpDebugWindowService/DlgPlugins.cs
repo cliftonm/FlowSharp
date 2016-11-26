@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 using FlowSharpServiceInterfaces;
 
-namespace FlowSharp
+namespace FlowSharpDebugWindowService
 {
     public partial class DlgPlugins : Form
     {

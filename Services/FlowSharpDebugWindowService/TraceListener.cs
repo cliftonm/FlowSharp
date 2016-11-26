@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace FlowSharp
+namespace FlowSharpDebugWindowService
 {
     public class TraceListener : ConsoleTraceListener
     {

@@ -87,10 +87,11 @@ namespace FlowSharpMenuService
             mnuMoveDown.Click += mnuMoveDown_Click;
             mnuGroup.Click += mnuGroup_Click;
             mnuUngroup.Click += mnuUngroup_Click;
-            mnuPlugins.Click += mnuPlugins_Click;
             mnuUndo.Click += mnuUndo_Click;
             mnuRedo.Click += mnuRedo_Click;
             mnuEdit.Click += (sndr, args) => serviceManager.Get<IFlowSharpEditService>().EditText();
+            mnuDebugWindow.Click += (sndr, args) => serviceManager.Get<IFlowSharpDebugWindowService>().ShowDebugWindow();
+            mnuPlugins.Click += (sndr, args) => serviceManager.Get<IFlowSharpDebugWindowService>().EditPlugins();
         }
 
         private void mnuTopmost_Click(object sender, EventArgs e)
@@ -333,14 +334,6 @@ namespace FlowSharpMenuService
                     });
                 }
             }
-        }
-
-        private void mnuPlugins_Click(object sender, EventArgs e)
-        {
-            // TODO:
-            // new DlgPlugins().ShowDialog();
-            // TODO: Toolbox needs to update when plugins change.
-            // pluginManager.UpdatePlugins();
         }
 
         private void mnuUndo_Click(object sender, EventArgs e)

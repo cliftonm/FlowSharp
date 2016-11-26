@@ -4,18 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{98E63D19-3D7A-4CB1-8EA9-31173D4BE05F}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{EF3A8598-238B-4B29-9D77-79CD805CD0E7}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FlowSharp</RootNamespace>
-    <AssemblyName>FlowSharp</AssemblyName>
+    <RootNamespace>FlowSharpDebugWindowService</RootNamespace>
+    <AssemblyName>FlowSharpDebugWindowService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -25,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,83 +30,55 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Clifton.Core">
-      <HintPath>Libs\Clifton.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Clifton.WinForm.ServiceInterfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\Clifton.WinForm.ServiceInterfaces.dll</HintPath>
+      <HintPath>..\..\Libs\Clifton.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bootstrap.cs" />
-    <Compile Include="FlowSharpUI.cs">
+    <Compile Include="DlgDebugWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FlowSharpUI.Designer.cs">
-      <DependentUpon>FlowSharpUI.cs</DependentUpon>
+    <Compile Include="DlgDebugWindow.Designer.cs">
+      <DependentUpon>DlgDebugWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="DlgPlugins.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgPlugins.Designer.cs">
+      <DependentUpon>DlgPlugins.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FlowSharpDebugWindowService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="FlowSharpUI.resx">
-      <DependentUpon>FlowSharpUI.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <None Include="README.md" />
+    <Compile Include="TraceListener.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="FlowSharpLib\FlowSharpLib.csproj">
+    <ProjectReference Include="..\..\FlowSharpLib\FlowSharpLib.csproj">
       <Project>{07f65ca7-b8d3-4716-bfbf-812ef4da68be}</Project>
       <Name>FlowSharpLib</Name>
     </ProjectReference>
-    <ProjectReference Include="Services\FlowSharpServiceInterfaces\FlowSharpServiceInterfaces.csproj">
+    <ProjectReference Include="..\FlowSharpServiceInterfaces\FlowSharpServiceInterfaces.csproj">
       <Project>{caa4fd23-1392-4dee-907a-cb3dc7315a98}</Project>
       <Name>FlowSharpServiceInterfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\Debug\modules.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="bin\Debug\plugins.txt" />
-    <None Include="Resources\FlowSharp.ico" />
+    <EmbeddedResource Include="DlgDebugWindow.resx">
+      <DependentUpon>DlgDebugWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DlgPlugins.resx">
+      <DependentUpon>DlgPlugins.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

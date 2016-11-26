@@ -9,4 +9,5 @@
   <Module AssemblyName='FlowSharpPropertyGridService.dll'/>
   <Module AssemblyName='FlowSharpMenuService.dll'/>
   <Module AssemblyName='FlowSharpEditService.dll'/>
+  <Module AssemblyName='FlowSharpDebugWindowService.dll'/>
 </Modules>

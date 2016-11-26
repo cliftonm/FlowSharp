@@ -34,8 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>FlowSharp.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Clifton.Core">
@@ -100,6 +99,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="bin\Debug\plugins.txt" />
+    <Content Include="FlowSharp.ico" />
     <None Include="Resources\FlowSharp.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

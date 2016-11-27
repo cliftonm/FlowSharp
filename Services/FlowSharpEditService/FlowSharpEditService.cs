@@ -31,7 +31,6 @@ namespace FlowSharpEditService
     {
         protected Dictionary<Keys, Action> keyActions = new Dictionary<Keys, Action>();
         protected TextBox editBox;
-        protected BaseController canvasController;
         protected int savePoint;
         protected GraphicElement shapeBeingEdited;
 
@@ -43,12 +42,13 @@ namespace FlowSharpEditService
         public override void FinishedInitialization()
         {
             base.FinishedInitialization();
-            canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
             InitializeKeyIntercepts();
         }
 
         public void Copy()
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             if (editBox != null)
             {
                 Clipboard.SetText(editBox.SelectedText);
@@ -73,6 +73,8 @@ namespace FlowSharpEditService
 
         public void Paste()
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             // TODO: This seems klunky.
             if (editBox != null && Clipboard.ContainsText())
             {
@@ -154,6 +156,8 @@ namespace FlowSharpEditService
 
         public void Delete()
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             if (canvasController.Canvas.Focused)
             {
                 List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
@@ -180,16 +184,19 @@ namespace FlowSharpEditService
 
         public void Undo()
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
             canvasController.Undo();
         }
 
         public void Redo()
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
             canvasController.Redo();
         }
 
         public ClosingState CheckForChanges()
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
             ClosingState ret = ClosingState.NoChanges;
 
             if (savePoint != canvasController.UndoStack.UndoStackSize)
@@ -222,11 +229,13 @@ namespace FlowSharpEditService
 
         public void SetSavePoint()
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
             savePoint = canvasController.UndoStack.UndoStackSize;
         }
 
         public bool ProcessCmdKey(Keys keyData)
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
             Action act;
             bool ret = false;
 
@@ -286,6 +295,8 @@ namespace FlowSharpEditService
 
         public void EditText()
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             if (canvasController.SelectedElements.Count == 1)
             {
                 // TODO: At the moment, connectors do not support text.
@@ -368,6 +379,8 @@ namespace FlowSharpEditService
 
         protected void DoMove(Point dir)
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             // Always reset the snap controller before a keyboard move.  This ensures that, among other things, the running delta is zero'd.
             canvasController.SnapController.Reset();
 
@@ -403,6 +416,7 @@ namespace FlowSharpEditService
 
         protected void DoKeyboardSnapWithMove(Point dir)
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
             canvasController.SnapController.DoUndoSnapActions(canvasController.UndoStack);
 
             if (canvasController.SnapController.RunningDelta != Point.Empty)
@@ -427,6 +441,7 @@ namespace FlowSharpEditService
 
         protected void DoJustKeyboardMove(Point dir)
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
             bool ignoreSnapCheck = canvasController.IsSnapToBeIgnored;      // for closure
             canvasController.UndoStack.UndoRedo(
             "KeyboardMove",
@@ -471,6 +486,8 @@ namespace FlowSharpEditService
 
         protected void TerminateEditing()
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             if (editBox != null)
             {
                 editBox.KeyPress -= OnEditBoxKey;

@@ -44,8 +44,7 @@ namespace FlowSharpDebugWindowService
         {
             if (dlgDebugWindow == null)
             {
-                BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
-                dlgDebugWindow = new DlgDebugWindow(canvasController);
+                dlgDebugWindow = new DlgDebugWindow(ServiceManager);
 
                 dlgDebugWindow.FormClosed += (sndr, args) =>
                 {
@@ -58,10 +57,14 @@ namespace FlowSharpDebugWindowService
                 traceListener.DebugWindow = dlgDebugWindow;
                 Trace.Listeners.Add(traceListener);
 
-                List<string> undoEvents = canvasController.UndoStack.GetStackInfo();
-                dlgDebugWindow.UpdateUndoStack(undoEvents);
-                canvasController.UndoStack.AfterAction += (sndr, args) => UpdateDebugWindowUndoStack();
+                dlgDebugWindow.UpdateUndoStack();
             }
+        }
+
+        public void Initialize(BaseController canvasController)
+        {
+            canvasController.UndoStack.AfterAction += (sndr, args) => UpdateDebugWindow();
+            UpdateDebugWindow();
         }
 
         public void EditPlugins()
@@ -69,13 +72,11 @@ namespace FlowSharpDebugWindowService
             new DlgPlugins().ShowDialog();
         }
 
-        protected void UpdateDebugWindowUndoStack()
+        public void UpdateDebugWindow()
         {
             if (dlgDebugWindow != null)
             {
-                BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
-                List<string> undoEvents = canvasController.UndoStack.GetStackInfo();
-                dlgDebugWindow.UpdateUndoStack(undoEvents);
+                dlgDebugWindow.UpdateUndoStack();
                 dlgDebugWindow.UpdateShapeTree();
             }
         }

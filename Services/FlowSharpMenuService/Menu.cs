@@ -9,7 +9,8 @@ namespace FlowSharpMenuService
 
         private MenuStrip menuStrip;
         private ToolStripMenuItem fileToolStripMenuItem;
-        private ToolStripMenuItem mnuNew;
+        private ToolStripMenuItem mnuClearCanvas;
+        private ToolStripMenuItem mnuAddCanvas;
         private ToolStripMenuItem mnuOpen;
         private ToolStripMenuItem mnuSave;
         private ToolStripMenuItem mnuSaveAs;
@@ -46,7 +47,8 @@ namespace FlowSharpMenuService
         {
             menuStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
-            mnuNew = new ToolStripMenuItem();
+            mnuClearCanvas = new ToolStripMenuItem();
+            mnuAddCanvas = new ToolStripMenuItem();
             toolStripMenuItem3 = new ToolStripSeparator();
             mnuOpen = new ToolStripMenuItem();
             mnuImport = new ToolStripMenuItem();
@@ -98,7 +100,8 @@ namespace FlowSharpMenuService
             // fileToolStripMenuItem
             // 
             fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
-            mnuNew,
+            mnuClearCanvas,
+            mnuAddCanvas,
             toolStripMenuItem3,
             mnuOpen,
             mnuImport,
@@ -115,12 +118,19 @@ namespace FlowSharpMenuService
             fileToolStripMenuItem.Size = new Size(37, 21);
             fileToolStripMenuItem.Text = "&File";
             // 
-            // mnuNew
+            // mnuClearCanvas
             // 
-            mnuNew.Name = "mnuNew";
-            mnuNew.ShortcutKeys = ((Keys)((Keys.Control | Keys.N)));
-            mnuNew.Size = new Size(165, 24);
-            mnuNew.Text = "&New";
+            mnuClearCanvas.Name = "mnuClearCanvas";
+            mnuClearCanvas.ShortcutKeys = ((Keys)((Keys.Control | Keys.C)));
+            mnuClearCanvas.Size = new Size(165, 24);
+            mnuClearCanvas.Text = "&Clear Canvas";
+            // 
+            // mnuAddCanvas
+            // 
+            mnuAddCanvas.Name = "mnuAddCanvas";
+            mnuAddCanvas.ShortcutKeys = ((Keys)((Keys.Control | Keys.A)));
+            mnuAddCanvas.Size = new Size(165, 24);
+            mnuAddCanvas.Text = "&Add Canvas";
             // 
             // toolStripMenuItem3
             // 

@@ -43,8 +43,7 @@ namespace FlowSharpToolboxService
         public override void FinishedInitialization()
         {
             base.FinishedInitialization();
-            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
-            toolboxController = new ToolboxController(toolboxCanvas, canvasController);
+            toolboxController = new ToolboxController(ServiceManager, toolboxCanvas);
             toolboxCanvas.Controller = toolboxController;
         }
 

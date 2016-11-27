@@ -4,6 +4,7 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System;
 using System.Windows.Forms;
 
 using Clifton.Core.ServiceManagement;
@@ -14,9 +15,13 @@ namespace FlowSharpServiceInterfaces
 {
     public interface IFlowSharpCanvasService : IService
     {
-        BaseController Controller { get; }
+        event EventHandler<EventArgs> AddCanvas;
+
+        BaseController ActiveController { get; }
 
         void CreateCanvas(Control parent);
+        void SetActiveController(Control parent);
+        void RequestNewCanvas();
     }
 
     public interface IFlowSharpToolboxService : IService
@@ -32,6 +37,7 @@ namespace FlowSharpServiceInterfaces
 
     public interface IFlowSharpMouseControllerService : IService
     {
+        void Initialize(BaseController controller);
         void ClearState();
         void ShapeDeleted(GraphicElement el);
     }
@@ -44,6 +50,7 @@ namespace FlowSharpServiceInterfaces
     public interface IFlowSharpMenuService : IService
     {
         void Initialize(Form mainForm);
+        void Initialize(BaseController controller);
         bool SaveOrSaveAs();
     }
 
@@ -63,7 +70,9 @@ namespace FlowSharpServiceInterfaces
 
     public interface IFlowSharpDebugWindowService : IService
     {
+        void Initialize(BaseController canvasController);
         void ShowDebugWindow();
         void EditPlugins();     // TODO: Not really a debug window!
+        void UpdateDebugWindow();
     }
 }

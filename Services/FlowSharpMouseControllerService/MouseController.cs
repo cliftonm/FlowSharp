@@ -11,7 +11,10 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using Clifton.Core.ServiceManagement;
+
 using FlowSharpLib;
+using FlowSharpServiceInterfaces;
 
 namespace FlowSharpMouseControllerService
 {
@@ -46,26 +49,25 @@ namespace FlowSharpMouseControllerService
         public event EventHandler<MouseEventArgs> MouseClick;
 
         // State information:
-        public Point LastMousePosition { get; set; }
-        public Point CurrentMousePosition { get; set; }
-        public MouseButtons CurrentButtons { get; set; }
-        public bool DraggingSurface { get; set; }
-        public bool DraggingShapes { get; set; }
-        public bool DraggingAnchor { get; set; }
-        public bool DraggingOccurred { get; set; }
-        public bool DraggingSurfaceOccurred { get; set; }
-        public bool SelectingShapes { get; set; }
-        public GraphicElement HoverShape { get; set; }
-        public ShapeAnchor SelectedAnchor { get; set; }
-        public GraphicElement SelectionBox { get; set; }
-        public bool DraggingSelectionBox { get; set; }
-        public Point StartSelectionPosition { get; set; }
-
-        public BaseController Controller { get; protected set; }
+        protected Point LastMousePosition { get; set; }
+        protected Point CurrentMousePosition { get; set; }
+        protected MouseButtons CurrentButtons { get; set; }
+        protected bool DraggingSurface { get; set; }
+        protected bool DraggingShapes { get; set; }
+        protected bool DraggingAnchor { get; set; }
+        protected bool DraggingOccurred { get; set; }
+        protected bool DraggingSurfaceOccurred { get; set; }
+        protected bool SelectingShapes { get; set; }
+        protected GraphicElement HoverShape { get; set; }
+        protected ShapeAnchor SelectedAnchor { get; set; }
+        protected GraphicElement SelectionBox { get; set; }
+        protected bool DraggingSelectionBox { get; set; }
+        protected Point StartSelectionPosition { get; set; }
 
         protected List<MouseRouter> router;
         protected List<GraphicElement> justAddedShape = new List<GraphicElement>();
         protected Point startedDraggingShapesAt;
+        protected IServiceManager serviceManager;
 
         public enum MouseEvent
         {
@@ -103,17 +105,17 @@ namespace FlowSharpMouseControllerService
             RemoveSelectedShape,
         }
 
-        public MouseController(BaseController controller)
+        public MouseController(IServiceManager serviceManager)
         {
-            Controller = controller;
+            this.serviceManager = serviceManager;
             router = new List<MouseRouter>();
         }
 
-        public void HookMouseEvents()
+        public void HookMouseEvents(BaseController controller)
         {
-            Controller.Canvas.MouseDown += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseDown, args));
-            Controller.Canvas.MouseUp += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseUp, args));
-            Controller.Canvas.MouseMove += HandleMouseMoveEvent;        // Actual instance, so we can detach it and re-attach it for the "Attached" condition when doing a snap check.
+            controller.Canvas.MouseDown += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseDown, args));
+            controller.Canvas.MouseUp += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseUp, args));
+            controller.Canvas.MouseMove += HandleMouseMoveEvent;        // Actual instance, so we can detach it and re-attach it for the "Attached" condition when doing a snap check.
         }
 
         protected void HandleMouseMoveEvent(object sender, MouseEventArgs args)
@@ -167,7 +169,8 @@ namespace FlowSharpMouseControllerService
                 Action = (_) =>
                 {
                     // So Ctrl+V paste works, as keystroke is intercepted only when canvas panel has focus.
-                    Controller.Canvas.Focus();
+                    BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+                    canvasController.Canvas.Focus();
                 }
             });
 
@@ -178,7 +181,7 @@ namespace FlowSharpMouseControllerService
             {
                 RouteName = RouteName.StartDragSurface,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => !Controller.IsRootShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Left,
+                Condition = () => !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Left,
                 Action = (_) =>
                 {
                     DraggingSurface = true;
@@ -195,20 +198,21 @@ namespace FlowSharpMouseControllerService
                 Action = (_) =>
                 {
                     DraggingSurface = false;
-                    Controller.Canvas.Cursor = Cursors.Arrow;
-                    List<GraphicElement> selectedShapes = Controller.SelectedElements.ToList();
+                    BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+                    controller.Canvas.Cursor = Cursors.Arrow;
+                    List<GraphicElement> selectedShapes = controller.SelectedElements.ToList();
 
                     if (selectedShapes.Count != 0)
                     {
-                        Controller.UndoStack.UndoRedo("Canvas",
+                        controller.UndoStack.UndoRedo("Canvas",
                             () =>
                             {
-                                Controller.DeselectCurrentSelectedElements();
+                                controller.DeselectCurrentSelectedElements();
                             },
                             () =>
                             {
-                                Controller.DeselectCurrentSelectedElements();
-                                Controller.SelectElements(selectedShapes);
+                                controller.DeselectCurrentSelectedElements();
+                                controller.SelectElements(selectedShapes);
                             });
                     }
                 }
@@ -224,7 +228,8 @@ namespace FlowSharpMouseControllerService
                 {
                     DraggingSurface = false;
                     DraggingSurfaceOccurred = false;
-                    Controller.Canvas.Cursor = Cursors.Arrow;
+                    BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+                    controller.Canvas.Cursor = Cursors.Arrow;
                 }
             });
 
@@ -248,14 +253,15 @@ namespace FlowSharpMouseControllerService
             {
                 RouteName = RouteName.StartShapeDrag,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
+                Condition = () => serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) &&
                     CurrentButtons == MouseButtons.Left &&
-                    Controller.GetRootShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null &&
-                    !Controller.IsChildShapeSelectable(CurrentMousePosition),       // can't drag a grouped shape
+                    serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) == null &&
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsChildShapeSelectable(CurrentMousePosition),       // can't drag a grouped shape
                 Action = (_) =>
                 {
-                    Controller.SnapController.Reset();
-                    Controller.DeselectGroupedElements();
+                    BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+                    controller.SnapController.Reset();
+                    controller.DeselectGroupedElements();
                     DraggingShapes = true;
                     startedDraggingShapesAt = CurrentMousePosition;
                 },
@@ -266,12 +272,13 @@ namespace FlowSharpMouseControllerService
             {
                 RouteName = RouteName.StartAnchorDrag,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
+                Condition = () => serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) &&
                     CurrentButtons == MouseButtons.Left &&
-                    Controller.GetRootShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) != null,
+                    serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition).GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition)) != null,
                 Action = (_) =>
                 {
-                    Controller.SnapController.Reset();
+                    BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+                    controller.SnapController.Reset();
                     DraggingAnchor = true;
                     SelectedAnchor = HoverShape.GetAnchors().First(a => a.Near(CurrentMousePosition));
                 },
@@ -286,32 +293,33 @@ namespace FlowSharpMouseControllerService
                 Condition = () => DraggingShapes,
                 Action = (_) =>
                 {
-                    Controller.SnapController.DoUndoSnapActions(Controller.UndoStack);
+                    BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+                    controller.SnapController.DoUndoSnapActions(controller.UndoStack);
 
-                    if (Controller.SnapController.RunningDelta != Point.Empty)
+                    if (controller.SnapController.RunningDelta != Point.Empty)
                     {
-                        Point delta = Controller.SnapController.RunningDelta;     // for closure
+                        Point delta = controller.SnapController.RunningDelta;     // for closure
 
-                        Controller.UndoStack.UndoRedo("ShapeMove",
+                        controller.UndoStack.UndoRedo("ShapeMove",
                             () => { },      // Our "do" action is actually nothing, since all the "doing" has been done.
                             () =>           // Undo
                             {
-                            Controller.DragSelectedElements(delta.ReverseDirection());
+                            controller.DragSelectedElements(delta.ReverseDirection());
                             },
                             true,       // We finish the move.
                             () =>           // Redo
                             {
-                                Controller.DragSelectedElements(delta);
+                                controller.DragSelectedElements(delta);
                             });
                     }
 
-                    Controller.SnapController.HideConnectionPoints();
-                    Controller.SnapController.Reset();
+                    controller.SnapController.HideConnectionPoints();
+                    controller.SnapController.Reset();
                     DraggingShapes = false;
                     // DraggingOccurred = false;        / Will be cleared by RemoveSelectedShape but this is order dependent!  TODO: Fix this somehow! :)
                     DraggingAnchor = false;
                     SelectedAnchor = null;
-                    Controller.Canvas.Cursor = Cursors.Arrow;
+                    controller.Canvas.Cursor = Cursors.Arrow;
                 }
             });
 
@@ -324,15 +332,16 @@ namespace FlowSharpMouseControllerService
                 Condition = () => DraggingAnchor,
                 Action = (_) =>
                 {
-                    Controller.SnapController.DoUndoSnapActions(Controller.UndoStack);
+                    BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+                    controller.SnapController.DoUndoSnapActions(controller.UndoStack);
 
-                    if (Controller.SnapController.RunningDelta != Point.Empty)
+                    if (controller.SnapController.RunningDelta != Point.Empty)
                     {
-                        Point delta = Controller.SnapController.RunningDelta;     // for closure
+                        Point delta = controller.SnapController.RunningDelta;     // for closure
                         GraphicElement hoverShape = HoverShape;
                         ShapeAnchor selectedAnchor = SelectedAnchor;
 
-                        Controller.UndoStack.UndoRedo("AnchorMove",
+                        controller.UndoStack.UndoRedo("AnchorMove",
                             () => { },      // Our "do" action is actually nothing, since all the "doing" has been done.
                             () =>           // Undo
                             {
@@ -345,13 +354,13 @@ namespace FlowSharpMouseControllerService
                             });
                     }
 
-                    Controller.SnapController.HideConnectionPoints();
-                    Controller.SnapController.Reset();
+                    controller.SnapController.HideConnectionPoints();
+                    controller.SnapController.Reset();
                     DraggingShapes = false;
                     // DraggingOccurred = false;        / Will be cleared by RemoveSelectedShape but this is order dependent!  TODO: Fix this somehow! :)
                     DraggingAnchor = false;
                     SelectedAnchor = null;
-                    Controller.Canvas.Cursor = Cursors.Arrow;
+                    controller.Canvas.Cursor = Cursors.Arrow;
                 }
             });
 
@@ -391,8 +400,8 @@ namespace FlowSharpMouseControllerService
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape == null &&
                     CurrentButtons == MouseButtons.None &&
-                    Controller.IsRootShapeSelectable(CurrentMousePosition) &&
-                    Controller.GetRootShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
+                    serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) &&
+                    serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
                 Action = (_) => ShowAnchors(),
             });
 
@@ -403,9 +412,9 @@ namespace FlowSharpMouseControllerService
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape != null &&
                     CurrentButtons == MouseButtons.None &&
-                    Controller.IsRootShapeSelectable(CurrentMousePosition) &&
-                    HoverShape != Controller.GetRootShapeAt(CurrentMousePosition) &&
-                    Controller.GetRootShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
+                    serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) &&
+                    HoverShape != serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition) &&
+                    serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition).Parent == null, // no anchors for grouped children.
                 Action = (_) => ChangeAnchors(),
             });
 
@@ -416,7 +425,7 @@ namespace FlowSharpMouseControllerService
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => !DraggingSurface && !DraggingShapes && !SelectingShapes && HoverShape != null &&
                     CurrentButtons == MouseButtons.None &&
-                    !Controller.IsRootShapeSelectable(CurrentMousePosition),
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition),
                 Action = (_) => HideAnchors(),
             });
 
@@ -447,10 +456,10 @@ namespace FlowSharpMouseControllerService
             {
                 RouteName = RouteName.SelectSingleShapeMouseDown,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
-                    !Controller.IsChildShapeSelectable(CurrentMousePosition) &&
-                    !Controller.IsMultiSelect() &&
-                    !Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)),
+                Condition = () => serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) &&
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsChildShapeSelectable(CurrentMousePosition) &&
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsMultiSelect() &&
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.SelectedElements.Contains(serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition)),
                 Action = (_) => SelectSingleRootShape()
             });
 
@@ -459,9 +468,9 @@ namespace FlowSharpMouseControllerService
             {
                 RouteName = RouteName.SelectSingleGroupedShape,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => Controller.IsChildShapeSelectable(CurrentMousePosition) &&
-                    !Controller.IsMultiSelect() &&
-                    !Controller.SelectedElements.Contains(Controller.GetChildShapeAt(CurrentMousePosition)),
+                Condition = () => serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsChildShapeSelectable(CurrentMousePosition) &&
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsMultiSelect() &&
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.SelectedElements.Contains(serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetChildShapeAt(CurrentMousePosition)),
                 Action = (_) => SelectSingleChildShape()
             });
 
@@ -470,9 +479,9 @@ namespace FlowSharpMouseControllerService
             {
                 RouteName = RouteName.SelectSingleShapeMouseUp,
                 MouseEvent = MouseEvent.MouseUp,
-                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
-                    !Controller.IsChildShapeSelectable(CurrentMousePosition) &&     // Don't deselect grouped shape on mouse up (as in, don't select groupbox)
-                    !Controller.IsMultiSelect() &&
+                Condition = () => serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) &&
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsChildShapeSelectable(CurrentMousePosition) &&     // Don't deselect grouped shape on mouse up (as in, don't select groupbox)
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsMultiSelect() &&
                     !DraggingOccurred && !DraggingSelectionBox,
                 Action = (_) => SelectSingleRootShape()
             });
@@ -482,9 +491,9 @@ namespace FlowSharpMouseControllerService
             {
                 RouteName = RouteName.AddSelectedShape,
                 MouseEvent = MouseEvent.MouseUp,
-                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
-                    Controller.IsMultiSelect() && !DraggingSelectionBox &&
-                    !Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)),
+                Condition = () => serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) &&
+                    serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsMultiSelect() && !DraggingSelectionBox &&
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.SelectedElements.Contains(serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition)),
                 Action = (_) => AddShapeToSelectionList(),
             });
 
@@ -493,11 +502,11 @@ namespace FlowSharpMouseControllerService
             {
                 RouteName = RouteName.RemoveSelectedShape,
                 MouseEvent = MouseEvent.MouseUp,
-                Condition = () => Controller.IsRootShapeSelectable(CurrentMousePosition) &&
-                    Controller.IsMultiSelect() && !DraggingSelectionBox &&
+                Condition = () => serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) &&
+                    serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsMultiSelect() && !DraggingSelectionBox &&
                     // TODO: Would nice to avoid multiple GetShapeAt calls when processing conditions.  And not just here.
-                    Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)) &&
-                    !justAddedShape.Contains(Controller.GetRootShapeAt(CurrentMousePosition)) &&
+                    serviceManager.Get<IFlowSharpCanvasService>().ActiveController.SelectedElements.Contains(serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition)) &&
+                    !justAddedShape.Contains(serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition)) &&
                     !DraggingOccurred,
                 Action = (_) => RemoveShapeFromSelectionList(),
                 Else = () =>
@@ -507,11 +516,11 @@ namespace FlowSharpMouseControllerService
                 },
                 Debug = () =>
                 {
-                    Trace.WriteLine("Route:IsRootShapeSelectable: " + Controller.IsRootShapeSelectable(CurrentMousePosition));
-                    Trace.WriteLine("Route:IsMultiSelect: " + Controller.IsMultiSelect());
+                    Trace.WriteLine("Route:IsRootShapeSelectable: " + serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition));
+                    Trace.WriteLine("Route:IsMultiSelect: " + serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsMultiSelect());
                     Trace.WriteLine("Route:!DraggingSelectionBox: " + !DraggingSelectionBox);
-                    Trace.WriteLine("Route:SelectedElements.ContainsShape: " + Controller.SelectedElements.Contains(Controller.GetRootShapeAt(CurrentMousePosition)));
-                    Trace.WriteLine("Route:!justShapeAdded: " + !justAddedShape.Contains(Controller.GetRootShapeAt(CurrentMousePosition)));
+                    Trace.WriteLine("Route:SelectedElements.ContainsShape: " + serviceManager.Get<IFlowSharpCanvasService>().ActiveController.SelectedElements.Contains(serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition)));
+                    Trace.WriteLine("Route:!justShapeAdded: " + !justAddedShape.Contains(serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition)));
                     Trace.WriteLine("Route:!DraggingOccurred: " + !DraggingOccurred);
                 }
             });
@@ -523,7 +532,7 @@ namespace FlowSharpMouseControllerService
             {
                 RouteName = RouteName.StartDragSelectionBox,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => !Controller.IsRootShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Right,
+                Condition = () => !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Right,
                 Action = (_) =>
                 {
                     DraggingSelectionBox = true;
@@ -589,11 +598,12 @@ namespace FlowSharpMouseControllerService
 
         protected virtual void DragCanvas()
         {
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             Point delta = CurrentMousePosition.Delta(LastMousePosition);
-            Controller.Canvas.Cursor = Cursors.SizeAll;
+            controller.Canvas.Cursor = Cursors.SizeAll;
             // Pick up every object on the canvas and move it.
             // This does not "move" the grid.
-            Controller.MoveAllElements(delta);
+            controller.MoveAllElements(delta);
 
             // Conversely, we redraw the grid and invalidate, which forces all the elements to redraw.
             //canvas.Drag(delta);
@@ -603,188 +613,201 @@ namespace FlowSharpMouseControllerService
 
         protected void ShowAnchors()
         {
-            GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            GraphicElement el = controller.GetRootShapeAt(CurrentMousePosition);
             el.ShowAnchors = true;
-            Controller.Redraw(el);
+            controller.Redraw(el);
             HoverShape = el;
-            Controller.SetAnchorCursor(el);
+            controller.SetAnchorCursor(el);
         }
 
         protected void ChangeAnchors()
         {
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             HoverShape.ShowAnchors = false;
-            Controller.Redraw(HoverShape);
-            HoverShape = Controller.GetRootShapeAt(CurrentMousePosition);
+            controller.Redraw(HoverShape);
+            HoverShape = controller.GetRootShapeAt(CurrentMousePosition);
             HoverShape.ShowAnchors = true;
-            Controller.Redraw(HoverShape);
-            Controller.SetAnchorCursor(HoverShape);
+            controller.Redraw(HoverShape);
+            controller.SetAnchorCursor(HoverShape);
         }
 
         protected void HideAnchors()
         {
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             HoverShape.ShowAnchors = false;
-            Controller.Redraw(HoverShape);
-            Controller.Canvas.Cursor = Cursors.Arrow;
+            controller.Redraw(HoverShape);
+            controller.Canvas.Cursor = Cursors.Arrow;
             HoverShape = null;
         }
 
         protected void SelectSingleRootShape()
         {
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             // Preserve for undo:
-            List<GraphicElement> selectedShapes = Controller.SelectedElements.ToList();
-            GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
+            List<GraphicElement> selectedShapes = controller.SelectedElements.ToList();
+            GraphicElement el = controller.GetRootShapeAt(CurrentMousePosition);
 
             if (selectedShapes.Count != 1 || !selectedShapes.Contains(el))
             {
-                Controller.UndoStack.UndoRedo("Select Root " + el.ToString(),
+                controller.UndoStack.UndoRedo("Select Root " + el.ToString(),
                     () =>
                     {
-                        Controller.DeselectCurrentSelectedElements();
-                        Controller.SelectElement(el);
+                        controller.DeselectCurrentSelectedElements();
+                        controller.SelectElement(el);
                     },
                     () =>
                     {
-                        Controller.DeselectCurrentSelectedElements();
-                        Controller.SelectElements(selectedShapes);
+                        controller.DeselectCurrentSelectedElements();
+                        controller.SelectElements(selectedShapes);
                     });
             }
         }
 
         protected void SelectSingleChildShape()
         {
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             // Preserve for undo:
-            List<GraphicElement> selectedShapes = Controller.SelectedElements.ToList();
-            GraphicElement el = Controller.GetChildShapeAt(CurrentMousePosition);
-            Controller.UndoStack.UndoRedo("Select Child " + el.ToString(),
+            List<GraphicElement> selectedShapes = controller.SelectedElements.ToList();
+            GraphicElement el = controller.GetChildShapeAt(CurrentMousePosition);
+            controller.UndoStack.UndoRedo("Select Child " + el.ToString(),
                 () =>
                 {
-                    Controller.DeselectCurrentSelectedElements();
-                    Controller.SelectElement(el);
+                    controller.DeselectCurrentSelectedElements();
+                    controller.SelectElement(el);
                 },
                 () =>
                 {
-                    Controller.DeselectCurrentSelectedElements();
-                    Controller.SelectElements(selectedShapes);
+                    controller.DeselectCurrentSelectedElements();
+                    controller.SelectElements(selectedShapes);
                 });
         }
 
         protected void AddShapeToSelectionList()
         {
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             // Preserve for undo:
-            List<GraphicElement> selectedShapes = Controller.SelectedElements.ToList();
+            List<GraphicElement> selectedShapes = controller.SelectedElements.ToList();
 
-            GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
-            Controller.UndoStack.UndoRedo("Select " + el.ToString(),
+            GraphicElement el = controller.GetRootShapeAt(CurrentMousePosition);
+            controller.UndoStack.UndoRedo("Select " + el.ToString(),
                 () =>
                 {
-                    Controller.DeselectGroupedElements();
-                    Controller.SelectElement(el);
+                    controller.DeselectGroupedElements();
+                    controller.SelectElement(el);
                     justAddedShape.Add(el);
                 },
                 () =>
                 {
-                    Controller.DeselectCurrentSelectedElements();
-                    Controller.SelectElements(selectedShapes);
+                    controller.DeselectCurrentSelectedElements();
+                    controller.SelectElements(selectedShapes);
                 });
         }
 
         protected void RemoveShapeFromSelectionList()
         {
-            GraphicElement el = Controller.GetRootShapeAt(CurrentMousePosition);
-            Controller.UndoStack.UndoRedo("Deselect " + el.ToString(),
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            GraphicElement el = controller.GetRootShapeAt(CurrentMousePosition);
+            controller.UndoStack.UndoRedo("Deselect " + el.ToString(),
                 () =>
                 {
-                    Controller.DeselectElement(el);
+                    controller.DeselectElement(el);
                 },
                 () =>
                 {
-                    Controller.SelectElement(el);
+                    controller.SelectElement(el);
                 });
         }
 
         protected void DragShapes()
         {
-            Controller.Canvas.Cursor = Cursors.SizeAll;
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            controller.Canvas.Cursor = Cursors.SizeAll;
             Point delta = CurrentMousePosition.Delta(LastMousePosition);
 
-            if (Controller.SelectedElements.Count == 1 && Controller.SelectedElements[0].IsConnector)
+            if (controller.SelectedElements.Count == 1 && controller.SelectedElements[0].IsConnector)
             {
                 // Check both ends of any connector being moved.
-                if (!Controller.SnapController.SnapCheck(GripType.Start, delta, (snapDelta) => Controller.DragSelectedElements(snapDelta)))
+                if (!controller.SnapController.SnapCheck(GripType.Start, delta, (snapDelta) => controller.DragSelectedElements(snapDelta)))
                 {
-                    if (!Controller.SnapController.SnapCheck(GripType.End, delta, (snapDelta) => Controller.DragSelectedElements(snapDelta)))
+                    if (!controller.SnapController.SnapCheck(GripType.End, delta, (snapDelta) => controller.DragSelectedElements(snapDelta)))
                     {
-                        Controller.DragSelectedElements(delta);
-                        Controller.SnapController.UpdateRunningDelta(delta);
+                        controller.DragSelectedElements(delta);
+                        controller.SnapController.UpdateRunningDelta(delta);
                     }
                 }
             }
             else
             {
-                Controller.DragSelectedElements(delta);
-                Controller.SnapController.UpdateRunningDelta(delta);
+                controller.DragSelectedElements(delta);
+                controller.SnapController.UpdateRunningDelta(delta);
             }
         }
 
         protected void ClearAnchorCursor()
         {
-            Controller.Canvas.Cursor = Cursors.Arrow;
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            controller.Canvas.Cursor = Cursors.Arrow;
         }
 
         protected void SetAnchorCursor()
         {
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             ShapeAnchor anchor = HoverShape.GetAnchors().FirstOrDefault(a => a.Near(CurrentMousePosition));
 
             // Hover shape could have changed as we move from a shape to a connector's anchor.
             if (anchor != null)
             {
-                Controller.Canvas.Cursor = anchor.Cursor;
+                controller.Canvas.Cursor = anchor.Cursor;
             }
         }
 
         protected void DragAnchor()
         {
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             Point delta = CurrentMousePosition.Delta(LastMousePosition);
             GraphicElement hoverShape = HoverShape;
             ShapeAnchor selectedAnchor = SelectedAnchor;
 
-            if (!Controller.SnapController.SnapCheck(selectedAnchor.Type, delta, (snapDelta) => hoverShape.UpdateSize(selectedAnchor, snapDelta)))
+            if (!controller.SnapController.SnapCheck(selectedAnchor.Type, delta, (snapDelta) => hoverShape.UpdateSize(selectedAnchor, snapDelta)))
             {
                 hoverShape.UpdateSize(selectedAnchor, delta);
-                Controller.SnapController.UpdateRunningDelta(delta);
+                controller.SnapController.UpdateRunningDelta(delta);
             }
         }
 
         protected void CreateSelectionBox()
         {
-            SelectionBox = new Box(Controller.Canvas);
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            SelectionBox = new Box(controller.Canvas);
             SelectionBox.BorderPen.Color = Color.Gray;
             SelectionBox.FillBrush.Color = Color.Transparent;
             SelectionBox.DisplayRectangle = new Rectangle(StartSelectionPosition, new Size(1, 1));
-            Controller.Insert(SelectionBox);
+            controller.Insert(SelectionBox);
         }
 
         protected void SelectShapesInSelectionBox()
         {
-            Controller.DeleteElement(SelectionBox);
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            controller.DeleteElement(SelectionBox);
             List<GraphicElement> selectedElements = new List<GraphicElement>();
-            List<GraphicElement> previouslySelectedElements = Controller.SelectedElements.ToList();
+            List<GraphicElement> previouslySelectedElements = controller.SelectedElements.ToList();
 
-            Controller.Elements.Where(e => !selectedElements.Contains(e) && e.Parent == null && SelectionBox.DisplayRectangle.Contains(e.UpdateRectangle)).ForEach((e) =>
+            controller.Elements.Where(e => !selectedElements.Contains(e) && e.Parent == null && SelectionBox.DisplayRectangle.Contains(e.UpdateRectangle)).ForEach((e) =>
             {
                 selectedElements.Add(e);
             });
 
-            Controller.UndoStack.UndoRedo("Group Select",
+            controller.UndoStack.UndoRedo("Group Select",
                 () =>
                 {
-                    Controller.DeselectCurrentSelectedElements();
-                    Controller.SelectElements(selectedElements);
+                    controller.DeselectCurrentSelectedElements();
+                    controller.SelectElements(selectedElements);
                 },
                 () =>
                 {
-                    Controller.DeselectCurrentSelectedElements();
-                    Controller.SelectElements(previouslySelectedElements);
+                    controller.DeselectCurrentSelectedElements();
+                    controller.SelectElements(previouslySelectedElements);
                 });
             // Why was this here?
             // Controller.Canvas.Invalidate();
@@ -792,6 +815,7 @@ namespace FlowSharpMouseControllerService
 
         protected void DragSelectionBox()
         {
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             // Normalize the rectangle to a top-left, bottom-right rectangle.
             int x = CurrentMousePosition.X.Min(StartSelectionPosition.X);
             int y = CurrentMousePosition.Y.Min(StartSelectionPosition.Y);
@@ -799,7 +823,7 @@ namespace FlowSharpMouseControllerService
             int h = (CurrentMousePosition.Y - StartSelectionPosition.Y).Abs();
             Rectangle newRect = new Rectangle(x, y, w, h);
             Point delta = CurrentMousePosition.Delta(LastMousePosition);
-            Controller.UpdateDisplayRectangle(SelectionBox, newRect, delta);
+            controller.UpdateDisplayRectangle(SelectionBox, newRect, delta);
         }
     }
 }

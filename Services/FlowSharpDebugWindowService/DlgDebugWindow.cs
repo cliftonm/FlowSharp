@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
+using Clifton.Core.ServiceManagement;
+
 using FlowSharpLib;
+using FlowSharpServiceInterfaces;
 
 namespace FlowSharpDebugWindowService
 {
     public partial class DlgDebugWindow : Form
     {
-        protected BaseController controller;
+        protected IServiceManager serviceManager;
 
-        public DlgDebugWindow(BaseController controller)
+        public DlgDebugWindow(IServiceManager serviceManager)
         {
-            this.controller = controller;
+            this.serviceManager = serviceManager;
             InitializeComponent();
             PopulateWithShapes();
             tvShapes.ExpandAll();
@@ -43,8 +46,11 @@ namespace FlowSharpDebugWindowService
             }
         }
 
-        public void UpdateUndoStack(List<string> undoEvents)
+        public void UpdateUndoStack()
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            List<string> undoEvents = canvasController.UndoStack.GetStackInfo();
+
             tbUndoEvents.Clear();
             //undoEvents.Where(s=>s.EndsWith("F")).ForEach(s => tbUndoEvents.AppendText(s+"\r\n"));
             undoEvents.ForEach(s => tbUndoEvents.AppendText(s + "\r\n"));
@@ -64,6 +70,8 @@ namespace FlowSharpDebugWindowService
 
         protected void PopulateWithShapes()
         {
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             foreach (GraphicElement el in controller.Elements.OrderBy(el=>controller.Elements.IndexOf(el)))
             {
                 TreeNode node = CreateTreeNode(el);
@@ -162,6 +170,7 @@ namespace FlowSharpDebugWindowService
 
             if (elTag != null)
             {
+                BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
                 controller.Elements.ForEach(el => el.Tagged = false);
                 elTag.Tagged = true;
                 // Cheap and dirty.

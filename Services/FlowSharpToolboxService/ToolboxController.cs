@@ -9,7 +9,10 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using Clifton.Core.ServiceManagement;
+
 using FlowSharpLib;
+using FlowSharpServiceInterfaces;
 
 namespace FlowSharpToolboxService
 {
@@ -17,17 +20,17 @@ namespace FlowSharpToolboxService
 	{
         public const int MIN_DRAG = 3;
 
-		protected BaseController canvasController;
         protected int xDisplacement = 0;
         protected bool mouseDown = false;
         protected Point mouseDownPosition;
         protected Point currentDragPosition;
         protected bool setup;
         protected bool dragging;
+        protected IServiceManager serviceManager;
 
-        public ToolboxController(Canvas canvas, BaseController canvasController) : base(canvas)
+        public ToolboxController(IServiceManager serviceManager, Canvas canvas) : base(canvas)
 		{
-			this.canvasController = canvasController;
+            this.serviceManager = serviceManager;
 			canvas.PaintComplete = CanvasPaintComplete;
 			canvas.MouseClick += OnMouseClick;
             canvas.MouseDown += OnMouseDown;
@@ -57,6 +60,8 @@ namespace FlowSharpToolboxService
 
         public void OnMouseUp(object sender, MouseEventArgs args)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             if (args.Button == MouseButtons.Left && !dragging)
             {
                 if (selectedElements.Any())
@@ -98,6 +103,8 @@ namespace FlowSharpToolboxService
 
         public void OnMouseMove(object sender, MouseEventArgs args)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             if (selectedElements.Count > 0 && mouseDown && selectedElements[0] != null && !dragging)
             {
                 Point delta = args.Location.Delta(mouseDownPosition);
@@ -155,6 +162,7 @@ namespace FlowSharpToolboxService
 
         protected void CreateShape()
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             int where = xDisplacement;
 
             // For undo, we need to preserve currently selected shapes.

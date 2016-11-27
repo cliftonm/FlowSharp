@@ -21,17 +21,19 @@ namespace FlowSharpMenuService
     public partial class MenuController
     {
         protected string filename;
-        protected BaseController canvasController;
         protected IServiceManager serviceManager;
         protected Form mainForm;
 
-        public MenuController(BaseController canvasController, IServiceManager serviceManager, Form mainForm)
+        public MenuController(IServiceManager serviceManager, Form mainForm)
         {
-            this.canvasController = canvasController;
             this.serviceManager = serviceManager;
             this.mainForm = mainForm;
             Initialize();
             InitializeMenuHandlers();
+        }
+
+        public void Initialize(BaseController canvasController)
+        {
             canvasController.ElementSelected += (snd, args) => UpdateMenu(args.Element != null);
             canvasController.UndoStack.AfterAction += (snd, args) => UpdateMenu(canvasController.SelectedElements.Any());
             UpdateMenu(false);
@@ -56,6 +58,7 @@ namespace FlowSharpMenuService
 
         protected void UpdateMenu(bool elementSelected)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             mnuBottommost.Enabled = elementSelected;
             mnuTopmost.Enabled = elementSelected;
             mnuMoveUp.Enabled = elementSelected;
@@ -70,7 +73,7 @@ namespace FlowSharpMenuService
 
         protected void InitializeMenuHandlers()
         {
-            mnuNew.Click += mnuNew_Click;
+            mnuClearCanvas.Click += mnuNew_Click;
             mnuOpen.Click += mnuOpen_Click;
             mnuImport.Click += (sndr, args) =>
             {
@@ -95,10 +98,14 @@ namespace FlowSharpMenuService
             mnuPlugins.Click += (sndr, args) => serviceManager.Get<IFlowSharpDebugWindowService>().EditPlugins();
             mnuLoadLayout.Click += (sndr, args) => serviceManager.Get<IDockingFormService>().LoadLayout("layout.xml");
             mnuSaveLayout.Click += (sndr, args) => serviceManager.Get<IDockingFormService>().SaveLayout("layout.xml");
+            // TODO: Decouple dependency - see canvas controller
+            // Instead, fire an event or publish on subscriber an action?
+            mnuAddCanvas.Click += (sndr, args) => serviceManager.Get<IFlowSharpCanvasService>().RequestNewCanvas();
         }
 
         private void mnuTopmost_Click(object sender, EventArgs e)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
 
             canvasController.UndoStack.UndoRedo("Z-Top",
@@ -114,6 +121,7 @@ namespace FlowSharpMenuService
 
         private void mnuBottommost_Click(object sender, EventArgs e)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
 
             canvasController.UndoStack.UndoRedo("Z-Bottom",
@@ -129,6 +137,7 @@ namespace FlowSharpMenuService
 
         private void mnuMoveUp_Click(object sender, EventArgs e)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
 
             canvasController.UndoStack.UndoRedo("Z-Up",
@@ -144,6 +153,7 @@ namespace FlowSharpMenuService
 
         private void mnuMoveDown_Click(object sender, EventArgs e)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
 
             canvasController.UndoStack.UndoRedo("Z-Down",
@@ -159,6 +169,7 @@ namespace FlowSharpMenuService
 
         private void mnuCopy_Click(object sender, EventArgs e)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             if (canvasController.SelectedElements.Count > 0)
             {
                 serviceManager.Get<IFlowSharpEditService>().Copy();
@@ -178,6 +189,7 @@ namespace FlowSharpMenuService
         private void mnuNew_Click(object sender, EventArgs e)
         {
             if (CheckForChanges()) return;
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             serviceManager.Get<IFlowSharpEditService>().ResetSavePoint();
             canvasController.Clear();
             canvasController.UndoStack.ClearStacks();
@@ -205,6 +217,7 @@ namespace FlowSharpMenuService
                 return;
             }
 
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             canvasController.Filename = filename;       // set now, in case of relative image files, etc...
             serviceManager.Get<IFlowSharpEditService>().ResetSavePoint();
             string data = File.ReadAllText(filename);
@@ -227,6 +240,7 @@ namespace FlowSharpMenuService
 
             if (res == DialogResult.OK)
             {
+                BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
                 string importFilename = ofd.FileName;
                 string data = File.ReadAllText(importFilename);
                 List<GraphicElement> els = Persist.Deserialize(canvasController.Canvas, data);
@@ -252,6 +266,8 @@ namespace FlowSharpMenuService
 
         private void mnuSave_Click(object sender, EventArgs e)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             if (canvasController.Elements.Count > 0)
             {
                 SaveOrSaveAs();
@@ -266,6 +282,8 @@ namespace FlowSharpMenuService
 
         private void mnuSaveAs_Click(object sender, EventArgs e)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             if (canvasController.Elements.Count > 0)
             {
                 SaveOrSaveAs(true);
@@ -286,6 +304,8 @@ namespace FlowSharpMenuService
 
         private void mnuGroup_Click(object sender, EventArgs e)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             if (canvasController.SelectedElements.Any())
             {
                 List<GraphicElement> selectedShapes = canvasController.SelectedElements.ToList();
@@ -311,6 +331,8 @@ namespace FlowSharpMenuService
 
         private void mnuUngroup_Click(object sender, EventArgs e)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
             // At this point, we can only ungroup one group.
             if (canvasController.SelectedElements.Count == 1)
             {
@@ -364,6 +386,7 @@ namespace FlowSharpMenuService
             }
             else if (state != ClosingState.CancelClose)
             {
+                BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
                 canvasController.UndoStack.ClearStacks();       // Prevents second "are you sure" when exiting with Ctrl+X
                 ret = false;
             }
@@ -377,6 +400,7 @@ namespace FlowSharpMenuService
             sfd.Filter = "FlowSharp (*.fsd)|*.fsd|PNG (*.png)|*.png";
             DialogResult res = sfd.ShowDialog();
             string ext = ".fsd";
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
 
             if (res == DialogResult.OK)
             {
@@ -400,6 +424,7 @@ namespace FlowSharpMenuService
 
         protected void SaveDiagram(string filename)
         {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             string data = Persist.Serialize(canvasController.Elements);
             File.WriteAllText(filename, data);
             serviceManager.Get<IFlowSharpEditService>().SetSavePoint();

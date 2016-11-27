@@ -53,6 +53,10 @@ namespace FlowSharpLib
 			}
 		}
 
+        /// <summary>
+        /// Canvas.Initialize requires that the parent be attached to the form!
+        /// </summary>
+        /// <param name="parent"></param>
 		public void Initialize(Control parent)
         {
             Dock = DockStyle.Fill;

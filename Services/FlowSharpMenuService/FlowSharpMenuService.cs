@@ -4,6 +4,7 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System;
 using System.Windows.Forms;
 
 using Clifton.Core.ModuleManagement;
@@ -41,9 +42,13 @@ namespace FlowSharpMenuService
         public void Initialize(Form mainForm)
         {
             this.mainForm = mainForm;
-            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
-            menuController = new MenuController(canvasController, ServiceManager, mainForm);
+            menuController = new MenuController(ServiceManager, mainForm);
             mainForm.Controls.Add(menuController.MenuStrip);
+        }
+
+        public void Initialize(BaseController controller)
+        {
+            menuController.Initialize(controller);
         }
 
         public bool SaveOrSaveAs()

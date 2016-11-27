@@ -26,7 +26,6 @@ namespace FlowSharpPropertyGridService
     public class FlowSharpPropertyGridService : ServiceBase, IFlowSharpPropertyGridService
     {
         protected PropertyGridController pgController;
-        protected BaseController canvasController;
 
         public override void Initialize(IServiceManager svcMgr)
         {
@@ -36,11 +35,11 @@ namespace FlowSharpPropertyGridService
         public override void FinishedInitialization()
         {
             base.FinishedInitialization();
-            canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
         }
 
         public void Initialize(PropertyGrid propertyGrid)
         {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
             pgController = new PropertyGridController(propertyGrid, canvasController);
         }
     }

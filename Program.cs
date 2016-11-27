@@ -7,6 +7,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 using Clifton.WinForm.ServiceInterfaces;
@@ -18,12 +19,11 @@ namespace FlowSharp
 {
     static partial class Program
     {
-        private const string META_CANVAS = "Canvas";
-        private const string META_TOOLBOX = "Toolbox";
-        private const string META_PROPERTYGRID = "PropertyGrid";
-
         private static Form form;
         private static IDockingFormService dockingService;
+        private static Panel pnlToolbox;
+        private static Panel pnlFlowSharp;
+        private static PropertyGrid propGrid;
 
         [STAThread]
         static void Main()
@@ -39,6 +39,7 @@ namespace FlowSharp
         {
             dockingService = ServiceManager.Get<IDockingFormService>();
             dockingService.ContentLoaded += OnContentLoaded;
+            dockingService.ActiveDocumentChanged += (sndr, args) => OnActiveDocumentChanged(sndr);
             form = dockingService.CreateMainForm();
             form.Text = "FlowSharp";
             form.Icon = Properties.Resources.FlowSharp;
@@ -52,31 +53,44 @@ namespace FlowSharp
         {
             switch (e.Metadata)
             {
-                case META_CANVAS:
-                    Panel pnlFlowSharp = new Panel() { Dock = DockStyle.Fill };
+                case Constants.META_CANVAS:
+                    pnlFlowSharp = new Panel() { Dock = DockStyle.Fill, Tag = Constants.META_CANVAS };
                     e.DockContent.Controls.Add(pnlFlowSharp);
                     e.DockContent.Text = "Canvas";
                     ServiceManager.Get<IFlowSharpCanvasService>().CreateCanvas(pnlFlowSharp);
+                    BaseController baseController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+                    ServiceManager.Get<IFlowSharpMouseControllerService>().Initialize(baseController);
                     break;
 
-                case META_TOOLBOX:
-                    Panel pnlToolbox = new Panel() { Dock = DockStyle.Fill };
+                case Constants.META_TOOLBOX:
+                    pnlToolbox = new Panel() { Dock = DockStyle.Fill, Tag = Constants.META_TOOLBOX };
                     e.DockContent.Controls.Add(pnlToolbox);
                     e.DockContent.Text = "Toolbox";
-                    BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
-                    IFlowSharpToolboxService toolboxService = ServiceManager.Get<IFlowSharpToolboxService>();
-                    toolboxService.CreateToolbox(pnlToolbox);
-                    toolboxService.InitializeToolbox();
-                    toolboxService.InitializePluginsInToolbox();
-                    toolboxService.UpdateToolboxPaths();
                     break;
 
-                case META_PROPERTYGRID:
-                    PropertyGrid propGrid = new PropertyGrid() { Dock = DockStyle.Fill };
-                    ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(propGrid);
+                case Constants.META_PROPERTYGRID:
+                    propGrid = new PropertyGrid() { Dock = DockStyle.Fill, Tag = Constants.META_PROPERTYGRID };
                     e.DockContent.Controls.Add(propGrid);
                     e.DockContent.Text = "Property Grid";
                     break;
+            }
+
+            // Associate the toolbox with a canvas controller after both canvas and toolbox panels are created.
+            // !!! This handles the defaultLayout configuration. !!!
+            if ((e.Metadata == Constants.META_CANVAS || e.Metadata == Constants.META_TOOLBOX) && (pnlFlowSharp != null && pnlToolbox != null))
+            {
+                IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+                BaseController canvasController = canvasService.ActiveController;
+                IFlowSharpToolboxService toolboxService = ServiceManager.Get<IFlowSharpToolboxService>();
+                toolboxService.CreateToolbox(pnlToolbox);
+                toolboxService.InitializeToolbox();
+                toolboxService.InitializePluginsInToolbox();
+                toolboxService.UpdateToolboxPaths();
+            }
+
+            if ((e.Metadata == Constants.META_CANVAS || e.Metadata == Constants.META_PROPERTYGRID) && (pnlFlowSharp != null && propGrid != null))
+            {
+                ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(propGrid);
             }
         }
 
@@ -109,21 +123,60 @@ namespace FlowSharp
 
         private static void OnShown(object sender, EventArgs e)
         {
-            if (File.Exists("layout.xml"))
-            {
-                dockingService.LoadLayout("layout.xml");
-            }
-            else
-            {
-                dockingService.LoadLayout("defaultLayout.xml");
-            }
-
-            InitializeMenu();
+            dockingService.LoadLayout("defaultLayout.xml");
+            Initialize();
         }
 
-        static void InitializeMenu()
+        static void Initialize()
         {
-            ServiceManager.Get<IFlowSharpMenuService>().Initialize(form);
+            IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
+            IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+            IFlowSharpMouseControllerService mouseService = ServiceManager.Get<IFlowSharpMouseControllerService>();
+            menuService.Initialize(form);
+            menuService.Initialize(canvasService.ActiveController);
+            canvasService.AddCanvas += (sndr, args) => CreateCanvas();
+            mouseService.Initialize(canvasService.ActiveController);
+            InitializeServices(canvasService);
+        }
+
+        static void CreateCanvas()
+        {
+            // Create canvas.
+            Panel panel = new Panel() { Dock = DockStyle.Fill, Tag = Constants.META_CANVAS };
+            Control dockPanel = ServiceManager.Get<IDockingFormService>().CreateDocument(DockState.Document, Constants.META_CANVAS);
+            dockPanel.Controls.Add(panel);
+            IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+            canvasService.CreateCanvas(panel);
+
+            InitializeServices(canvasService);
+        }
+
+        static void InitializeServices(IFlowSharpCanvasService canvasService)
+        {
+            // Wire up menu for this canvas controller.
+            IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
+            menuService.Initialize(canvasService.ActiveController);
+
+            // Wire up mouse for this canvas controller.
+            IFlowSharpMouseControllerService mouseService = ServiceManager.Get<IFlowSharpMouseControllerService>();
+            mouseService.Initialize(canvasService.ActiveController);
+
+            ServiceManager.Get<IFlowSharpDebugWindowService>().Initialize(canvasService.ActiveController);
+        }
+
+        static void OnActiveDocumentChanged(object document)
+        {
+            Control ctrl = document as Control;
+
+            if (ctrl.Controls.Count == 1)
+            {
+                Control child = ctrl.Controls[0];
+                System.Diagnostics.Trace.WriteLine("*** PANEL FOCUS");
+                // ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
+                ServiceManager.Get<IFlowSharpCanvasService>().SetActiveController(child);
+                ServiceManager.Get<IFlowSharpDebugWindowService>().UpdateDebugWindow();
+            }
         }
     }
 }
+

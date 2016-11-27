@@ -6,9 +6,9 @@
 
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
-using Clifton.Core.Semantics;
 using Clifton.WinForm.ServiceInterfaces;
 
 using FlowSharpLib;
@@ -19,9 +19,6 @@ namespace FlowSharp
     static partial class Program
     {
         private static Form form;
-        private static Control docCanvas;
-        private static Control docToolbar;
-        private static Control propGridToolbar;
         private static IDockingFormService dockingService;
 
         [STAThread]
@@ -30,8 +27,6 @@ namespace FlowSharp
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Bootstrap();
-            // Application.Run(new FlowSharpUI());
-
             CreateDockingForm();
             Application.Run(form);
         }
@@ -39,6 +34,7 @@ namespace FlowSharp
         static void CreateDockingForm()
         {
             dockingService = ServiceManager.Get<IDockingFormService>();
+            dockingService.ContentLoaded += OnContentLoaded;
             form = dockingService.CreateMainForm();
             form.Text = "FlowSharp";
             form.Icon = Properties.Resources.FlowSharp;
@@ -46,6 +42,35 @@ namespace FlowSharp
             form.Shown += OnShown;
             form.FormClosing += OnFormClosing;
             ((IBaseForm)form).ProcessCmdKeyEvent += OnProcessCmdKeyEvent;
+        }
+
+        private static void OnContentLoaded(object sender, ContentLoadedEventArgs e)
+        {
+            switch (e.Metadata)
+            {
+                case "Canvas":
+                    Panel pnlFlowSharp = new Panel() { Dock = DockStyle.Fill };
+                    e.DockContent.Controls.Add(pnlFlowSharp);
+                    ServiceManager.Get<IFlowSharpCanvasService>().CreateCanvas(pnlFlowSharp);
+                    break;
+
+                case "Toolbox":
+                    Panel pnlToolbox = new Panel() { Dock = DockStyle.Fill };
+                    e.DockContent.Controls.Add(pnlToolbox);
+                    BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
+                    IFlowSharpToolboxService toolboxService = ServiceManager.Get<IFlowSharpToolboxService>();
+                    toolboxService.CreateToolbox(pnlToolbox);
+                    toolboxService.InitializeToolbox();
+                    toolboxService.InitializePluginsInToolbox();
+                    toolboxService.UpdateToolboxPaths();
+                    break;
+
+                case "PropertyGrid":
+                    PropertyGrid propGrid = new PropertyGrid() { Dock = DockStyle.Fill };
+                    ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(propGrid);
+                    e.DockContent.Controls.Add(propGrid);
+                    break;
+            }
         }
 
         private static void OnProcessCmdKeyEvent(object sender, ProcessCmdKeyEventArgs e)
@@ -72,39 +97,16 @@ namespace FlowSharp
 
         private static void OnShown(object sender, EventArgs e)
         {
-            CreateCanvas();
-            CreateToolbar();
-            CreatePropertyGrid();
+            if (File.Exists("layout.xml"))
+            {
+                dockingService.LoadLayout("layout.xml");
+            }
+            else
+            {
+                dockingService.LoadLayout("defaultLayout.xml");
+            }
+
             InitializeMenu();
-        }
-
-        static void CreateCanvas()
-        {
-            docCanvas = dockingService.CreateDocument(DockState.Document, "Canvas");
-            Panel pnlFlowSharp = new Panel() { Dock = DockStyle.Fill };
-            docCanvas.Controls.Add(pnlFlowSharp);
-            ServiceManager.Get<IFlowSharpCanvasService>().CreateCanvas(pnlFlowSharp);
-        }
-
-        static void CreateToolbar()
-        {
-            docToolbar = dockingService.CreateDocument(DockState.DockLeft, "Toolbar");
-            Panel pnlToolbox = new Panel() { Dock = DockStyle.Fill };
-            docToolbar.Controls.Add(pnlToolbox);
-            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
-            IFlowSharpToolboxService toolboxService = ServiceManager.Get<IFlowSharpToolboxService>();
-            toolboxService.CreateToolbox(pnlToolbox);
-            toolboxService.InitializeToolbox();
-            toolboxService.InitializePluginsInToolbox();
-            toolboxService.UpdateToolboxPaths();
-        }
-
-        static void CreatePropertyGrid()
-        {
-            propGridToolbar = dockingService.CreateDocument(docToolbar, DockAlignment.Bottom, "Properties", 0.50);
-            PropertyGrid propGrid = new PropertyGrid() { Dock = DockStyle.Fill };
-            ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(propGrid);
-            propGridToolbar.Controls.Add(propGrid);
         }
 
         static void InitializeMenu()

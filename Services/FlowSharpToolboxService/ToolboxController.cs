@@ -170,7 +170,7 @@ namespace FlowSharpToolboxService
             GraphicElement selectedElement = selectedElements[0];
             GraphicElement el = selectedElement.CloneDefault(canvasController.Canvas, new Point(where, 0));
 
-            canvasController.UndoStack.UndoRedo("Create " + selectedElement.ToString(),
+            canvasController.UndoStack.UndoRedo("Create " + el.ToString(),
                 () =>
                 {
                     ElementCache.Instance.Remove(el);

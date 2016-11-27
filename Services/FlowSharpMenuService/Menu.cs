@@ -121,7 +121,7 @@ namespace FlowSharpMenuService
             // mnuClearCanvas
             // 
             mnuClearCanvas.Name = "mnuClearCanvas";
-            mnuClearCanvas.ShortcutKeys = ((Keys)((Keys.Control | Keys.C)));
+            mnuClearCanvas.ShortcutKeys = ((Keys)((Keys.Control | Keys.N)));
             mnuClearCanvas.Size = new Size(165, 24);
             mnuClearCanvas.Text = "&Clear Canvas";
             // 

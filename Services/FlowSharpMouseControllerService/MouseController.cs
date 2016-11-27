@@ -123,7 +123,7 @@ namespace FlowSharpMouseControllerService
             HandleEvent(new MouseAction(MouseEvent.MouseMove, args));
         }
 
-        // After new/open action, clear state.
+        // After new/open action, clear state.  State also clears when document is changed.
         public void ClearState()
         {
             DraggingShapes = false;

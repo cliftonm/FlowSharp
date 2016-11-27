@@ -339,6 +339,8 @@ namespace FlowSharpLib
             {
                 el.Dispose();
             }
+
+            selectedElements.Remove(el);
         }
 
         public void Redraw(GraphicElement el, int dx=0, int dy=0)

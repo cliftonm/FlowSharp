@@ -6,8 +6,6 @@
 
 using System;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
 using Clifton.WinForm.ServiceInterfaces;
@@ -136,7 +134,7 @@ namespace FlowSharp
             menuService.Initialize(canvasService.ActiveController);
             canvasService.AddCanvas += (sndr, args) => CreateCanvas();
             mouseService.Initialize(canvasService.ActiveController);
-            InitializeServices(canvasService);
+            InformServicesOfNewCanvas(canvasService);
         }
 
         static void CreateCanvas()
@@ -147,11 +145,10 @@ namespace FlowSharp
             dockPanel.Controls.Add(panel);
             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
             canvasService.CreateCanvas(panel);
-
-            InitializeServices(canvasService);
+            InformServicesOfNewCanvas(canvasService);
         }
 
-        static void InitializeServices(IFlowSharpCanvasService canvasService)
+        static void InformServicesOfNewCanvas(IFlowSharpCanvasService canvasService)
         {
             // Wire up menu for this canvas controller.
             IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
@@ -161,6 +158,7 @@ namespace FlowSharp
             IFlowSharpMouseControllerService mouseService = ServiceManager.Get<IFlowSharpMouseControllerService>();
             mouseService.Initialize(canvasService.ActiveController);
 
+            // Debug window needs to know too.
             ServiceManager.Get<IFlowSharpDebugWindowService>().Initialize(canvasService.ActiveController);
         }
 
@@ -170,9 +168,9 @@ namespace FlowSharp
 
             if (ctrl.Controls.Count == 1)
             {
+                System.Diagnostics.Trace.WriteLine("*** Document Changed");
                 Control child = ctrl.Controls[0];
-                System.Diagnostics.Trace.WriteLine("*** PANEL FOCUS");
-                // ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
+                ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
                 ServiceManager.Get<IFlowSharpCanvasService>().SetActiveController(child);
                 ServiceManager.Get<IFlowSharpDebugWindowService>().UpdateDebugWindow();
             }

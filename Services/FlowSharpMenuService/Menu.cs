@@ -39,6 +39,8 @@ namespace FlowSharpMenuService
         private ToolStripMenuItem mnuRedo;
         private ToolStripSeparator toolStripMenuItem6;
         private ToolStripMenuItem mnuEdit;
+        private ToolStripMenuItem mnuLoadLayout;
+        private ToolStripMenuItem mnuSaveLayout;
 
         public void Initialize()
         {
@@ -74,6 +76,8 @@ namespace FlowSharpMenuService
             mnuUngroup = new ToolStripMenuItem();
             toolStripMenuItem6 = new ToolStripSeparator();
             mnuEdit = new ToolStripMenuItem();
+            mnuLoadLayout = new ToolStripMenuItem();
+            mnuSaveLayout = new ToolStripMenuItem();
 
             // 
             // menuStrip1
@@ -102,6 +106,8 @@ namespace FlowSharpMenuService
             mnuSave,
             mnuSaveAs,
             toolStripMenuItem1,
+            mnuLoadLayout,
+            mnuSaveLayout,
             mnuPlugins,
             toolStripMenuItem4,
             mnuExit});
@@ -157,6 +163,11 @@ namespace FlowSharpMenuService
             // 
             toolStripMenuItem1.Name = "toolStripMenuItem1";
             toolStripMenuItem1.Size = new Size(162, 6);
+
+            // Layout
+            mnuLoadLayout.Text = "Load Layout";
+            mnuSaveLayout.Text = "Save Layout";
+
             // 
             // mnuPlugins
             // 

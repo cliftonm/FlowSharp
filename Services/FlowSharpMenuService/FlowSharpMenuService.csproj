@@ -34,6 +34,9 @@
     <Reference Include="Clifton.Core">
       <HintPath>..\..\Libs\Clifton.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Clifton.WinForm.ServiceInterfaces">
+      <HintPath>..\..\Libs\Clifton.WinForm.ServiceInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

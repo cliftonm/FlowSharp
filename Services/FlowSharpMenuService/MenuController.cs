@@ -11,6 +11,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using Clifton.Core.ServiceManagement;
+using Clifton.WinForm.ServiceInterfaces;
 
 using FlowSharpLib;
 using FlowSharpServiceInterfaces;
@@ -92,6 +93,8 @@ namespace FlowSharpMenuService
             mnuEdit.Click += (sndr, args) => serviceManager.Get<IFlowSharpEditService>().EditText();
             mnuDebugWindow.Click += (sndr, args) => serviceManager.Get<IFlowSharpDebugWindowService>().ShowDebugWindow();
             mnuPlugins.Click += (sndr, args) => serviceManager.Get<IFlowSharpDebugWindowService>().EditPlugins();
+            mnuLoadLayout.Click += (sndr, args) => serviceManager.Get<IDockingFormService>().LoadLayout("layout.xml");
+            mnuSaveLayout.Click += (sndr, args) => serviceManager.Get<IDockingFormService>().SaveLayout("layout.xml");
         }
 
         private void mnuTopmost_Click(object sender, EventArgs e)

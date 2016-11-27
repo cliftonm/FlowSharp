@@ -55,12 +55,14 @@ namespace FlowSharp
                 case META_CANVAS:
                     Panel pnlFlowSharp = new Panel() { Dock = DockStyle.Fill };
                     e.DockContent.Controls.Add(pnlFlowSharp);
+                    e.DockContent.Text = "Canvas";
                     ServiceManager.Get<IFlowSharpCanvasService>().CreateCanvas(pnlFlowSharp);
                     break;
 
                 case META_TOOLBOX:
                     Panel pnlToolbox = new Panel() { Dock = DockStyle.Fill };
                     e.DockContent.Controls.Add(pnlToolbox);
+                    e.DockContent.Text = "Toolbox";
                     BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
                     IFlowSharpToolboxService toolboxService = ServiceManager.Get<IFlowSharpToolboxService>();
                     toolboxService.CreateToolbox(pnlToolbox);
@@ -73,6 +75,7 @@ namespace FlowSharp
                     PropertyGrid propGrid = new PropertyGrid() { Dock = DockStyle.Fill };
                     ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(propGrid);
                     e.DockContent.Controls.Add(propGrid);
+                    e.DockContent.Text = "Property Grid";
                     break;
             }
         }
@@ -96,6 +99,11 @@ namespace FlowSharp
             else
             {
                 e.Cancel = state == ClosingState.CancelClose;
+            }
+
+            if (!e.Cancel)
+            {
+                dockingService.SaveLayout("layout.xml");
             }
         }
 

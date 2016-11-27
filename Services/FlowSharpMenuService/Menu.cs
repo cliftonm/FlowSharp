@@ -106,8 +106,8 @@ namespace FlowSharpMenuService
             mnuSave,
             mnuSaveAs,
             toolStripMenuItem1,
-            mnuLoadLayout,
-            mnuSaveLayout,
+            //mnuLoadLayout,            // We do not expose these menu items, as they happen automatically.
+            //mnuSaveLayout,
             mnuPlugins,
             toolStripMenuItem4,
             mnuExit});

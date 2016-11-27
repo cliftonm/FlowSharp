@@ -18,6 +18,10 @@ namespace FlowSharp
 {
     static partial class Program
     {
+        private const string META_CANVAS = "Canvas";
+        private const string META_TOOLBOX = "Toolbox";
+        private const string META_PROPERTYGRID = "PropertyGrid";
+
         private static Form form;
         private static IDockingFormService dockingService;
 
@@ -48,13 +52,13 @@ namespace FlowSharp
         {
             switch (e.Metadata)
             {
-                case "Canvas":
+                case META_CANVAS:
                     Panel pnlFlowSharp = new Panel() { Dock = DockStyle.Fill };
                     e.DockContent.Controls.Add(pnlFlowSharp);
                     ServiceManager.Get<IFlowSharpCanvasService>().CreateCanvas(pnlFlowSharp);
                     break;
 
-                case "Toolbox":
+                case META_TOOLBOX:
                     Panel pnlToolbox = new Panel() { Dock = DockStyle.Fill };
                     e.DockContent.Controls.Add(pnlToolbox);
                     BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().Controller;
@@ -65,7 +69,7 @@ namespace FlowSharp
                     toolboxService.UpdateToolboxPaths();
                     break;
 
-                case "PropertyGrid":
+                case META_PROPERTYGRID:
                     PropertyGrid propGrid = new PropertyGrid() { Dock = DockStyle.Fill };
                     ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(propGrid);
                     e.DockContent.Controls.Add(propGrid);

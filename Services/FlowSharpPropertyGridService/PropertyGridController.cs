@@ -9,24 +9,37 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Clifton.Core.ServiceManagement;
+
 using FlowSharpLib;
+using FlowSharpServiceInterfaces;
 
 namespace FlowSharpPropertyGridService
 {
     public class PropertyGridController
     {
-        protected BaseController canvasController;
         protected ElementProperties elementProperties;
         protected PropertyGrid pgElement;
         protected Action onFocus;
+        protected IServiceManager serviceManager;
 
-        public PropertyGridController(PropertyGrid pgElement, BaseController canvasController)
+        public PropertyGridController(IServiceManager serviceManager, PropertyGrid pgElement)
         {
+            this.serviceManager = serviceManager;
             this.pgElement = pgElement;
-            this.canvasController = canvasController;
+            pgElement.PropertyValueChanged += new PropertyValueChangedEventHandler(OnPropertyValueChanged);
+        }
+
+        public void HookEvents(BaseController canvasController)
+        {
             canvasController.ElementSelected += ElementSelected;
             canvasController.UpdateSelectedElement += UpdateSelectedElement;
-            pgElement.PropertyValueChanged += new PropertyValueChangedEventHandler(OnPropertyValueChanged);
+        }
+
+        public void Show(IPropertyObject obj)
+        {
+            pgElement.SelectedObject = obj;
+            serviceManager.Get<IFlowSharpCanvasService>().ActiveController.Canvas.Focus();
         }
 
         protected void ElementSelected(object controller, ElementEventArgs args)
@@ -37,10 +50,10 @@ namespace FlowSharpPropertyGridService
             if (args.Element != null)
             {
                 elementProperties = args.Element.CreateProperties();
+                pgElement.SelectedObject = elementProperties;
             }
 
-            pgElement.SelectedObject = elementProperties;
-            canvasController.Canvas.Focus();
+            serviceManager.Get<IFlowSharpCanvasService>().ActiveController.Canvas.Focus();
         }
 
         protected void UpdateSelectedElement(object controller, ElementEventArgs args)
@@ -56,45 +69,56 @@ namespace FlowSharpPropertyGridService
 
         protected void OnPropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            canvasController.SelectedElements.ForEach(sel =>
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            string label = e.ChangedItem.Label;
+
+            // Updating a shape.
+            if (pgElement.SelectedObject is GraphicElement)
             {
-                string label = e.ChangedItem.Label;
-                PropertyInfo piElProps = elementProperties.GetType().GetProperty(label);
-                object oldVal = e.OldValue;
-                object newVal = piElProps.GetValue(elementProperties);
+                canvasController.SelectedElements.ForEach(sel =>
+                {
+                    PropertyInfo piElProps = elementProperties.GetType().GetProperty(label);
+                    object oldVal = e.OldValue;
+                    object newVal = piElProps.GetValue(elementProperties);
 
-                canvasController.UndoStack.UndoRedo("Update " + label,
-                    () =>
-                    {
-                        canvasController.Redraw(sel, el =>
+                    canvasController.UndoStack.UndoRedo("Update " + label,
+                        () =>
                         {
-                            piElProps.SetValue(elementProperties, newVal);
-                            elementProperties.Update(el, label);
-                            el.UpdateProperties();
-                            el.UpdatePath();
-                            pgElement.Refresh();
-                        });
-                    },
-                    () =>
-                    {
-                        canvasController.Redraw(sel, el =>
+                            canvasController.Redraw(sel, el =>
+                            {
+                                piElProps.SetValue(elementProperties, newVal);
+                                elementProperties.Update(el, label);
+                                el.UpdateProperties();
+                                el.UpdatePath();
+                                pgElement.Refresh();
+                            });
+                        },
+                        () =>
                         {
-                            piElProps.SetValue(elementProperties, oldVal);
-                            elementProperties.Update(el, label);
-                            el.UpdateProperties();
-                            el.UpdatePath();
-                            pgElement.Refresh();
-                        });
-                    }, false);
-            });
+                            canvasController.Redraw(sel, el =>
+                            {
+                                piElProps.SetValue(elementProperties, oldVal);
+                                elementProperties.Update(el, label);
+                                el.UpdateProperties();
+                                el.UpdatePath();
+                                pgElement.Refresh();
+                            });
+                        }, false);
+                });
 
-            canvasController.UndoStack.FinishGroup();
+                canvasController.UndoStack.FinishGroup();
 
-            // Return focus to the canvas so that keyboard actions, like copy/paste, undo/redo, are intercepted
-            // TODO: Seems really kludgy.
-            Task.Delay(250).ContinueWith(t =>
-                pgElement.FindForm().BeginInvoke(() => canvasController.Canvas.Focus())
-            );
+                // Return focus to the canvas so that keyboard actions, like copy/paste, undo/redo, are intercepted
+                // TODO: Seems really kludgy.
+                Task.Delay(250).ContinueWith(t =>
+                    pgElement.FindForm().BeginInvoke(() => canvasController.Canvas.Focus())
+                );
+            }
+            else
+            {
+                // Updating canvas properties
+                (pgElement.SelectedObject as IPropertyObject).Update(label);
+            }
         }
     }
 }

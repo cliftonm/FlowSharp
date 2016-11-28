@@ -39,8 +39,17 @@ namespace FlowSharpPropertyGridService
 
         public void Initialize(PropertyGrid propertyGrid)
         {
-            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
-            pgController = new PropertyGridController(propertyGrid, canvasController);
+            pgController = new PropertyGridController(ServiceManager, propertyGrid);
+        }
+
+        public void Initialize(BaseController controller)
+        {
+            pgController.HookEvents(controller);
+        }
+
+        public void ShowProperties(IPropertyObject propObject)
+        {
+            pgController.Show(propObject);
         }
     }
 

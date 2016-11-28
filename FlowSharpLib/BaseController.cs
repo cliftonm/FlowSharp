@@ -30,6 +30,8 @@ namespace FlowSharpLib
 
     public abstract class BaseController
 	{
+        public event EventHandler<EventArgs> CanvasNameChanged;
+
         public const int MIN_WIDTH = 20;
         public const int MIN_HEIGHT = 20;
 
@@ -44,6 +46,16 @@ namespace FlowSharpLib
 
         public Canvas Canvas { get { return canvas; } }
         public string Filename { get; set; }
+        public string CanvasName
+        {
+            get { return canvasName; }
+            set
+            {
+                canvasName = value;
+                CanvasNameChanged.Fire(this, EventArgs.Empty);
+            }
+        }
+
 
         // TODO: Return back to ReadOnlyCollection and implement the functions that the menu controller needs.
         public ReadOnlyCollection<GraphicElement> Elements { get { return elements.AsReadOnly(); } }
@@ -69,6 +81,7 @@ namespace FlowSharpLib
 		protected Canvas canvas;
         protected UndoStack undoStack;
 		protected List<GraphicElement> selectedElements;
+        protected string canvasName;
 
         // Diagnostic
         private int eraseCount = 0;

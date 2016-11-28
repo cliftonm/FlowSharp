@@ -160,6 +160,12 @@ namespace FlowSharp
 
             // Debug window needs to know too.
             ServiceManager.Get<IFlowSharpDebugWindowService>().Initialize(canvasService.ActiveController);
+
+            // PropertyGrid service needs to hook controller events.
+            ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(canvasService.ActiveController);
+
+            // Update document tab when canvas name changes.
+            canvasService.ActiveController.CanvasNameChanged += (sndr, args) => ((IDockDocument)((BaseController)sndr).Canvas.Parent.Parent).TabText = ((BaseController)sndr).CanvasName;
         }
 
         static void OnActiveDocumentChanged(object document)
@@ -173,6 +179,7 @@ namespace FlowSharp
                 ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
                 ServiceManager.Get<IFlowSharpCanvasService>().SetActiveController(child);
                 ServiceManager.Get<IFlowSharpDebugWindowService>().UpdateDebugWindow();
+                ServiceManager.Get<IFlowSharpMenuService>().UpdateMenu();
             }
         }
     }

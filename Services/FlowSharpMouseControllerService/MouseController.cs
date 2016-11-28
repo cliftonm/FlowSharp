@@ -165,8 +165,18 @@ namespace FlowSharpMouseControllerService
             {
                 RouteName = RouteName.CanvasFocus,
                 MouseEvent = MouseEvent.MouseDown,
-                Condition = () => true,
+                // Condition = () => true,
+                Condition = () => !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) &&
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsChildShapeSelectable(CurrentMousePosition) &&
+                    !serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsMultiSelect(),
                 Action = (_) =>
+                {
+                    // So Ctrl+V paste works, as keystroke is intercepted only when canvas panel has focus.
+                    BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+                    canvasController.Canvas.Focus();
+                    serviceManager.Get<IFlowSharpPropertyGridService>().ShowProperties(new CanvasProperties(canvasController.Canvas));
+                },
+                Else = () =>
                 {
                     // So Ctrl+V paste works, as keystroke is intercepted only when canvas panel has focus.
                     BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;

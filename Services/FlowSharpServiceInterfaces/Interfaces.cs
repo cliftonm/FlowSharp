@@ -45,6 +45,8 @@ namespace FlowSharpServiceInterfaces
     public interface IFlowSharpPropertyGridService : IService
     {
         void Initialize(PropertyGrid propertyGrid);
+        void Initialize(BaseController controller);
+        void ShowProperties(IPropertyObject propObject);        // Really used for showing the canvas properties.
     }
 
     public interface IFlowSharpMenuService : IService
@@ -52,6 +54,7 @@ namespace FlowSharpServiceInterfaces
         void Initialize(Form mainForm);
         void Initialize(BaseController controller);
         bool SaveOrSaveAs();
+        void UpdateMenu();
     }
 
     public interface IFlowSharpEditService : IService

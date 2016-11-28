@@ -56,7 +56,7 @@ namespace FlowSharpMenuService
             return ret;
         }
 
-        protected void UpdateMenu(bool elementSelected)
+        public void UpdateMenu(bool elementSelected)
         {
             BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             mnuBottommost.Enabled = elementSelected;

@@ -46,10 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CanvasProperties.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="Connectors\Connector.cs" />
     <Compile Include="Connectors\DiagonalConnector.cs" />
     <Compile Include="ElementCache.cs" />
+    <Compile Include="Interfaces.cs" />
     <Compile Include="Shapes\DownTriangle.cs" />
     <Compile Include="Connectors\DynamicConnector.cs" />
     <Compile Include="Connectors\DynamicConnectorLD.cs" />

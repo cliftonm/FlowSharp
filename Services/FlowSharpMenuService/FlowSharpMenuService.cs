@@ -51,6 +51,12 @@ namespace FlowSharpMenuService
             menuController.Initialize(controller);
         }
 
+        public void UpdateMenu()
+        {
+            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            menuController.UpdateMenu(canvasController.SelectedElements.Count > 0);
+        }
+
         public bool SaveOrSaveAs()
         {
             return menuController.SaveOrSaveAs();

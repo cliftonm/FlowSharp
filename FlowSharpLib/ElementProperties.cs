@@ -9,7 +9,7 @@ using System.Drawing;
 
 namespace FlowSharpLib
 {
-	public abstract class ElementProperties
+	public abstract class ElementProperties : IPropertyObject
 	{
 		protected GraphicElement element;
 
@@ -52,5 +52,7 @@ namespace FlowSharpLib
             (label == nameof(BorderWidth)).If(() => el.BorderPenWidth = BorderWidth);
             (label == nameof(FillColor)).If(() => el.FillColor = FillColor);
         }
+
+        public virtual void Update(string label) { }
     }
 }

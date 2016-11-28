@@ -460,7 +460,8 @@ namespace FlowSharpEditService
             bool ret = false;
 
             if (((keyData & Keys.Control) != Keys.Control) &&              // any control + key is not valid
-                 ((keyData & Keys.Alt) != Keys.Alt))                       // any alt + key is not valid
+                 ((keyData & Keys.Alt) != Keys.Alt) &&                       // any alt + key is not valid
+                 ((keyData & Keys.Delete) != Keys.Delete))                  // DEL key is not valid, as it's assigned to deleting a shape
             {
                 Keys k2 = (keyData & ~(Keys.Control | Keys.Shift | Keys.ShiftKey | Keys.Alt | Keys.Menu));
 

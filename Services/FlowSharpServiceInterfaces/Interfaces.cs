@@ -53,6 +53,7 @@ namespace FlowSharpServiceInterfaces
     {
         void Initialize(PropertyGrid propertyGrid);
         void Initialize(BaseController controller);
+        void Terminate(BaseController controller);
         void ShowProperties(IPropertyObject propObject);        // Really used for showing the canvas properties.
     }
 

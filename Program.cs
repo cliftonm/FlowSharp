@@ -58,13 +58,15 @@ namespace FlowSharp
                     pnlFlowSharp = new Panel() { Dock = DockStyle.Fill, Tag = Constants.META_CANVAS };
                     e.DockContent.Controls.Add(pnlFlowSharp);
                     e.DockContent.Text = "Canvas";
-                    ServiceManager.Get<IFlowSharpCanvasService>().CreateCanvas(pnlFlowSharp);
+                    IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+                    canvasService.CreateCanvas(pnlFlowSharp);
                     BaseController baseController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
 
                     if (e.Metadata.Contains(","))
                     {
                         string filename = e.Metadata.Between(",", ",");
                         string canvasName = e.Metadata.RightOfRightmostOf(",");
+                        canvasName = String.IsNullOrWhiteSpace(canvasName) ? "Canvas" : canvasName;
                         e.DockContent.Text = canvasName;
                         LoadFileIntoCanvas(filename, canvasName, baseController);
                     }
@@ -82,6 +84,7 @@ namespace FlowSharp
                     propGrid = new PropertyGrid() { Dock = DockStyle.Fill, Tag = Constants.META_PROPERTYGRID };
                     e.DockContent.Controls.Add(propGrid);
                     e.DockContent.Text = "Property Grid";
+                    ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(propGrid);
                     break;
             }
 
@@ -98,10 +101,10 @@ namespace FlowSharp
                 toolboxService.UpdateToolboxPaths();
             }
 
-            if ((e.Metadata == Constants.META_CANVAS || e.Metadata == Constants.META_PROPERTYGRID) && (pnlFlowSharp != null && propGrid != null))
-            {
-                ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(propGrid);
-            }
+            //if ((e.Metadata == Constants.META_CANVAS || e.Metadata == Constants.META_PROPERTYGRID) && (pnlFlowSharp != null && propGrid != null))
+            //{
+            //    ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(propGrid);
+            //}
         }
 
         private static void OnProcessCmdKeyEvent(object sender, ProcessCmdKeyEventArgs e)
@@ -148,7 +151,7 @@ namespace FlowSharp
             canvasService.LoadLayout += OnLoadLayout;
             canvasService.SaveLayout += OnSaveLayout;
             mouseService.Initialize(canvasService.ActiveController);
-            InformServicesOfNewCanvas(canvasService);
+            InformServicesOfNewCanvas(canvasService.ActiveController);
         }
 
         private static void OnLoadLayout(object sender, FileEventArgs e)
@@ -159,8 +162,14 @@ namespace FlowSharp
             {
                 // Use the layout file to determine the canvas files.
                 ServiceManager.Get<IFlowSharpEditService>().ClearSavePoints();
-                ServiceManager.Get<IFlowSharpCanvasService>().ClearControllers();
+                IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+                IFlowSharpPropertyGridService pgService = ServiceManager.Get<IFlowSharpPropertyGridService>();
+                canvasService.Controllers.ForEach(c => pgService.Terminate(c));
+                canvasService.ClearControllers();
                 ServiceManager.Get<IDockingFormService>().LoadLayout(layoutFilename);
+
+                // Update all services with new controllers.
+                canvasService.Controllers.ForEach(c => InformServicesOfNewCanvas(c));
             }
             else
             {
@@ -201,29 +210,28 @@ namespace FlowSharp
             dockPanel.Controls.Add(panel);
             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
             canvasService.CreateCanvas(panel);
-            InformServicesOfNewCanvas(canvasService);
+            InformServicesOfNewCanvas(canvasService.ActiveController);
         }
 
-        static void InformServicesOfNewCanvas(IFlowSharpCanvasService canvasService)
+        static void InformServicesOfNewCanvas(BaseController controller)
         {
             // Wire up menu for this canvas controller.
             IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
-            menuService.Initialize(canvasService.ActiveController);
+            menuService.Initialize(controller);
 
             // Wire up mouse for this canvas controller.
             IFlowSharpMouseControllerService mouseService = ServiceManager.Get<IFlowSharpMouseControllerService>();
-            mouseService.Initialize(canvasService.ActiveController);
+            mouseService.Initialize(controller);
 
             // Debug window needs to know too.
-            ServiceManager.Get<IFlowSharpDebugWindowService>().Initialize(canvasService.ActiveController);
+            ServiceManager.Get<IFlowSharpDebugWindowService>().Initialize(controller);
 
             // PropertyGrid service needs to hook controller events.
-            ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(canvasService.ActiveController);
+            ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(controller);
 
             // Update document tab when canvas name changes.
-            canvasService.ActiveController.CanvasNameChanged += (sndr, args) =>
+            controller.CanvasNameChanged += (sndr, args) =>
             {
-                BaseController controller = (BaseController)sndr;
                 IDockDocument doc = ((IDockDocument)((BaseController)sndr).Canvas.Parent.Parent);
                 doc.TabText = controller.CanvasName;
 
@@ -232,9 +240,8 @@ namespace FlowSharp
             };
 
             // Update the metadata for the controller document so the layout contains this info on save.
-            canvasService.ActiveController.FilenameChanged += (sndr, args) =>
+            controller.FilenameChanged += (sndr, args) =>
             {
-                BaseController controller = (BaseController)sndr;
                 IDockDocument doc = ((IDockDocument)((BaseController)sndr).Canvas.Parent.Parent);
                 doc.Metadata = Constants.META_CANVAS + "," + controller.Filename + "," + doc.TabText;
             };

@@ -37,6 +37,12 @@ namespace FlowSharpPropertyGridService
             canvasController.UpdateSelectedElement += UpdateSelectedElement;
         }
 
+        public void UnhookEvents(BaseController canvasController)
+        {
+            canvasController.ElementSelected -= ElementSelected;
+            canvasController.UpdateSelectedElement -= UpdateSelectedElement;
+        }
+
         public void Show(IPropertyObject obj)
         {
             pgElement.SelectedObject = obj;

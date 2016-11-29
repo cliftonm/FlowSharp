@@ -13,6 +13,8 @@ using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
 
+using Clifton.Core.ExtensionMethods;
+
 namespace FlowSharpLib
 {
     public class ChildPropertyBag

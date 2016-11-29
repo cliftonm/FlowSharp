@@ -10,6 +10,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
+
 namespace FlowSharpLib
 {
     // Test Selected property to determine if the element is selected or de-selected.

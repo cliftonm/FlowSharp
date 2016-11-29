@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ServiceManagement;
 
 using FlowSharpLib;

@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ServiceManagement;
 using Clifton.WinForm.ServiceInterfaces;
 
@@ -96,8 +97,8 @@ namespace FlowSharpMenuService
             mnuEdit.Click += (sndr, args) => serviceManager.Get<IFlowSharpEditService>().EditText();
             mnuDebugWindow.Click += (sndr, args) => serviceManager.Get<IFlowSharpDebugWindowService>().ShowDebugWindow();
             mnuPlugins.Click += (sndr, args) => serviceManager.Get<IFlowSharpDebugWindowService>().EditPlugins();
-            mnuLoadLayout.Click += (sndr, args) => serviceManager.Get<IDockingFormService>().LoadLayout("layout.xml");
-            mnuSaveLayout.Click += (sndr, args) => serviceManager.Get<IDockingFormService>().SaveLayout("layout.xml");
+            // mnuLoadLayout.Click += (sndr, args) => serviceManager.Get<IDockingFormService>().LoadLayout("layout.xml");
+            // mnuSaveLayout.Click += (sndr, args) => serviceManager.Get<IDockingFormService>().SaveLayout("layout.xml");
             // TODO: Decouple dependency - see canvas controller
             // Instead, fire an event or publish on subscriber an action?
             mnuAddCanvas.Click += (sndr, args) => serviceManager.Get<IFlowSharpCanvasService>().RequestNewCanvas();
@@ -217,18 +218,8 @@ namespace FlowSharpMenuService
                 return;
             }
 
-            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
-            canvasController.Filename = filename;       // set now, in case of relative image files, etc...
-            serviceManager.Get<IFlowSharpEditService>().ResetSavePoint();
-            string data = File.ReadAllText(filename);
-            List<GraphicElement> els = Persist.Deserialize(canvasController.Canvas, data);
-            canvasController.Clear();
-            canvasController.UndoStack.ClearStacks();
-            ElementCache.Instance.ClearCache();
-            serviceManager.Get<IFlowSharpMouseControllerService>().ClearState();
-            canvasController.AddElements(els);
-            canvasController.Elements.ForEach(el => el.UpdatePath());
-            canvasController.Canvas.Invalidate();
+            IFlowSharpCanvasService canvasService = serviceManager.Get<IFlowSharpCanvasService>();
+            canvasService.LoadDiagrams(filename);
             UpdateCaption();
         }
 
@@ -424,9 +415,11 @@ namespace FlowSharpMenuService
 
         protected void SaveDiagram(string filename)
         {
-            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
-            string data = Persist.Serialize(canvasController.Elements);
-            File.WriteAllText(filename, data);
+            IFlowSharpCanvasService canvasService = serviceManager.Get<IFlowSharpCanvasService>();
+            canvasService.SaveDiagramsAndLayout(filename);
+            //BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            //string data = Persist.Serialize(canvasController.Elements);
+            //File.WriteAllText(filename, data);
             serviceManager.Get<IFlowSharpEditService>().SetSavePoint();
         }
 

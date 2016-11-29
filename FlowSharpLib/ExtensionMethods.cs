@@ -14,7 +14,7 @@ using System.Windows.Forms;
 namespace FlowSharpLib
 {
     public static class ExtensionMethods
-    {
+    {/*
         public static void Step(this int n, int step, Action<int> action)
         {
             for (int i = 0; i < n; i += step)
@@ -22,7 +22,7 @@ namespace FlowSharpLib
                 action(i);
             }
         }
-
+        */
         public static void Step2(this int n, int step, Action<int> action)
         {
             for (int i = 0; i < n + step; i += step)
@@ -30,7 +30,7 @@ namespace FlowSharpLib
                 action(i);
             }
         }
-
+        
         public static Point Delta(this Point p, Point p2)
         {
             return new Point(p.X - p2.X, p.Y - p2.Y);
@@ -51,16 +51,16 @@ namespace FlowSharpLib
             return Math.Sign(n);
         }
 
-        public static int Min(this int a, int max)
-        {
-            return (a > max) ? max : a;
-        }
+        //public static int Min(this int a, int max)
+        //{
+        //    return (a > max) ? max : a;
+        //}
 
         public static int Max(this int a, int min)
         {
             return (a < min) ? min : a;
         }
-
+        
         public static Rectangle Grow(this Rectangle r, float w)
         {
             Rectangle ret = r;
@@ -187,6 +187,19 @@ namespace FlowSharpLib
             return (int)f;
         }
 
+        public static bool In<T>(this T item, T[] options)
+        {
+            return options.Contains(item);
+        }
+
+        public static void ForEachReverse<T>(this IList<T> collection, Action<T> action)
+        {
+            for (int i = collection.Count - 1; i >= 0; i--)
+            {
+                action(collection[i]);
+            }
+        }
+
         public static List<T> Swap<T>(this List<T> list, int indexA, int indexB)
         {
             T tmp = list[indexA];
@@ -196,19 +209,12 @@ namespace FlowSharpLib
             return list;
         }
 
+        /*
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
         {
             foreach (var item in collection)
             {
                 action(item);
-            }
-        }
-
-        public static void ForEachReverse<T>(this IList<T> collection, Action<T> action)
-        {
-            for (int i = collection.Count - 1; i >= 0; i--)
-            {
-                action(collection[i]);
             }
         }
 
@@ -248,11 +254,6 @@ namespace FlowSharpLib
             {
                 f(obj);
             }
-        }
-
-        public static bool In<T>(this T item, T[] options)
-        {
-            return options.Contains(item);
         }
 
         /// <summary>
@@ -299,7 +300,7 @@ namespace FlowSharpLib
         {
             return (T)Convert.ChangeType(obj, typeof(T));
         }
-
+        */
         /*
         // We're using reflect here so that the call:
         // ex: this.ChangePropertyWithUndoRedo<string>(el, "Text", "Text"));
@@ -435,5 +436,5 @@ namespace FlowSharpLib
             }, finishGroup);
         }
         */
-   }
+    }
 }

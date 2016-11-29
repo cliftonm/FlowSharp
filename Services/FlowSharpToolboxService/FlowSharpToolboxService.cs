@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ModuleManagement;
 using Clifton.Core.Semantics;
 using Clifton.Core.ServiceManagement;
@@ -37,19 +38,19 @@ namespace FlowSharpToolboxService
         {
             base.Initialize(svcMgr);
             ServiceManager.Get<ISemanticProcessor>().Register<FlowSharpMembrane, FlowSharpToolboxReceptor>();
-            toolboxCanvas = new ToolboxCanvas();
         }
 
         public override void FinishedInitialization()
         {
             base.FinishedInitialization();
-            toolboxController = new ToolboxController(ServiceManager, toolboxCanvas);
-            toolboxCanvas.Controller = toolboxController;
         }
 
         public void CreateToolbox(Control parent)
         {
             pnlToolbox = parent;
+            toolboxCanvas = new ToolboxCanvas();
+            toolboxController = new ToolboxController(ServiceManager, toolboxCanvas);
+            toolboxCanvas.Controller = toolboxController;
             toolboxCanvas.Initialize(parent);
         }
 

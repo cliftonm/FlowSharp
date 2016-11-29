@@ -5,9 +5,12 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
 using Clifton.WinForm.ServiceInterfaces;
 
 using FlowSharpLib;
@@ -49,7 +52,7 @@ namespace FlowSharp
 
         private static void OnContentLoaded(object sender, ContentLoadedEventArgs e)
         {
-            switch (e.Metadata)
+            switch (e.Metadata.LeftOf(","))
             {
                 case Constants.META_CANVAS:
                     pnlFlowSharp = new Panel() { Dock = DockStyle.Fill, Tag = Constants.META_CANVAS };
@@ -57,6 +60,15 @@ namespace FlowSharp
                     e.DockContent.Text = "Canvas";
                     ServiceManager.Get<IFlowSharpCanvasService>().CreateCanvas(pnlFlowSharp);
                     BaseController baseController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
+                    if (e.Metadata.Contains(","))
+                    {
+                        string filename = e.Metadata.Between(",", ",");
+                        string canvasName = e.Metadata.RightOfRightmostOf(",");
+                        e.DockContent.Text = canvasName;
+                        LoadFileIntoCanvas(filename, canvasName, baseController);
+                    }
+
                     ServiceManager.Get<IFlowSharpMouseControllerService>().Initialize(baseController);
                     break;
 
@@ -133,8 +145,52 @@ namespace FlowSharp
             menuService.Initialize(form);
             menuService.Initialize(canvasService.ActiveController);
             canvasService.AddCanvas += (sndr, args) => CreateCanvas();
+            canvasService.LoadLayout += OnLoadLayout;
+            canvasService.SaveLayout += OnSaveLayout;
             mouseService.Initialize(canvasService.ActiveController);
             InformServicesOfNewCanvas(canvasService);
+        }
+
+        private static void OnLoadLayout(object sender, FileEventArgs e)
+        {
+            string layoutFilename = Path.Combine(Path.GetDirectoryName(e.Filename), Path.GetFileNameWithoutExtension(e.Filename) + "-layout.xml");
+
+            if (File.Exists(layoutFilename))
+            {
+                // Use the layout file to determine the canvas files.
+                ServiceManager.Get<IFlowSharpEditService>().ClearSavePoints();
+                ServiceManager.Get<IFlowSharpCanvasService>().ClearControllers();
+                ServiceManager.Get<IDockingFormService>().LoadLayout(layoutFilename);
+            }
+            else
+            {
+                // Just open the diagram the currently selected canvas.
+                BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+                ServiceManager.Get<IFlowSharpEditService>().ClearSavePoints();
+                LoadFileIntoCanvas(e.Filename, Constants.META_CANVAS, canvasController);
+            }
+        }
+
+        private static void LoadFileIntoCanvas(string filename, string canvasName, BaseController canvasController)
+        {
+            canvasController.Filename = filename;       // set now, in case of relative image files, etc...
+            canvasController.CanvasName = canvasName;
+            string data = File.ReadAllText(filename);
+            List<GraphicElement> els = Persist.Deserialize(canvasController.Canvas, data);
+            canvasController.Clear();
+            canvasController.UndoStack.ClearStacks();
+            ElementCache.Instance.ClearCache();
+            ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
+            canvasController.AddElements(els);
+            canvasController.Elements.ForEach(el => el.UpdatePath());
+            canvasController.Canvas.Invalidate();
+        }
+
+        private static void OnSaveLayout(object sender, FileEventArgs e)
+        {
+            // Save the layout, which, on an open, will check for a layout file and load the documents from the layout metadata.
+            string layoutFilename = Path.Combine(Path.GetDirectoryName(e.Filename), Path.GetFileNameWithoutExtension(e.Filename) + "-layout.xml");
+            ServiceManager.Get<IDockingFormService>().SaveLayout(layoutFilename);
         }
 
         static void CreateCanvas()
@@ -165,16 +221,32 @@ namespace FlowSharp
             ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(canvasService.ActiveController);
 
             // Update document tab when canvas name changes.
-            canvasService.ActiveController.CanvasNameChanged += (sndr, args) => ((IDockDocument)((BaseController)sndr).Canvas.Parent.Parent).TabText = ((BaseController)sndr).CanvasName;
+            canvasService.ActiveController.CanvasNameChanged += (sndr, args) =>
+            {
+                BaseController controller = (BaseController)sndr;
+                IDockDocument doc = ((IDockDocument)((BaseController)sndr).Canvas.Parent.Parent);
+                doc.TabText = controller.CanvasName;
+
+                // Update the metadata for the controller document so the layout contains this info on save.
+                doc.Metadata = Constants.META_CANVAS + "," + controller.Filename + "," + doc.TabText;
+            };
+
+            // Update the metadata for the controller document so the layout contains this info on save.
+            canvasService.ActiveController.FilenameChanged += (sndr, args) =>
+            {
+                BaseController controller = (BaseController)sndr;
+                IDockDocument doc = ((IDockDocument)((BaseController)sndr).Canvas.Parent.Parent);
+                doc.Metadata = Constants.META_CANVAS + "," + controller.Filename + "," + doc.TabText;
+            };
         }
 
         static void OnActiveDocumentChanged(object document)
         {
             Control ctrl = document as Control;
 
-            if (ctrl.Controls.Count == 1)
+            if (ctrl != null && ctrl.Controls.Count == 1)
             {
-                System.Diagnostics.Trace.WriteLine("*** Document Changed");
+                // System.Diagnostics.Trace.WriteLine("*** Document Changed");
                 Control child = ctrl.Controls[0];
                 ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
                 ServiceManager.Get<IFlowSharpCanvasService>().SetActiveController(child);

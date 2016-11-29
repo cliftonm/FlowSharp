@@ -6,6 +6,8 @@
 
 using System.ComponentModel;
 
+using Clifton.Core.ExtensionMethods;
+
 using FlowSharpLib;
 
 namespace PluginExample

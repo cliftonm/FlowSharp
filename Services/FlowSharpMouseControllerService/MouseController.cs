@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ServiceManagement;
 
 using FlowSharpLib;

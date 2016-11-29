@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
+
 using FlowSharpLib;
 using FlowSharpServiceInterfaces;
 

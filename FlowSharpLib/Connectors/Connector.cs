@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Linq;
 
+using Clifton.Core.ExtensionMethods;
+
 namespace FlowSharpLib
 {
 	public abstract class Connector : GraphicElement

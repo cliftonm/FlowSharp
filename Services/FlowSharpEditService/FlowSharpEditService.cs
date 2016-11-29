@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ModuleManagement;
 using Clifton.Core.Semantics;
 using Clifton.Core.ServiceManagement;
@@ -31,7 +32,7 @@ namespace FlowSharpEditService
     {
         protected Dictionary<Keys, Action> keyActions = new Dictionary<Keys, Action>();
         protected TextBox editBox;
-        protected int savePoint;
+        protected Dictionary<BaseController, int> savePoints = new Dictionary<BaseController, int>();
         protected GraphicElement shapeBeingEdited;
 
         public override void Initialize(IServiceManager svcMgr)
@@ -43,6 +44,11 @@ namespace FlowSharpEditService
         {
             base.FinishedInitialization();
             InitializeKeyIntercepts();
+        }
+
+        public void ClearSavePoints()
+        {
+            savePoints.Clear();
         }
 
         public void Copy()
@@ -199,7 +205,7 @@ namespace FlowSharpEditService
             BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
             ClosingState ret = ClosingState.NoChanges;
 
-            if (savePoint != canvasController.UndoStack.UndoStackSize)
+            if (GetSavePoint(canvasController) != canvasController.UndoStack.UndoStackSize)
             {
                 DialogResult res = MessageBox.Show("Do you wish to save changes to this drawing?", "Save Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
@@ -224,13 +230,13 @@ namespace FlowSharpEditService
 
         public void ResetSavePoint()
         {
-            savePoint = 0;
+            savePoints.ForEach(kvp => savePoints[kvp.Key] = 0);
         }
 
         public void SetSavePoint()
         {
             BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
-            savePoint = canvasController.UndoStack.UndoStackSize;
+            SetSavePoint(canvasController);
         }
 
         public bool ProcessCmdKey(Keys keyData)
@@ -521,6 +527,24 @@ namespace FlowSharpEditService
             tb.Text = el.Text;
 
             return tb;
+        }
+
+        protected int GetSavePoint(BaseController controller)
+        {
+            int ret;
+
+            if (!savePoints.TryGetValue(controller, out ret))
+            {
+                savePoints[controller] = 0;
+                ret = 0;
+            }
+
+            return ret;
+        }
+
+        protected void SetSavePoint(BaseController controller)
+        {
+            savePoints[controller] = controller.UndoStack.UndoStackSize;
         }
     }
 

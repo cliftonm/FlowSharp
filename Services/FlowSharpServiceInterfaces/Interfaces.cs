@@ -5,6 +5,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 using Clifton.Core.ServiceManagement;
@@ -16,12 +17,18 @@ namespace FlowSharpServiceInterfaces
     public interface IFlowSharpCanvasService : IService
     {
         event EventHandler<EventArgs> AddCanvas;
+        event EventHandler<FileEventArgs> LoadLayout;
+        event EventHandler<FileEventArgs> SaveLayout;
 
         BaseController ActiveController { get; }
+        List<BaseController> Controllers { get; }
 
         void CreateCanvas(Control parent);
         void SetActiveController(Control parent);
         void RequestNewCanvas();
+        void LoadDiagrams(string filename);
+        void SaveDiagramsAndLayout(string filename);
+        void ClearControllers();
     }
 
     public interface IFlowSharpToolboxService : IService
@@ -67,6 +74,7 @@ namespace FlowSharpServiceInterfaces
         void EditText();
         ClosingState CheckForChanges();
         void ResetSavePoint();
+        void ClearSavePoints();
         void SetSavePoint();
         bool ProcessCmdKey(Keys keyData);
     }

@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+using Clifton.Core.ExtensionMethods;
+
 namespace FlowSharpLib
 {
     public class GroupBox : Box

@@ -7,6 +7,8 @@
 using System.ComponentModel;
 using System.Drawing;
 
+using Clifton.Core.ExtensionMethods;
+
 namespace FlowSharpLib
 {
 	public abstract class ElementProperties : IPropertyObject

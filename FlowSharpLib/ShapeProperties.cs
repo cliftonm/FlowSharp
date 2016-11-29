@@ -4,9 +4,10 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
-using System;
 using System.ComponentModel;
 using System.Drawing;
+
+using Clifton.Core.ExtensionMethods;
 
 namespace FlowSharpLib
 {

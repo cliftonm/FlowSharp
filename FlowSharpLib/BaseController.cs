@@ -12,6 +12,8 @@ using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
+
 namespace FlowSharpLib
 {
     public class ZOrderMap
@@ -31,6 +33,7 @@ namespace FlowSharpLib
     public abstract class BaseController
 	{
         public event EventHandler<EventArgs> CanvasNameChanged;
+        public event EventHandler<EventArgs> FilenameChanged;
 
         public const int MIN_WIDTH = 20;
         public const int MIN_HEIGHT = 20;
@@ -45,7 +48,17 @@ namespace FlowSharpLib
         public EventHandler<ElementEventArgs> UpdateSelectedElement;
 
         public Canvas Canvas { get { return canvas; } }
-        public string Filename { get; set; }
+
+        public string Filename
+        {
+            get { return filename; }
+            set
+            {
+                filename = value;
+                FilenameChanged.Fire(this, EventArgs.Empty);
+            }
+        }
+
         public string CanvasName
         {
             get { return canvasName; }
@@ -82,6 +95,7 @@ namespace FlowSharpLib
         protected UndoStack undoStack;
 		protected List<GraphicElement> selectedElements;
         protected string canvasName;
+        protected string filename;
 
         // Diagnostic
         private int eraseCount = 0;

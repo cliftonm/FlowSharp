@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+using Clifton.Core.ExtensionMethods;
+
 namespace FlowSharpLib
 {
     // cliftonm - I added a redo flag to support handling of redo property changes.  After reworking my code, this seems unecessary now, but I'm

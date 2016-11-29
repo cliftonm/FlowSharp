@@ -73,7 +73,7 @@ namespace FlowSharpPropertyGridService
             string label = e.ChangedItem.Label;
 
             // Updating a shape.
-            if (pgElement.SelectedObject is GraphicElement)
+            if (pgElement.SelectedObject is ElementProperties)
             {
                 canvasController.SelectedElements.ForEach(sel =>
                 {

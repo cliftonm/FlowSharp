@@ -413,8 +413,8 @@ namespace FlowSharpMenuService
                 else
                 {
                     filename = sfd.FileName;
-                    SaveDiagram(filename);
                     canvasController.Filename = filename;
+                    SaveDiagram(filename);
                     UpdateCaption();
                 }
             }

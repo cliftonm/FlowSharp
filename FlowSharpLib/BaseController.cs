@@ -401,12 +401,13 @@ namespace FlowSharpLib
 			Rectangle newRect = anchor.Resize(el.DisplayRectangle, adjustedDelta);
 			UpdateDisplayRectangle(el, newRect, adjustedDelta);
 			UpdateConnections(el);
-		}
+            UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = el });
+        }
 
-		/// <summary>
-		/// Direct update of display rectangle, used in DynamicConnector.
-		/// </summary>
-		public void UpdateDisplayRectangle(GraphicElement el, Rectangle newRect, Point delta)
+        /// <summary>
+        /// Direct update of display rectangle, used in DynamicConnector.
+        /// </summary>
+        public void UpdateDisplayRectangle(GraphicElement el, Rectangle newRect, Point delta)
 		{
 			int dx = delta.X.Abs();
 			int dy = delta.Y.Abs();
@@ -525,6 +526,7 @@ namespace FlowSharpLib
 
             DrawBottomToTop(distinctIntersections, dx, dy);
             UpdateScreen(distinctIntersections, dx, dy);
+            UpdateSelectedElement.Fire(this, new ElementEventArgs() { Element = selectedElements[0] });
         }
 
         public void MoveLineOrAnchor(Connection c, Point delta)

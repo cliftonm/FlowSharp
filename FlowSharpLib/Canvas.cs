@@ -73,7 +73,6 @@ namespace FlowSharpLib
             {
                 if (FindForm().WindowState != FormWindowState.Minimized)
                 {
-                    bitmap?.Dispose();
                     CreateBitmap();
                     Invalidate();
                 }
@@ -124,18 +123,21 @@ namespace FlowSharpLib
 
 		public void CreateBitmap(int w, int h)
 		{
-			bitmap = new Bitmap(w, h);
+            bitmap?.Dispose();
+            bitmap = new Bitmap(w, h);
 			CreateGraphicsObjects();
 		}
 
 		protected void CreateBitmap()
         {
+            bitmap?.Dispose();
             bitmap = new Bitmap(ClientSize.Width, ClientSize.Height);
 			CreateGraphicsObjects();
         }
 
 		protected void CreateGraphicsObjects()
 		{
+            graphics?.Dispose();
 			graphics = Graphics.FromImage(bitmap);
 			antiAliasGraphics = Graphics.FromImage(bitmap);
 			antiAliasGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;

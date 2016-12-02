@@ -12,7 +12,6 @@ using System.Windows.Forms;
 
 using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ServiceManagement;
-using Clifton.WinForm.ServiceInterfaces;
 
 using FlowSharpLib;
 using FlowSharpServiceInterfaces;
@@ -21,16 +20,21 @@ namespace FlowSharpMenuService
 {
     public partial class MenuController
     {
+        private const string MRU_FILENAME = "FlowSharp.mru";
+
         protected string filename;
         protected IServiceManager serviceManager;
         protected Form mainForm;
+        protected List<string> mru;
 
         public MenuController(IServiceManager serviceManager, Form mainForm)
         {
             this.serviceManager = serviceManager;
             this.mainForm = mainForm;
+            mru = new List<string>();
             Initialize();
             InitializeMenuHandlers();
+            PopulateMostRecentFiles();
         }
 
         public void Initialize(BaseController canvasController)
@@ -102,6 +106,39 @@ namespace FlowSharpMenuService
             // TODO: Decouple dependency - see canvas controller
             // Instead, fire an event or publish on subscriber an action?
             mnuAddCanvas.Click += (sndr, args) => serviceManager.Get<IFlowSharpCanvasService>().RequestNewCanvas();
+        }
+
+        protected void PopulateMostRecentFiles()
+        {
+            if (File.Exists(MRU_FILENAME))
+            {
+                mru = File.ReadAllLines(MRU_FILENAME).ToList();
+
+                foreach (string f in mru)
+                {
+                    ToolStripItem tsi = new ToolStripMenuItem(f);
+                    tsi.Click += OnRecentFileSelected;
+                    mnuRecentFiles.DropDownItems.Add(tsi);
+                }
+            }
+        }
+
+        protected void UpdateMru(string filename)
+        {
+            // Any existing MRU, remove, and regardless, insert at beginning of list.
+            mru.Remove(filename);
+            mru.Insert(0, filename);
+            File.WriteAllLines(MRU_FILENAME, mru);
+        }
+
+        private void OnRecentFileSelected(object sender, EventArgs e)
+        {
+            if (CheckForChanges()) return;
+            ToolStripItem tsi = sender as ToolStripItem;
+            filename = tsi.Text;
+            IFlowSharpCanvasService canvasService = serviceManager.Get<IFlowSharpCanvasService>();
+            canvasService.LoadDiagrams(filename);
+            UpdateCaption();
         }
 
         private void mnuTopmost_Click(object sender, EventArgs e)
@@ -221,6 +258,7 @@ namespace FlowSharpMenuService
             IFlowSharpCanvasService canvasService = serviceManager.Get<IFlowSharpCanvasService>();
             canvasService.LoadDiagrams(filename);
             UpdateCaption();
+            UpdateMru(filename);
         }
 
         private void mnuImport_Click(object sender, EventArgs e)

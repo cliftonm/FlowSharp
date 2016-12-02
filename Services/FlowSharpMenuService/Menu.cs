@@ -15,6 +15,7 @@ namespace FlowSharpMenuService
         private ToolStripMenuItem mnuSave;
         private ToolStripMenuItem mnuSaveAs;
         private ToolStripSeparator toolStripMenuItem1;
+        private ToolStripMenuItem mnuRecentFiles;
         private ToolStripMenuItem mnuExit;
         private ToolStripMenuItem editToolStripMenuItem;
         private ToolStripMenuItem mnuCopy;
@@ -39,6 +40,7 @@ namespace FlowSharpMenuService
         private ToolStripMenuItem mnuUndo;
         private ToolStripMenuItem mnuRedo;
         private ToolStripSeparator toolStripMenuItem6;
+        private ToolStripSeparator toolStripMenuItem7;
         private ToolStripMenuItem mnuEdit;
         private ToolStripMenuItem mnuLoadLayout;
         private ToolStripMenuItem mnuSaveLayout;
@@ -58,6 +60,7 @@ namespace FlowSharpMenuService
             toolStripMenuItem1 = new ToolStripSeparator();
             mnuPlugins = new ToolStripMenuItem();
             toolStripMenuItem4 = new ToolStripSeparator();
+            mnuRecentFiles = new ToolStripMenuItem();
             mnuExit = new ToolStripMenuItem();
             editToolStripMenuItem = new ToolStripMenuItem();
             mnuCopy = new ToolStripMenuItem();
@@ -77,6 +80,7 @@ namespace FlowSharpMenuService
             mnuGroup = new ToolStripMenuItem();
             mnuUngroup = new ToolStripMenuItem();
             toolStripMenuItem6 = new ToolStripSeparator();
+            toolStripMenuItem7 = new ToolStripSeparator();
             mnuEdit = new ToolStripMenuItem();
             mnuLoadLayout = new ToolStripMenuItem();
             mnuSaveLayout = new ToolStripMenuItem();
@@ -112,8 +116,11 @@ namespace FlowSharpMenuService
             //mnuLoadLayout,            // We do not expose these menu items, as they happen automatically.
             //mnuSaveLayout,
             mnuPlugins,
+            toolStripMenuItem7,
+            mnuRecentFiles,
             toolStripMenuItem4,
             mnuExit});
+
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 21);
             fileToolStripMenuItem.Text = "&File";
@@ -128,7 +135,7 @@ namespace FlowSharpMenuService
             // mnuAddCanvas
             // 
             mnuAddCanvas.Name = "mnuAddCanvas";
-            mnuAddCanvas.ShortcutKeys = ((Keys)((Keys.Control | Keys.A)));
+            mnuAddCanvas.ShortcutKeys = ((Keys)((Keys.Control | Keys.D)));
             mnuAddCanvas.Size = new Size(165, 24);
             mnuAddCanvas.Text = "&Add Canvas";
             // 
@@ -189,6 +196,12 @@ namespace FlowSharpMenuService
             // 
             toolStripMenuItem4.Name = "toolStripMenuItem4";
             toolStripMenuItem4.Size = new Size(162, 6);
+            // 
+            // mnuRecentFiles
+            // 
+            mnuRecentFiles.Name = "mnuRecent";
+            mnuRecentFiles.ShortcutKeys = ((Keys)((Keys.Control | Keys.R)));
+            mnuRecentFiles.Text = "&Recent";
             // 
             // mnuExit
             // 

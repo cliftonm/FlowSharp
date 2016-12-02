@@ -60,7 +60,7 @@ namespace FlowSharpLib.Shapes
         {
             Columns = 4;
             Rows = 4;
-            cellText = new Dictionary<Shapes.Cell, string>();
+            cellText = new Dictionary<Cell, string>();
         }
 
         public override ElementProperties CreateProperties()

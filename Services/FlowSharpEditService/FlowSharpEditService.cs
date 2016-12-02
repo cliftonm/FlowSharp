@@ -309,7 +309,7 @@ namespace FlowSharpEditService
                 if (!canvasController.SelectedElements[0].IsConnector)
                 {
                     shapeBeingEdited = canvasController.SelectedElements[0];
-                    editBox = CreateTextBox(shapeBeingEdited);
+                    editBox = shapeBeingEdited.CreateTextBox(Cursor.Position);
                     canvasController.Canvas.Controls.Add(editBox);
                     editBox.Visible = true;
                     editBox.Focus();
@@ -502,31 +502,9 @@ namespace FlowSharpEditService
                 string newVal = editBox.Text;
                 TextBox tb = editBox;
                 editBox = null;     // set editBox to null so the remove, which fires a LoseFocus event, doesn't call into TerminateEditing again!
-
-                canvasController.UndoStack.UndoRedo("Inline edit",
-                    () =>
-                    {
-                        canvasController.Redraw(shapeBeingEdited, (el) => el.Text = newVal);
-                        canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
-                    },
-                    () =>
-                    {
-                        canvasController.Redraw(shapeBeingEdited, (el) => el.Text = oldVal);
-                        canvasController.ElementSelected.Fire(this, new ElementEventArgs() { Element = shapeBeingEdited });
-                    });
-
+                shapeBeingEdited.EndEdit(newVal, oldVal);
                 canvasController.Canvas.Controls.Remove(tb);
             }
-        }
-
-        protected TextBox CreateTextBox(GraphicElement el)
-        {
-            TextBox tb = new TextBox();
-            tb.Location = el.DisplayRectangle.LeftMiddle().Move(0, -10);
-            tb.Size = new Size(el.DisplayRectangle.Width, 20);
-            tb.Text = el.Text;
-
-            return tb;
         }
 
         protected int GetSavePoint(BaseController controller)

@@ -12,6 +12,8 @@ using System.Windows.Forms;
 
 using Newtonsoft.Json;
 
+using Clifton.Core.ExtensionMethods;
+
 namespace FlowSharpLib
 {
 	public static class GraphicElementHelpers
@@ -208,7 +210,33 @@ namespace FlowSharpLib
 			return el;
 		}
 
-		public virtual void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
+        public virtual TextBox CreateTextBox(Point mousePosition)
+        {
+            TextBox tb = new TextBox();
+            tb.Location = DisplayRectangle.LeftMiddle().Move(0, -10);
+            tb.Size = new Size(DisplayRectangle.Width, 20);
+            tb.Text = Text;
+
+            return tb;
+        }
+
+        // Certain shapes, like the GridBox, require custom handling.
+        public virtual void EndEdit(string newVal, string oldVal)
+        {
+            canvas.Controller.UndoStack.UndoRedo("Inline edit",
+                () =>
+                {
+                    canvas.Controller.Redraw(this, (el) => el.Text = newVal);
+                    canvas.Controller.ElementSelected.Fire(this, new ElementEventArgs() { Element = this });
+                },
+                () =>
+                {
+                    canvas.Controller.Redraw(this, (el) => el.Text = oldVal);
+                    canvas.Controller.ElementSelected.Fire(this, new ElementEventArgs() { Element = this });
+                });
+        }
+
+        public virtual void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
 		{
 			epb.ElementName = GetType().AssemblyQualifiedName;
 			epb.Id = Id;

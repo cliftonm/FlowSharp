@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Clifton.Core.ExtensionMethods;
@@ -70,11 +72,14 @@ namespace FlowSharpMouseControllerService
         protected Point startedDraggingShapesAt;
         protected IServiceManager serviceManager;
 
+        protected int doubleClickCounter = 0;
+
         public enum MouseEvent
         {
             MouseDown,
             MouseUp,
             MouseMove,
+            MouseDoubleClick,
         }
 
         public enum RouteName
@@ -104,6 +109,7 @@ namespace FlowSharpMouseControllerService
             SelectSingleGroupedShape,
             AddSelectedShape,
             RemoveSelectedShape,
+            EditShapeText,
         }
 
         public MouseController(IServiceManager serviceManager)
@@ -117,6 +123,7 @@ namespace FlowSharpMouseControllerService
             controller.Canvas.MouseDown += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseDown, args));
             controller.Canvas.MouseUp += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseUp, args));
             controller.Canvas.MouseMove += HandleMouseMoveEvent;        // Actual instance, so we can detach it and re-attach it for the "Attached" condition when doing a snap check.
+            controller.Canvas.MouseDoubleClick += (sndr, args) => HandleEvent(new MouseAction(MouseEvent.MouseDoubleClick, args));
         }
 
         protected void HandleMouseMoveEvent(object sender, MouseEventArgs args)
@@ -315,7 +322,7 @@ namespace FlowSharpMouseControllerService
                             () => { },      // Our "do" action is actually nothing, since all the "doing" has been done.
                             () =>           // Undo
                             {
-                            controller.DragSelectedElements(delta.ReverseDirection());
+                                controller.DragSelectedElements(delta.ReverseDirection());
                             },
                             true,       // We finish the move.
                             () =>           // Redo
@@ -548,7 +555,7 @@ namespace FlowSharpMouseControllerService
                 {
                     DraggingSelectionBox = true;
                     StartSelectionPosition = CurrentMousePosition;
-                    CreateSelectionBox();                
+                    CreateSelectionBox();
                 },
             });
 
@@ -572,6 +579,30 @@ namespace FlowSharpMouseControllerService
                 MouseEvent = MouseEvent.MouseMove,
                 Condition = () => DraggingSelectionBox,
                 Action = (_) => DragSelectionBox(),
+            });
+
+            // Edit Text
+
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.EditShapeText,
+                MouseEvent = MouseEvent.MouseDoubleClick,
+                Condition = () => true,
+                Action = (_) =>
+                {
+                    if (doubleClickCounter == 0)
+                    {
+                        ++doubleClickCounter;
+                        serviceManager.Get<IFlowSharpEditService>().EditText();
+
+                        // Reset counter after 1/2 second, so the second double click is ignored.
+                        Task.Run(() =>
+                        {
+                            Thread.Sleep(500);
+                            doubleClickCounter = 0;
+                        });
+                    }
+                }
             });
         }
 

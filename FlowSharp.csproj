@@ -40,6 +40,10 @@
     <Reference Include="Clifton.Core">
       <HintPath>Libs\Clifton.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Clifton.DockingFormService, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\Clifton.DockingFormService.dll</HintPath>
+    </Reference>
     <Reference Include="Clifton.WinForm.ServiceInterfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\Clifton.WinForm.ServiceInterfaces.dll</HintPath>

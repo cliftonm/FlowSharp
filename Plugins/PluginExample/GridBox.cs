@@ -40,6 +40,11 @@ namespace FlowSharpLib.Shapes
     {
         public int Column;
         public int Row;
+
+        public override string ToString()
+        {
+            return Column.ToString() + "," + Row.ToString();
+        }
     }
 
     public class GridBox : GraphicElement
@@ -67,6 +72,15 @@ namespace FlowSharpLib.Shapes
         {
             Json["columns"] = Columns.ToString();
             Json["rows"] = Rows.ToString();
+            Json["textFields"] = cellText.Count.ToString();
+            int n = 0;
+
+            foreach (KeyValuePair<Cell, string> kvp in cellText)
+            {
+                Json["celltext" + n] = kvp.Key.ToString() + "," + kvp.Value;
+                ++n;
+            }
+
             base.Serialize(epb, elementsBeingSerialized);
         }
 
@@ -75,6 +89,14 @@ namespace FlowSharpLib.Shapes
             base.Deserialize(epb);
             Columns = Json["columns"].to_i();
             Rows = Json["rows"].to_i();
+            int cellTextCount = Json["textFields"].to_i();
+
+            for (int i = 0; i < cellTextCount; i++)
+            {
+                string cellInfo = Json["celltext" + i];
+                string[] cellData = cellInfo.Split(',');
+                cellText[new Cell() { Column = cellData[0].to_i(), Row = cellData[1].to_i() }] = cellData[2];
+            }
         }
 
         public override TextBox CreateTextBox(Point mousePosition)

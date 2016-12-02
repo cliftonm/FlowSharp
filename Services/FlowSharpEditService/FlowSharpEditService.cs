@@ -230,7 +230,9 @@ namespace FlowSharpEditService
 
         public void ResetSavePoint()
         {
-            savePoints.ForEach(kvp => savePoints[kvp.Key] = 0);
+            List<BaseController> controllers = new List<BaseController>();
+            controllers.AddRange(savePoints.Keys);
+            controllers.ForEach(c => savePoints[c] = 0);
         }
 
         public void SetSavePoint()

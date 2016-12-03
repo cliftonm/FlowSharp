@@ -266,7 +266,7 @@ namespace FlowSharpService
         {
             Control ctrl = document as Control;
 
-            if (ctrl != null && ctrl.Controls.Count == 1 && ((IDockDocument)document).Metadata == Constants.META_CANVAS)
+            if (ctrl != null && ctrl.Controls.Count == 1 && ((IDockDocument)document).Metadata.LeftOf(",") == Constants.META_CANVAS)
             {
                 // System.Diagnostics.Trace.WriteLine("*** Document Changed");
                 Control child = ctrl.Controls[0];

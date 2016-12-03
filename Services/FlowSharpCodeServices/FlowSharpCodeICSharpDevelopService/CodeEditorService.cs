@@ -19,11 +19,11 @@ namespace FlowSharpCodeICSharpDevelopService
     {
         public void InitializeServices(IServiceManager serviceManager)
         {
-            serviceManager.RegisterSingleton<ICsCodeEditorService, CsCodeEditorService>();
+            serviceManager.RegisterSingleton<IFlowSharpCodeEditorService, CsCodeEditorService>();
         }
     }
 
-    public class CsCodeEditorService : ServiceBase, ICsCodeEditorService
+    public class CsCodeEditorService : ServiceBase, IFlowSharpCodeEditorService
     {
         public event EventHandler<TextChangedEventArgs> TextChanged;
 

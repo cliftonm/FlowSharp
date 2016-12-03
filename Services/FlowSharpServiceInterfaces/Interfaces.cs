@@ -23,6 +23,7 @@ namespace FlowSharpServiceInterfaces
     {
         event EventHandler<ContentLoadedEventArgs> ContentResolver;
         event EventHandler<EventArgs> FlowSharpInitialized;
+        event EventHandler<NewCanvasEventArgs> NewCanvas;
 
         Form CreateDockingForm(Icon icon);
     }
@@ -72,10 +73,13 @@ namespace FlowSharpServiceInterfaces
 
     public interface IFlowSharpMenuService : IService
     {
+        string Filename { get; }
+
         void Initialize(Form mainForm);
         void Initialize(BaseController controller);
         bool SaveOrSaveAs();
         void UpdateMenu();
+        void AddMenu(ToolStripMenuItem menuItem);
     }
 
     public interface IFlowSharpEditService : IService

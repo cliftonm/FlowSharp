@@ -26,12 +26,14 @@ namespace FlowSharpMenuService
 
     public class FlowSharpMenuService : ServiceBase, IFlowSharpMenuService
     {
+        public string Filename { get { return menuController.Filename; } }
         protected MenuController menuController;
         protected Form mainForm;
 
         public override void Initialize(IServiceManager svcMgr)
         {
             base.Initialize(svcMgr);
+            menuController = new MenuController(ServiceManager);
         }
 
         public override void FinishedInitialization()
@@ -42,7 +44,7 @@ namespace FlowSharpMenuService
         public void Initialize(Form mainForm)
         {
             this.mainForm = mainForm;
-            menuController = new MenuController(ServiceManager, mainForm);
+            menuController.Initialize(mainForm);
             mainForm.Controls.Add(menuController.MenuStrip);
         }
 
@@ -60,6 +62,11 @@ namespace FlowSharpMenuService
         public bool SaveOrSaveAs()
         {
             return menuController.SaveOrSaveAs();
+        }
+
+        public void AddMenu(ToolStripMenuItem menuItem)
+        {
+            menuController.AddMenu(menuItem);
         }
     }
 

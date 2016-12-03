@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D11163A6-8F20-4B74-9627-02831D1DF1B2}</ProjectGuid>
+    <ProjectGuid>{91FCF1D4-91E0-41FA-A675-C3174F131104}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FlowSharpCodeService</RootNamespace>
-    <AssemblyName>FlowSharpCodeService</AssemblyName>
+    <RootNamespace>FlowSharpCodeCompilerService</RootNamespace>
+    <AssemblyName>FlowSharpCodeCompilerService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -34,12 +34,8 @@
     <Reference Include="Clifton.Core">
       <HintPath>..\..\..\Libs\Clifton.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Clifton.WinForm.ServiceInterfaces">
-      <HintPath>..\..\..\Libs\Clifton.WinForm.ServiceInterfaces.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -50,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FlowSharpCodeService.cs" />
+    <Compile Include="FlowSharpCodeCompilerService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +61,10 @@
     <ProjectReference Include="..\FlowSharpCodeServiceInterfaces\FlowSharpCodeServiceInterfaces.csproj">
       <Project>{f8d75cfd-fb07-4a09-97d6-0ac3871aa35a}</Project>
       <Name>FlowSharpCodeServiceInterfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlowSharpCodeShapeInterfaces\FlowSharpCodeShapeInterfaces.csproj">
+      <Project>{8c7d37d1-f9d9-4633-b863-eac44b9dd999}</Project>
+      <Name>FlowSharpCodeShapeInterfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

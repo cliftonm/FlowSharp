@@ -32,6 +32,7 @@ namespace FlowSharpService
     {
         public event EventHandler<ContentLoadedEventArgs> ContentResolver;
         public event EventHandler<EventArgs> FlowSharpInitialized;
+        public event EventHandler<NewCanvasEventArgs> NewCanvas;
 
         private Form form;
         private IDockingFormService dockingService;
@@ -256,13 +257,16 @@ namespace FlowSharpService
                 IDockDocument doc = ((IDockDocument)((BaseController)sndr).Canvas.Parent.Parent);
                 doc.Metadata = Constants.META_CANVAS + "," + controller.Filename + "," + doc.TabText;
             };
+
+            // Update any other services needing to know about the new canvas.
+            NewCanvas.Fire(this, new NewCanvasEventArgs() { Controller = controller });
         }
 
         protected void OnActiveDocumentChanged(object document)
         {
             Control ctrl = document as Control;
 
-            if (ctrl != null && ctrl.Controls.Count == 1)
+            if (ctrl != null && ctrl.Controls.Count == 1 && ((IDockDocument)document).Metadata == Constants.META_CANVAS)
             {
                 // System.Diagnostics.Trace.WriteLine("*** Document Changed");
                 Control child = ctrl.Controls[0];

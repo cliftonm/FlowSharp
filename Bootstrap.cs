@@ -44,7 +44,7 @@ namespace FlowSharp
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message + "\r\n" + ex.StackTrace, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

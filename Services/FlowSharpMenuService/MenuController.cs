@@ -22,17 +22,23 @@ namespace FlowSharpMenuService
     {
         private const string MRU_FILENAME = "FlowSharp.mru";
 
+        public string Filename { get { return filename; } }
+
         protected string filename;
         protected IServiceManager serviceManager;
         protected Form mainForm;
         protected List<string> mru;
 
-        public MenuController(IServiceManager serviceManager, Form mainForm)
+        public MenuController(IServiceManager serviceManager)
         {
             this.serviceManager = serviceManager;
+            Initialize();
+        }
+
+        public void Initialize(Form mainForm)
+        {
             this.mainForm = mainForm;
             mru = new List<string>();
-            Initialize();
             InitializeMenuHandlers();
             PopulateMostRecentFiles();
         }
@@ -74,6 +80,14 @@ namespace FlowSharpMenuService
             mnuUngroup.Enabled = canvasController.SelectedElements.Count == 1 && canvasController.SelectedElements[0].GroupChildren.Any();
             mnuUndo.Enabled = canvasController.UndoStack.CanUndo;
             mnuRedo.Enabled = canvasController.UndoStack.CanRedo;
+        }
+
+        /// <summary>
+        /// Adds a top-level menu tree, appended to the end of the default menu strip items.
+        /// </summary>
+        public void AddMenu(ToolStripMenuItem menuItem)
+        {
+            menuStrip.Items.Add(menuItem);
         }
 
         protected void InitializeMenuHandlers()

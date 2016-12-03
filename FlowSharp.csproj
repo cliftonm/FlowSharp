@@ -103,6 +103,10 @@
       <Project>{8072dc59-f5de-46c3-98a2-e483484b253c}</Project>
       <Name>FlowSharpCanvasService</Name>
     </ProjectReference>
+    <ProjectReference Include="Services\FlowSharpCodeServices\FlowSharpCodeCompilerService\FlowSharpCodeCompilerService.csproj">
+      <Project>{91fcf1d4-91e0-41fa-a675-c3174f131104}</Project>
+      <Name>FlowSharpCodeCompilerService</Name>
+    </ProjectReference>
     <ProjectReference Include="Services\FlowSharpCodeServices\FlowSharpCodeICSharpDevelopService\FlowSharpCodeICSharpDevelopService.csproj">
       <Project>{0f9d2405-725f-4859-ab13-75dfafa6ba35}</Project>
       <Name>FlowSharpCodeICSharpDevelopService</Name>

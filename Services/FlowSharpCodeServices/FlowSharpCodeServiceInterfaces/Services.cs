@@ -17,7 +17,13 @@ namespace FlowSharpCodeServiceInterfaces
     {
     }
 
-    public interface ICsCodeEditorService : IService
+    public interface IFlowSharpCodeCompilerService : IService
+    {
+        void Compile();
+        void Run();
+    }
+
+    public interface IFlowSharpCodeEditorService : IService
     {
         event EventHandler<TextChangedEventArgs> TextChanged;
 

@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 using Clifton.Core.ServiceManagement;
@@ -14,6 +15,14 @@ using FlowSharpLib;
 
 namespace FlowSharpServiceInterfaces
 {
+    /// <summary>
+    /// The master controller for FlowSharp
+    /// </summary>
+    public interface IFlowSharpService : IService
+    {
+        Form CreateDockingForm(Icon icon);
+    }
+
     public interface IFlowSharpCanvasService : IService
     {
         event EventHandler<EventArgs> AddCanvas;

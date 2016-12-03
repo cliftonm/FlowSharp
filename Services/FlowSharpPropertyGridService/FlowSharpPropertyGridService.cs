@@ -15,7 +15,7 @@ using FlowSharpServiceInterfaces;
 
 namespace FlowSharpPropertyGridService
 {
-    public class FlowSharpPropertyGridSModule : IModule
+    public class FlowSharpPropertyGridModule : IModule
     {
         public void InitializeServices(IServiceManager serviceManager)
         {

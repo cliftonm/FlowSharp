@@ -3,6 +3,7 @@
   <Module AssemblyName='Clifton.SemanticProcessorService.dll'/>
   <Module AssemblyName='Clifton.DockingFormService.dll'/>
 
+  <Module AssemblyName='FlowSharpService.dll'/>
   <Module AssemblyName='FlowSharpCanvasService.dll'/>
   <Module AssemblyName='FlowSharpToolboxService.dll'/>
   <Module AssemblyName='FlowSharpMouseControllerService.dll'/>
@@ -10,4 +11,7 @@
   <Module AssemblyName='FlowSharpMenuService.dll'/>
   <Module AssemblyName='FlowSharpEditService.dll'/>
   <Module AssemblyName='FlowSharpDebugWindowService.dll'/>
+
+  <Module AssemblyName='FlowSharpCodeICSharpDevelopService.dll'/>
+
 </Modules>

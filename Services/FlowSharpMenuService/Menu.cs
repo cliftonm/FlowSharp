@@ -137,7 +137,7 @@ namespace FlowSharpMenuService
             mnuAddCanvas.Name = "mnuAddCanvas";
             mnuAddCanvas.ShortcutKeys = ((Keys)((Keys.Control | Keys.D)));
             mnuAddCanvas.Size = new Size(165, 24);
-            mnuAddCanvas.Text = "&Add Canvas";
+            mnuAddCanvas.Text = "A&dd Canvas";
             // 
             // toolStripMenuItem3
             // 

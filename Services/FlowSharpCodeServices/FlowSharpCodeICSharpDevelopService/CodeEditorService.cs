@@ -15,7 +15,7 @@ using FlowSharpCodeServiceInterfaces;
 
 namespace FlowSharpCodeICSharpDevelopService
 {
-    public class CodeEditorService : IModule
+    public class CodeEditorModule : IModule
     {
         public void InitializeServices(IServiceManager serviceManager)
         {

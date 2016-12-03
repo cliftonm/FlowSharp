@@ -10,6 +10,13 @@ namespace FlowSharpCodeServiceInterfaces
         public string Text { get; set; }
     }
 
+    /// <summary>
+    /// Master controller for FlowSharpCode
+    /// </summary>
+    public interface IFlowSharpCodeService : IService
+    {
+    }
+
     public interface ICsCodeEditorService : IService
     {
         event EventHandler<TextChangedEventArgs> TextChanged;

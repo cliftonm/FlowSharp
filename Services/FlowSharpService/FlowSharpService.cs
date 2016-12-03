@@ -18,9 +18,6 @@ using Clifton.WinForm.ServiceInterfaces;
 using FlowSharpLib;
 using FlowSharpServiceInterfaces;
 
-
-using FlowSharpCodeServiceInterfaces;       // TEMPORARY!
-
 namespace FlowSharpService
 {
     public class FlowSharpServiceModule : IModule
@@ -33,12 +30,15 @@ namespace FlowSharpService
 
     public class FlowSharpService : ServiceBase, IFlowSharpService
     {
+        public event EventHandler<ContentLoadedEventArgs> ContentResolver;
+        public event EventHandler<EventArgs> FlowSharpInitialized;
+
         private Form form;
         private IDockingFormService dockingService;
         private Panel pnlToolbox;
         private Panel pnlFlowSharp;
         private PropertyGrid propGrid;
-        private Control docCanvas;
+        // private Control docCanvas;
 
         public Form CreateDockingForm(Icon icon)
         {
@@ -61,7 +61,6 @@ namespace FlowSharpService
             switch (e.Metadata.LeftOf(","))
             {
                 case Constants.META_CANVAS:
-                    docCanvas = e.DockContent;      // TEMPORARY!
                     pnlFlowSharp = new Panel() { Dock = DockStyle.Fill, Tag = Constants.META_CANVAS };
                     e.DockContent.Controls.Add(pnlFlowSharp);
                     e.DockContent.Text = "Canvas";
@@ -92,6 +91,10 @@ namespace FlowSharpService
                     e.DockContent.Controls.Add(propGrid);
                     e.DockContent.Text = "Property Grid";
                     ServiceManager.Get<IFlowSharpPropertyGridService>().Initialize(propGrid);
+                    break;
+
+                default:
+                    ContentResolver.Fire(this, e);
                     break;
             }
 
@@ -145,6 +148,7 @@ namespace FlowSharpService
         {
             dockingService.LoadLayout("defaultLayout.xml");
             Initialize();
+            FlowSharpInitialized.Fire(this);
         }
 
         protected void Initialize()
@@ -159,16 +163,6 @@ namespace FlowSharpService
             canvasService.SaveLayout += OnSaveLayout;
             mouseService.Initialize(canvasService.ActiveController);
             InformServicesOfNewCanvas(canvasService.ActiveController);
-
-            // TEMPORARY!
-
-            Control csDocEditor = dockingService.CreateDocument(docCanvas, DockAlignment.Bottom, "C# Editor", "CSEditor", 0.50);
-            Control pnlCsCodeEditor = new Panel() { Dock = DockStyle.Fill };
-            csDocEditor.Controls.Add(pnlCsCodeEditor);
-
-            ICsCodeEditorService csCodeEditorService = ServiceManager.Get<ICsCodeEditorService>();
-            csCodeEditorService.CreateEditor(pnlCsCodeEditor);
-            csCodeEditorService.AddAssembly("Clifton.Core.dll");
         }
 
         protected void OnLoadLayout(object sender, FileEventArgs e)

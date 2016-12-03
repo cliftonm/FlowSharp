@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Clifton.Core.ServiceManagement;
+using Clifton.WinForm.ServiceInterfaces;
 
 using FlowSharpLib;
 
@@ -20,6 +21,9 @@ namespace FlowSharpServiceInterfaces
     /// </summary>
     public interface IFlowSharpService : IService
     {
+        event EventHandler<ContentLoadedEventArgs> ContentResolver;
+        event EventHandler<EventArgs> FlowSharpInitialized;
+
         Form CreateDockingForm(Icon icon);
     }
 

@@ -39,7 +39,7 @@ namespace FlowSharpService
         private Panel pnlToolbox;
         private Panel pnlFlowSharp;
         private PropertyGrid propGrid;
-        // private Control docCanvas;
+        private bool loading;
 
         public Form CreateDockingForm(Icon icon)
         {
@@ -178,10 +178,13 @@ namespace FlowSharpService
                 IFlowSharpPropertyGridService pgService = ServiceManager.Get<IFlowSharpPropertyGridService>();
                 canvasService.Controllers.ForEach(c => pgService.Terminate(c));
                 canvasService.ClearControllers();
+                loading = true;
                 ServiceManager.Get<IDockingFormService>().LoadLayout(layoutFilename);
+                loading = false;
 
                 // Update all services with new controllers.
                 canvasService.Controllers.ForEach(c => InformServicesOfNewCanvas(c));
+                SelectFirstDocument();
             }
             else
             {
@@ -218,7 +221,7 @@ namespace FlowSharpService
         {
             // Create canvas.
             Panel panel = new Panel() { Dock = DockStyle.Fill, Tag = Constants.META_CANVAS };
-            Control dockPanel = ServiceManager.Get<IDockingFormService>().CreateDocument(DockState.Document, Constants.META_CANVAS);
+            Control dockPanel = ServiceManager.Get<IDockingFormService>().CreateDocument(DockState.Document, "Canvas", Constants.META_CANVAS);
             dockPanel.Controls.Add(panel);
             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
             canvasService.CreateCanvas(panel);
@@ -264,16 +267,30 @@ namespace FlowSharpService
 
         protected void OnActiveDocumentChanged(object document)
         {
-            Control ctrl = document as Control;
-
-            if (ctrl != null && ctrl.Controls.Count == 1 && ((IDockDocument)document).Metadata.LeftOf(",") == Constants.META_CANVAS)
+            if (!loading)
             {
-                // System.Diagnostics.Trace.WriteLine("*** Document Changed");
-                Control child = ctrl.Controls[0];
-                ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
-                ServiceManager.Get<IFlowSharpCanvasService>().SetActiveController(child);
-                ServiceManager.Get<IFlowSharpDebugWindowService>().UpdateDebugWindow();
-                ServiceManager.Get<IFlowSharpMenuService>().UpdateMenu();
+                Control ctrl = document as Control;
+
+                if (ctrl != null && ctrl.Controls.Count == 1 && ((IDockDocument)document).Metadata.LeftOf(",") == Constants.META_CANVAS)
+                {
+                    // System.Diagnostics.Trace.WriteLine("*** Document Changed");
+                    Control child = ctrl.Controls[0];
+                    ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
+                    ServiceManager.Get<IFlowSharpCanvasService>().SetActiveController(child);
+                    ServiceManager.Get<IFlowSharpDebugWindowService>().UpdateDebugWindow();
+                    ServiceManager.Get<IFlowSharpMenuService>().UpdateMenu();
+                }
+            }
+        }
+
+        protected void SelectFirstDocument()
+        {
+            IDockingFormService dockService = ServiceManager.Get<IDockingFormService>();
+            List<IDockDocument> docs = dockService.Documents;
+
+            if (docs.Count > 0)
+            {
+                dockService.SetActiveDocument(docs[0]);
             }
         }
     }

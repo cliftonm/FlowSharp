@@ -30,7 +30,7 @@ namespace FlowSharpToolboxService
             {
                 string[] plugins = File.ReadAllLines(Constants.PLUGIN_FILE_LIST);
 
-                foreach (string plugin in plugins.Where(p => !String.IsNullOrWhiteSpace(p)))
+                foreach (string plugin in plugins.Where(p => !String.IsNullOrWhiteSpace(p) && !p.BeginsWith("#")))
                 {
                     RegisterPlugin(plugin);
                 }
@@ -43,7 +43,7 @@ namespace FlowSharpToolboxService
             {
                 string[] plugins = File.ReadAllLines(Constants.PLUGIN_FILE_LIST);
 
-                foreach (string plugin in plugins.Where(p => !String.IsNullOrWhiteSpace(p) && !pluginFiles.Contains(p)))
+                foreach (string plugin in plugins.Where(p => !String.IsNullOrWhiteSpace(p) && !pluginFiles.Contains(p) && !p.BeginsWith("#")))
                 {
                     RegisterPlugin(plugin);
                 }

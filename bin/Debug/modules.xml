@@ -13,7 +13,7 @@
   <Module AssemblyName='FlowSharpDebugWindowService.dll'/>
 
   <!-- Exclude these if you don't want the FlowSharpCode services -->
-  <Module AssemblyName='FlowSharpCodeService.dll'/>
+  <!--<Module AssemblyName='FlowSharpCodeService.dll'/>
   <Module AssemblyName='FlowSharpCodeCompilerService.dll'/>
-  <Module AssemblyName='FlowSharpCodeICSharpDevelopService.dll'/>
+  <Module AssemblyName='FlowSharpCodeICSharpDevelopService.dll'/>-->
 </Modules>

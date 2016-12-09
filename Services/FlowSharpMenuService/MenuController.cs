@@ -249,7 +249,7 @@ namespace FlowSharpMenuService
             serviceManager.Get<IFlowSharpMouseControllerService>().ClearState();
             canvasController.Canvas.Invalidate();
             filename = String.Empty;
-            canvasController.Filename = filename;
+            canvasController.Filename = String.Empty;
             UpdateCaption();
         }
 
@@ -314,7 +314,6 @@ namespace FlowSharpMenuService
             if (canvasController.Elements.Count > 0)
             {
                 SaveOrSaveAs();
-                canvasController.Filename = filename;
                 UpdateCaption();
             }
             else
@@ -330,7 +329,6 @@ namespace FlowSharpMenuService
             if (canvasController.Elements.Count > 0)
             {
                 SaveOrSaveAs(true);
-                canvasController.Filename = filename;
                 UpdateCaption();
             }
             else
@@ -456,7 +454,7 @@ namespace FlowSharpMenuService
                 else
                 {
                     filename = sfd.FileName;
-                    canvasController.Filename = filename;
+                    // Let canvas controller assign filenames.
                     SaveDiagram(filename);
                     UpdateCaption();
                 }

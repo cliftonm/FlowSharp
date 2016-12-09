@@ -468,6 +468,9 @@ namespace FlowSharpLib
 
         public void MoveSelectedElements(Point delta)
         {
+            // TODO: We shouldn't even be calling this method if there are no selected elements!
+            if (selectedElements.Count == 0) return;
+
             int dx = delta.X.Abs();
             int dy = delta.Y.Abs();
             List<GraphicElement> intersections = new List<GraphicElement>();

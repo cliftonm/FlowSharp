@@ -112,7 +112,7 @@ namespace FlowSharpCanvasService
                     }
                     else
                     {
-                        controller.Filename = Path.GetFileNameWithoutExtension(filename) + "-" + n.ToString() + Path.GetExtension(filename);
+                        controller.Filename = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + "-" + n.ToString() + Path.GetExtension(filename));
                     }
 
                     ++n;

@@ -202,10 +202,11 @@ namespace FlowSharpEditService
 
         public ClosingState CheckForChanges()
         {
-            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+            bool changed = canvasService.Controllers.Any(c => GetSavePoint(c) != c.UndoStack.UndoStackSize);
             ClosingState ret = ClosingState.NoChanges;
 
-            if (GetSavePoint(canvasController) != canvasController.UndoStack.UndoStackSize)
+            if (changed)
             {
                 DialogResult res = MessageBox.Show("Do you wish to save changes to this drawing?", "Save Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
@@ -230,15 +231,14 @@ namespace FlowSharpEditService
 
         public void ResetSavePoint()
         {
-            List<BaseController> controllers = new List<BaseController>();
-            controllers.AddRange(savePoints.Keys);
-            controllers.ForEach(c => savePoints[c] = 0);
+            // Get keys as a separate list, otherwise .NET things collection is being modified.
+            savePoints.Keys.ToList().ForEach(c => savePoints[c] = 0);
         }
 
         public void SetSavePoint()
         {
-            BaseController canvasController = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
-            SetSavePoint(canvasController);
+            IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+            canvasService.Controllers.ForEach(c => SetSavePoint(c));
         }
 
         public bool ProcessCmdKey(Keys keyData)

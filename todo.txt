@@ -1,0 +1,27 @@
+Bugs:
+
+1. Connector added to shapes within a group box double-moves when the entire groupbox is moved.
+	Also, anything dropped into a groupbox should probably be automatically grouped.
+2. For text shape, text align bottom/top seems to be reversed
+3. Ability to select several shapes worked, then stopped working.  Not sure why
+4. In a multiple canvas drawing, saving when 2nd canvas doesn't have a filename threw an exception.
+5. Saving multiple canvases lost my work in one of the canvases, perhaps related to #4
+6. Copy of a grouped shape and paste results in a shape that can't be moved/selected.
+7. Notice connector from ModuleManagement to DockPanelSuiteServices double moves when moving the 
+DockPanelSuiteServices GroupBox, because it appears to have been wired up at least twice.
+
+TODO:
+
+1. Be able to select alternate shape when there is more than one option at the click point
+2. Custom anchor points
+3. Try intersection depth limit of 1 deep
+4. "Regroup", so shapes can be manipulated and then regrouped.
+5. Connector text
+6. Add panels back in that have been removed: Toolbox, property grid, code editor
+7. Saving drawing should update MRU if new filename
+8. Close document (canvas) needs to prompt to save any changes.
+9. Auto-anchor
+10. Force V/H (removes diagonal)
+11. Align selected shapes left/top/right/bottom to leftmost/topmost/rightmost/bottommost
+12. Changing property (like end caps) forces a full page redraw
+13. Need 3 line connector middle-line repositioning

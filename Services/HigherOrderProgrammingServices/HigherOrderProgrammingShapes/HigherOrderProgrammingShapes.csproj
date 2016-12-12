@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CAA4FD23-1392-4DEE-907A-CB3DC7315A98}</ProjectGuid>
+    <ProjectGuid>{BCEC4BD9-9227-41C7-8585-A05041D5AD2A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FlowSharpServiceInterfaces</RootNamespace>
-    <AssemblyName>FlowSharpServiceInterfaces</AssemblyName>
+    <RootNamespace>HigherOrderProgrammingShapes</RootNamespace>
+    <AssemblyName>HigherOrderProgrammingShapes</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -32,15 +32,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Clifton.Core">
-      <HintPath>..\..\Libs\Clifton.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Clifton.WinForm.ServiceInterfaces">
-      <HintPath>..\..\Libs\Clifton.WinForm.ServiceInterfaces.dll</HintPath>
+      <HintPath>..\..\..\Libs\Clifton.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,16 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiCommands.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="EventArgs.cs" />
-    <Compile Include="Interfaces.cs" />
-    <Compile Include="Membranes.cs" />
+    <Compile Include="ReceptorShape.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\FlowSharpLib\FlowSharpLib.csproj">
+    <ProjectReference Include="..\..\..\FlowSharpLib\FlowSharpLib.csproj">
       <Project>{07f65ca7-b8d3-4716-bfbf-812ef4da68be}</Project>
       <Name>FlowSharpLib</Name>
     </ProjectReference>

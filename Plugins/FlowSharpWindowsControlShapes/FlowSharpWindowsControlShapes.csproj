@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CAA4FD23-1392-4DEE-907A-CB3DC7315A98}</ProjectGuid>
+    <ProjectGuid>{F41CB0C7-B2A0-48A7-85EE-874913598A6A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FlowSharpServiceInterfaces</RootNamespace>
-    <AssemblyName>FlowSharpServiceInterfaces</AssemblyName>
+    <RootNamespace>FlowSharpWindowsControlShapes</RootNamespace>
+    <AssemblyName>FlowSharpWindowsControlShapes</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -34,9 +34,6 @@
     <Reference Include="Clifton.Core">
       <HintPath>..\..\Libs\Clifton.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Clifton.WinForm.ServiceInterfaces">
-      <HintPath>..\..\Libs\Clifton.WinForm.ServiceInterfaces.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -49,12 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiCommands.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="EventArgs.cs" />
-    <Compile Include="Interfaces.cs" />
-    <Compile Include="Membranes.cs" />
+    <Compile Include="ButtonShape.cs" />
+    <Compile Include="CheckboxShape.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

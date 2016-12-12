@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 using FlowSharpLib;
 
-namespace PluginExample
+namespace FlowSharpWindowsControlShapes
 {
     public class CheckboxShape : Box
     {

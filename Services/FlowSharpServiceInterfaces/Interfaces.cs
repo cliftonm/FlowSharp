@@ -104,4 +104,8 @@ namespace FlowSharpServiceInterfaces
         void EditPlugins();     // TODO: Not really a debug window!
         void UpdateDebugWindow();
     }
+
+    public interface IFlowSharpRestService : IService
+    {
+    }
 }

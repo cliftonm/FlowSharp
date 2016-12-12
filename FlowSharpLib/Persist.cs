@@ -35,7 +35,9 @@ namespace FlowSharpLib
 		[XmlIgnore]
 		public GraphicElement Element { get; set; }
 
-		[XmlAttribute]
+        [XmlAttribute]
+        public string Name { get; set; }
+        [XmlAttribute]
 		public string ElementName { get; set; }
 		[XmlAttribute]
 		public Guid Id { get; set; }

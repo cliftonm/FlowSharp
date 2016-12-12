@@ -8,5 +8,10 @@ using Clifton.Core.Semantics;
 
 namespace FlowSharpServiceInterfaces
 {
-    public class FlowSharpMembrane : Membrane { }
+    public class CmdUpdateProperty : ISemanticType
+    {
+        public string ShapeName { get; set; }
+        public string PropertyName { get; set; }
+        public string Value { get; set; }
+    }
 }

@@ -69,6 +69,7 @@ namespace FlowSharpLib
         public int BorderPenWidth { get { return (int)BorderPen.Width; } set { BorderPen.Width = value; } }
         public Color FillColor { get { return FillBrush.Color; } set { FillBrush.Color = value; } }
 
+        public string Name { get; set; }
         public string Text { get; set; }
 		public Font TextFont { get; set; }
 		public Color TextColor { get; set; }
@@ -238,6 +239,7 @@ namespace FlowSharpLib
 
         public virtual void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
 		{
+            epb.Name = Name;
 			epb.ElementName = GetType().AssemblyQualifiedName;
 			epb.Id = Id;
             epb.Json = JsonConvert.SerializeObject(Json);
@@ -277,6 +279,7 @@ namespace FlowSharpLib
                 Json = JsonConvert.DeserializeObject<Dictionary<string, string>>(epb.Json);
             }
 
+            Name = epb.Name;
 			DisplayRectangle = epb.DisplayRectangle;
 			BorderPen.Dispose();
 			BorderPen = new Pen(epb.BorderPenColor, epb.BorderPenWidth);

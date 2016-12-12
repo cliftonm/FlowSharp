@@ -43,6 +43,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodeShapeInterface
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodeCompilerService", "Services\FlowSharpCodeServices\FlowSharpCodeCompilerService\FlowSharpCodeCompilerService.csproj", "{91FCF1D4-91E0-41FA-A675-C3174F131104}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HigherOrderProgrammingServices", "HigherOrderProgrammingServices", "{2E0FAF22-7B2D-4898-B634-EA9B5E561D82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HigherOrderProgrammingShapes", "Services\HigherOrderProgrammingServices\HigherOrderProgrammingShapes\HigherOrderProgrammingShapes.csproj", "{BCEC4BD9-9227-41C7-8585-A05041D5AD2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpRestService", "Services\FlowSharpRestService\FlowSharpRestService.csproj", "{51D2B194-CFFC-4905-8F06-90F1A0000DF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpWindowsControlShapes", "Plugins\FlowSharpWindowsControlShapes\FlowSharpWindowsControlShapes.csproj", "{F41CB0C7-B2A0-48A7-85EE-874913598A6A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +129,18 @@ Global
 		{91FCF1D4-91E0-41FA-A675-C3174F131104}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91FCF1D4-91E0-41FA-A675-C3174F131104}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91FCF1D4-91E0-41FA-A675-C3174F131104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCEC4BD9-9227-41C7-8585-A05041D5AD2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCEC4BD9-9227-41C7-8585-A05041D5AD2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCEC4BD9-9227-41C7-8585-A05041D5AD2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCEC4BD9-9227-41C7-8585-A05041D5AD2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51D2B194-CFFC-4905-8F06-90F1A0000DF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51D2B194-CFFC-4905-8F06-90F1A0000DF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51D2B194-CFFC-4905-8F06-90F1A0000DF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51D2B194-CFFC-4905-8F06-90F1A0000DF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F41CB0C7-B2A0-48A7-85EE-874913598A6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F41CB0C7-B2A0-48A7-85EE-874913598A6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F41CB0C7-B2A0-48A7-85EE-874913598A6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F41CB0C7-B2A0-48A7-85EE-874913598A6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,5 +162,8 @@ Global
 		{EF1BB007-E326-4305-94F0-C4A589FDB08A} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 		{8C7D37D1-F9D9-4633-B863-EAC44B9DD999} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 		{91FCF1D4-91E0-41FA-A675-C3174F131104} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
+		{2E0FAF22-7B2D-4898-B634-EA9B5E561D82} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
+		{BCEC4BD9-9227-41C7-8585-A05041D5AD2A} = {2E0FAF22-7B2D-4898-B634-EA9B5E561D82}
+		{51D2B194-CFFC-4905-8F06-90F1A0000DF2} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
 	EndGlobalSection
 EndGlobal

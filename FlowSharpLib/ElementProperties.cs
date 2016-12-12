@@ -15,8 +15,10 @@ namespace FlowSharpLib
 	{
 		protected GraphicElement element;
 
-		[Category("Element")]
-		public string Name { get { return element?.GetType().Name; } }
+        [Category("Element")]
+        public string Name { get; set; }
+        [Category("Element")]
+		public string ShapeName { get { return element?.GetType().Name; } }
 		[Category("Element")]
 		public Rectangle Rectangle { get; set; }
 
@@ -34,6 +36,7 @@ namespace FlowSharpLib
 			BorderColor = el.BorderPen.Color;
 			BorderWidth = (int)el.BorderPen.Width;
 			FillColor = el.FillBrush.Color;
+            Name = el.Name;
 		}
 
 		public virtual void UpdateFrom(GraphicElement el)
@@ -53,6 +56,7 @@ namespace FlowSharpLib
             (label == nameof(BorderColor)).If(() => el.BorderPenColor = BorderColor);
             (label == nameof(BorderWidth)).If(() => el.BorderPenWidth = BorderWidth);
             (label == nameof(FillColor)).If(() => el.FillColor = FillColor);
+            (label == nameof(Name)).If(() => el.Name = Name);
         }
 
         public virtual void Update(string label) { }

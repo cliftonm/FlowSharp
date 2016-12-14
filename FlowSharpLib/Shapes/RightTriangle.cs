@@ -73,7 +73,7 @@ namespace FlowSharpLib
 
             // Drawing onto a bitmap that constrains the drawing area fixes the trail problem
             // but still has issues with larger pen widths (try 10) as triangle points are clipped.
-            Rectangle r = DisplayRectangle;
+            Rectangle r = DisplayRectangle.Grow(2);
             Bitmap bitmap = new Bitmap(r.Width, r.Height);
             Graphics g2 = Graphics.FromImage(bitmap);
             g2.SmoothingMode = SmoothingMode.AntiAlias;

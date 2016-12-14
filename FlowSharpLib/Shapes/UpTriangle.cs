@@ -59,7 +59,7 @@ namespace FlowSharpLib
 
         public override void Draw(Graphics gr)
         {
-            Rectangle r = DisplayRectangle.Grow(1);
+            Rectangle r = DisplayRectangle.Grow(2);
             Bitmap bitmap = new Bitmap(r.Width, r.Height);
             Graphics g2 = Graphics.FromImage(bitmap);
             g2.SmoothingMode = SmoothingMode.AntiAlias;

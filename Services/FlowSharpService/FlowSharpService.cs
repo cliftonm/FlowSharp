@@ -78,7 +78,7 @@ namespace FlowSharpService
                         LoadFileIntoCanvas(filename, canvasName, baseController);
                     }
 
-                    ServiceManager.Get<IFlowSharpMouseControllerService>().Initialize(baseController);
+                    // ServiceManager.Get<IFlowSharpMouseControllerService>().Initialize(baseController);
                     break;
 
                 case Constants.META_TOOLBOX:
@@ -162,7 +162,7 @@ namespace FlowSharpService
             canvasService.AddCanvas += (sndr, args) => CreateCanvas();
             canvasService.LoadLayout += OnLoadLayout;
             canvasService.SaveLayout += OnSaveLayout;
-            mouseService.Initialize(canvasService.ActiveController);
+            // mouseService.Initialize(canvasService.ActiveController);
             InformServicesOfNewCanvas(canvasService.ActiveController);
         }
 

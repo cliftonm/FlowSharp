@@ -298,6 +298,7 @@ namespace FlowSharpMouseControllerService
                     BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
                     controller.SnapController.Reset();
                     DraggingAnchor = true;
+                    HoverShape = serviceManager.Get<IFlowSharpCanvasService>().ActiveController.GetRootShapeAt(CurrentMousePosition);
                     SelectedAnchor = HoverShape.GetAnchors().First(a => a.Near(CurrentMousePosition));
                 },
             });
@@ -613,6 +614,7 @@ namespace FlowSharpMouseControllerService
 
         protected virtual void HandleEvent(MouseAction action)
         {
+            Trace.WriteLine("Route:HandleEvent:" + CurrentButtons.ToString());
             CurrentMousePosition = action.MousePosition;
             CurrentButtons = Control.MouseButtons;
             // Issue #39: Mouse Move event fires even for button press when mouse hasn't moved!
@@ -621,12 +623,13 @@ namespace FlowSharpMouseControllerService
 
             routes.ForEach(r =>
             {
+                Trace.WriteLine("Route:Executing Route:" + r.RouteName.ToString());
                 r.Debug?.Invoke();
 
                 // Test condition every time after executing a route handler, as the handler may change state for the next condition.
                 if (r.Condition())
                 {
-                    Trace.WriteLine("Route:" + r.RouteName.ToString());
+                    Trace.WriteLine("Route:Executing Route:" + r.RouteName.ToString());
                     r.Action(action.MouseEventArgs);
                 }
                 else

@@ -64,14 +64,14 @@ namespace FlowSharpLib
             Dock = DockStyle.Fill;
             parent.Controls.Add(this);
 
-            if (FindForm().WindowState != FormWindowState.Minimized)
+            if (NotMinimized())
             {
                 CreateBitmap();
             }
 
             parent.Resize += (sndr, args) =>
             {
-                if (FindForm().WindowState != FormWindowState.Minimized)
+                if (NotMinimized())
                 {
                     CreateBitmap();
                     Invalidate();
@@ -127,6 +127,11 @@ namespace FlowSharpLib
             bitmap = new Bitmap(w, h);
 			CreateGraphicsObjects();
 		}
+
+        protected bool NotMinimized()
+        {
+            return FindForm().WindowState != FormWindowState.Minimized && ClientSize.Width != 0 && ClientSize.Height != 0;
+        }
 
 		protected void CreateBitmap()
         {

@@ -286,9 +286,10 @@ namespace FlowSharpCodeCompilerService
             parameters.GenerateExecutable = generateExecutable;
 
             parameters.ReferencedAssemblies.Add("System.dll");
+            parameters.ReferencedAssemblies.Add("System.Core.dll");
             parameters.ReferencedAssemblies.Add("System.Data.dll");
             parameters.ReferencedAssemblies.Add("System.Data.Linq.dll");
-            parameters.ReferencedAssemblies.Add("System.Core.dll");
+            parameters.ReferencedAssemblies.Add("System.Drawing.dll");
             parameters.ReferencedAssemblies.Add("System.Net.dll");
             parameters.ReferencedAssemblies.Add("System.Net.Http.dll");
             parameters.ReferencedAssemblies.Add("System.Speech.dll");

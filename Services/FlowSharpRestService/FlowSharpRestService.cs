@@ -8,7 +8,6 @@ using Clifton.Core.ModuleManagement;
 using Clifton.Core.Semantics;
 using Clifton.Core.ServiceManagement;
 
-using FlowSharpLib;
 using FlowSharpServiceInterfaces;
 
 namespace FlowSharpRestService

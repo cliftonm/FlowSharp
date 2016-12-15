@@ -19,6 +19,13 @@ namespace FlowSharpWindowsControlShapes
         {
             button = new Button();
             canvas.Controls.Add(button);
+            button.Click += OnClick;
+        }
+
+        private void OnClick(object sender, System.EventArgs e)
+        {
+            string url = "http://localhost:8002/ButtonClick?ShapeName=" + Name;
+            Http.Get(url);
         }
 
         public override void Draw(Graphics gr)

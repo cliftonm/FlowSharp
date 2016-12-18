@@ -11,7 +11,7 @@ using FlowSharpLib;
 
 namespace FlowSharpWindowsControlShapes
 {
-    public class ButtonShape : Box
+    public class ButtonShape : ControlShape
     {
         protected Button button;
 
@@ -24,7 +24,13 @@ namespace FlowSharpWindowsControlShapes
 
         private void OnClick(object sender, System.EventArgs e)
         {
-            string url = "http://localhost:8002/ButtonClick?ShapeName=" + Name;
+            string url = "http://localhost:8002/" + ClickEventName + "?ShapeName=" + Name;
+
+            if (!string.IsNullOrEmpty(ClickEventData))
+            {
+                url += "&" + ClickEventData;
+            }
+
             Http.Get(url);
         }
 

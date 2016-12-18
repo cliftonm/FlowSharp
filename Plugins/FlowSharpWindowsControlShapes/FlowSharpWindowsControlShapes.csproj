@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="ButtonShape.cs" />
     <Compile Include="CheckboxShape.cs" />
+    <Compile Include="ControlShapeProperties.cs" />
+    <Compile Include="ControlShape.cs" />
     <Compile Include="HttpGet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using Clifton.Core.ExtensionMethods;
@@ -94,7 +95,7 @@ namespace FlowSharpToolboxService
             int n = x - 60;
             int y = 260;
 
-            foreach (Type t in pluginShapes)
+            foreach (Type t in pluginShapes.Where(t=>!t.IsAbstract))
             {
                 GraphicElement pluginShape = Activator.CreateInstance(t, new object[] { toolboxCanvas }) as GraphicElement;
                 pluginShape.DisplayRectangle = new Rectangle(n, y, 25, 25);

@@ -27,6 +27,7 @@ namespace FlowSharpWindowsControlShapes
 
         public override void Update(GraphicElement el, string label)
         {
+            base.Update(el, label);
             (label == nameof(ClickEventName)).If(() => ((ControlShape)el).ClickEventName = ClickEventName);
             (label == nameof(ClickEventData)).If(() => ((ControlShape)el).ClickEventData = ClickEventData);
         }

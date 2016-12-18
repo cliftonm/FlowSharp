@@ -150,6 +150,21 @@ namespace FlowSharpService
             dockingService.LoadLayout("defaultLayout.xml");
             Initialize();
             FlowSharpInitialized.Fire(this);
+            EnableCanvasPaint();
+        }
+
+        protected void EnableCanvasPaint()
+        {
+            // Enable canvas paint after all initialization has completed, 
+            // because adding certain controls, like TextboxShape, causes a panel canvas OnPaint to be called
+            // when the TextboxShape is being added to the toolbox canvas, and this results in all shapes
+            // attempting to draw, and they are not fully initialized at this point!
+            IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+            canvasService.Controllers.ForEach(c => c.Canvas.EndInit());
+            canvasService.Controllers.ForEach(c => c.Canvas.Invalidate());
+            IFlowSharpToolboxService toolboxService = ServiceManager.Get<IFlowSharpToolboxService>();
+            toolboxService.Controller.Canvas.EndInit();
+            toolboxService.Controller.Canvas.Invalidate();
         }
 
         protected void Initialize()
@@ -184,6 +199,7 @@ namespace FlowSharpService
 
                 // Update all services with new controllers.
                 canvasService.Controllers.ForEach(c => InformServicesOfNewCanvas(c));
+                EnableCanvasPaint();
                 SelectFirstDocument();
             }
             else
@@ -225,6 +241,7 @@ namespace FlowSharpService
             dockPanel.Controls.Add(panel);
             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
             canvasService.CreateCanvas(panel);
+            canvasService.ActiveController.Canvas.EndInit();
             InformServicesOfNewCanvas(canvasService.ActiveController);
         }
 

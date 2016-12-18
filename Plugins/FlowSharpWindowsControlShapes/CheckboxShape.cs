@@ -11,23 +11,21 @@ using FlowSharpLib;
 
 namespace FlowSharpWindowsControlShapes
 {
-    public class CheckboxShape : Box
+    public class CheckboxShape : ControlShape
     {
-        protected CheckBox checkbox;
-
         public CheckboxShape(Canvas canvas) : base(canvas)
         {
-            checkbox = new CheckBox();
-            canvas.Controls.Add(checkbox);
+            control = new CheckBox();
+            canvas.Controls.Add(control);
         }
 
         public override void Draw(Graphics gr)
         {
             base.Draw(gr);
             Rectangle r = DisplayRectangle.Grow(-4);
-            checkbox.Location = r.Location;
-            checkbox.Size = r.Size;
-            checkbox.Text = Text;
+            control.Location = r.Location;
+            control.Size = r.Size;
+            control.Text = Text;
         }
     }
 }

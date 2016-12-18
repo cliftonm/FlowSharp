@@ -38,10 +38,14 @@ namespace FlowSharpLib
             canvasBrush = new SolidBrush(Color.White);
             gridPen = new Pen(Color.LightBlue);
             gridSpacing = new Size(32, 32);
+        }
+
+        public void EndInit()
+        {
             Paint += OnPaint;
         }
 
-		protected override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
 		{
 			base.Dispose(disposing);
 

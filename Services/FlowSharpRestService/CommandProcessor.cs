@@ -22,15 +22,18 @@ namespace FlowSharpRestService
         public void Process(ISemanticProcessor proc, IMembrane membrane, CmdUpdateProperty cmd)
         {
             BaseController controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            var els = controller.Elements.Where(e => e.Name == cmd.ShapeName);
 
-            GraphicElement el = controller.Elements.SingleOrDefault(e => e.Name == cmd.ShapeName);
-            PropertyInfo pi = el.GetType().GetProperty(cmd.PropertyName);
-            object cval = Converter.Convert(cmd.Value, pi.PropertyType);
-
-            el?.Canvas.Invoke(() =>
+            els.ForEach(el =>
             {
-                pi.SetValue(el, cval);
-                controller.Redraw(el);
+                PropertyInfo pi = el.GetType().GetProperty(cmd.PropertyName);
+                object cval = Converter.Convert(cmd.Value, pi.PropertyType);
+
+                el?.Canvas.Invoke(() =>
+                {
+                    pi.SetValue(el, cval);
+                    controller.Redraw(el);
+                });
             });
         }
     }

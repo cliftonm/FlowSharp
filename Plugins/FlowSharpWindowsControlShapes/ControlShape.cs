@@ -5,6 +5,8 @@
 */
 
 using System.Collections.Generic;
+using System.Windows.Forms;
+
 using FlowSharpLib;
 
 namespace FlowSharpWindowsControlShapes
@@ -14,6 +16,8 @@ namespace FlowSharpWindowsControlShapes
         public string ClickEventName { get; set; }
         public string ClickEventData { get; set; }
 
+        protected Control control;
+
         public ControlShape(Canvas canvas) : base(canvas)
         {
             ClickEventName = "ButtonClick";     // Default.
@@ -22,6 +26,18 @@ namespace FlowSharpWindowsControlShapes
         public override ElementProperties CreateProperties()
         {
             return new ControlShapeProperties(this);
+        }
+
+        public override void Erase()
+        {
+            base.Erase();
+            control.Hide();
+        }
+
+        public override void Draw()
+        {
+            base.Draw();
+            control.Show();
         }
 
         public override void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
@@ -47,6 +63,16 @@ namespace FlowSharpWindowsControlShapes
             {
                 ClickEventData = data;
             }
+        }
+
+        protected string AppendData(string url)
+        {
+            if (!string.IsNullOrEmpty(ClickEventData))
+            {
+                url += "&" + ClickEventData;
+            }
+
+            return url;
         }
     }
 }

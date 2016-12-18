@@ -13,24 +13,17 @@ namespace FlowSharpWindowsControlShapes
 {
     public class ButtonShape : ControlShape
     {
-        protected Button button;
-
         public ButtonShape(Canvas canvas) : base(canvas)
         {
-            button = new Button();
-            canvas.Controls.Add(button);
-            button.Click += OnClick;
+            control = new Button();
+            canvas.Controls.Add(control);
+            control.Click += OnClick;
         }
 
         private void OnClick(object sender, System.EventArgs e)
         {
             string url = "http://localhost:8002/" + ClickEventName + "?ShapeName=" + Name;
-
-            if (!string.IsNullOrEmpty(ClickEventData))
-            {
-                url += "&" + ClickEventData;
-            }
-
+            url = AppendData(url);
             Http.Get(url);
         }
 
@@ -38,9 +31,9 @@ namespace FlowSharpWindowsControlShapes
         {
             base.Draw(gr);
             Rectangle r = DisplayRectangle.Grow(-4);
-            button.Location = r.Location;
-            button.Size = r.Size;
-            button.Text = Text;
+            control.Location = r.Location;
+            control.Size = r.Size;
+            control.Text = Text;
         }
     }
 }

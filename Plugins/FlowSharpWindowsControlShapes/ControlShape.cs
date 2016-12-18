@@ -5,6 +5,7 @@
 */
 
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 using FlowSharpLib;
@@ -28,18 +29,12 @@ namespace FlowSharpWindowsControlShapes
             return new ControlShapeProperties(this);
         }
 
-        public override void Erase()
+        public override void Move(Point delta)
         {
-            base.Erase();
-            control.Hide();
+            // Prevents trails being left by controls when canvas is dragged.
+            base.Move(delta);
+            control.Visible = OnScreen();
         }
-
-        public override void Draw()
-        {
-            base.Draw();
-            control.Show();
-        }
-
         public override void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
         {
             Json["ClickEventName"] = ClickEventName;

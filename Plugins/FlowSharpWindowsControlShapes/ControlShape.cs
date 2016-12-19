@@ -16,12 +16,16 @@ namespace FlowSharpWindowsControlShapes
     {
         public string ClickEventName { get; set; }
         public string ClickEventData { get; set; }
+        public bool Enabled { get; set; }
+        public bool Visible { get; set; }
 
         protected Control control;
 
         public ControlShape(Canvas canvas) : base(canvas)
         {
             ClickEventName = "ButtonClick";     // Default.
+            Enabled = true;
+            Visible = true;
         }
 
         public override ElementProperties CreateProperties()

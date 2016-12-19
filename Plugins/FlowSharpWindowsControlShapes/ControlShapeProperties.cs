@@ -19,10 +19,17 @@ namespace FlowSharpWindowsControlShapes
         [Category("Click")]
         public string ClickEventData { get; set; }
 
+        [Category("Visual")]
+        public bool Enabled { get; set; }
+        [Category("Visual")]
+        public bool Visible { get; set; }
+
         public ControlShapeProperties(GraphicElement el) : base(el)
         {
             ClickEventName = ((ControlShape)el).ClickEventName;
             ClickEventData = ((ControlShape)el).ClickEventData;
+            Enabled = ((ControlShape)el).Enabled;
+            Visible = ((ControlShape)el).Visible;
         }
 
         public override void Update(GraphicElement el, string label)
@@ -30,6 +37,8 @@ namespace FlowSharpWindowsControlShapes
             base.Update(el, label);
             (label == nameof(ClickEventName)).If(() => ((ControlShape)el).ClickEventName = ClickEventName);
             (label == nameof(ClickEventData)).If(() => ((ControlShape)el).ClickEventData = ClickEventData);
+            (label == nameof(Enabled)).If(() => ((ControlShape)el).Enabled = Enabled);
+            (label == nameof(Visible)).If(() => ((ControlShape)el).Visible = Visible);
         }
     }
 }

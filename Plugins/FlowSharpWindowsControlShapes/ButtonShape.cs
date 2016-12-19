@@ -34,6 +34,8 @@ namespace FlowSharpWindowsControlShapes
             control.Location = r.Location;
             control.Size = r.Size;
             control.Text = Text;
+            control.Enabled = Enabled;
+            control.Visible = Visible;
         }
     }
 }

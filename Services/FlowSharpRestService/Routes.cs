@@ -51,8 +51,10 @@ namespace FlowSharpRestService
             Type st = Type.GetType("FlowSharpServiceInterfaces." + stname + ",FlowSharpServiceInterfaces");
             ISemanticType t = Activator.CreateInstance(st) as ISemanticType;
             PopulateType(t, nvc);
-            serviceManager.Get<ISemanticProcessor>().ProcessInstance<FlowSharpMembrane>(t);
-            Response(context);      // TODO: response might be something the proc returns, in which case it needs to be synchronous.
+            // Synchronous, because however we're processing the command doesn't know (or need to know) that it's
+            // coming from an HTTP GET, but we don't want to issue the response until the action has been performed.
+            serviceManager.Get<ISemanticProcessor>().ProcessInstance<FlowSharpMembrane>(t, true);
+            Response(context);      
         }
 
         protected void PopulateType(ISemanticType packet, NameValueCollection nvc)

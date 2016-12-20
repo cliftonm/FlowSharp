@@ -33,6 +33,11 @@ namespace FlowSharpWindowsControlShapes
             return new ControlShapeProperties(this);
         }
 
+        public override void DrawText(Graphics gr)
+        {
+            // Do nothing, as we don't display the text in the shape itself, only the edit control.
+        }
+
         public override void Move(Point delta)
         {
             // Prevents trails being left by controls when canvas is dragged.

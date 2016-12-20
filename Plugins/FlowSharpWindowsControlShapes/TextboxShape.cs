@@ -56,10 +56,5 @@ namespace FlowSharpWindowsControlShapes
             control.Font = TextFont;
             ((TextBox)control).Multiline = Multiline;
         }
-
-        public override void DrawText(Graphics gr)
-        {
-            // Do nothing, as we don't display the text in the shape itself, only the edit control.
-        }
     }
 }

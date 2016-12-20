@@ -29,13 +29,17 @@ namespace FlowSharpWindowsControlShapes
 
         public override void Draw(Graphics gr)
         {
-            base.Draw(gr);
-            Rectangle r = DisplayRectangle.Grow(-4);
-            control.Location = r.Location;
-            control.Size = r.Size;
-            control.Text = Text;
-            control.Enabled = Enabled;
             control.Visible = Visible;
+
+            if (Visible)
+            {
+                base.Draw(gr);
+                Rectangle r = DisplayRectangle.Grow(-4);
+                control.Location = r.Location;
+                control.Size = r.Size;
+                control.Text = Text;
+                control.Enabled = Enabled;
+            }
         }
     }
 }

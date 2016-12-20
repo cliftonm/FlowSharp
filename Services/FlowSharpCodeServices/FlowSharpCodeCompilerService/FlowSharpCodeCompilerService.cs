@@ -154,10 +154,48 @@ namespace FlowSharpCodeCompilerService
             return start;
         }
 
+        /// <summary>
+        /// Find the next shape connected to el.
+        /// </summary>
+        /// <param name="el"></param>
+        /// <returns>The next connected shape or null if no connection exists.</returns>
         protected GraphicElement NextElementInWorkflow(GraphicElement el)
         {
             GraphicElement ret = null;
 
+            // The starting shape has one connection where the StartConnectedShape should be the el
+            // and the EndConnectedShape is the next shape in the workflow.
+
+            // A middle workflow element has two connections, again where the StartConnectedShape should be the el
+            // and the EndConnectedShape is the next shape in the workflow.
+
+            // The final workflow step has one connector, where the EndConnectedShape is the el.
+
+            // 12/20/16, because of a current bug with connectors, where shapes incorrectly retain
+            // connections to other shapes that they aren't actually connected to, we try to 
+            // compensate for this.
+
+            foreach (Connection connection in el.Connections)
+            {
+                GraphicElement gr = connection.ToElement;       // a shape's Connections should always be a Connector
+
+                if (gr is Connector)
+                {
+                    Connector connector = (Connector)gr;
+
+                    if (connector.StartConnectedShape == el)
+                    {
+                        ret = connector.EndConnectedShape;
+                        break;
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("*** EXPECTED CONNECTOR FOR " + el.GetType().Name + " ID=" + el.Id.ToString() + " Text=" + el.Text + " ***");
+                }
+            }
+
+            /*
             if (el.Connections.Count == 1)
             {
                 if (((Connector)((Connection)el.Connections[0]).ToElement).EndConnectedShape != el)
@@ -176,6 +214,7 @@ namespace FlowSharpCodeCompilerService
                     ret = ((Connector)((Connection)el.Connections[1]).ToElement).EndConnectedShape;
                 }
             }
+            */
 
             return ret;
         }
@@ -250,7 +289,7 @@ namespace FlowSharpCodeCompilerService
             List<GraphicElement> refs = new List<GraphicElement>();
 
             // TODO: Qualify EndConnectedShape as being IAssemblyBox
-            elAssy.Connections.Where(c => ((Connector)c.ToElement).EndCap == AvailableLineCap.Arrow).ForEach(c =>
+            elAssy.Connections.Where(c => (c.ToElement is Connector) && ((Connector)c.ToElement).EndCap == AvailableLineCap.Arrow).ForEach(c =>
             {
                 // Connector endpoint will reference ourselves, so exclude.
                 if (((Connector)c.ToElement).EndConnectedShape != elAssy)
@@ -261,7 +300,7 @@ namespace FlowSharpCodeCompilerService
             });
 
             // TODO: Qualify EndConnectedShape as being IAssemblyBox
-            elAssy.Connections.Where(c => ((Connector)c.ToElement).StartCap == AvailableLineCap.Arrow).ForEach(c =>
+            elAssy.Connections.Where(c => (c.ToElement is Connector) && ((Connector)c.ToElement).StartCap == AvailableLineCap.Arrow).ForEach(c =>
             {
                 // Connector endpoint will reference ourselves, so exclude.
                 if (((Connector)c.ToElement).StartConnectedShape != elAssy)

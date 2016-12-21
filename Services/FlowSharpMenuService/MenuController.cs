@@ -18,7 +18,7 @@ using FlowSharpServiceInterfaces;
 
 namespace FlowSharpMenuService
 {
-    public class NavigateToShape
+    public class NavigateToShape : IComparable
     {
         public GraphicElement Shape { get; set; }
         public string Name { get; set; }
@@ -26,6 +26,11 @@ namespace FlowSharpMenuService
         public override string ToString()
         {
             return Name;
+        }
+
+        public int CompareTo(object obj)
+        {
+            return Name.CompareTo(((NavigateToShape)obj).Name);
         }
     }
 
@@ -135,6 +140,7 @@ namespace FlowSharpMenuService
             mnuGoToShape.Click += GoToShape;
             mnuGoToBookmark.Click += GoToBookmark;
             mnuToggleBookmark.Click += ToogleBookmark;
+            mnuClearBookmarks.Click += ClearBookmarks;
 
         }
 
@@ -163,7 +169,17 @@ namespace FlowSharpMenuService
         private void ToogleBookmark(object sender, EventArgs e)
         {
             BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
-            canvasController.SelectedElements?.ForEach(el => el.ToggleBookmark());
+            canvasController.SelectedElements?.ForEach(el =>
+            {
+                el.ToggleBookmark();
+                canvasController.Redraw(el);
+            });
+        }
+
+        private void ClearBookmarks(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            canvasController.ClearBookmarks();
         }
 
         protected void ShowNavigateDialog(BaseController canvasController, List<NavigateToShape> navShapes)

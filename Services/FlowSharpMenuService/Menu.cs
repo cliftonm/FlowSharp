@@ -49,7 +49,7 @@ namespace FlowSharpMenuService
         private ToolStripMenuItem mnuGoToShape;
         private ToolStripMenuItem mnuGoToBookmark;
         private ToolStripMenuItem mnuToggleBookmark;
-
+        private ToolStripMenuItem mnuClearBookmarks;
 
         public void Initialize()
         {
@@ -95,6 +95,7 @@ namespace FlowSharpMenuService
             mnuGoToShape = new ToolStripMenuItem();
             mnuGoToBookmark = new ToolStripMenuItem();
             mnuToggleBookmark = new ToolStripMenuItem();
+            mnuClearBookmarks = new ToolStripMenuItem();
 
             // 
             // menuStrip1
@@ -140,11 +141,17 @@ namespace FlowSharpMenuService
                 mnuGoToShape,
                 mnuGoToBookmark,
                 mnuToggleBookmark,
+                mnuClearBookmarks,
             });
 
             mnuGoToShape.Text = "Go To Shape...";
             mnuGoToBookmark.Text = "Go To Bookmark...";
             mnuToggleBookmark.Text = "Toggle Bookmark";
+            mnuClearBookmarks.Text = "Clear Bookmarks";
+
+            mnuGoToShape.ShortcutKeys = Keys.Control | Keys.H;
+            mnuGoToBookmark.ShortcutKeys = Keys.Control | Keys.K;
+            mnuToggleBookmark.ShortcutKeys = Keys.Control | Keys.B;
 
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 21);

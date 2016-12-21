@@ -319,6 +319,11 @@ namespace FlowSharpLib
             IsBookmarked ^= true;
         }
 
+        public void ClearBookmark()
+        {
+            IsBookmarked = false;
+        }
+
 		public bool OnScreen(Rectangle r)
 		{
 			return canvas.OnScreen(r);
@@ -391,6 +396,11 @@ namespace FlowSharpLib
 			{
 				DrawText(gr);
 			}
+
+            if (IsBookmarked)
+            {
+                DrawBookmark(gr);
+            }
         }
 
         public virtual void UpdateScreen(int ix = 0, int iy = 0)
@@ -602,7 +612,17 @@ namespace FlowSharpLib
 			});
 		}
 
-		public virtual void DrawText(Graphics gr)
+        protected virtual void DrawBookmark(Graphics gr)
+        {
+            Brush bookmarkBrush = new SolidBrush(Color.Green);
+            Rectangle r = UpdateRectangle;
+            r.Width = 5;
+            r.Height = 5;
+            gr.FillRectangle(bookmarkBrush, r);
+            bookmarkBrush.Dispose();
+        }
+
+        public virtual void DrawText(Graphics gr)
 		{
 			SizeF size = gr.MeasureString(Text, TextFont);
 			Brush brush = new SolidBrush(TextColor);

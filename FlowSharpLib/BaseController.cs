@@ -657,6 +657,15 @@ namespace FlowSharpLib
             MoveAllElements(new Point(dx, dy));
         }
 
+        public void ClearBookmarks()
+        {
+            Elements.ForEach(el =>
+            {
+                el.ClearBookmark();
+                Redraw(el);
+            });
+        }
+
         protected void DeleteElementHierarchy(GraphicElement el, bool dispose)
         {
             el.GroupChildren.ForEach(gc =>

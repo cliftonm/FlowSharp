@@ -69,6 +69,9 @@ namespace FlowSharpLib
         public int BorderPenWidth { get { return (int)BorderPen.Width; } set { BorderPen.Width = value; } }
         public Color FillColor { get { return FillBrush.Color; } set { FillBrush.Color = value; } }
 
+        public bool IsBookmarked { get; protected set; }
+        public string NavigateName { get { return String.IsNullOrEmpty(Name) ? GetType().Name + " " + Text : Name; } }
+
         public string Name { get; set; }
         public string Text { get; set; }
 		public Font TextFont { get; set; }
@@ -247,6 +250,7 @@ namespace FlowSharpLib
 			epb.BorderPenColor = BorderPen.Color;
 			epb.BorderPenWidth = (int)BorderPen.Width;
 			epb.FillBrushColor = FillBrush.Color;
+            epb.IsBookmarked = IsBookmarked;
 			epb.Text = Text;
 			epb.TextColor = TextColor;
             epb.TextAlign = TextAlign;
@@ -287,6 +291,7 @@ namespace FlowSharpLib
 			FillBrush = new SolidBrush(epb.FillBrushColor);
 			Text = epb.Text;
 			TextColor = epb.TextColor;
+            IsBookmarked = epb.IsBookmarked;
             // If missing (backwards compatibility) middle-center align.
             TextAlign = epb.TextAlign == 0 ? ContentAlignment.MiddleCenter : epb.TextAlign;
 			TextFont.Dispose();
@@ -307,6 +312,11 @@ namespace FlowSharpLib
         public virtual void FinalFixup(List<GraphicElement> elements, ElementPropertyBag epb, Dictionary<Guid, Guid> oldNewGuidMap)
         {
             elements.ForEach(el => el.UpdateProperties());
+        }
+
+        public void ToggleBookmark()
+        {
+            IsBookmarked ^= true;
         }
 
 		public bool OnScreen(Rectangle r)

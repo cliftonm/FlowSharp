@@ -10,8 +10,17 @@ namespace FlowSharpServiceInterfaces
 {
     public class CmdUpdateProperty : ISemanticType
     {
-        public string ShapeName { get; set; }
+        public string Name { get; set; }
         public string PropertyName { get; set; }
         public string Value { get; set; }
+    }
+
+    public class CmdShowShape : ISemanticType
+    {
+        // Options for indicating what shape to show:
+        // By ID, Text, or Name
+        public string Id { get; set; }
+        public string Text { get; set; }
+        public string Name { get; set; }
     }
 }

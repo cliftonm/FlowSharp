@@ -9,6 +9,7 @@ namespace FlowSharpMenuService
 
         private MenuStrip menuStrip;
         private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem navigateStripMenuItem;
         private ToolStripMenuItem mnuClearCanvas;
         private ToolStripMenuItem mnuAddCanvas;
         private ToolStripMenuItem mnuOpen;
@@ -45,10 +46,16 @@ namespace FlowSharpMenuService
         private ToolStripMenuItem mnuLoadLayout;
         private ToolStripMenuItem mnuSaveLayout;
 
+        private ToolStripMenuItem mnuGoToShape;
+        private ToolStripMenuItem mnuGoToBookmark;
+        private ToolStripMenuItem mnuToggleBookmark;
+
+
         public void Initialize()
         {
             menuStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
+            navigateStripMenuItem = new ToolStripMenuItem();
             mnuClearCanvas = new ToolStripMenuItem();
             mnuAddCanvas = new ToolStripMenuItem();
             toolStripMenuItem3 = new ToolStripSeparator();
@@ -85,6 +92,10 @@ namespace FlowSharpMenuService
             mnuLoadLayout = new ToolStripMenuItem();
             mnuSaveLayout = new ToolStripMenuItem();
 
+            mnuGoToShape = new ToolStripMenuItem();
+            mnuGoToBookmark = new ToolStripMenuItem();
+            mnuToggleBookmark = new ToolStripMenuItem();
+
             // 
             // menuStrip1
             // 
@@ -93,6 +104,7 @@ namespace FlowSharpMenuService
             fileToolStripMenuItem,
             editToolStripMenuItem,
             viewToolStripMenuItem,
+            navigateStripMenuItem,
             orderToolStripMenuItem,
             groupToolStripMenuItem});
             menuStrip.Location = new Point(0, 0);
@@ -120,6 +132,19 @@ namespace FlowSharpMenuService
             mnuRecentFiles,
             toolStripMenuItem4,
             mnuExit});
+
+            navigateStripMenuItem.Text = "&Navigate";
+
+            // navigateToolStripMenuItem
+            navigateStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuGoToShape,
+                mnuGoToBookmark,
+                mnuToggleBookmark,
+            });
+
+            mnuGoToShape.Text = "Go To Shape...";
+            mnuGoToBookmark.Text = "Go To Bookmark...";
+            mnuToggleBookmark.Text = "Toggle Bookmark";
 
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 21);

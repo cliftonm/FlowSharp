@@ -18,6 +18,17 @@ using FlowSharpServiceInterfaces;
 
 namespace FlowSharpMenuService
 {
+    public class NavigateToShape
+    {
+        public GraphicElement Shape { get; set; }
+        public string Name { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
+
     public partial class MenuController
     {
         private const string MRU_FILENAME = "FlowSharp.mru";
@@ -120,6 +131,44 @@ namespace FlowSharpMenuService
             // TODO: Decouple dependency - see canvas controller
             // Instead, fire an event or publish on subscriber an action?
             mnuAddCanvas.Click += (sndr, args) => serviceManager.Get<IFlowSharpCanvasService>().RequestNewCanvas();
+
+            mnuGoToShape.Click += GoToShape;
+            mnuGoToBookmark.Click += GoToBookmark;
+            mnuToggleBookmark.Click += ToogleBookmark;
+
+        }
+
+        private void GoToShape(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            List<NavigateToShape> navShapes = canvasController.Elements.
+                Where(el => !el.IsConnector).
+                Select(el => new NavigateToShape() { Shape = el, Name = el.NavigateName }).
+                OrderBy(s => s.Name).
+                ToList();
+            ShowNavigateDialog(canvasController, navShapes);
+        }
+
+        private void GoToBookmark(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            List<NavigateToShape> navShapes = canvasController.Elements.
+                Where(el=>el.IsBookmarked).
+                Select(el => new NavigateToShape() { Shape = el, Name = el.NavigateName }).
+                OrderBy(s=>s).
+                ToList();
+            ShowNavigateDialog(canvasController, navShapes);
+        }
+
+        private void ToogleBookmark(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            canvasController.SelectedElements?.ForEach(el => el.ToggleBookmark());
+        }
+
+        protected void ShowNavigateDialog(BaseController canvasController, List<NavigateToShape> navShapes)
+        {
+            new NavigateDlg(canvasController, navShapes).ShowDialog();
         }
 
         protected void PopulateMostRecentFiles()

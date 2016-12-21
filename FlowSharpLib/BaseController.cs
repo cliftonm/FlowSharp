@@ -330,23 +330,6 @@ namespace FlowSharpLib
             canvas.Invalidate();
 		}
 
-        protected void DeleteElementHierarchy(GraphicElement el, bool dispose)
-        {
-            el.GroupChildren.ForEach(gc =>
-            {
-                DeleteElementHierarchy(gc, dispose);
-                gc.DetachAll();
-                gc.Connections.ForEach(c => c.ToElement.RemoveConnection(c.ToConnectionPoint.Type));
-                gc.Connections.Clear();
-                elements.Remove(gc);
-
-                if (dispose)
-                {
-                    gc.Dispose();
-                }
-            });
-        }
-
         // Used by secondary operations, particularly undo events, where we delete things we've pasted or dropped onto the canvas.
         public void DeleteElement(GraphicElement el, bool dispose = true)
         {
@@ -660,6 +643,35 @@ namespace FlowSharpLib
         {
             // Is this faster than creating a unioned rectangle?  Dunno, because the unioned rectangle might include a lot of space not part of the shapes, like something in an "L" pattern.
             els.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.UpdateScreen(dx, dy));
+        }
+
+        /// <summary>
+        /// Center the canvas on the selected element.
+        /// </summary>
+        public void FocusOn(GraphicElement el)
+        {
+            int cx = (Canvas.Width - el.DisplayRectangle.Width) / 2;
+            int cy = (Canvas.Height - el.DisplayRectangle.Height) / 2;
+            int dx = -(el.DisplayRectangle.X - cx);
+            int dy = -(el.DisplayRectangle.Y - cy);
+            MoveAllElements(new Point(dx, dy));
+        }
+
+        protected void DeleteElementHierarchy(GraphicElement el, bool dispose)
+        {
+            el.GroupChildren.ForEach(gc =>
+            {
+                DeleteElementHierarchy(gc, dispose);
+                gc.DetachAll();
+                gc.Connections.ForEach(c => c.ToElement.RemoveConnection(c.ToConnectionPoint.Type));
+                gc.Connections.Clear();
+                elements.Remove(gc);
+
+                if (dispose)
+                {
+                    gc.Dispose();
+                }
+            });
         }
 
         protected void MoveToTop(GraphicElement el)

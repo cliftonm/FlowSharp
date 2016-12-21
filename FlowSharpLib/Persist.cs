@@ -43,8 +43,10 @@ namespace FlowSharpLib
 		public Guid Id { get; set; }
 		[XmlAttribute]
 		public string Text { get; set; }
+        [XmlAttribute]
+        public bool IsBookmarked { get; set; }
 
-		public Rectangle DisplayRectangle { get; set; }
+        public Rectangle DisplayRectangle { get; set; }
 		public Point StartPoint { get; set; }
 		public Point EndPoint { get; set; }
 

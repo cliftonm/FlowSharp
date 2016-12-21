@@ -18,11 +18,11 @@ namespace FlowSharpRestService
 {
     public class CommandProcessor : IReceptor
     {
-        // Ex: localhost:8001:flowsharp?cmd=CmdUpdateProperty&ShapeName=btnTest&PropertyName=Text&Value=Foobar
+        // Ex: localhost:8001:flowsharp?cmd=CmdUpdateProperty&Name=btnTest&PropertyName=Text&Value=Foobar
         public void Process(ISemanticProcessor proc, IMembrane membrane, CmdUpdateProperty cmd)
         {
             BaseController controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
-            var els = controller.Elements.Where(e => e.Name == cmd.ShapeName);
+            var els = controller.Elements.Where(e => e.Name == cmd.Name);
 
             els.ForEach(el =>
             {
@@ -34,6 +34,18 @@ namespace FlowSharpRestService
                     pi.SetValue(el, cval);
                     controller.Redraw(el);
                 });
+            });
+        }
+
+        // Ex: localhost:8001:flowsharp?cmd=CmdShowShape&Name=btnTest
+        public void Process(ISemanticProcessor proc, IMembrane membrane, CmdShowShape cmd)
+        {
+            BaseController controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            var el = controller.Elements.Where(e => e.Name == cmd.Name).FirstOrDefault();
+
+            el?.Canvas.Invoke(() =>
+            {
+                controller.FocusOn(el);
             });
         }
     }

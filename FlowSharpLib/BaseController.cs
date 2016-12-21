@@ -251,6 +251,8 @@ namespace FlowSharpLib
                 zo.Element.GroupChildren.ForEach(gc => gc.Parent = zo.Element);
             });
 
+            zorder.ForEach(zo => zo.Element.Restored());
+
             canvas.Invalidate();
         }
 
@@ -318,12 +320,7 @@ namespace FlowSharpLib
                 el.DetachAll();
                 el.Connections.ForEach(c => c.ToElement.RemoveConnection(c.ToConnectionPoint.Type));
                 el.Connections.Clear();
-                elements.Remove(el);
-
-                if (dispose)
-                {
-                    el.Dispose();
-                }
+                RemoveElement(el, dispose);
             });
 
             selectedElements.Clear();
@@ -337,19 +334,13 @@ namespace FlowSharpLib
             // See how this is done with Ungroup.
             el.DetachAll();
             var els = EraseIntersectionsTopToBottom(el);
-            elements.Remove(el);
+            RemoveElement(el, dispose);
             List<GraphicElement> elsToRedraw = els.ToList();
             elsToRedraw.Remove(el);
             el.Connections.ForEach(c => c.ToElement.RemoveConnection(c.ToConnectionPoint.Type));
             el.Connections.Clear();
             DrawBottomToTop(elsToRedraw);
             UpdateScreen(els);
-
-            if (dispose)
-            {
-                el.Dispose();
-            }
-
             selectedElements.Remove(el);
         }
 
@@ -437,16 +428,11 @@ namespace FlowSharpLib
             el.GroupChildren.Clear();
             EraseTopToBottom(intersections.AsEnumerable());
 
-            elements.Remove(el);
+            RemoveElement(el, dispose);
             intersections.Remove(el);
 
             DrawBottomToTop(intersections.AsEnumerable());
             UpdateScreen(originalIntersections);        // remember, this updates the screen for the now erased groupbox.
-
-            if (dispose)
-            {
-                el.Dispose();
-            }
         }
 
         public void MoveSelectedElements(Point delta)
@@ -667,6 +653,17 @@ namespace FlowSharpLib
             });
         }
 
+        protected virtual void RemoveElement(GraphicElement el, bool dispose)
+        {
+            elements.Remove(el);
+            el.Removed(dispose);
+
+            if (dispose)
+            {
+                el.Dispose();
+            }
+        }
+
         protected void DeleteElementHierarchy(GraphicElement el, bool dispose)
         {
             el.GroupChildren.ForEach(gc =>
@@ -675,12 +672,7 @@ namespace FlowSharpLib
                 gc.DetachAll();
                 gc.Connections.ForEach(c => c.ToElement.RemoveConnection(c.ToConnectionPoint.Type));
                 gc.Connections.Clear();
-                elements.Remove(gc);
-
-                if (dispose)
-                {
-                    gc.Dispose();
-                }
+                RemoveElement(gc, dispose);
             });
         }
 

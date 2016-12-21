@@ -81,10 +81,7 @@ namespace FlowSharpDebugWindowService
                 if (node != null)
                 {
                     System.Diagnostics.Trace.WriteLine("*** Select Node " + shape.ToString());
-                    this.BeginInvoke(() =>
-                    {
-                        tvShapes.SelectedNode = node;
-                    });
+                    tvShapes.SelectedNode = node;
                 }
             }
         }
@@ -216,6 +213,11 @@ namespace FlowSharpDebugWindowService
             GraphicElement untag = controller.Elements.FirstOrDefault(el => el.Tagged);
             untag?.ClearTag();
             untag?.Redraw();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

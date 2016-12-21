@@ -69,6 +69,24 @@ namespace FlowSharpWindowsControlShapes
             }
         }
 
+        public override void Removed(bool dispose)
+        {
+            base.Removed(dispose);
+            control.Visible = false;
+
+            // Detach the control if we are actually disposing.
+            if (dispose)
+            {
+                control.Parent = null;
+            }
+        }
+
+        public override void Restored()
+        {
+            base.Restored();
+            control.Visible = Visible;
+        }
+
         protected string AppendData(string url)
         {
             if (!string.IsNullOrEmpty(ClickEventData))

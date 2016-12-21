@@ -102,6 +102,7 @@ namespace FlowSharpLib
 		protected Canvas canvas;
 
 		protected bool disposed;
+        protected bool removed;
 
         public GraphicElement(Canvas canvas)
         {
@@ -136,6 +137,16 @@ namespace FlowSharpLib
         public virtual void Deselect()
         {
             Selected = false;
+        }
+
+        public virtual void Removed(bool dispose)
+        {
+            removed = true;
+        }
+
+        public virtual void Restored()
+        {
+            removed = false;
         }
 
         public void ClearTag()

@@ -40,6 +40,7 @@
             this.btnClearTrace = new System.Windows.Forms.Button();
             this.tbTrace = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnDelete = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -84,6 +85,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.btnDelete);
             this.splitContainer1.Panel1.Controls.Add(this.tbUndoEvents);
             this.splitContainer1.Panel1.Controls.Add(this.label3);
             this.splitContainer1.Panel1.Controls.Add(this.tvShapes);
@@ -187,6 +189,16 @@
             this.label1.TabIndex = 11;
             this.label1.Text = "Trace:";
             // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(422, 10);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(75, 23);
+            this.btnDelete.TabIndex = 9;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
             // DlgDebugWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -218,5 +230,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbUndoEvents;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnDelete;
     }
 }

@@ -102,7 +102,10 @@ namespace FlowSharpServiceInterfaces
         void Initialize(BaseController canvasController);
         void ShowDebugWindow();
         void EditPlugins();     // TODO: Not really a debug window!
-        void UpdateDebugWindow();
+        void UpdateDebugWindow(); // Updates both shape tree and stack trace.
+        void UpdateShapeTree();
+        void UpdateStackTrace();
+        void FindShape(GraphicElement shape);
     }
 
     public interface IFlowSharpRestService : IService

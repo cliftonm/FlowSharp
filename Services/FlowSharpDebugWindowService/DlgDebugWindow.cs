@@ -14,6 +14,7 @@ namespace FlowSharpDebugWindowService
     public partial class DlgDebugWindow : Form
     {
         protected IServiceManager serviceManager;
+        protected GraphicElement selectedElement;
 
         public DlgDebugWindow(IServiceManager serviceManager)
         {
@@ -22,6 +23,10 @@ namespace FlowSharpDebugWindowService
             PopulateWithShapes();
             tvShapes.ExpandAll();
             tvShapes.AfterSelect += OnSelect;
+            // Clear the selected element when the user focuses on the shape list, so that the user can actually
+            // select here, the selected element, and it is visually indicated.
+            tvShapes.GotFocus += (sndr, args) => selectedElement = null;
+            tvShapes.LostFocus += OnLostFocus;
             ckTraceEnabled.CheckedChanged += OnTraceEnabledCheckedChanged;
         }
 
@@ -59,9 +64,29 @@ namespace FlowSharpDebugWindowService
 
         public void UpdateShapeTree()
         {
+            System.Diagnostics.Trace.WriteLine("*** UpdateShapeTree!");
             tvShapes.Nodes.Clear();
             PopulateWithShapes();
             tvShapes.ExpandAll();
+        }
+
+        public void FindShape(GraphicElement shape)
+        {
+            selectedElement = shape;
+
+            if (shape != null)
+            {
+                TreeNode node = tvShapes.Nodes.Cast<TreeNode>().SingleOrDefault(n => n.Tag == shape);
+
+                if (node != null)
+                {
+                    System.Diagnostics.Trace.WriteLine("*** Select Node " + shape.ToString());
+                    this.BeginInvoke(() =>
+                    {
+                        tvShapes.SelectedNode = node;
+                    });
+                }
+            }
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -165,18 +190,32 @@ namespace FlowSharpDebugWindowService
             ckShapeEvents.Enabled = ckTraceEnabled.Checked;
         }
 
+        private void OnLostFocus(object sender, EventArgs e)
+        {
+            selectedElement = null;
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            UntagTaggedElement(controller);
+        }
+
         private void OnSelect(object sender, TreeViewEventArgs e)
         {
             GraphicElement elTag = (GraphicElement)e.Node?.Tag;
 
-            if (elTag != null)
+            if (elTag != null && elTag != selectedElement)
             {
                 BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
-                controller.Elements.ForEach(el => el.Tagged = false);
-                elTag.Tagged = true;
-                // Cheap and dirty.
-                controller.Canvas.Invalidate();
+                UntagTaggedElement(controller);
+                elTag.SetTag();
+                elTag.Redraw();
+                controller.FocusOn(elTag);
             }
+        }
+
+        protected void UntagTaggedElement(BaseController controller)
+        {
+            GraphicElement untag = controller.Elements.FirstOrDefault(el => el.Tagged);
+            untag?.ClearTag();
+            untag?.Redraw();
         }
     }
 }

@@ -179,6 +179,7 @@ namespace FlowSharpToolboxService
                     canvasController.Insert(el);
                     canvasController.DeselectCurrentSelectedElements();
                     canvasController.SelectElement(el);
+                    serviceManager.Get<IFlowSharpDebugWindowService>().UpdateDebugWindow();
 
                     if (dragging)
                     {
@@ -196,6 +197,7 @@ namespace FlowSharpToolboxService
                     canvasController.DeselectCurrentSelectedElements();
                     canvasController.DeleteElement(el, false);
                     canvasController.SelectElements(currentSelectedShapes);
+                    serviceManager.Get<IFlowSharpDebugWindowService>().UpdateDebugWindow();
                 });
         }
 

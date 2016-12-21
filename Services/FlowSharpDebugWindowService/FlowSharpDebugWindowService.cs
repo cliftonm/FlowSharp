@@ -63,8 +63,8 @@ namespace FlowSharpDebugWindowService
 
         public void Initialize(BaseController canvasController)
         {
-            canvasController.UndoStack.AfterAction += (sndr, args) => UpdateDebugWindow();
-            UpdateDebugWindow();
+            canvasController.UndoStack.AfterAction += (sndr, args) => UpdateStackTrace();
+            UpdateShapeTree();
         }
 
         public void EditPlugins()
@@ -74,11 +74,23 @@ namespace FlowSharpDebugWindowService
 
         public void UpdateDebugWindow()
         {
-            if (dlgDebugWindow != null)
-            {
-                dlgDebugWindow.UpdateUndoStack();
-                dlgDebugWindow.UpdateShapeTree();
-            }
+            UpdateStackTrace();
+            UpdateShapeTree();
+        }
+
+        public void UpdateStackTrace()
+        {
+            dlgDebugWindow?.UpdateUndoStack();
+        }
+
+        public void UpdateShapeTree()
+        {
+            dlgDebugWindow?.UpdateShapeTree();
+        }
+
+        public void FindShape(GraphicElement shape)
+        {
+            dlgDebugWindow?.FindShape(shape);
         }
     }
 

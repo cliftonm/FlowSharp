@@ -60,6 +60,7 @@
             // 
             this.tvShapes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.tvShapes.HideSelection = false;
             this.tvShapes.Location = new System.Drawing.Point(7, 34);
             this.tvShapes.Name = "tvShapes";
             this.tvShapes.Size = new System.Drawing.Size(584, 208);

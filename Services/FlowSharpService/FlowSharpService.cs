@@ -278,6 +278,12 @@ namespace FlowSharpService
                 doc.Metadata = Constants.META_CANVAS + "," + controller.Filename + "," + doc.TabText;
             };
 
+            // Inform debug window, so it can select the shape in the shape list when a shape is selected on the canvas.
+            controller.ElementSelected += (sndr, args) =>
+            {
+                ServiceManager.Get<IFlowSharpDebugWindowService>().FindShape(args.Element);
+            };
+
             // Update any other services needing to know about the new canvas.
             NewCanvas.Fire(this, new NewCanvasEventArgs() { Controller = controller });
         }

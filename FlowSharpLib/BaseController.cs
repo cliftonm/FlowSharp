@@ -647,6 +647,7 @@ namespace FlowSharpLib
 
         /// <summary>
         /// Center the canvas on the selected element.
+        /// This does not add the action to the undo stack.
         /// </summary>
         public void FocusOn(GraphicElement el)
         {

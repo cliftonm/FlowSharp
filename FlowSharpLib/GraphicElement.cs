@@ -41,7 +41,7 @@ namespace FlowSharpLib
 
 		public Guid Id { get; set; }
 		public virtual bool Selected { get; protected set; }
-        public bool Tagged { get; set; }
+        public bool Tagged { get; protected set; }
 		public bool ShowConnectionPoints { get; set; }
 		// public bool HideConnectionPoints { get; set; }
 		public bool ShowAnchors { get; set; }
@@ -130,16 +130,28 @@ namespace FlowSharpLib
 
         public virtual void Select()
         {
-            // X1
-            //this.ChangePropertyWithUndoRedo(nameof(Selected), true, false);
             Selected = true;
         }
 
         public virtual void Deselect()
         {
-            // X1
-            //this.ChangePropertyWithUndoRedo(nameof(Selected), false, false);
             Selected = false;
+        }
+
+        public void ClearTag()
+        {
+            Tagged = false;
+        }
+
+        public void SetTag()
+        {
+            Tagged = true;
+        }
+
+        // For convenience when we know the shape and we just want to redraw it.
+        public virtual void Redraw()
+        {
+            Canvas.Controller.Redraw(this);
         }
 
         public override string ToString()

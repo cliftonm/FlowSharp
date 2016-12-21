@@ -36,7 +36,7 @@ namespace FlowSharpMenuService
                     e.Handled = true;
                     Close();
                     GraphicElement shape = ((NavigateToShape)lbShapes.SelectedItem).Shape;
-                    canvasController.FocusOn(shape);
+                    FocusOnShape(shape);
                     break;
             }
         }
@@ -45,7 +45,31 @@ namespace FlowSharpMenuService
         {
             Close();
             GraphicElement shape = ((NavigateToShape)lbShapes.SelectedItem).Shape;
-            canvasController.FocusOn(shape);
+            FocusOnShape(shape);
+        }
+
+        private void FocusOnShape(GraphicElement shape)
+        {
+            // For closure:
+            List<GraphicElement> selectedShapes = canvasController.SelectedElements.ToList();
+            int cx = (canvasController.Canvas.Width - shape.DisplayRectangle.Width) / 2;
+            int cy = (canvasController.Canvas.Height - shape.DisplayRectangle.Height) / 2;
+            int dx = -(shape.DisplayRectangle.X - cx);
+            int dy = -(shape.DisplayRectangle.Y - cy);
+
+            canvasController.UndoStack.UndoRedo("Focus Shape " + shape.ToString(),
+                () =>
+                {
+                    canvasController.MoveAllElements(new Point(dx, dy));
+                    canvasController.DeselectCurrentSelectedElements();
+                    canvasController.SelectElement(shape);
+                },
+                () =>
+                {
+                    canvasController.DeselectCurrentSelectedElements();
+                    canvasController.SelectElements(selectedShapes);
+                    canvasController.MoveAllElements(new Point(-dx, -dy));
+                });
         }
     }
 }

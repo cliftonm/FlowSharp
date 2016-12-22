@@ -660,6 +660,7 @@ namespace FlowSharpMouseControllerService
         {
             BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             GraphicElement el = controller.GetRootShapeAt(CurrentMousePosition);
+            Trace.WriteLine("*** ShowAnchors " + el.GetType().Name);
             el.ShowAnchors = true;
             controller.Redraw(el);
             HoverShape = el;

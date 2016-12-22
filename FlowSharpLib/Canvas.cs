@@ -154,11 +154,22 @@ namespace FlowSharpLib
 
 		protected void OnPaint(object sender, PaintEventArgs e)
         {
-            Graphics gr = Graphics;
-            DrawBackground(gr);
-            DrawGrid(gr);
-            PaintComplete(this);
-            e.Graphics.DrawImage(bitmap, origin);
+            // Controller.OnPaint(e);
+            // WinForm controls will cause an OnPaint when they are moved/redrawn, so
+            // we ignore the paint when the canvas is being dragged.
+            if (!Controller.IsCanvasDragging)
+            {
+                // Otherwise, draw only shapes that intersect with the clip rectangle.
+                // elements.Where(el => el.UpdateRectangle.IntersectsWith(e.ClipRectangle)).ForEach(el =>
+                {
+                    // TODO: Right now, we're redrawing the whole surface.  Optimize this as per comments above.
+                    Graphics gr = Graphics;
+                    DrawBackground(gr);
+                    DrawGrid(gr);
+                    PaintComplete(this);
+                    e.Graphics.DrawImage(bitmap, origin);
+                }
+            }
         }
 
         protected virtual void DrawBackground(Graphics gr)

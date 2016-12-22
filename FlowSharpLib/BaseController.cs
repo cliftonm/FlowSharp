@@ -344,7 +344,7 @@ namespace FlowSharpLib
 
         public void Redraw(GraphicElement el, int dx=0, int dy=0)
 		{
-            // Trace.WriteLine("Shape:Redraw1");
+            Trace.WriteLine("*** Redraw1 " + el.GetType().Name);
 			var els = EraseIntersectionsTopToBottom(el, dx, dy);
 			DrawBottomToTop(els, dx, dy);
 			UpdateScreen(els, dx, dy);
@@ -352,7 +352,7 @@ namespace FlowSharpLib
 
 		public void Redraw(GraphicElement el, Action<GraphicElement> afterErase)
 		{
-            // Trace.WriteLine("Shape:Redraw2");
+            Trace.WriteLine("*** Redraw2 " + el.GetType().Name);
             var els = EraseIntersectionsTopToBottom(el);
 			UpdateScreen(els);
 			afterErase(el);
@@ -381,7 +381,8 @@ namespace FlowSharpLib
         /// </summary>
         public void UpdateDisplayRectangle(GraphicElement el, Rectangle newRect, Point delta)
 		{
-			int dx = delta.X.Abs();
+            Trace.WriteLine("*** UpdateDisplayRectangle " + el.GetType().Name);
+            int dx = delta.X.Abs();
 			int dy = delta.Y.Abs();
             var els = EraseIntersectionsTopToBottom(el, dx, dy);
             // X1
@@ -516,6 +517,7 @@ namespace FlowSharpLib
 		{
 			if (el.OnScreen())
 			{
+                Trace.WriteLine("*** MoveElement " + el.GetType().Name);
                 int dx = delta.X.Abs();
                 int dy = delta.Y.Abs();
                 var els = EraseIntersectionsTopToBottom(el, dx, dy);
@@ -539,15 +541,20 @@ namespace FlowSharpLib
         // For canvas dragging.
         public void MoveAllElements(Point delta)
         {
+            if (IsCanvasDragging)
+            {
+                Trace.WriteLine("*** MoveAllElements Collision");
+            }
+
+            IsCanvasDragging = true;            // Kludgy workaround for Issue #34 (groupbox update)
             EraseTopToBottom(elements);
-            IsCanvasDragging = true;
 
             // Don't move grouped children, as the groupbox will do this for us when it moves.
-            elements.Where(e=>e.Parent == null).ForEach(e =>
-            {
-                e.Move(delta);
-                e.UpdatePath();
-            });
+            elements.Where(e => e.Parent == null).ForEach(e =>
+                {
+                    e.Move(delta);
+                    e.UpdatePath();
+                });
 
             int dx = delta.X.Abs();
             int dy = delta.Y.Abs();
@@ -807,8 +814,9 @@ namespace FlowSharpLib
 
 		protected void CanvasPaintComplete(Canvas canvas)
 		{
+            Trace.WriteLine("*** CanvasPaintComplete");
             eraseCount = 1;         // Diagnostics
-			DrawBottomToTop(elements);
+            DrawBottomToTop(elements);
 		}
     }
 }

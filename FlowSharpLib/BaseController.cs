@@ -330,18 +330,16 @@ namespace FlowSharpLib
         // Used by secondary operations, particularly undo events, where we delete things we've pasted or dropped onto the canvas.
         public void DeleteElement(GraphicElement el, bool dispose = true)
         {
-            // TODO: don't redraw all the elements, only erase the current element and update the screen!
-            // See how this is done with Ungroup.
+            selectedElements.Remove(el);
             el.DetachAll();
             var els = EraseIntersectionsTopToBottom(el);
-            RemoveElement(el, dispose);
             List<GraphicElement> elsToRedraw = els.ToList();
             elsToRedraw.Remove(el);
             el.Connections.ForEach(c => c.ToElement.RemoveConnection(c.ToConnectionPoint.Type));
             el.Connections.Clear();
             DrawBottomToTop(elsToRedraw);
-            UpdateScreen(els);
-            selectedElements.Remove(el);
+            UpdateScreen(els);          // Original list, so element that is being deleted is included in the region to update.
+            RemoveElement(el, dispose);
         }
 
         public void Redraw(GraphicElement el, int dx=0, int dy=0)

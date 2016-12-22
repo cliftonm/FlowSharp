@@ -217,7 +217,14 @@ namespace FlowSharpDebugWindowService
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
+            GraphicElement el = (GraphicElement)tvShapes.SelectedNode?.Tag;
 
+            if (el != null)
+            {
+                BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+                controller.DeleteElement(el);
+                UpdateShapeTree();
+            }
         }
     }
 }

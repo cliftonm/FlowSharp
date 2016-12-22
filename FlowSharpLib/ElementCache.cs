@@ -4,6 +4,9 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+// ElementCache is no longer necessary as the element won't be disposed, since it's part of the undo/redo action.
+
+/*
 using System.Collections.Generic;
 
 namespace FlowSharpLib
@@ -58,3 +61,4 @@ namespace FlowSharpLib
         }
     }
 }
+*/

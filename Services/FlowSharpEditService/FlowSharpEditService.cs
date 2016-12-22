@@ -132,7 +132,7 @@ namespace FlowSharpEditService
                             els.ForEach(el =>
                             {
                                 canvasController.Insert(0, el);
-                                ElementCache.Instance.Remove(el);
+                                // ElementCache.Instance.Remove(el);
                             });
 
                             canvasController.DrawBottomToTop(distinctIntersections);
@@ -147,7 +147,7 @@ namespace FlowSharpEditService
                             els.ForEach(el =>
                             {
                                 canvasController.DeleteElement(el, false);
-                                ElementCache.Instance.Add(el);
+                                // ElementCache.Instance.Add(el);
                             });
 
                             canvasController.SelectElements(selectedElements);

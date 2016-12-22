@@ -174,7 +174,7 @@ namespace FlowSharpToolboxService
             canvasController.UndoStack.UndoRedo("Create " + el.ToString(),
                 () =>
                 {
-                    ElementCache.Instance.Remove(el);
+                    // ElementCache.Instance.Remove(el);
                     el.UpdatePath();
                     canvasController.Insert(el);
                     canvasController.DeselectCurrentSelectedElements();
@@ -193,7 +193,7 @@ namespace FlowSharpToolboxService
                 },
                 () =>
                 {
-                    ElementCache.Instance.Add(el);
+                    // ElementCache.Instance.Add(el);
                     canvasController.DeselectCurrentSelectedElements();
                     canvasController.DeleteElement(el, false);
                     canvasController.SelectElements(currentSelectedShapes);

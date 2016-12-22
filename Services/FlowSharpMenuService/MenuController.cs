@@ -310,7 +310,7 @@ namespace FlowSharpMenuService
             serviceManager.Get<IFlowSharpEditService>().ResetSavePoint();
             canvasController.Clear();
             canvasController.UndoStack.ClearStacks();
-            ElementCache.Instance.ClearCache();
+            // ElementCache.Instance.ClearCache();
             serviceManager.Get<IFlowSharpMouseControllerService>().ClearState();
             canvasController.Canvas.Invalidate();
             filename = String.Empty;
@@ -420,14 +420,14 @@ namespace FlowSharpMenuService
                 canvasController.UndoStack.UndoRedo("Group",
                     () =>
                     {
-                        ElementCache.Instance.Remove(groupBox);
+                        // ElementCache.Instance.Remove(groupBox);
                         canvasController.GroupShapes(groupBox);
                         canvasController.DeselectCurrentSelectedElements();
                         canvasController.SelectElement(groupBox);
                     },
                     () =>
                     {
-                        ElementCache.Instance.Add(groupBox);
+                        // ElementCache.Instance.Add(groupBox);
                         canvasController.UngroupShapes(groupBox, false);
                         canvasController.DeselectCurrentSelectedElements();
                         canvasController.SelectElements(selectedShapes);
@@ -451,14 +451,14 @@ namespace FlowSharpMenuService
                     canvasController.UndoStack.UndoRedo("Ungroup",
                     () =>
                     {
-                        ElementCache.Instance.Add(groupBox);
+                        // ElementCache.Instance.Add(groupBox);
                         canvasController.UngroupShapes(groupBox, false);
                         canvasController.DeselectCurrentSelectedElements();
                         canvasController.SelectElements(groupedShapes);
                     },
                     () =>
                     {
-                        ElementCache.Instance.Remove(groupBox);
+                        // ElementCache.Instance.Remove(groupBox);
                         canvasController.GroupShapes(groupBox);
                         canvasController.DeselectCurrentSelectedElements();
                         canvasController.SelectElement(groupBox);

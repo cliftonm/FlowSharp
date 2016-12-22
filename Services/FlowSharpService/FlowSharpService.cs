@@ -219,7 +219,7 @@ namespace FlowSharpService
             List<GraphicElement> els = Persist.Deserialize(canvasController.Canvas, data);
             canvasController.Clear();
             canvasController.UndoStack.ClearStacks();
-            ElementCache.Instance.ClearCache();
+            // ElementCache.Instance.ClearCache();
             ServiceManager.Get<IFlowSharpMouseControllerService>().ClearState();
             canvasController.AddElements(els);
             canvasController.Elements.ForEach(el => el.UpdatePath());

@@ -71,6 +71,11 @@ namespace FlowSharpCanvasService
             activeCanvasController = canvasController;
         }
 
+        public void DeleteCanvas(Control parent)
+        {
+            documents.Remove(parent);
+        }
+
         public void SetActiveController(Control parent)
         {
             activeCanvasController = documents[parent];
@@ -114,9 +119,11 @@ namespace FlowSharpCanvasService
                     {
                         controller.Filename = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + "-" + n.ToString() + Path.GetExtension(filename));
                     }
-
-                    ++n;
                 }
+
+                // Always increment the controller counter, so if we encounter an unnamed controller
+                // after the first controller's canvas has been saved, we don't overwrite the file by re-using filename.
+                ++n;
 
                 File.WriteAllText(controller.Filename, data);
             }

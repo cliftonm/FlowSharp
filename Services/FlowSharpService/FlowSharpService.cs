@@ -46,6 +46,7 @@ namespace FlowSharpService
             dockingService = ServiceManager.Get<IDockingFormService>();
             dockingService.ContentLoaded += OnContentLoaded;
             dockingService.ActiveDocumentChanged += (sndr, args) => OnActiveDocumentChanged(sndr);
+            dockingService.DocumentClosing += (sndr, args) => OnDocumentClosing(sndr);
             form = dockingService.CreateMainForm();
             form.Text = "FlowSharp";
             form.Icon = icon;
@@ -303,6 +304,17 @@ namespace FlowSharpService
                     ServiceManager.Get<IFlowSharpDebugWindowService>().UpdateDebugWindow();
                     ServiceManager.Get<IFlowSharpMenuService>().UpdateMenu();
                 }
+            }
+        }
+
+        protected void OnDocumentClosing(object document)
+        {
+            Control ctrl = document as Control;
+
+            if (ctrl != null && ctrl.Controls.Count == 1 && ((IDockDocument)document).Metadata.LeftOf(",") == Constants.META_CANVAS)
+            {
+                Control child = ctrl.Controls[0];
+                ServiceManager.Get<IFlowSharpCanvasService>().DeleteCanvas(child);
             }
         }
 

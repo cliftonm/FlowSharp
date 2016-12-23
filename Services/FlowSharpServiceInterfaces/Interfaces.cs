@@ -38,6 +38,7 @@ namespace FlowSharpServiceInterfaces
         List<BaseController> Controllers { get; }
 
         void CreateCanvas(Control parent);
+        void DeleteCanvas(Control parent);
         void SetActiveController(Control parent);
         void RequestNewCanvas();
         void LoadDiagrams(string filename);

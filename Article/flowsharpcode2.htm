@@ -1,0 +1,251 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Why is FlowSharpCode so cool</title>
+</head>
+
+<body>
+
+<p>Why is FlowSharpCode so cool?</p>
+<ul>
+	<li>It's Fun!<ul>
+		<li>Drawing a shape and writing some code for that shape, then 
+		annotating it, drawing lines, whatever, is really cool!</li>
+	</ul>
+	</li>
+	<li>Anyone can easily understand:<ul>
+		<li>The organization of the application's components (grouping)</li>
+		<li>The flow of information and how it's processed (diagram annotations)</li>
+		<li>Sequential processing and conditional logic (workflows)</li>
+		<li>Code becomes very fine grained:<ul>
+			<li>Each function typically does just one thing in 1-10 lines of 
+			code</li>
+			<li>Each function becomes an autonomous entity</li>
+			<li>Decoupling of dependencies is greatly enhanced</li>
+			<li>&nbsp;</li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+	<li>UI on the canvas:<ul>
+		<li>The canvas that you use for writing the app can also be used to 
+		display the UI.&nbsp; That's interesting because:<ul>
+			<li>You can lay out the UI components anywhere you want on the 
+			canvas.</li>
+			<li>In fact, they can be moved around while the app is running.</li>
+			<li>You can even change the controls / shapes that are being used 
+			for the UI -- within some limitations of course.</li>
+			<li>You can annotate the drawing, describing how UI elements are 
+			driven by the business logic, and even place the code for a 
+			particular UI element near that element so the relationship between 
+			the UI and the code-behind becomes really clear.</li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+	<li>Code and concept are integrated:<ul>
+		<li>A shape represents a concept.&nbsp;
+		<ul>
+			<li>Code is a concrete implementation of the concept.</li>
+			<li>By associating code with a shape, we naturally carry the 
+			information of both the concept and its implementation together.</li>
+		</ul>
+		</li>
+		<li>A group of shapes represents the relationships between individual 
+		concepts.<ul>
+			<li>This makes it a lot easier to see the relationship of the code.</li>
+			<li>Many higher order concepts, like workflows, becomes a visual 
+			representation<ul>
+				<li>Workflows<ul>
+					<li>Automatic code generation wires together the workflow 
+					from the shape relationships.</li>
+					<li>Code quality is actually improved because workflows 
+					become explicit and &quot;packet&quot; oriented.</li>
+				</ul>
+				</li>
+				<li>Flowcharts<ul>
+					<li><font color="#FF0000">TBD</font></li>
+					<li>Decouples processing from decision making.</li>
+					<li>Decision making becomes, itself, a micro-process (a 
+					method that returns true/false typically.)</li>
+				</ul>
+				</li>
+			</ul>
+			</li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+	<li>Developer can work at different levels of code granularity:<ul>
+		<li>A shape might represent an entire class and its properties and 
+		methods.</li>
+		<li>Shapes might be used to separate properties, events, methods, and 
+		even be organized by access modifiers.</li>
+		<li>At the finest granularity, shapes represent one method, often a very 
+		small implementation.</li>
+	</ul>
+	</li>
+	<li>My experience using FlowSharpCode<ul>
+		<li>An iterative development cycle occurs, where a method is ultimately 
+		expressed as a workflow of very (VERY) small implementations.<ul>
+			<li>Code becomes very compartmentalized, making it much simpler</li>
+			<li>Conversely, compartmentalization is difficult to work with, as 
+			one is working in at a very small scale.<ul>
+				<li>I think this actually is a clue as to why programs have lots 
+				of bugs, are difficult to maintain, etc.<ul>
+					<li>Programmers don't work at a fine enough granularity.<ul>
+						<li>Too much coupling with other components.</li>
+						<li>Unit testing was supposed to coerce programmers into 
+						low level granularity.<ul>
+							<li>The problem is, unit testing at a fine enough 
+							granularity actually becomes pointless.</li>
+						</ul>
+						</li>
+					</ul>
+					</li>
+					<li>Workflows are rarely captured as actual method call 
+					sequences.<ul>
+						<li>Instead, they are a hodgepodge of methods crossing:<ul>
+							<li>Class boundaries.</li>
+							<li>Bouncing around between high level abstractions 
+							and low level implementation.</li>
+							<li>Often accessing data as needed from other 
+							sources.</li>
+							<li>Manipulating information through arbitrary 
+							parameters and return types.</li>
+						</ul>
+						</li>
+						<li></li>
+					</ul>
+					</li>
+				</ul>
+				</li>
+			</ul>
+			</li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h3>Why is Visual Assisted Programming Important?</h3>
+<p>
+<img border="0" src="7476.png" width="468" height="382"></p>
+<p>My first technology passion was actually hardware, but it was expensive (a 
+7476 flip flop in the 70's cost $4.50 from Radio Shack, if I remember 
+correctly.)&nbsp; So I started goofing around with software -- BASIC on a PDP/11, 
+HP calculators, BASIC on a Commodore PET, etc.</p>
+<p>But software was always missing something for me - a visual way of describing 
+what the software does.&nbsp; You see, software and hardware are very similar -- 
+they are both essentially a circuit.&nbsp; With hardware, the lines describe the 
+paths of electrons (signals) and the components describe how those signals are 
+manipulated, like in this simple circuit that produces a tone you can vary using 
+a 555 timer chip, a speaker, and some discrete components:</p>
+<p>
+<img border="0" src="555-2.png" width="285" height="177"></p>
+<p>
+(By the way, the history of the 555 timer
+<a href="http://spectrum.ieee.org/semiconductors/processors/25-microchips-that-shook-the-world">
+is quite amazing</a>.)&nbsp; <i>&quot;Camenzind spent nearly a year testing 
+breadboard prototypes, drawing the circuit components on paper, and cutting 
+sheets of Rubylitha masking film. “It was all done by hand, no computer,” he 
+says. His final design had 23 transistors, 16 resistors, and 2 diodes.&quot;</i></p>
+<p>If we want to write a simple WinForm C# app to do the same thing (more or 
+less):</p>
+<p>
+<img border="0" src="winform.png" width="329" height="157"></p>
+<p>we need about 142 lines of code, which you can view on
+<a href="https://gist.github.com/cliftonm/0052163d701db8d37393216353bf6dba#file-winformplaysound-cs">this 
+Gist</a>.</p>
+<p>The Play button acts like B1 in the schematic, the trackbar is the variable 
+resistor in RV1, and the code implements the 555 timer (generates a sine wave in 
+this case) and speaker is actually a call to <code>System.Media.SoundPlayer</code></p>
+<h3>So What's the Problem?</h3>
+<p>Someone was said to me that they would never use an editor that didn't have 
+outlining capability.&nbsp; And you can sort of see why -- even 142 lines of 
+code is a lot to look at to glean what is going.&nbsp; Outlining helps:</p>
+<p>
+<img border="0" src="outline.png" width="984" height="454"></p>
+<p>because at least it shows you what the top level methods are, so you can see 
+what the programmer had in mind for overall structure.</p>
+<p><i><b>If the programmer wrote the code with a sufficient fine level of 
+granularity.</b></i>&nbsp; That's a big &quot;if.&quot;&nbsp; In fact, I refactored my 
+original code (which was originally just <code>Main</code> and <code>Play</code>, so that there was something 
+more to show here in the outline.</p>
+<p>A good IDE also provides some information - here is what Visual Studio tells 
+you about the file:</p>
+<p>
+<img border="0" src="vsinfo.png" width="422" height="288"></p>
+<p>In both cases, what is lost is what was expressed so nicely in the hardware 
+schematic:</p>
+<p>
+<img border="0" src="555-2.png" width="285" height="177"></p>
+<p>the flow of information!</p>
+<p>A list of classes, fields, properties, and methods is like getting a bag of 
+wires, chips, and discrete components:</p>
+<p><img border="0" src="grabbag.jpg" width="259" height="194"></p>
+</p>
+<p>you still have no idea of how the program wires it all up!&nbsp; To figure 
+that out, you have to read the code and create, for yourself, a mental map (or 
+maybe even some pen &amp; paper flowcharting) of what the code is doing.&nbsp; For 
+the sound player, that's trivial.&nbsp; For thousands (or hundreds of thousands 
+or millions of lines) of code, that is anything but trivial.</p>
+<h3>But We've Been Here, Done That</h3>
+<p>It's ironic to me that hardware engineers are always using visual tools 
+(software nowadays) to design, implement, and simulate their hardware, yet we 
+have nothing like that for software.&nbsp; Sure, there's been numerous attempts, 
+and of course we have various tools that create diagrams for us or even let us 
+work in a diagramming mode.&nbsp; Some of these tools will generate code stubs, 
+some will reverse engineer code.&nbsp; </p>
+<p>Here's a few ideas that have been tried, some with limited success:</p>
+<h4><b>UML</b></h4>
+<p>
+<img border="0" src="umlactor.png" width="204" height="175"></p>
+<p>Lots of diagramming options:</p>
+<ul>
+	<li>Component</li>
+	<li>Class</li>
+<li>Actor (the above image)</li>
+	<li>Activity</li>
+<li>Use case</li>
+	<li>Sequence</li>
+	<li>Communication</li>
+</ul>
+<h4>BPEL (Business Process Execution Language) and/or WWF (Windows Workflow 
+Foundation)</h4>
+<p>
+<img border="0" src="bpel.png" width="495" height="618"></p>
+<h4>Database Diagramming</h4>
+<p>
+<img border="0" src="db.png" width="325" height="279"></p>
+<h4>Lego-like Programming </h4>
+<p>
+<img border="0" src="scratch.png" width="255" height="302"></p>
+<h3>Do These Tools Work?</h3>
+<p>For what they're designed to do, yes, but I find these tools do very little 
+to help me express visually the day-to-day work of writing code.&nbsp; They are 
+either too high level, too abstract, or too low level, too childish, or don't 
+work with the languages that I use, and, most importantly, <b>limit me in how I 
+want to express concepts, </b>at the granularity that I think is appropriate.</p>
+<h3>V.A.P.O.R - Visual Assisted Programming / Organic Representation</h3>
+<p>You may notice I changed that &quot;O&quot; to Organic (it used to be Organizational.)&nbsp; </p>
+<p>This is one way to express what the tone player &quot;circuit&quot; look like using 
+FlowSharpCode (the thing that implements V.A.P.O.R):</p>
+<p>&nbsp;</p>
+<p><b>This better give you a moment of pause</b>, if for no other reason than 
+the fact that the UI and code is represented together on the same surface.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; </p>
+
+</body>
+
+</html>

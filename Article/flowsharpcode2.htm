@@ -143,7 +143,7 @@ HP calculators, BASIC on a Commodore PET, etc.</p>
 what the software does.&nbsp; You see, software and hardware are very similar -- 
 they are both essentially a circuit.&nbsp; With hardware, the lines describe the 
 paths of electrons (signals) and the components describe how those signals are 
-manipulated, like in this simple circuit that produces a tone you can vary using 
+manipulated, (their voltages and current) like in this simple circuit that produces a tone you can vary using 
 a 555 timer chip, a speaker, and some discrete components:</p>
 <p>
 <img border="0" src="555-2.png" width="285" height="177"></p>
@@ -176,7 +176,7 @@ what the programmer had in mind for overall structure.</p>
 granularity.</b></i>&nbsp; That's a big &quot;if.&quot;&nbsp; In fact, I refactored my 
 original code (which was originally just <code>Main</code> and <code>Play</code>, so that there was something 
 more to show here in the outline.</p>
-<p>A good IDE also provides some information - here is what Visual Studio tells 
+<p>A good IDE also provides some useful information - here is what Visual Studio tells 
 you about the file:</p>
 <p>
 <img border="0" src="vsinfo.png" width="422" height="288"></p>
@@ -184,8 +184,7 @@ you about the file:</p>
 schematic:</p>
 <p>
 <img border="0" src="555-2.png" width="285" height="177"></p>
-<p>the flow of information!</p>
-<p>A list of classes, fields, properties, and methods is like getting a bag of 
+<p>the flow of signal!&nbsp; A list of classes, fields, properties, and methods is like getting a bag of 
 wires, chips, and discrete components:</p>
 <p><img border="0" src="grabbag.jpg" width="259" height="194"></p>
 </p>
@@ -195,12 +194,13 @@ maybe even some pen &amp; paper flowcharting) of what the code is doing.&nbsp; F
 the sound player, that's trivial.&nbsp; For thousands (or hundreds of thousands 
 or millions of lines) of code, that is anything but trivial.</p>
 <h3>But We've Been Here, Done That</h3>
-<p>It's ironic to me that hardware engineers are always using visual tools 
+<p>Or have we?&nbsp; It's ironic to me that hardware engineers are always using visual tools 
 (software nowadays) to design, implement, and simulate their hardware, yet we 
 have nothing like that for software.&nbsp; Sure, there's been numerous attempts, 
 and of course we have various tools that create diagrams for us or even let us 
 work in a diagramming mode.&nbsp; Some of these tools will generate code stubs, 
-some will reverse engineer code.&nbsp; </p>
+some will reverse engineer code into diagram (the most sophisticated of which 
+can actually parse your code.)&nbsp; </p>
 <p>Here's a few ideas that have been tried, some with limited success:</p>
 <h4><b>UML</b></h4>
 <p>
@@ -235,11 +235,12 @@ want to express concepts, </b>at the granularity that I think is appropriate.</p
 <p>You may notice I changed that &quot;O&quot; to Organic (it used to be Organizational.)&nbsp; </p>
 <p>This is one way to express what the tone player &quot;circuit&quot; look like using 
 FlowSharpCode (the thing that implements V.A.P.O.R):</p>
-<p>&nbsp;</p>
-<p><b>This better give you a moment of pause</b>, if for no other reason than 
+<p><b>This should give you a moment of pause</b>, if for no other reason than 
 the fact that the UI and code is represented together on the same surface.</p>
 <p>&nbsp;</p>
-<p>&nbsp;</p>
+<p>We can even package code into &quot;integrated circuits&quot;, implemented either as 
+separate assemblies (dll's) or simply by grouping them into logical and 
+re-usable compositions.</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>

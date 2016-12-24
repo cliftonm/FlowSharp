@@ -1,17 +1,943 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfElementPropertyBag xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <ElementPropertyBag ElementName="FlowSharpLib.RightTriangle, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="43fc3fd4-3b72-41dc-9a84-1588a47e4d92" Text="FrequencyChanged" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="a3ab1d75-68e6-4f9f-8d67-fd224e731639" Text="Helpers" IsBookmarked="true" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>1131</X>
-        <Y>37</Y>
+        <X>-54</X>
+        <Y>86</Y>
+      </Location>
+      <Size>
+        <Width>160</Width>
+        <Height>30</Height>
+      </Size>
+      <X>-54</X>
+      <Y>86</Y>
+      <Width>160</Width>
+      <Height>30</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{"Code":"using System.Drawing;\r\nusing System.Net;\r\nusing System.IO;\r\n\r\nnamespace App\r\n{\r\n\tpublic static class Helpers\r\n\t{\r\n\t\tpublic static void SetBackgroundColor(string ctrlName, Color color)\r\n\t\t{\r\n\t\t\tstring scolor = color.R.ToString() + \",\" + color.G.ToString() + \",\" + color.B.ToString();\r\n\t\t\tstring url =\"http://localhost:8001/flowsharp?cmd=CmdUpdateProperty&amp;Name=\"+ctrlName+\"&amp;PropertyName=FillColor&amp;Value=\"+scolor;\r\n\t\t\tHttp.Get(url);\r\n\t\t}\r\n\r\n\t\tpublic static void SetText(string ctrlName, string text)\r\n\t\t{\r\n\t\t\tstring url =\"http://localhost:8001/flowsharp?cmd=CmdUpdateProperty&amp;Name=\"+ctrlName+\"&amp;PropertyName=Text&amp;Value=\"+text.Replace(' ', '+');\r\n\t\t\tHttp.Get(url);\r\n\t\t}\r\n\t\t\r\n\t\tpublic static void Enable(string ctrlName)\r\n\t\t{\r\n\t\t\tstring url =\"http://localhost:8001/flowsharp?cmd=CmdUpdateProperty&amp;Name=\"+ctrlName+\"&amp;PropertyName=Enabled&amp;Value=true\";\r\n\t\t\tHttp.Get(url);\r\n\t\t}\r\n\t\t\r\n\t\tpublic static void Disable(string ctrlName)\r\n\t\t{\r\n\t\t\tstring url =\"http://localhost:8001/flowsharp?cmd=CmdUpdateProperty&amp;Name=\"+ctrlName+\"&amp;PropertyName=Enabled&amp;Value=false\";\r\n\t\t\tHttp.Get(url);\r\n\t\t}\r\n\t\t\r\n\t\tpublic static void Show(string ctrlName)\r\n\t\t{\r\n\t\t\tstring url =\"http://localhost:8001/flowsharp?cmd=CmdUpdateProperty&amp;Name=\"+ctrlName+\"&amp;PropertyName=Visible&amp;Value=true\";\r\n\t\t\tHttp.Get(url);\r\n\t\t}\r\n\t\t\r\n\t\tpublic static void Hide(string ctrlName)\r\n\t\t{\r\n\t\t\tstring url =\"http://localhost:8001/flowsharp?cmd=CmdUpdateProperty&amp;Name=\"+ctrlName+\"&amp;PropertyName=Visible&amp;Value=false\";\r\n\t\t\tHttp.Get(url);\r\n\t\t}\r\n\t}\r\n}"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="9a34ac48-5013-42de-99ba-8694399725eb" Text="HttpGet" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>-54</X>
+        <Y>130</Y>
+      </Location>
+      <Size>
+        <Width>160</Width>
+        <Height>30</Height>
+      </Size>
+      <X>-54</X>
+      <Y>130</Y>
+      <Width>160</Width>
+      <Height>30</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{"Code":"using System.Net;\r\nusing System.IO;\r\n\r\nnamespace App\r\n{\r\n\tpublic static class Http\r\n\t{\r\n\t\tpublic static string Get(string uri)\r\n\t\t{\r\n\t\t    WebClient client = new WebClient();\r\n\t\t\r\n\t\t    // Add a user agent header in case the \r\n\t\t    // requested URI contains a query.\r\n\t\t\r\n\t\t    client.Headers.Add(\"user-agent\", \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)\");\r\n\t\t\r\n\t\t    Stream data = client.OpenRead(uri);\r\n\t\t    StreamReader reader = new StreamReader(data);\r\n\t\t    string s = reader.ReadToEnd();\r\n\t\t    data.Close();\r\n\t\t    reader.Close();\r\n\t\t\r\n\t\t    return s;\r\n\t\t}\r\n\t}\r\n}"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="6dd29620-b35e-4dac-8609-f39f1f03d996" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>988</X>
+        <Y>571</Y>
+      </Location>
+      <Size>
+        <Width>29</Width>
+        <Height>95</Height>
+      </Size>
+      <X>988</X>
+      <Y>571</Y>
+      <Width>29</Width>
+      <Height>95</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.TextShape, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b0eeac96-3362-4042-8c46-23d13d01d0d9" Text="Stop" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>1031</X>
+        <Y>502</Y>
+      </Location>
+      <Size>
+        <Width>35</Width>
+        <Height>21</Height>
+      </Size>
+      <X>1031</X>
+      <Y>502</Y>
+      <Width>35</Width>
+      <Height>21</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.150944</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>true</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-1</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.TextShape, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="f68d9013-2a94-4df4-8fd1-6b1656a3ae1f" Text="Play" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>922</X>
+        <Y>500</Y>
+      </Location>
+      <Size>
+        <Width>34</Width>
+        <Height>21</Height>
+      </Size>
+      <X>922</X>
+      <Y>500</Y>
+      <Width>34</Width>
+      <Height>21</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.150944</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>true</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-1</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.VerticalLine, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="c1c5321c-c5dd-4f1a-99ca-90a3f18c27cf" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="true" HasCornerConnections="false" HasCenterConnections="false" HasLeftRightConnections="false" HasTopBottomConnections="true">
+    <DisplayRectangle>
+      <Location>
+        <X>1064</X>
+        <Y>474</Y>
+      </Location>
+      <Size>
+        <Width>20</Width>
+        <Height>82</Height>
+      </Size>
+      <X>1064</X>
+      <Y>474</Y>
+      <Width>20</Width>
+      <Height>82</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>Arrow</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.VerticalLine, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="faf394ca-a244-4e79-9beb-6c1442567be5" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="true" HasCornerConnections="false" HasCenterConnections="false" HasLeftRightConnections="false" HasTopBottomConnections="true">
+    <DisplayRectangle>
+      <Location>
+        <X>958</X>
+        <Y>474</Y>
+      </Location>
+      <Size>
+        <Width>20</Width>
+        <Height>82</Height>
+      </Size>
+      <X>958</X>
+      <Y>474</Y>
+      <Width>20</Width>
+      <Height>82</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>Arrow</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.TextShape, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="a365cb30-ba5a-4dcd-b30d-dd75979e4852" Text="events" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>916</X>
+        <Y>289</Y>
+      </Location>
+      <Size>
+        <Width>46</Width>
+        <Height>21</Height>
+      </Size>
+      <X>916</X>
+      <Y>289</Y>
+      <Width>46</Width>
+      <Height>21</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.150944</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>true</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-1</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="91ebd1a1-ac94-4f3a-99d8-9e1a98e97f92" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>877</X>
+        <Y>273</Y>
+      </Location>
+      <Size>
+        <Width>123</Width>
+        <Height>0</Height>
+      </Size>
+      <X>877</X>
+      <Y>273</Y>
+      <Width>123</Width>
+      <Height>0</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>877</X>
+      <Y>273</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>1000</X>
+      <Y>273</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>Arrow</EndCap>
+    <StartConnectedShapeId>46952f41-7c46-4ad4-9196-835186e48418</StartConnectedShapeId>
+    <EndConnectedShapeId>7fa13d60-31ce-4a9e-8d08-5fd247078623</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.TextShape, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="e305d59f-58d9-4a13-a2d2-ce4d5ac360d3" Text="Frequency" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>508</X>
+        <Y>496</Y>
+      </Location>
+      <Size>
+        <Width>82</Width>
+        <Height>24</Height>
+      </Size>
+      <X>508</X>
+      <Y>496</Y>
+      <Width>82</Width>
+      <Height>24</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-1</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.VerticalLine, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="53a28dff-47a4-46bb-bb73-c78f4e80497b" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="true" HasCornerConnections="false" HasCenterConnections="false" HasLeftRightConnections="false" HasTopBottomConnections="true">
+    <DisplayRectangle>
+      <Location>
+        <X>585</X>
+        <Y>473</Y>
+      </Location>
+      <Size>
+        <Width>20</Width>
+        <Height>80</Height>
+      </Size>
+      <X>585</X>
+      <Y>473</Y>
+      <Width>20</Width>
+      <Height>80</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>Arrow</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>5636807b-1218-4fd1-ad1b-fa18e9c09409</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="4e986adf-d557-4b64-be42-123766884b09" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>755</X>
+        <Y>321</Y>
+      </Location>
+      <Size>
+        <Width>245</Width>
+        <Height>18</Height>
+      </Size>
+      <X>755</X>
+      <Y>321</Y>
+      <Width>245</Width>
+      <Height>18</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>755</X>
+      <Y>339</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>1000</X>
+      <Y>321</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>Arrow</EndCap>
+    <StartConnectedShapeId>7cfff950-80c2-4db9-826b-c2aad4d3f8da</StartConnectedShapeId>
+    <EndConnectedShapeId>45ba0ace-05b5-483b-893e-5f269ce61df5</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="66c530d0-ebf9-4d2f-bd0e-7291de1c8c86" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>592</X>
+        <Y>818</Y>
+      </Location>
+      <Size>
+        <Width>0</Width>
+        <Height>28</Height>
+      </Size>
+      <X>592</X>
+      <Y>818</Y>
+      <Width>0</Width>
+      <Height>28</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>592</X>
+      <Y>818</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>592</X>
+      <Y>846</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>Arrow</EndCap>
+    <StartConnectedShapeId>52ae009f-8d9b-4e0b-b564-f15e182b4357</StartConnectedShapeId>
+    <EndConnectedShapeId>38cd8b7a-b75d-48e3-995b-5d7344e03f11</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="38cd8b7a-b75d-48e3-995b-5d7344e03f11" Text="ResetStreamToStart" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>465</X>
+        <Y>846</Y>
+      </Location>
+      <Size>
+        <Width>255</Width>
+        <Height>34</Height>
+      </Size>
+      <X>465</X>
+      <Y>846</Y>
+      <Width>255</Width>
+      <Height>34</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{"Code":"using System;\r\nusing System.IO;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class CreateWavPacketWorkflow\r\n\t{\r\n\t\tpublic void ResetStreamToStart(CreateWavPacket packet)\r\n\t\t{\r\n\t\t\tpacket.SoundStream.Seek(0, SeekOrigin.Begin);\r\n\t\t}\r\n\t}\r\n}"}</Json>
+    <Connections>
+      <ConnectionPropertyBag>
+        <ToElementId>66c530d0-ebf9-4d2f-bd0e-7291de1c8c86</ToElementId>
+        <ToConnectionPoint>
+          <Type>End</Type>
+          <Point>
+            <X>430</X>
+            <Y>402</Y>
+          </Point>
+        </ToConnectionPoint>
+        <ElementConnectionPoint>
+          <Type>TopMiddle</Type>
+          <Point>
+            <X>440</X>
+            <Y>403</Y>
+          </Point>
+        </ElementConnectionPoint>
+      </ConnectionPropertyBag>
+    </Connections>
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="a79e327b-ef86-4da0-b556-84cf722189f5" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>592</X>
+        <Y>757</Y>
+      </Location>
+      <Size>
+        <Width>0</Width>
+        <Height>27</Height>
+      </Size>
+      <X>592</X>
+      <Y>757</Y>
+      <Width>0</Width>
+      <Height>27</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>592</X>
+      <Y>757</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>592</X>
+      <Y>784</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>Arrow</EndCap>
+    <StartConnectedShapeId>b8038c74-1fe2-48c6-8e23-5d23ff5c9cf7</StartConnectedShapeId>
+    <EndConnectedShapeId>52ae009f-8d9b-4e0b-b564-f15e182b4357</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1bb6c8c7-92c8-4e04-9303-a87c6f9dc29f" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>592</X>
+        <Y>696</Y>
+      </Location>
+      <Size>
+        <Width>0</Width>
+        <Height>27</Height>
+      </Size>
+      <X>592</X>
+      <Y>696</Y>
+      <Width>0</Width>
+      <Height>27</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>592</X>
+      <Y>696</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>592</X>
+      <Y>723</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>Arrow</EndCap>
+    <StartConnectedShapeId>23552667-9853-42bc-a5e1-fd5c3fd879b8</StartConnectedShapeId>
+    <EndConnectedShapeId>b8038c74-1fe2-48c6-8e23-5d23ff5c9cf7</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="52ae009f-8d9b-4e0b-b564-f15e182b4357" Text="GenerateWaveform" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>465</X>
+        <Y>784</Y>
+      </Location>
+      <Size>
+        <Width>255</Width>
+        <Height>34</Height>
+      </Size>
+      <X>465</X>
+      <Y>784</Y>
+      <Width>255</Width>
+      <Height>34</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{"Code":"using System;\r\nusing System.IO;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class CreateWavPacketWorkflow\r\n\t{\r\n\t\tpublic void GenerateWaveform(CreateWavPacket packet)\r\n\t\t{\r\n\t        const double TAU = 2 * Math.PI;\r\n\t        double theta = packet.Frequency * TAU / (double)packet.SamplesPerSecond;\r\n\t        // 'volume' is UInt16 with range 0 thru Uint16.MaxValue ( = 65 535)\r\n\t        // we need 'amp' to have the range of 0 thru Int16.MaxValue ( = 32 767)\r\n\t        double amp = packet.Volume &gt;&gt; 2; // so we simply set amp = volume / 2\r\n\r\n\t\t\tfor (int step = 0; step &lt; packet.Samples; step++)\r\n\t        {\r\n\t            short s = (short)(amp * Math.Sin(theta * (double)step));\r\n\t            packet.Writer.Write(s);\r\n\t        }\r\n\t\t}\r\n\t}\r\n}"}</Json>
+    <Connections>
+      <ConnectionPropertyBag>
+        <ToElementId>a79e327b-ef86-4da0-b556-84cf722189f5</ToElementId>
+        <ToConnectionPoint>
+          <Type>End</Type>
+          <Point>
+            <X>716</X>
+            <Y>406</Y>
+          </Point>
+        </ToConnectionPoint>
+        <ElementConnectionPoint>
+          <Type>TopMiddle</Type>
+          <Point>
+            <X>719</X>
+            <Y>416</Y>
+          </Point>
+        </ElementConnectionPoint>
+      </ConnectionPropertyBag>
+      <ConnectionPropertyBag>
+        <ToElementId>66c530d0-ebf9-4d2f-bd0e-7291de1c8c86</ToElementId>
+        <ToConnectionPoint>
+          <Type>Start</Type>
+          <Point>
+            <X>431</X>
+            <Y>376</Y>
+          </Point>
+        </ToConnectionPoint>
+        <ElementConnectionPoint>
+          <Type>BottomMiddle</Type>
+          <Point>
+            <X>440</X>
+            <Y>373</Y>
+          </Point>
+        </ElementConnectionPoint>
+      </ConnectionPropertyBag>
+    </Connections>
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b8038c74-1fe2-48c6-8e23-5d23ff5c9cf7" Text="WriteWavHeader" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>465</X>
+        <Y>723</Y>
+      </Location>
+      <Size>
+        <Width>255</Width>
+        <Height>34</Height>
+      </Size>
+      <X>465</X>
+      <Y>723</Y>
+      <Width>255</Width>
+      <Height>34</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{"Code":"using System.IO;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class CreateWavPacketWorkflow\r\n\t{\r\n\t\tpublic void WriteWavHeader(CreateWavPacket packet)\r\n\t\t{\r\n\t        int formatChunkSize = 16;\r\n\t        int headerSize = 8;\r\n\t        short formatType = 1;\r\n\t        short tracks = 1;\r\n\t        short bitsPerSample = 16;\r\n\t        short frameSize = (short)(tracks * ((bitsPerSample + 7) / 8));\r\n\t        int bytesPerSecond = packet.SamplesPerSecond * frameSize;\r\n\t        int waveSize = 4;\r\n\t        int samples = (int)((decimal)packet.SamplesPerSecond * packet.Duration / 1000);\r\n\t        int dataChunkSize = samples * frameSize;\r\n\t        int fileSize = waveSize + headerSize + formatChunkSize + headerSize + dataChunkSize;\r\n\t\r\n\t        packet.Writer.Write(0x46464952);       // = encoding.GetBytes(\"RIFF\")\r\n\t        packet.Writer.Write(fileSize);\r\n\t        packet.Writer.Write(0x45564157);       // = encoding.GetBytes(\"WAVE\")\r\n\t        packet.Writer.Write(0x20746D66);       // = encoding.GetBytes(\"fmt \")\r\n\t        packet.Writer.Write(formatChunkSize);\r\n\t        packet.Writer.Write(formatType);\r\n\t        packet.Writer.Write(tracks);\r\n\t        packet.Writer.Write(packet.SamplesPerSecond);\r\n\t        packet.Writer.Write(bytesPerSecond);\r\n\t        packet.Writer.Write(frameSize);\r\n\t        packet.Writer.Write(bitsPerSample);\r\n\t        packet.Writer.Write(0x61746164);       // = encoding.GetBytes(\"data\")\r\n\t        packet.Writer.Write(dataChunkSize);\r\n\t\t}\r\n\t}\r\n}"}</Json>
+    <Connections>
+      <ConnectionPropertyBag>
+        <ToElementId>1bb6c8c7-92c8-4e04-9303-a87c6f9dc29f</ToElementId>
+        <ToConnectionPoint>
+          <Type>End</Type>
+          <Point>
+            <X>707</X>
+            <Y>332</Y>
+          </Point>
+        </ToConnectionPoint>
+        <ElementConnectionPoint>
+          <Type>TopMiddle</Type>
+          <Point>
+            <X>717</X>
+            <Y>337</Y>
+          </Point>
+        </ElementConnectionPoint>
+      </ConnectionPropertyBag>
+      <ConnectionPropertyBag>
+        <ToElementId>a79e327b-ef86-4da0-b556-84cf722189f5</ToElementId>
+        <ToConnectionPoint>
+          <Type>Start</Type>
+          <Point>
+            <X>707</X>
+            <Y>378</Y>
+          </Point>
+        </ToConnectionPoint>
+        <ElementConnectionPoint>
+          <Type>BottomMiddle</Type>
+          <Point>
+            <X>717</X>
+            <Y>371</Y>
+          </Point>
+        </ElementConnectionPoint>
+      </ConnectionPropertyBag>
+    </Connections>
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="23552667-9853-42bc-a5e1-fd5c3fd879b8" Text="CreateStream" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>465</X>
+        <Y>662</Y>
+      </Location>
+      <Size>
+        <Width>255</Width>
+        <Height>34</Height>
+      </Size>
+      <X>465</X>
+      <Y>662</Y>
+      <Width>255</Width>
+      <Height>34</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{"Code":"using System.IO;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class CreateWavPacketWorkflow\r\n\t{\r\n\t\tpublic void CreateStream(CreateWavPacket packet)\r\n\t\t{\r\n\t        packet.SoundStream = new MemoryStream();\r\n\t        packet.Writer = new BinaryWriter(packet.SoundStream);\r\n\t\t}\r\n\t}\r\n}"}</Json>
+    <Connections>
+      <ConnectionPropertyBag>
+        <ToElementId>1bb6c8c7-92c8-4e04-9303-a87c6f9dc29f</ToElementId>
+        <ToConnectionPoint>
+          <Type>Start</Type>
+          <Point>
+            <X>706</X>
+            <Y>296</Y>
+          </Point>
+        </ToConnectionPoint>
+        <ElementConnectionPoint>
+          <Type>BottomMiddle</Type>
+          <Point>
+            <X>716</X>
+            <Y>287</Y>
+          </Point>
+        </ElementConnectionPoint>
+      </ConnectionPropertyBag>
+    </Connections>
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="91a44cc7-85ba-4af1-b112-aee90e531fdc" Text="CreateWavPacket" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>471</X>
+        <Y>588</Y>
+      </Location>
+      <Size>
+        <Width>248</Width>
+        <Height>34</Height>
+      </Size>
+      <X>471</X>
+      <Y>588</Y>
+      <Width>248</Width>
+      <Height>34</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{"Code":"using System.Collections.Generic;\r\nusing System.IO;\r\n\r\nusing Clifton.Core.ServiceManagement;\r\n\r\nnamespace App\r\n{\r\n\tpublic class CreateWavPacket\r\n\t{\r\n\t\tpublic MemoryStream SoundStream {get;set;}\t\t\t\r\n\t\tpublic BinaryWriter Writer {get;set;}\r\n\t    public int SamplesPerSecond {get; set;}\r\n\t    public int Samples {get;set;}\r\n\t    public int Duration {get;set;}\r\n\t    public int Frequency {get;set;}\r\n\t    public int Volume {get;set;}\r\n\t\t\r\n\t\tpublic CreateWavPacket(int frequency, int msDuration = 1000)\r\n\t\t{\r\n\t\t\tSamplesPerSecond = 44100;\r\n\t\t\tVolume = 16383;\r\n\t\t\tDuration = msDuration;\r\n\t\t\tFrequency = frequency;\r\n\t\t\tSamples = (int)((decimal)SamplesPerSecond * Duration / 1000);\r\n\t\t}\r\n\t}\r\n}\r\n"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.RightTriangle, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b4a25a76-9cf3-4431-803b-9c19292c6baf" Text="FrequencyChanged" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>483</X>
+        <Y>432</Y>
       </Location>
       <Size>
         <Width>269</Width>
         <Height>40</Height>
       </Size>
-      <X>1131</X>
-      <Y>37</Y>
+      <X>483</X>
+      <Y>432</Y>
       <Width>269</Width>
       <Height>40</Height>
     </DisplayRectangle>
@@ -33,7 +959,7 @@
     <TextFontUnderline>false</TextFontUnderline>
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
-    <Json>{"Code":"using System;\r\nusing System.IO;\r\n\r\nusing Clifton.Core.Semantics;\r\nusing Clifton.Core.ServiceInterfaces;\r\nusing Clifton.Core.ServiceManagement;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class AppReceptor : IReceptor\r\n\t{\r\n        // Change ISemanticType to the specific semantic message to process...\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, FrequencyChanged msg)\r\n\t\t{\r\n\t\t\tConsole.WriteLine(\"FrequencyChanged\");\r\n\t\t\tProgram.Frequency = msg.Value;\r\n\t\t}\r\n\t}\r\n}\r\n"}</Json>
+    <Json>{"Code":"using System;\r\nusing System.IO;\r\n\r\nusing Clifton.Core.Semantics;\r\nusing Clifton.Core.ServiceInterfaces;\r\nusing Clifton.Core.ServiceManagement;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class AppReceptor : IReceptor\r\n\t{\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, FrequencyChanged msg)\r\n\t\t{\r\n\t\t\tProgram.Frequency = msg.Value;\r\n\t\t\t\r\n\t\t\tif (Program.Playing)\r\n\t\t\t{\r\n\t\t\t\tSpeaker.Play();\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n}\r\n"}</Json>
     <Connections />
     <Children />
     <TextAlign>MiddleLeft</TextAlign>
@@ -41,18 +967,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.SemanticInstance, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="3798877c-553e-45f8-b3bd-419e05021bec" Text="FrequencyChanged" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.SemanticInstance, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="7fa13d60-31ce-4a9e-8d08-5fd247078623" Text="FrequencyChanged" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>877</X>
-        <Y>42</Y>
+        <X>1000</X>
+        <Y>257</Y>
       </Location>
       <Size>
         <Width>196</Width>
         <Height>33</Height>
       </Size>
-      <X>877</X>
-      <Y>42</Y>
+      <X>1000</X>
+      <Y>257</Y>
       <Width>196</Width>
       <Height>33</Height>
     </DisplayRectangle>
@@ -75,25 +1001,43 @@
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
     <Json>{"Code":"using Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class FrequencyChanged  : ISemanticType \r\n\t{\r\n\t\tpublic int Value {get;set;}\r\n\t}\r\n}"}</Json>
-    <Connections />
+    <Connections>
+      <ConnectionPropertyBag>
+        <ToElementId>91ebd1a1-ac94-4f3a-99d8-9e1a98e97f92</ToElementId>
+        <ToConnectionPoint>
+          <Type>End</Type>
+          <Point>
+            <X>597</X>
+            <Y>182</Y>
+          </Point>
+        </ToConnectionPoint>
+        <ElementConnectionPoint>
+          <Type>LeftMiddle</Type>
+          <Point>
+            <X>607</X>
+            <Y>185</Y>
+          </Point>
+        </ElementConnectionPoint>
+      </ConnectionPropertyBag>
+    </Connections>
     <Children />
     <TextAlign>MiddleCenter</TextAlign>
     <TextColor>-16777216</TextColor>
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpWindowsControlShapes.TrackbarShape, FlowSharpWindowsControlShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="33f48afd-d23a-42ce-bddf-85bd875e3740" Text="Frequency" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpWindowsControlShapes.TrackbarShape, FlowSharpWindowsControlShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="46952f41-7c46-4ad4-9196-835186e48418" Text="Frequency" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>132</X>
-        <Y>-78</Y>
+        <X>439</X>
+        <Y>243</Y>
       </Location>
       <Size>
         <Width>438</Width>
         <Height>60</Height>
       </Size>
-      <X>132</X>
-      <Y>-78</Y>
+      <X>439</X>
+      <Y>243</Y>
       <Width>438</Width>
       <Height>60</Height>
     </DisplayRectangle>
@@ -116,25 +1060,43 @@
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
     <Json>{"ValueChangedName":"FrequencyChanged","Minimum":"250","Maximum":"3000","ClickEventName":"ButtonClick","ClickEventData":null}</Json>
-    <Connections />
+    <Connections>
+      <ConnectionPropertyBag>
+        <ToElementId>91ebd1a1-ac94-4f3a-99d8-9e1a98e97f92</ToElementId>
+        <ToConnectionPoint>
+          <Type>Start</Type>
+          <Point>
+            <X>431</X>
+            <Y>188</Y>
+          </Point>
+        </ToConnectionPoint>
+        <ElementConnectionPoint>
+          <Type>RightMiddle</Type>
+          <Point>
+            <X>422</X>
+            <Y>187</Y>
+          </Point>
+        </ElementConnectionPoint>
+      </ConnectionPropertyBag>
+    </Connections>
     <Children />
     <TextAlign>MiddleCenter</TextAlign>
     <TextColor>-16777216</TextColor>
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="67628f3b-fafd-4a86-b100-012f65a3087f" Text="GetModuleList" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="76e3df32-458f-46e5-a4d2-0f37eb602352" Text="GetModuleList" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-539</X>
-        <Y>120</Y>
+        <X>-485</X>
+        <Y>458</Y>
       </Location>
       <Size>
         <Width>147</Width>
         <Height>33</Height>
       </Size>
-      <X>-539</X>
-      <Y>120</Y>
+      <X>-485</X>
+      <Y>458</Y>
       <Width>147</Width>
       <Height>33</Height>
     </DisplayRectangle>
@@ -164,18 +1126,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="85320281-379f-49e3-a042-cb032000f3c6" Text="GetModuleList" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="25783888-f75b-4758-9cab-c44730147d8e" Text="GetModuleList" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-538</X>
-        <Y>79</Y>
+        <X>-484</X>
+        <Y>417</Y>
       </Location>
       <Size>
         <Width>123</Width>
         <Height>34</Height>
       </Size>
-      <X>-538</X>
-      <Y>79</Y>
+      <X>-484</X>
+      <Y>417</Y>
       <Width>123</Width>
       <Height>34</Height>
     </DisplayRectangle>
@@ -205,18 +1167,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="89e8236f-50ea-4233-9d5f-c5fbb2208e3e" Text="Bootstrap" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="8cc0e439-ccb3-4797-98a1-3ca92b523328" Text="Bootstrap" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-539</X>
-        <Y>35</Y>
+        <X>-485</X>
+        <Y>373</Y>
       </Location>
       <Size>
         <Width>118</Width>
         <Height>33</Height>
       </Size>
-      <X>-539</X>
-      <Y>35</Y>
+      <X>-485</X>
+      <Y>373</Y>
       <Width>118</Width>
       <Height>33</Height>
     </DisplayRectangle>
@@ -246,18 +1208,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.GroupBox, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="451bfc04-679c-4d9c-9220-9de1e488caf6" Text="Bootstrap" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.GroupBox, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="f8a22305-bca5-4a05-ab2a-2497a6352d8e" Text="Bootstrap" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-554</X>
-        <Y>0</Y>
+        <X>-500</X>
+        <Y>338</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>168</Height>
       </Size>
-      <X>-554</X>
-      <Y>0</Y>
+      <X>-500</X>
+      <Y>338</Y>
       <Width>177</Width>
       <Height>168</Height>
     </DisplayRectangle>
@@ -283,13 +1245,13 @@
     <Connections />
     <Children>
       <ChildPropertyBag>
-        <ChildId>67628f3b-fafd-4a86-b100-012f65a3087f</ChildId>
+        <ChildId>76e3df32-458f-46e5-a4d2-0f37eb602352</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>85320281-379f-49e3-a042-cb032000f3c6</ChildId>
+        <ChildId>25783888-f75b-4758-9cab-c44730147d8e</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>89e8236f-50ea-4233-9d5f-c5fbb2208e3e</ChildId>
+        <ChildId>8cc0e439-ccb3-4797-98a1-3ca92b523328</ChildId>
       </ChildPropertyBag>
     </Children>
     <TextAlign>TopRight</TextAlign>
@@ -297,18 +1259,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-986896</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.FileBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="f0100c94-cb44-4440-83a6-910eb0835272" Text="File: soundPlayerModules.xml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.FileBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="e42b0819-5960-47d7-be15-ebcfb8978304" Text="File: soundPlayerModules.xml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>342</X>
-        <Y>95</Y>
+        <X>-63</X>
+        <Y>260</Y>
       </Location>
       <Size>
         <Width>178</Width>
         <Height>38</Height>
       </Size>
-      <X>342</X>
-      <Y>95</Y>
+      <X>-63</X>
+      <Y>260</Y>
       <Width>178</Width>
       <Height>38</Height>
     </DisplayRectangle>
@@ -339,18 +1301,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.RightTriangle, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="43416485-a172-42e7-9968-a1d545b2eacd" Text="PlayOrStop" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.RightTriangle, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="2a553b9d-d4ed-480c-91b1-9dfd207fd489" Text="PlayOrStop" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>1128</X>
-        <Y>86</Y>
+        <X>899</X>
+        <Y>431</Y>
       </Location>
       <Size>
         <Width>269</Width>
         <Height>40</Height>
       </Size>
-      <X>1128</X>
-      <Y>86</Y>
+      <X>899</X>
+      <Y>431</Y>
       <Width>269</Width>
       <Height>40</Height>
     </DisplayRectangle>
@@ -372,7 +1334,7 @@
     <TextFontUnderline>false</TextFontUnderline>
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
-    <Json>{"Code":"using System;\r\nusing System.IO;\r\n\r\nusing Clifton.Core.Semantics;\r\nusing Clifton.Core.ServiceInterfaces;\r\nusing Clifton.Core.ServiceManagement;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class AppReceptor : IReceptor\r\n\t{\r\n        // Change ISemanticType to the specific semantic message to process...\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, PlayOrStop msg)\r\n\t\t{\r\n\t\t\tif (!Program.Playing)\r\n            {\r\n            \tProgram.Play();\r\n            }\r\n            else\r\n            {\r\n            \tProgram.Stop();\r\n            }\r\n\t\t}\r\n\t}\r\n}\r\n"}</Json>
+    <Json>{"Code":"using System;\r\nusing System.IO;\r\n\r\nusing Clifton.Core.Semantics;\r\nusing Clifton.Core.ServiceInterfaces;\r\nusing Clifton.Core.ServiceManagement;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class AppReceptor : IReceptor\r\n\t{\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, PlayOrStop msg)\r\n\t\t{\r\n\t\t\tif (!Program.Playing)\r\n            {\r\n            \tSpeaker.Play();\r\n            \tApp.Helpers.SetText(\"btnPlay\", \"Stop\");\r\n            }\r\n            else\r\n            {\r\n            \tSpeaker.Stop();\r\n            \tApp.Helpers.SetText(\"btnPlay\", \"Play\");\r\n            }\r\n\t\t}\r\n\t}\r\n}\r\n"}</Json>
     <Connections />
     <Children />
     <TextAlign>MiddleLeft</TextAlign>
@@ -380,20 +1342,20 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="8cca2db7-74d1-447e-b61b-013dc09c0613" Text="Create WAV Stream" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.GroupBox, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="079ada2c-cb30-4fdb-8e67-5ec1574b203d" Text="Event Handlers" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>287</X>
-        <Y>237</Y>
+        <X>468</X>
+        <Y>396</Y>
       </Location>
       <Size>
-        <Width>264</Width>
-        <Height>38</Height>
+        <Width>715</Width>
+        <Height>91</Height>
       </Size>
-      <X>287</X>
-      <Y>237</Y>
-      <Width>264</Width>
-      <Height>38</Height>
+      <X>468</X>
+      <Y>396</Y>
+      <Width>715</Width>
+      <Height>91</Height>
     </DisplayRectangle>
     <StartPoint>
       <X>0</X>
@@ -413,26 +1375,33 @@
     <TextFontUnderline>false</TextFontUnderline>
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
-    <Json>{"Code":"using System;\r\nusing System.Drawing;\r\nusing System.IO;\r\nusing System.Media;\r\nusing System.Windows.Forms;\r\n\r\nnamespace App\r\n{\r\n\tstatic partial class Program\r\n\t{\r\n\t    public static MemoryStream CreateWavStream(SoundPlayer player, int frequency, int msDuration = 1000)\r\n\t    {\r\n\t        var soundStream = new MemoryStream();\r\n\t        BinaryWriter writer = new BinaryWriter(soundStream);\r\n\t        int samplesPerSecond = 44100;\r\n\t        int samples = (int)((decimal)samplesPerSecond * msDuration / 1000);\r\n\t\r\n\t        WriteWavHeader(writer, msDuration, samplesPerSecond);\r\n\t        GenerateWaveform(writer, frequency, samples, samplesPerSecond);\r\n\t\r\n\t        soundStream.Seek(0, SeekOrigin.Begin);\r\n\t\r\n\t        return soundStream;\r\n\t    }\r\n\t}\r\n}"}</Json>
+    <Json>{}</Json>
     <Connections />
-    <Children />
-    <TextAlign>MiddleCenter</TextAlign>
+    <Children>
+      <ChildPropertyBag>
+        <ChildId>b4a25a76-9cf3-4431-803b-9c19292c6baf</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>2a553b9d-d4ed-480c-91b1-9dfd207fd489</ChildId>
+      </ChildPropertyBag>
+    </Children>
+    <TextAlign>TopCenter</TextAlign>
     <TextColor>-16777216</TextColor>
     <BorderPenColor>-16777216</BorderPenColor>
-    <FillBrushColor>-1</FillBrushColor>
+    <FillBrushColor>-986896</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.SemanticInstance, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="09e3ff0b-3a13-4f78-a92c-54f491c9bab2" Text="PlayOrStop" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.SemanticInstance, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="45ba0ace-05b5-483b-893e-5f269ce61df5" Text="PlayOrStop" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>877</X>
-        <Y>90</Y>
+        <X>1000</X>
+        <Y>305</Y>
       </Location>
       <Size>
         <Width>196</Width>
         <Height>33</Height>
       </Size>
-      <X>877</X>
-      <Y>90</Y>
+      <X>1000</X>
+      <Y>305</Y>
       <Width>196</Width>
       <Height>33</Height>
     </DisplayRectangle>
@@ -455,25 +1424,91 @@
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
     <Json>{"Code":"using Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class PlayOrStop  : ISemanticType { }\r\n}"}</Json>
-    <Connections />
+    <Connections>
+      <ConnectionPropertyBag>
+        <ToElementId>4e986adf-d557-4b64-be42-123766884b09</ToElementId>
+        <ToConnectionPoint>
+          <Type>End</Type>
+          <Point>
+            <X>746</X>
+            <Y>267</Y>
+          </Point>
+        </ToConnectionPoint>
+        <ElementConnectionPoint>
+          <Type>LeftMiddle</Type>
+          <Point>
+            <X>756</X>
+            <Y>262</Y>
+          </Point>
+        </ElementConnectionPoint>
+      </ConnectionPropertyBag>
+    </Connections>
     <Children />
     <TextAlign>MiddleCenter</TextAlign>
     <TextColor>-16777216</TextColor>
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.Receptor, HigherOrderProgrammingShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="281b38a4-e4cc-4166-9340-ed090b5dcbe7" Text="AppReceptor" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.GroupBox, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1dd41f0a-0ecd-4bc9-945b-c8cebb8a42aa" Text="UI Events Data Packets" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>629</X>
-        <Y>140</Y>
+        <X>985</X>
+        <Y>222</Y>
+      </Location>
+      <Size>
+        <Width>226</Width>
+        <Height>131</Height>
+      </Size>
+      <X>985</X>
+      <Y>222</Y>
+      <Width>226</Width>
+      <Height>131</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children>
+      <ChildPropertyBag>
+        <ChildId>7fa13d60-31ce-4a9e-8d08-5fd247078623</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>45ba0ace-05b5-483b-893e-5f269ce61df5</ChildId>
+      </ChildPropertyBag>
+    </Children>
+    <TextAlign>TopCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-4128832</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.Receptor, HigherOrderProgrammingShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="66fc7983-6422-4372-8642-94fd7a7831d4" Text="AppReceptor" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>42</X>
+        <Y>208</Y>
       </Location>
       <Size>
         <Width>170</Width>
         <Height>39</Height>
       </Size>
-      <X>629</X>
-      <Y>140</Y>
+      <X>42</X>
+      <Y>208</Y>
       <Width>170</Width>
       <Height>39</Height>
     </DisplayRectangle>
@@ -503,18 +1538,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Ellipse, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="3d87e127-dd91-4843-b058-9a2c2bc6857e" Text="AppMembrane" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Ellipse, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="e8a9a2ca-0c56-4f3c-b5a6-e85d3f47c5a2" Text="AppMembrane" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>625</X>
-        <Y>85</Y>
+        <X>-168</X>
+        <Y>208</Y>
       </Location>
       <Size>
         <Width>172</Width>
         <Height>38</Height>
       </Size>
-      <X>625</X>
-      <Y>85</Y>
+      <X>-168</X>
+      <Y>208</Y>
       <Width>172</Width>
       <Height>38</Height>
     </DisplayRectangle>
@@ -544,18 +1579,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="ee990e7a-62c4-4ff5-86da-81f50f4f8a9f" Text="App.Program" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="87d1260f-8385-4aad-97b2-119cc752631a" Text="Program" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>355</X>
-        <Y>141</Y>
+        <X>810</X>
+        <Y>142</Y>
       </Location>
       <Size>
         <Width>127</Width>
         <Height>32</Height>
       </Size>
-      <X>355</X>
-      <Y>141</Y>
+      <X>810</X>
+      <Y>142</Y>
       <Width>127</Width>
       <Height>32</Height>
     </DisplayRectangle>
@@ -585,141 +1620,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="65266d01-2340-4c6d-b9bc-85589f124c84" Text="Generate Waveform" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag Name="btnPlay" ElementName="FlowSharpWindowsControlShapes.ButtonShape, FlowSharpWindowsControlShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="7cfff950-80c2-4db9-826b-c2aad4d3f8da" Text="Play" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>289</X>
-        <Y>361</Y>
-      </Location>
-      <Size>
-        <Width>264</Width>
-        <Height>38</Height>
-      </Size>
-      <X>289</X>
-      <Y>361</Y>
-      <Width>264</Width>
-      <Height>38</Height>
-    </DisplayRectangle>
-    <StartPoint>
-      <X>0</X>
-      <Y>0</Y>
-    </StartPoint>
-    <EndPoint>
-      <X>0</X>
-      <Y>0</Y>
-    </EndPoint>
-    <BorderPenWidth>1</BorderPenWidth>
-    <StartCap>None</StartCap>
-    <EndCap>None</EndCap>
-    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
-    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
-    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
-    <TextFontSize>10</TextFontSize>
-    <TextFontUnderline>false</TextFontUnderline>
-    <TextFontStrikeout>false</TextFontStrikeout>
-    <TextFontItalic>false</TextFontItalic>
-    <Json>{"Code":"using System;\r\nusing System.Drawing;\r\nusing System.IO;\r\nusing System.Media;\r\nusing System.Windows.Forms;\r\n\r\nnamespace App\r\n{\r\n\tstatic partial class Program\r\n\t{\r\n\t    public static void GenerateWaveform(BinaryWriter writer, int frequency, int samples, int samplesPerSecond, int volume = 16383)\r\n\t    {\r\n\t        const double TAU = 2 * Math.PI;\r\n\t        double theta = frequency * TAU / (double)samplesPerSecond;\r\n\t        // 'volume' is UInt16 with range 0 thru Uint16.MaxValue ( = 65 535)\r\n\t        // we need 'amp' to have the range of 0 thru Int16.MaxValue ( = 32 767)\r\n\t        double amp = volume &gt;&gt; 2; // so we simply set amp = volume / 2\r\n\t        for (int step = 0; step &lt; samples; step++)\r\n\t        {\r\n\t            short s = (short)(amp * Math.Sin(theta * (double)step));\r\n\t            writer.Write(s);\r\n\t        }\r\n\t    }\r\n\t}\r\n}\r\n"}</Json>
-    <Connections />
-    <Children />
-    <TextAlign>MiddleCenter</TextAlign>
-    <TextColor>-16777216</TextColor>
-    <BorderPenColor>-16777216</BorderPenColor>
-    <FillBrushColor>-1</FillBrushColor>
-  </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="6ad96ecd-cc2c-4109-b5da-299f2db17ec2" Text="Write WAV Header" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
-    <DisplayRectangle>
-      <Location>
-        <X>288</X>
-        <Y>297</Y>
-      </Location>
-      <Size>
-        <Width>264</Width>
-        <Height>38</Height>
-      </Size>
-      <X>288</X>
-      <Y>297</Y>
-      <Width>264</Width>
-      <Height>38</Height>
-    </DisplayRectangle>
-    <StartPoint>
-      <X>0</X>
-      <Y>0</Y>
-    </StartPoint>
-    <EndPoint>
-      <X>0</X>
-      <Y>0</Y>
-    </EndPoint>
-    <BorderPenWidth>1</BorderPenWidth>
-    <StartCap>None</StartCap>
-    <EndCap>None</EndCap>
-    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
-    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
-    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
-    <TextFontSize>10</TextFontSize>
-    <TextFontUnderline>false</TextFontUnderline>
-    <TextFontStrikeout>false</TextFontStrikeout>
-    <TextFontItalic>false</TextFontItalic>
-    <Json>{"Code":"using System;\r\nusing System.Drawing;\r\nusing System.IO;\r\nusing System.Media;\r\nusing System.Windows.Forms;\r\n\r\nnamespace App\r\n{\r\n\tstatic partial class Program\r\n\t{\r\n\t    public static void WriteWavHeader(BinaryWriter writer, int msDuration, int samplesPerSecond)\r\n\t    {\r\n\t        int formatChunkSize = 16;\r\n\t        int headerSize = 8;\r\n\t        short formatType = 1;\r\n\t        short tracks = 1;\r\n\t        short bitsPerSample = 16;\r\n\t        short frameSize = (short)(tracks * ((bitsPerSample + 7) / 8));\r\n\t        int bytesPerSecond = samplesPerSecond * frameSize;\r\n\t        int waveSize = 4;\r\n\t        int samples = (int)((decimal)samplesPerSecond * msDuration / 1000);\r\n\t        int dataChunkSize = samples * frameSize;\r\n\t        int fileSize = waveSize + headerSize + formatChunkSize + headerSize + dataChunkSize;\r\n\t\r\n\t        writer.Write(0x46464952);       // = encoding.GetBytes(\"RIFF\")\r\n\t        writer.Write(fileSize);\r\n\t        writer.Write(0x45564157);       // = encoding.GetBytes(\"WAVE\")\r\n\t        writer.Write(0x20746D66);       // = encoding.GetBytes(\"fmt \")\r\n\t        writer.Write(formatChunkSize);\r\n\t        writer.Write(formatType);\r\n\t        writer.Write(tracks);\r\n\t        writer.Write(samplesPerSecond);\r\n\t        writer.Write(bytesPerSecond);\r\n\t        writer.Write(frameSize);\r\n\t        writer.Write(bitsPerSample);\r\n\t        writer.Write(0x61746164);       // = encoding.GetBytes(\"data\")\r\n\t        writer.Write(dataChunkSize);\r\n\t    }\r\n\t}\r\n}"}</Json>
-    <Connections />
-    <Children />
-    <TextAlign>MiddleCenter</TextAlign>
-    <TextColor>-16777216</TextColor>
-    <BorderPenColor>-16777216</BorderPenColor>
-    <FillBrushColor>-1</FillBrushColor>
-  </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="9812f92d-32de-4552-9b65-6f0065dc3266" Text="Speaker" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
-    <DisplayRectangle>
-      <Location>
-        <X>705</X>
-        <Y>290</Y>
-      </Location>
-      <Size>
-        <Width>193</Width>
-        <Height>42</Height>
-      </Size>
-      <X>705</X>
-      <Y>290</Y>
-      <Width>193</Width>
-      <Height>42</Height>
-    </DisplayRectangle>
-    <StartPoint>
-      <X>0</X>
-      <Y>0</Y>
-    </StartPoint>
-    <EndPoint>
-      <X>0</X>
-      <Y>0</Y>
-    </EndPoint>
-    <BorderPenWidth>1</BorderPenWidth>
-    <StartCap>None</StartCap>
-    <EndCap>None</EndCap>
-    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
-    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
-    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
-    <TextFontSize>10</TextFontSize>
-    <TextFontUnderline>false</TextFontUnderline>
-    <TextFontStrikeout>false</TextFontStrikeout>
-    <TextFontItalic>false</TextFontItalic>
-    <Json>{"Code":"using System;\r\nusing System.IO;\r\nusing System.Media;\r\n\r\nnamespace App\r\n{\r\n\tpublic static partial class Program\r\n\t{\r\n\t\tpublic static SoundPlayer Player = new SoundPlayer();\r\n\t\t\r\n\t\tpublic static void Play()\r\n\t\t{\r\n            MemoryStream stream = Program.CreateWavStream(Program.Player, Program.Frequency);\r\n            Program.Player.Stream = stream;\r\n            Program.Player.PlayLooping();\r\n            stream.Close();\r\n            // btnPlay.Text = \"Stop\";\r\n            Program.Playing = true;\r\n\t\t}\r\n\t\t\r\n\t\tpublic static void Stop()\r\n\t\t{\r\n\t\t\tConsole.WriteLine(\"Stop\");\r\n            Program.Player.Stop();\r\n            // btnPlay.Text = \"Play\";\r\n            Program.Playing = false;\r\n\t\t}\r\n\t}\r\n}\r\n"}</Json>
-    <Connections />
-    <Children />
-    <TextAlign>MiddleCenter</TextAlign>
-    <TextColor>-16777216</TextColor>
-    <BorderPenColor>-16777216</BorderPenColor>
-    <FillBrushColor>-1</FillBrushColor>
-  </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpWindowsControlShapes.ButtonShape, FlowSharpWindowsControlShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="aa91a9e8-0844-4b5e-b7bb-fc6d8de9ee94" Text="Play" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
-    <DisplayRectangle>
-      <Location>
-        <X>243</X>
-        <Y>-3</Y>
+        <X>550</X>
+        <Y>318</Y>
       </Location>
       <Size>
         <Width>205</Width>
         <Height>42</Height>
       </Size>
-      <X>243</X>
-      <Y>-3</Y>
+      <X>550</X>
+      <Y>318</Y>
       <Width>205</Width>
       <Height>42</Height>
     </DisplayRectangle>
@@ -742,25 +1654,91 @@
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
     <Json>{"ClickEventName":"PlayOrStop","ClickEventData":null}</Json>
-    <Connections />
+    <Connections>
+      <ConnectionPropertyBag>
+        <ToElementId>4e986adf-d557-4b64-be42-123766884b09</ToElementId>
+        <ToConnectionPoint>
+          <Type>Start</Type>
+          <Point>
+            <X>562</X>
+            <Y>288</Y>
+          </Point>
+        </ToConnectionPoint>
+        <ElementConnectionPoint>
+          <Type>RightMiddle</Type>
+          <Point>
+            <X>552</X>
+            <Y>282</Y>
+          </Point>
+        </ElementConnectionPoint>
+      </ConnectionPropertyBag>
+    </Connections>
     <Children />
     <TextAlign>MiddleCenter</TextAlign>
     <TextColor>-16777216</TextColor>
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="278dff2f-5aac-4ff1-8da6-fc6e8c026bd4" Text="CreateSemanticObject" IsBookmarked="true" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.GroupBox, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="53a54963-1049-41b2-ba4f-ef0607c6cfd5" Text="UI" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-172</X>
-        <Y>333</Y>
+        <X>424</X>
+        <Y>208</Y>
+      </Location>
+      <Size>
+        <Width>468</Width>
+        <Height>167</Height>
+      </Size>
+      <X>424</X>
+      <Y>208</Y>
+      <Width>468</Width>
+      <Height>167</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children>
+      <ChildPropertyBag>
+        <ChildId>46952f41-7c46-4ad4-9196-835186e48418</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>7cfff950-80c2-4db9-826b-c2aad4d3f8da</ChildId>
+      </ChildPropertyBag>
+    </Children>
+    <TextAlign>TopCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="37420fd4-d48c-4d16-9269-b2200d953c8b" Text="CreateSemanticObject" IsBookmarked="true" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>-118</X>
+        <Y>671</Y>
       </Location>
       <Size>
         <Width>185</Width>
         <Height>31</Height>
       </Size>
-      <X>-172</X>
-      <Y>333</Y>
+      <X>-118</X>
+      <Y>671</Y>
       <Width>185</Width>
       <Height>31</Height>
     </DisplayRectangle>
@@ -782,7 +1760,7 @@
     <TextFontUnderline>false</TextFontUnderline>
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
-    <Json>{"Code":"using System;\r\nusing System.Collections.Specialized;\r\nusing System.IO;\r\nusing System.Net;\r\nusing System.Reflection;\r\nusing System.Text;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class Routes\r\n\t{\r\n\t\tprotected void CreateSemanticObject&lt;M, T&gt;(HttpListenerContext context, string data)\r\n\t\t\twhere M : IMembrane, new()\r\n\t\t\twhere T : ISemanticType, new()\r\n\t\t{\r\n\t\t\ttry\r\n\t\t\t{\r\n\t            NameValueCollection nvc = context.Request.QueryString;\r\n\t            Type st = typeof(T);\r\n\t            ISemanticType t = Activator.CreateInstance(st) as ISemanticType;\r\n\t            PopulateType(t, nvc);\r\n\t            serviceManager.Get&lt;ISemanticProcessor&gt;().ProcessInstance&lt;M&gt;(t);\r\n            }\r\n            catch(Exception ex)\r\n            {\r\n            \tConsole.WriteLine(ex.Message);\r\n            \tConsole.WriteLine(ex.StackTrace);\r\n            }\r\n            finally\r\n            {\r\n\t            Response(context);\r\n            }\r\n        }\r\n\r\n        protected void PopulateType(ISemanticType packet, NameValueCollection nvc)\r\n        {\r\n            foreach (string key in nvc.AllKeys)\r\n            {\r\n            \tConsole.WriteLine(key ?? \"Key is null\");\r\n                PropertyInfo pi = packet.GetType().GetProperty(key, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);\r\n\r\n                if (pi != null)\r\n                {\r\n                    object valOfType = Convert.ChangeType(Uri.UnescapeDataString(nvc[key].Replace('+', ' ')), pi.PropertyType);\r\n                    pi.SetValue(packet, valOfType);\r\n                }\r\n            }\r\n        }\r\n        \r\n        protected void Response(HttpListenerContext context)\r\n        {\r\n            byte[] utf8data = Encoding.UTF8.GetBytes(\"OK\");\r\n            context.Response.ContentType = \"text/html\";\r\n            context.Response.ContentEncoding = Encoding.UTF8;\r\n            context.Response.ContentLength64 = utf8data.Length;\r\n            context.Response.OutputStream.Write(utf8data, 0, utf8data.Length);\r\n        }\r\n\t}\r\n}\r\n"}</Json>
+    <Json>{"Code":"using System;\r\nusing System.Collections.Specialized;\r\nusing System.IO;\r\nusing System.Net;\r\nusing System.Reflection;\r\nusing System.Text;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class Routes\r\n\t{\r\n\t\tprotected void CreateSemanticObject&lt;M, T&gt;(HttpListenerContext context, string data)\r\n\t\t\twhere M : IMembrane, new()\r\n\t\t\twhere T : ISemanticType, new()\r\n\t\t{\r\n\t\t\ttry\r\n\t\t\t{\r\n\t            NameValueCollection nvc = context.Request.QueryString;\r\n\t            Type st = typeof(T);\r\n\t            ISemanticType t = Activator.CreateInstance(st) as ISemanticType;\r\n\t            PopulateType(t, nvc);\r\n\t            serviceManager.Get&lt;ISemanticProcessor&gt;().ProcessInstance&lt;M&gt;(t);\r\n            }\r\n            catch(Exception ex)\r\n            {\r\n            \tConsole.WriteLine(ex.Message);\r\n            \tConsole.WriteLine(ex.StackTrace);\r\n            }\r\n            finally\r\n            {\r\n\t            Response(context);\r\n            }\r\n        }\r\n\r\n        protected void PopulateType(ISemanticType packet, NameValueCollection nvc)\r\n        {\r\n            foreach (string key in nvc.AllKeys)\r\n            {\r\n                PropertyInfo pi = packet.GetType().GetProperty(key, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);\r\n\r\n                if (pi != null)\r\n                {\r\n                    object valOfType = Convert.ChangeType(Uri.UnescapeDataString(nvc[key].Replace('+', ' ')), pi.PropertyType);\r\n                    pi.SetValue(packet, valOfType);\r\n                }\r\n            }\r\n        }\r\n        \r\n        protected void Response(HttpListenerContext context)\r\n        {\r\n            byte[] utf8data = Encoding.UTF8.GetBytes(\"OK\");\r\n            context.Response.ContentType = \"text/html\";\r\n            context.Response.ContentEncoding = Encoding.UTF8;\r\n            context.Response.ContentLength64 = utf8data.Length;\r\n            context.Response.OutputStream.Write(utf8data, 0, utf8data.Length);\r\n        }\r\n\t}\r\n}\r\n"}</Json>
     <Connections />
     <Children />
     <TextAlign>MiddleCenter</TextAlign>
@@ -790,18 +1768,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="73a0c0d7-339c-4eec-a77d-1a45fc746c37" Text="InitializeRoutes" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="7b7fbbf3-bbe9-4025-9029-b001bbb35d93" Text="InitializeRoutes" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-44</X>
-        <Y>280</Y>
+        <X>10</X>
+        <Y>618</Y>
       </Location>
       <Size>
         <Width>151</Width>
         <Height>35</Height>
       </Size>
-      <X>-44</X>
-      <Y>280</Y>
+      <X>10</X>
+      <Y>618</Y>
       <Width>151</Width>
       <Height>35</Height>
     </DisplayRectangle>
@@ -831,18 +1809,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="6db7265e-6ecc-402d-abcc-2a5ae31c14a2" Text="Route" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="0866ec34-d764-4267-bec8-c569db953dc6" Text="Route" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-30</X>
-        <Y>234</Y>
+        <X>24</X>
+        <Y>572</Y>
       </Location>
       <Size>
         <Width>118</Width>
         <Height>34</Height>
       </Size>
-      <X>-30</X>
-      <Y>234</Y>
+      <X>24</X>
+      <Y>572</Y>
       <Width>118</Width>
       <Height>34</Height>
     </DisplayRectangle>
@@ -872,18 +1850,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="63b066c2-dc8a-47b2-8486-17e4a41e6284" Text="Routes" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="314fa91a-ffc5-445d-bcb5-6e1172f12f99" Text="Routes" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-59</X>
-        <Y>191</Y>
+        <X>-5</X>
+        <Y>529</Y>
       </Location>
       <Size>
         <Width>166</Width>
         <Height>30</Height>
       </Size>
-      <X>-59</X>
-      <Y>191</Y>
+      <X>-5</X>
+      <Y>529</Y>
       <Width>166</Width>
       <Height>30</Height>
     </DisplayRectangle>
@@ -913,18 +1891,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1372b039-780d-4451-b447-6d898ef32b28" Text="Start" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="04528652-d3cc-4578-8a56-5651c28448be" Text="Start" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-264</X>
-        <Y>134</Y>
+        <X>-210</X>
+        <Y>472</Y>
       </Location>
       <Size>
         <Width>141</Width>
         <Height>39</Height>
       </Size>
-      <X>-264</X>
-      <Y>134</Y>
+      <X>-210</X>
+      <Y>472</Y>
       <Width>141</Width>
       <Height>39</Height>
     </DisplayRectangle>
@@ -949,7 +1927,7 @@
     <Json>{"Code":"using System.Net;\r\nusing System.Net.Sockets;\r\nusing System.Threading.Tasks;\r\n\r\nusing Clifton.Core.ServiceManagement;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class WebServer\r\n\t{\r\n\t   \tprotected HttpListener listener;\r\n\t   \tprotected Routes routes;\r\n\t   \t\r\n\t\tpublic void Start(string ip, int[] ports, IServiceManager serviceManager)\r\n\t\t{\r\n\t\t\troutes = new Routes(serviceManager);\r\n\t\t\troutes.InitializeRoutes();\r\n\t\t\tlistener = new HttpListener();\r\n\r\n\t\t\tforeach (int port in ports)\r\n\t\t\t{\r\n\t\t\t\tstring url = IpWithPort(ip, port);\r\n\t\t\t\tlistener.Prefixes.Add(url);\r\n\t\t\t}\r\n\r\n\t\t\tlistener.Start();\r\n\t\t\tTask.Run(() =&gt; WaitForConnection(listener));\r\n\t\t}\r\n\t}\r\n}\t"}</Json>
     <Connections>
       <ConnectionPropertyBag>
-        <ToElementId>75ad3c9e-74b8-4507-8287-0c79d9f498c5</ToElementId>
+        <ToElementId>448c4fbc-2865-441d-be2e-e423c8639176</ToElementId>
         <ToConnectionPoint>
           <Type>Start</Type>
           <Point>
@@ -966,7 +1944,7 @@
         </ElementConnectionPoint>
       </ConnectionPropertyBag>
       <ConnectionPropertyBag>
-        <ToElementId>b0b80e7c-a50c-4a24-82e1-37a0d9df0d3b</ToElementId>
+        <ToElementId>1f11e712-a3a1-492a-868f-4d6afa744cd0</ToElementId>
         <ToConnectionPoint>
           <Type>Start</Type>
           <Point>
@@ -983,7 +1961,7 @@
         </ElementConnectionPoint>
       </ConnectionPropertyBag>
       <ConnectionPropertyBag>
-        <ToElementId>b5fbde26-4f65-42c7-b99f-115fc0645130</ToElementId>
+        <ToElementId>75faff9f-b613-4eee-9783-1902c9972d59</ToElementId>
         <ToConnectionPoint>
           <Type>End</Type>
           <Point>
@@ -1006,18 +1984,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="aa1bd39c-5e0f-486f-800c-5e57a74203c9" Text="WaitForConnection" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="8423e14d-428f-4efb-8a4e-b671e3abfd61" Text="WaitForConnection" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-264</X>
-        <Y>208</Y>
+        <X>-210</X>
+        <Y>546</Y>
       </Location>
       <Size>
         <Width>141</Width>
         <Height>39</Height>
       </Size>
-      <X>-264</X>
-      <Y>208</Y>
+      <X>-210</X>
+      <Y>546</Y>
       <Width>141</Width>
       <Height>39</Height>
     </DisplayRectangle>
@@ -1042,7 +2020,7 @@
     <Json>{"Code":"using System.IO;\r\nusing System.Net;\r\nusing System.Net.Sockets;\r\nusing System.Threading.Tasks;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class WebServer\r\n\t{\r\n\t\tprotected void WaitForConnection(object objListener)\r\n\t\t{\r\n\t\t\tHttpListener listener = (HttpListener)objListener;\r\n\r\n\t\t\twhile (true)\r\n\t\t\t{\r\n\t\t\t\t// Wait for a connection.  Return to caller while we wait.\r\n\t\t\t\tHttpListenerContext context = listener.GetContext();\r\n\r\n\t\t\t\t// Redirect to HTTPS if not local and not secure.\r\n\t\t\t\tif (!context.Request.IsLocal &amp;&amp; !context.Request.IsSecureConnection)\r\n\t\t\t\t{\r\n\t\t\t\t\tstring redirectUrl = context.Request.Url.ToString().Replace(\"http:\", \"https:\");\r\n\t\t\t\t\tcontext.Response.Redirect(redirectUrl);\r\n\t\t\t\t\tcontext.Response.Close();\r\n\t\t\t\t}\r\n\t\t\t\telse\r\n\t\t\t\t{\r\n\t\t\t\t\tstring data = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding).ReadToEnd();\r\n\t\t\t\t\tProcessRoute(context, data);\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n}"}</Json>
     <Connections>
       <ConnectionPropertyBag>
-        <ToElementId>75ad3c9e-74b8-4507-8287-0c79d9f498c5</ToElementId>
+        <ToElementId>448c4fbc-2865-441d-be2e-e423c8639176</ToElementId>
         <ToConnectionPoint>
           <Type>End</Type>
           <Point>
@@ -1059,7 +2037,7 @@
         </ElementConnectionPoint>
       </ConnectionPropertyBag>
       <ConnectionPropertyBag>
-        <ToElementId>c4bc0099-bf63-4f62-a2dd-49c4dd808e0d</ToElementId>
+        <ToElementId>71f0e9d5-c85d-44d3-9803-799fe1a275ee</ToElementId>
         <ToConnectionPoint>
           <Type>Start</Type>
           <Point>
@@ -1082,18 +2060,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="5ee57db3-c07e-4633-b2fd-a73f926e96bf" Text="ProcessRoute" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="6cc77853-4e98-4fdc-8e01-77786053d1a4" Text="ProcessRoute" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-264</X>
-        <Y>280</Y>
+        <X>-210</X>
+        <Y>618</Y>
       </Location>
       <Size>
         <Width>141</Width>
         <Height>39</Height>
       </Size>
-      <X>-264</X>
-      <Y>280</Y>
+      <X>-210</X>
+      <Y>618</Y>
       <Width>141</Width>
       <Height>39</Height>
     </DisplayRectangle>
@@ -1118,7 +2096,7 @@
     <Json>{"Code":"using System;\r\nusing System.IO;\r\nusing System.Net;\r\nusing System.Text;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\n\r\nnamespace App\r\n{\r\n\tpublic partial class WebServer\r\n\t{\r\n\t\tprotected void ProcessRoute(HttpListenerContext context, string data)\r\n\t\t{\r\n\t\t\troutes.Route(context, data);\r\n\t\t\tcontext.Response.Close();\r\n\t\t}\r\n\t}\r\n}\r\n"}</Json>
     <Connections>
       <ConnectionPropertyBag>
-        <ToElementId>c4bc0099-bf63-4f62-a2dd-49c4dd808e0d</ToElementId>
+        <ToElementId>71f0e9d5-c85d-44d3-9803-799fe1a275ee</ToElementId>
         <ToConnectionPoint>
           <Type>End</Type>
           <Point>
@@ -1141,34 +2119,34 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="75ad3c9e-74b8-4507-8287-0c79d9f498c5" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="448c4fbc-2865-441d-be2e-e423c8639176" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-194</X>
-        <Y>173</Y>
+        <X>-140</X>
+        <Y>511</Y>
       </Location>
       <Size>
         <Width>0</Width>
         <Height>35</Height>
       </Size>
-      <X>-194</X>
-      <Y>173</Y>
+      <X>-140</X>
+      <Y>511</Y>
       <Width>0</Width>
       <Height>35</Height>
     </DisplayRectangle>
     <StartPoint>
-      <X>-194</X>
-      <Y>173</Y>
+      <X>-140</X>
+      <Y>511</Y>
     </StartPoint>
     <EndPoint>
-      <X>-194</X>
-      <Y>208</Y>
+      <X>-140</X>
+      <Y>546</Y>
     </EndPoint>
     <BorderPenWidth>1</BorderPenWidth>
     <StartCap>None</StartCap>
     <EndCap>Arrow</EndCap>
-    <StartConnectedShapeId>1372b039-780d-4451-b447-6d898ef32b28</StartConnectedShapeId>
-    <EndConnectedShapeId>aa1bd39c-5e0f-486f-800c-5e57a74203c9</EndConnectedShapeId>
+    <StartConnectedShapeId>04528652-d3cc-4578-8a56-5651c28448be</StartConnectedShapeId>
+    <EndConnectedShapeId>8423e14d-428f-4efb-8a4e-b671e3abfd61</EndConnectedShapeId>
     <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
     <TextFontSize>10</TextFontSize>
     <TextFontUnderline>false</TextFontUnderline>
@@ -1182,34 +2160,34 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="c4bc0099-bf63-4f62-a2dd-49c4dd808e0d" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="71f0e9d5-c85d-44d3-9803-799fe1a275ee" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-194</X>
-        <Y>247</Y>
+        <X>-140</X>
+        <Y>585</Y>
       </Location>
       <Size>
         <Width>0</Width>
         <Height>33</Height>
       </Size>
-      <X>-194</X>
-      <Y>247</Y>
+      <X>-140</X>
+      <Y>585</Y>
       <Width>0</Width>
       <Height>33</Height>
     </DisplayRectangle>
     <StartPoint>
-      <X>-194</X>
-      <Y>247</Y>
+      <X>-140</X>
+      <Y>585</Y>
     </StartPoint>
     <EndPoint>
-      <X>-194</X>
-      <Y>280</Y>
+      <X>-140</X>
+      <Y>618</Y>
     </EndPoint>
     <BorderPenWidth>1</BorderPenWidth>
     <StartCap>None</StartCap>
     <EndCap>Arrow</EndCap>
-    <StartConnectedShapeId>aa1bd39c-5e0f-486f-800c-5e57a74203c9</StartConnectedShapeId>
-    <EndConnectedShapeId>5ee57db3-c07e-4633-b2fd-a73f926e96bf</EndConnectedShapeId>
+    <StartConnectedShapeId>8423e14d-428f-4efb-8a4e-b671e3abfd61</StartConnectedShapeId>
+    <EndConnectedShapeId>6cc77853-4e98-4fdc-8e01-77786053d1a4</EndConnectedShapeId>
     <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
     <TextFontSize>10</TextFontSize>
     <TextFontUnderline>false</TextFontUnderline>
@@ -1223,18 +2201,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="968f9074-6d30-4c93-b85a-a6ddfa15f13d" Text="IPWithPort" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="06e318b1-ef85-43cb-a66a-4083d2ef5081" Text="IPWithPort" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-43</X>
-        <Y>134</Y>
+        <X>11</X>
+        <Y>472</Y>
       </Location>
       <Size>
         <Width>141</Width>
         <Height>39</Height>
       </Size>
-      <X>-43</X>
-      <Y>134</Y>
+      <X>11</X>
+      <Y>472</Y>
       <Width>141</Width>
       <Height>39</Height>
     </DisplayRectangle>
@@ -1259,7 +2237,7 @@
     <Json>{"Code":"namespace App\r\n{\r\n\tpublic partial class WebServer\r\n\t{\r\n\t\tprotected string IpWithPort(string ip, int port)\r\n\t\t{\r\n\t\t\tstring ret;\r\n\r\n            if (port == 80)\r\n            {\r\n                ret = \"http://\" + ip + \"/\";\r\n            }\r\n            else if ((ip == \"localhost\") || (ip == \"127.0.0.1\"))\r\n            {\r\n                ret = \"http://\" + ip + \":\" + port.ToString() + \"/\";\r\n            }\r\n            else\r\n            {\r\n                ret = \"https://\" + ip + \":\" + port.ToString() + \"/\";\r\n            }\r\n\r\n\t\t\treturn ret;\r\n\t\t}\r\n\t}\r\n}"}</Json>
     <Connections>
       <ConnectionPropertyBag>
-        <ToElementId>b0b80e7c-a50c-4a24-82e1-37a0d9df0d3b</ToElementId>
+        <ToElementId>1f11e712-a3a1-492a-868f-4d6afa744cd0</ToElementId>
         <ToConnectionPoint>
           <Type>End</Type>
           <Point>
@@ -1282,34 +2260,34 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b0b80e7c-a50c-4a24-82e1-37a0d9df0d3b" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1f11e712-a3a1-492a-868f-4d6afa744cd0" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-123</X>
-        <Y>153</Y>
+        <X>-69</X>
+        <Y>491</Y>
       </Location>
       <Size>
         <Width>80</Width>
         <Height>0</Height>
       </Size>
-      <X>-123</X>
-      <Y>153</Y>
+      <X>-69</X>
+      <Y>491</Y>
       <Width>80</Width>
       <Height>0</Height>
     </DisplayRectangle>
     <StartPoint>
-      <X>-123</X>
-      <Y>153</Y>
+      <X>-69</X>
+      <Y>491</Y>
     </StartPoint>
     <EndPoint>
-      <X>-43</X>
-      <Y>153</Y>
+      <X>11</X>
+      <Y>491</Y>
     </EndPoint>
     <BorderPenWidth>1</BorderPenWidth>
     <StartCap>Arrow</StartCap>
     <EndCap>Arrow</EndCap>
-    <StartConnectedShapeId>1372b039-780d-4451-b447-6d898ef32b28</StartConnectedShapeId>
-    <EndConnectedShapeId>968f9074-6d30-4c93-b85a-a6ddfa15f13d</EndConnectedShapeId>
+    <StartConnectedShapeId>04528652-d3cc-4578-8a56-5651c28448be</StartConnectedShapeId>
+    <EndConnectedShapeId>06e318b1-ef85-43cb-a66a-4083d2ef5081</EndConnectedShapeId>
     <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
     <TextFontSize>10</TextFontSize>
     <TextFontUnderline>false</TextFontUnderline>
@@ -1323,18 +2301,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.Ellipse, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="43ca3e4d-23e6-40c2-8554-74c53917c852" Text="(&quot;localhost&quot;, 8002)" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.Ellipse, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="e8b2be85-9368-4763-9a64-0958318a2094" Text="(&quot;localhost&quot;, 8002)" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-279</X>
-        <Y>16</Y>
+        <X>-225</X>
+        <Y>354</Y>
       </Location>
       <Size>
         <Width>173</Width>
         <Height>60</Height>
       </Size>
-      <X>-279</X>
-      <Y>16</Y>
+      <X>-225</X>
+      <Y>354</Y>
       <Width>173</Width>
       <Height>60</Height>
     </DisplayRectangle>
@@ -1359,7 +2337,7 @@
     <Json>{"Code":"using System;\r\n\r\nusing Clifton.Core.ServiceManagement;\r\n\r\nnamespace App\r\n{\r\n\tpublic static class Server\r\n\t{\r\n\t\tpublic static void StartServer(IServiceManager serviceManager)\r\n\t\t{\r\n\t\t\ttry\r\n\t\t\t{\r\n\t\t\t\tWebServer ws = new WebServer();\r\n\t\t\t\tws.Start(\"localhost\", new int[] {8002}, serviceManager);\r\n\t\t\t\tConsole.WriteLine(\"Server started at localhost:8002\");\r\n\t\t\t}\r\n\t\t\tcatch(Exception ex)\r\n\t\t\t{\r\n\t\t\t\tConsole.WriteLine(ex.Message);\r\n\t\t\t\tConsole.ReadLine();\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n}\r\n"}</Json>
     <Connections>
       <ConnectionPropertyBag>
-        <ToElementId>b5fbde26-4f65-42c7-b99f-115fc0645130</ToElementId>
+        <ToElementId>75faff9f-b613-4eee-9783-1902c9972d59</ToElementId>
         <ToConnectionPoint>
           <Type>Start</Type>
           <Point>
@@ -1382,34 +2360,34 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b5fbde26-4f65-42c7-b99f-115fc0645130" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.DiagonalConnector, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="75faff9f-b613-4eee-9783-1902c9972d59" IsBookmarked="false" HasCornerAnchors="false" HasCenterAnchors="false" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-194</X>
-        <Y>76</Y>
+        <X>-140</X>
+        <Y>414</Y>
       </Location>
       <Size>
         <Width>1</Width>
         <Height>58</Height>
       </Size>
-      <X>-194</X>
-      <Y>76</Y>
+      <X>-140</X>
+      <Y>414</Y>
       <Width>1</Width>
       <Height>58</Height>
     </DisplayRectangle>
     <StartPoint>
-      <X>-193</X>
-      <Y>76</Y>
+      <X>-139</X>
+      <Y>414</Y>
     </StartPoint>
     <EndPoint>
-      <X>-194</X>
-      <Y>134</Y>
+      <X>-140</X>
+      <Y>472</Y>
     </EndPoint>
     <BorderPenWidth>1</BorderPenWidth>
     <StartCap>None</StartCap>
     <EndCap>Arrow</EndCap>
-    <StartConnectedShapeId>43ca3e4d-23e6-40c2-8554-74c53917c852</StartConnectedShapeId>
-    <EndConnectedShapeId>1372b039-780d-4451-b447-6d898ef32b28</EndConnectedShapeId>
+    <StartConnectedShapeId>e8b2be85-9368-4763-9a64-0958318a2094</StartConnectedShapeId>
+    <EndConnectedShapeId>04528652-d3cc-4578-8a56-5651c28448be</EndConnectedShapeId>
     <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
     <TextFontSize>10</TextFontSize>
     <TextFontUnderline>false</TextFontUnderline>
@@ -1423,18 +2401,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpLib.GroupBox, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1d81d3de-c85a-4e54-b02c-30400a101135" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+  <ElementPropertyBag ElementName="FlowSharpLib.GroupBox, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="f0e2e2da-3ed2-4b12-a4bb-3142934de240" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
     <DisplayRectangle>
       <Location>
-        <X>-294</X>
-        <Y>1</Y>
+        <X>-240</X>
+        <Y>339</Y>
       </Location>
       <Size>
         <Width>416</Width>
         <Height>378</Height>
       </Size>
-      <X>-294</X>
-      <Y>1</Y>
+      <X>-240</X>
+      <Y>339</Y>
       <Width>416</Width>
       <Height>378</Height>
     </DisplayRectangle>
@@ -1460,48 +2438,265 @@
     <Connections />
     <Children>
       <ChildPropertyBag>
-        <ChildId>278dff2f-5aac-4ff1-8da6-fc6e8c026bd4</ChildId>
+        <ChildId>37420fd4-d48c-4d16-9269-b2200d953c8b</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>73a0c0d7-339c-4eec-a77d-1a45fc746c37</ChildId>
+        <ChildId>7b7fbbf3-bbe9-4025-9029-b001bbb35d93</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>6db7265e-6ecc-402d-abcc-2a5ae31c14a2</ChildId>
+        <ChildId>0866ec34-d764-4267-bec8-c569db953dc6</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>63b066c2-dc8a-47b2-8486-17e4a41e6284</ChildId>
+        <ChildId>314fa91a-ffc5-445d-bcb5-6e1172f12f99</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>1372b039-780d-4451-b447-6d898ef32b28</ChildId>
+        <ChildId>04528652-d3cc-4578-8a56-5651c28448be</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>aa1bd39c-5e0f-486f-800c-5e57a74203c9</ChildId>
+        <ChildId>8423e14d-428f-4efb-8a4e-b671e3abfd61</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>5ee57db3-c07e-4633-b2fd-a73f926e96bf</ChildId>
+        <ChildId>6cc77853-4e98-4fdc-8e01-77786053d1a4</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>75ad3c9e-74b8-4507-8287-0c79d9f498c5</ChildId>
+        <ChildId>448c4fbc-2865-441d-be2e-e423c8639176</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>c4bc0099-bf63-4f62-a2dd-49c4dd808e0d</ChildId>
+        <ChildId>71f0e9d5-c85d-44d3-9803-799fe1a275ee</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>968f9074-6d30-4c93-b85a-a6ddfa15f13d</ChildId>
+        <ChildId>06e318b1-ef85-43cb-a66a-4083d2ef5081</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>b0b80e7c-a50c-4a24-82e1-37a0d9df0d3b</ChildId>
+        <ChildId>1f11e712-a3a1-492a-868f-4d6afa744cd0</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>43ca3e4d-23e6-40c2-8554-74c53917c852</ChildId>
+        <ChildId>e8b2be85-9368-4763-9a64-0958318a2094</ChildId>
       </ChildPropertyBag>
       <ChildPropertyBag>
-        <ChildId>b5fbde26-4f65-42c7-b99f-115fc0645130</ChildId>
+        <ChildId>75faff9f-b613-4eee-9783-1902c9972d59</ChildId>
       </ChildPropertyBag>
     </Children>
     <TextAlign>MiddleCenter</TextAlign>
     <TextColor>-16777216</TextColor>
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-986896</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.WorkflowBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="2eb96455-c170-43c3-af53-f57a2527fa67" Text="CreateWavPacketWorkflow" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>437</X>
+        <Y>631</Y>
+      </Location>
+      <Size>
+        <Width>317</Width>
+        <Height>267</Height>
+      </Size>
+      <X>437</X>
+      <Y>631</Y>
+      <Width>317</Width>
+      <Height>267</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>6</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{"Code":"namespace App\r\n{\r\n\tpublic partial class CreateWavPacketWorkflow\r\n\t{\r\n\t\tpublic static void Execute(CreateWavPacket packet)\r\n\t\t{\r\n\t\t\tCreateWavPacketWorkflow workflow = new CreateWavPacketWorkflow();\r\n\t\t\tworkflow.CreateStream(packet);\r\n\t\t\tworkflow.WriteWavHeader(packet);\r\n\t\t\tworkflow.GenerateWaveform(packet);\r\n\t\t\tworkflow.ResetStreamToStart(packet);\r\n\t\t}\r\n\t}\r\n}\r\n"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5383962</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.GroupBox, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="5636807b-1218-4fd1-ad1b-fa18e9c09409" Text="Waveform Generator" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>422</X>
+        <Y>553</Y>
+      </Location>
+      <Size>
+        <Width>347</Width>
+        <Height>360</Height>
+      </Size>
+      <X>422</X>
+      <Y>553</Y>
+      <Width>347</Width>
+      <Height>360</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections>
+      <ConnectionPropertyBag>
+        <ToElementId>53a28dff-47a4-46bb-bb73-c78f4e80497b</ToElementId>
+        <ToConnectionPoint>
+          <Type>End</Type>
+          <Point>
+            <X>506</X>
+            <Y>360</Y>
+          </Point>
+        </ToConnectionPoint>
+        <ElementConnectionPoint>
+          <Type>TopMiddle</Type>
+          <Point>
+            <X>504</X>
+            <Y>368</Y>
+          </Point>
+        </ElementConnectionPoint>
+      </ConnectionPropertyBag>
+    </Connections>
+    <Children>
+      <ChildPropertyBag>
+        <ChildId>66c530d0-ebf9-4d2f-bd0e-7291de1c8c86</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>38cd8b7a-b75d-48e3-995b-5d7344e03f11</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>a79e327b-ef86-4da0-b556-84cf722189f5</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>1bb6c8c7-92c8-4e04-9303-a87c6f9dc29f</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>52ae009f-8d9b-4e0b-b564-f15e182b4357</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>b8038c74-1fe2-48c6-8e23-5d23ff5c9cf7</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>23552667-9853-42bc-a5e1-fd5c3fd879b8</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>91a44cc7-85ba-4af1-b112-aee90e531fdc</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>2eb96455-c170-43c3-af53-f57a2527fa67</ChildId>
+      </ChildPropertyBag>
+    </Children>
+    <TextAlign>TopCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-4128769</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.LeftTriangle, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="cae8e6cc-b261-406b-957a-cfbc6546af64" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>988</X>
+        <Y>588</Y>
+      </Location>
+      <Size>
+        <Width>60</Width>
+        <Height>60</Height>
+      </Size>
+      <X>988</X>
+      <Y>588</Y>
+      <Width>60</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpLib.GroupBox, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="14f76ca7-3efe-4e04-93f2-6cad3f5545b5" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>923</X>
+        <Y>556</Y>
+      </Location>
+      <Size>
+        <Width>190</Width>
+        <Height>125</Height>
+      </Size>
+      <X>923</X>
+      <Y>556</Y>
+      <Width>190</Width>
+      <Height>125</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{"Code":"using System;\r\nusing System.IO;\r\nusing System.Media;\r\n\r\nnamespace App\r\n{\r\n\tpublic static partial class Speaker\r\n\t{\r\n\t\tpublic static SoundPlayer Player = new SoundPlayer();\r\n\t\t\r\n\t\tpublic static void Play()\r\n\t\t{\r\n\t\t\tConsole.WriteLine(\"Play\");\r\n\t\t\tCreateWavPacket cwp = new CreateWavPacket(Program.Frequency);\r\n\t\t\tCreateWavPacketWorkflow.Execute(cwp);\r\n            Player.Stream = cwp.SoundStream;\r\n            Player.PlayLooping();\r\n            cwp.SoundStream.Close();\r\n            // btnPlay.Text = \"Stop\";\r\n            Program.Playing = true;\r\n\t\t}\r\n\t\t\r\n\t\tpublic static void Stop()\r\n\t\t{\r\n\t\t\tConsole.WriteLine(\"Stop\");\r\n            Player.Stop();\r\n            // btnPlay.Text = \"Play\";\r\n            Program.Playing = false;\r\n\t\t}\r\n\t}\r\n}\r\n"}</Json>
+    <Connections />
+    <Children>
+      <ChildPropertyBag>
+        <ChildId>6dd29620-b35e-4dac-8609-f39f1f03d996</ChildId>
+      </ChildPropertyBag>
+      <ChildPropertyBag>
+        <ChildId>cae8e6cc-b261-406b-957a-cfbc6546af64</ChildId>
+      </ChildPropertyBag>
+    </Children>
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-2894893</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
 </ArrayOfElementPropertyBag>

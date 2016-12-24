@@ -169,12 +169,14 @@ namespace FlowSharpLib
 
                     if (zom.StartConnectedShape != null)
                     {
-                        zom.StartConnection = zom.StartConnectedShape.Connections.SingleOrDefault(conn => conn.ToElement == el);
+                        // TODO: First or default used because we have a bug, yet to fix, where the shape can have the same connector attached twice!
+                        zom.StartConnection = zom.StartConnectedShape.Connections.FirstOrDefault(conn => conn.ToElement == el);
                     }
 
                     if (zom.EndConnectedShape != null)
                     {
-                        zom.EndConnection = zom.EndConnectedShape.Connections.SingleOrDefault(conn => conn.ToElement == el);
+                        // TODO: First or default used because we have a bug, yet to fix, where the shape can have the same connector attached twice!
+                        zom.EndConnection = zom.EndConnectedShape.Connections.FirstOrDefault(conn => conn.ToElement == el);
                     }
                 }
 

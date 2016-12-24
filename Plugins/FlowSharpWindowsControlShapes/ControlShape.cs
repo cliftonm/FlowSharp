@@ -87,7 +87,7 @@ namespace FlowSharpWindowsControlShapes
             control.Visible = Visible;
         }
 
-        protected string AppendData(string url)
+        protected virtual string AppendData(string url)
         {
             if (!string.IsNullOrEmpty(ClickEventData))
             {

@@ -54,6 +54,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextboxShape.cs" />
     <Compile Include="TextboxShapeProperties.cs" />
+    <Compile Include="TrackbarShape.cs" />
+    <Compile Include="TrackbarShapeProperties.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FlowSharpLib\FlowSharpLib.csproj">

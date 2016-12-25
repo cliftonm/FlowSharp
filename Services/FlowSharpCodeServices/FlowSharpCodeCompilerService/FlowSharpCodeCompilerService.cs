@@ -101,13 +101,26 @@ namespace FlowSharpCodeCompilerService
         public string GetWorkflowCode(BaseController canvasController, GraphicElement wf)
         {
             StringBuilder sb = new StringBuilder();
+            string packetName = Clifton.Core.ExtensionMethods.ExtensionMethods.LeftOf(wf.Text, "Workflow");
+            GraphicElement elDefiningPacket = FindPacket(canvasController, packetName);
+            bool packetHasParameterlessConstructor = HasParameterlessConstructor(GetCode(elDefiningPacket), packetName);
 
             // TODO: Hardcoded for now for POC.
             sb.AppendLine("namespace App");
             sb.AppendLine("{");
             sb.AppendLine("\tpublic partial class " + wf.Text);
             sb.AppendLine("\t{");
-            sb.AppendLine("\t\tpublic static void Execute(" + Clifton.Core.ExtensionMethods.ExtensionMethods.LeftOf(wf.Text, "Workflow") + " packet)");
+
+            if (packetHasParameterlessConstructor)
+            {
+                sb.AppendLine("\t\tpublic static void Execute()");
+                sb.AppendLine("\t\t{");
+                sb.AppendLine("\t\t\tExecute(new " + packetName + "());");
+                sb.AppendLine("\t\t}");
+                sb.AppendLine();
+            }
+
+            sb.AppendLine("\t\tpublic static void Execute(" + packetName + " packet)");
             sb.AppendLine("\t\t{");
             sb.AppendLine("\t\t\t" + wf.Text + " workflow = new " + wf.Text + "();");
 
@@ -121,6 +134,26 @@ namespace FlowSharpCodeCompilerService
             sb.AppendLine("}");
 
             return sb.ToString();
+        }
+
+        protected GraphicElement FindPacket(BaseController canvasController, string packetName)
+        {
+            GraphicElement elPacket = canvasController.Elements.Single(el => el.Text == packetName);
+
+            return elPacket;
+        }
+
+        /// <summary>
+        /// Returns true if the code block contains a parameterless constructor of the form "public [packetname]()" or no constructor at all.
+        /// </summary>
+        protected bool HasParameterlessConstructor(string code, string packetName)
+        {
+            string signature = "public " + packetName + "(";
+
+            bool ret = !code.Contains(signature) ||
+                code.AllIndexesOf(signature).Any(idx => code.Substring(idx).RightOf('(')[0] == ')');
+
+            return ret;
         }
 
         protected void GenerateCodeForWorkflow(StringBuilder sb, GraphicElement el, int indent)

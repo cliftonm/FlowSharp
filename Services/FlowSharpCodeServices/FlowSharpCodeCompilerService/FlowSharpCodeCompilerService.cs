@@ -113,18 +113,70 @@ namespace FlowSharpCodeCompilerService
 
             // Fill in the workflow steps.
             GraphicElement el = FindStartOfWorkflow(canvasController, wf);
+            GenerateCodeForWorkflow(sb, el, 3);
 
-            while (el != null)
-            {
-                sb.AppendLine("\t\t\tworkflow." + el.Text + "(packet);");
-                el = NextElementInWorkflow(el);
-            }
-
+            // We're all done.
             sb.AppendLine("\t\t}");
             sb.AppendLine("\t}");
             sb.AppendLine("}");
 
             return sb.ToString();
+        }
+
+        protected void GenerateCodeForWorkflow(StringBuilder sb, GraphicElement el, int indent)
+        {
+            string strIndent = new String('\t', indent);
+
+            while (el != null)
+            {
+                if (el is Diamond)
+                {
+                    sb.AppendLine(strIndent + "bool " + el.Text.ToLower() + " = workflow." + el.Text + "(packet);");
+                    sb.AppendLine();
+                    sb.AppendLine(strIndent + "if (" + el.Text.ToLower() + ")");
+                    sb.AppendLine(strIndent + "{");
+
+                    // True clause
+                    var elTrue = GetTruePathFirstShape(el);
+                    GenerateCodeForWorkflow(sb, elTrue, indent + 1);
+
+                    sb.AppendLine(strIndent + "}");
+                    sb.AppendLine(strIndent + "else");
+                    sb.AppendLine(strIndent + "{");
+
+                    // False clause
+                    var elFalse = GetFalsePathFirstShape(el);
+                    GenerateCodeForWorkflow(sb, elFalse, indent + 1);
+
+                    sb.AppendLine(strIndent + "}");
+
+                    // TODO: How to join back up with workflows that rejoin from if-then-else?
+                    break;
+
+                }
+                else
+                {
+                    sb.AppendLine(strIndent + "workflow." + el.Text + "(packet);");
+                }
+
+                el = NextElementInWorkflow(el);
+            }
+        }
+
+        // True path is always the bottom of the diamond.
+        protected GraphicElement GetTruePathFirstShape(GraphicElement el)
+        {
+            GraphicElement trueStart = ((Connector)el.Connections.First(c => c.ElementConnectionPoint.Type == GripType.BottomMiddle).ToElement).EndConnectedShape;
+
+            return trueStart;
+        }
+
+        // False path is always the left or right point of the diamond.
+        public GraphicElement GetFalsePathFirstShape(GraphicElement el)
+        {
+            GraphicElement falseStart = ((Connector)el.Connections.First(c => c.ElementConnectionPoint.Type == GripType.LeftMiddle || c.ElementConnectionPoint.Type == GripType.RightMiddle).ToElement).EndConnectedShape;
+
+            return falseStart;
         }
 
         protected GraphicElement FindStartOfWorkflow(BaseController canvasController, GraphicElement wf)
@@ -136,17 +188,23 @@ namespace FlowSharpCodeCompilerService
                 if (!srcEl.IsConnector && srcEl != wf)
                 {
                     // Special case for a 1 step workflow.  Untested.
+                    // Exclude any text annotations.
                     if (srcEl.Connections.Count == 0)
                     {
-                        start = srcEl;
-                        break;
+                        if (!(srcEl is TextShape))
+                        {
+                            start = srcEl;
+                            break;
+                        }
                     }
-
-                    // start and end has only one connection.
-                    if (srcEl.Connections.Count == 1 && ((Connection)srcEl.Connections[0]).ToConnectionPoint.Type == FlowSharpLib.GripType.Start)
+                    else
                     {
-                        start = srcEl;
-                        break;
+                        // start begins with a box or diamond shape, having only Start connection types.
+                        if (srcEl.Connections.All(c => c.ToConnectionPoint.Type == GripType.Start))
+                        {
+                            start = srcEl;
+                            break;
+                        }
                     }
                 }
             }
@@ -194,27 +252,6 @@ namespace FlowSharpCodeCompilerService
                     Trace.WriteLine("*** EXPECTED CONNECTOR FOR " + el.GetType().Name + " ID=" + el.Id.ToString() + " Text=" + el.Text + " ***");
                 }
             }
-
-            /*
-            if (el.Connections.Count == 1)
-            {
-                if (((Connector)((Connection)el.Connections[0]).ToElement).EndConnectedShape != el)
-                {
-                    ret = ((Connector)((Connection)el.Connections[0]).ToElement).EndConnectedShape;
-                }
-            }
-            else if (el.Connections.Count == 2)
-            {
-                if (((Connector)((Connection)el.Connections[0]).ToElement).StartConnectedShape == el)
-                {
-                    ret = ((Connector)((Connection)el.Connections[0]).ToElement).EndConnectedShape;
-                }
-                else if (((Connector)((Connection)el.Connections[1]).ToElement).StartConnectedShape == el)
-                {
-                    ret = ((Connector)((Connection)el.Connections[1]).ToElement).EndConnectedShape;
-                }
-            }
-            */
 
             return ret;
         }

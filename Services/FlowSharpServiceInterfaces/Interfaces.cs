@@ -85,6 +85,7 @@ namespace FlowSharpServiceInterfaces
 
     public interface IFlowSharpEditService : IService
     {
+        void NewCanvas(BaseController controller);
         void Copy();
         void Paste();
         void Delete();
@@ -96,6 +97,7 @@ namespace FlowSharpServiceInterfaces
         void ClearSavePoints();
         void SetSavePoint();
         bool ProcessCmdKey(Keys keyData);
+        void FocusOnShape(GraphicElement el);
     }
 
     public interface IFlowSharpDebugWindowService : IService

@@ -285,7 +285,10 @@ namespace FlowSharpService
                 ServiceManager.Get<IFlowSharpDebugWindowService>().FindShape(args.Element);
             };
 
-            // Update any other services needing to know about the new canvas.
+            ServiceManager.Get<IFlowSharpEditService>().NewCanvas(controller);
+
+            // Update any other services needing to know about the new canvas.  These are additional services that are not
+            // part of the core FlowSharp application (for example, the FlowSharpCode services.)
             NewCanvas.Fire(this, new NewCanvasEventArgs() { Controller = controller });
         }
 

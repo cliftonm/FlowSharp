@@ -184,7 +184,7 @@ namespace FlowSharpMenuService
 
         protected void ShowNavigateDialog(BaseController canvasController, List<NavigateToShape> navShapes)
         {
-            new NavigateDlg(canvasController, navShapes).ShowDialog();
+            new NavigateDlg(serviceManager, navShapes).ShowDialog();
         }
 
         protected void PopulateMostRecentFiles()

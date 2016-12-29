@@ -30,20 +30,35 @@ namespace FlowSharpEditService
 
     public class FlowSharpEditService : ServiceBase, IFlowSharpEditService
     {
+        private const int TAB_KEY = 162;
+
+        protected InterceptKeys interceptKeys;
         protected Dictionary<Keys, Action> keyActions = new Dictionary<Keys, Action>();
         protected TextBox editBox;
         protected Dictionary<BaseController, int> savePoints = new Dictionary<BaseController, int>();
         protected GraphicElement shapeBeingEdited;
+        protected Dictionary<BaseController, List<GraphicElement>> controllerSelectElementsHistory;
+        protected Dictionary<BaseController, int> controllerHistoryIndex;
 
         public override void Initialize(IServiceManager svcMgr)
         {
+            controllerSelectElementsHistory = new Dictionary<BaseController, List<GraphicElement>>();
+            controllerHistoryIndex = new Dictionary<BaseController, int>();
             base.Initialize(svcMgr);
         }
 
         public override void FinishedInitialization()
         {
             base.FinishedInitialization();
-            InitializeKeyIntercepts();
+            InitializeKeyActions();
+            InitializeKeyIntercept();
+        }
+
+        public void NewCanvas(BaseController controller)
+        {
+            controllerSelectElementsHistory[controller] = new List<GraphicElement>();
+            controllerHistoryIndex[controller] = 0;
+            controller.ElementSelected += OnElementSelected;
         }
 
         public void ClearSavePoints()
@@ -321,6 +336,52 @@ namespace FlowSharpEditService
             }
         }
 
+        /// <summary>
+        /// Undo / redo center shape and select.
+        /// </summary>
+        public void FocusOnShape(GraphicElement shape)
+        {
+            // For closure:
+            BaseController controller = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            List<GraphicElement> selectedShapes = controller.SelectedElements.ToList();
+            int cx = (controller.Canvas.Width - shape.DisplayRectangle.Width) / 2;
+            int cy = (controller.Canvas.Height - shape.DisplayRectangle.Height) / 2;
+            int dx = -(shape.DisplayRectangle.X - cx);
+            int dy = -(shape.DisplayRectangle.Y - cy);
+
+            controller.UndoStack.UndoRedo("Focus Shape " + shape.ToString(),
+                () =>
+                {
+                    controller.MoveAllElements(new Point(dx, dy));
+                    controller.DeselectCurrentSelectedElements();
+                    controller.SelectElement(shape);
+                },
+                () =>
+                {
+                    controller.DeselectCurrentSelectedElements();
+                    controller.SelectElements(selectedShapes);
+                    controller.MoveAllElements(new Point(-dx, -dy));
+                });
+        }
+
+        protected void OnElementSelected(object sender, ElementEventArgs args)
+        {
+            GraphicElement element = args.Element;
+
+            // Make sure this isn't a de-select.
+            if (element != null)
+            {
+                BaseController controller = (BaseController)sender;
+
+                // Make sure we're not selecting a group of elements.
+                if (controller.SelectedElements.Count == 1)
+                {
+                    List<GraphicElement> selectedElementHistory = controllerSelectElementsHistory[controller];
+                    MoveSelectedElementToTopOfHistory(selectedElementHistory, controller.SelectedElements[0]);
+                }
+            }
+        }
+
         protected List<GraphicElement> IncludeChildren(List<GraphicElement> parents)
         {
             List<GraphicElement> els = new List<GraphicElement>();
@@ -367,7 +428,7 @@ namespace FlowSharpEditService
             }
         }
 
-        protected void InitializeKeyIntercepts()
+        protected void InitializeKeyActions()
         {
             keyActions[Keys.F2] = EditText;
 
@@ -383,6 +444,117 @@ namespace FlowSharpEditService
             keyActions[Keys.Control | Keys.Down] = () => DoMove(new Point(0, 1));
             keyActions[Keys.Control | Keys.Left] = () => DoMove(new Point(-1, 0));
             keyActions[Keys.Control | Keys.Right] = () => DoMove(new Point(1, 0));
+
+            keyActions[Keys.Control | Keys.Tab] = () => SelectNextShape();
+            keyActions[Keys.Control | Keys.LShiftKey | Keys.Tab] = () => SelectPreviousShape();
+        }
+
+        protected void InitializeKeyIntercept()
+        {
+            interceptKeys = new InterceptKeys();
+            interceptKeys.KeyboardEvent += OnKeyboardEvent;
+            interceptKeys.Initialize();
+        }
+
+        protected void OnKeyboardEvent(object sender, KeyMessageEventArgs args)
+        {
+            if (args.State == KeyMessageEventArgs.KeyState.KeyUp)
+            {
+                if (args.KeyCode == TAB_KEY)
+                {
+                    ResetSelectedElementNavigator();
+                }
+            }
+        }
+
+        /*
+            How does Ctrl-Tab and Ctrl-Shift-Tab work?
+
+            1. The currently selected element should always be at the top of selected element history.
+            2. As the user presses Ctrl-Tab, we increment (and wrap) the index and show the indexed element.
+            3. As the user presses Ctrl-Shift-Tab, we decrement (and wrap) the index and show the indexed element.
+            4. When the user releases the Ctrl key:
+                a. the currently selected element is moved to the top of the list.
+                b. the index is reset to 0.
+
+            Step 4 ensures that when the user Ctrl-Tabs again, they navigate to the previously selected shape,
+            and the order of other shapes is still preserved.
+
+            An element may have been deleted - we need to add an event for deleted shapes so that they can be removed
+            from the selection list.
+        */
+
+        protected void SelectNextShape()
+        {
+            BaseController controller = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            var history = controllerSelectElementsHistory[controller];
+
+            if (history.Count > 1)
+            {
+                int idx = controllerHistoryIndex[controller] + 1;
+
+                if (idx >= history.Count)
+                {
+                    idx = 0;
+                }
+
+                SelectHistoryElement(controller, history, idx);
+            }
+        }
+
+        protected void SelectPreviousShape()
+        {
+            BaseController controller = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            var history = controllerSelectElementsHistory[controller];
+
+            if (history.Count > 1)
+            {
+                int idx = controllerHistoryIndex[controller] - 1;
+
+                if (idx < 0)
+                {
+                    idx = history.Count - 1;
+                }
+
+                SelectHistoryElement(controller, history, idx);
+            }
+        }
+
+        protected void SelectHistoryElement(BaseController controller, List<GraphicElement> history, int idx)
+        {
+            DisableElementSelected(controller);
+            FocusOnShape(history[idx]);
+            EnableElementSelected(controller);
+            controllerHistoryIndex[controller] = idx;
+        }
+
+        protected void DisableElementSelected(BaseController controller)
+        {
+            controller.ElementSelected -= OnElementSelected;
+        }
+
+        protected void EnableElementSelected(BaseController controller)
+        {
+            controller.ElementSelected += OnElementSelected;
+        }
+
+        protected void ResetSelectedElementNavigator()
+        {
+            BaseController controller = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
+            if (controller.SelectedElements.Count == 1)
+            {
+                List<GraphicElement> selectedElementHistory = controllerSelectElementsHistory[controller];
+                MoveSelectedElementToTopOfHistory(selectedElementHistory, controller.SelectedElements[0]);
+                controllerHistoryIndex[controller] = 0;
+            }
+        }
+
+        protected void MoveSelectedElementToTopOfHistory(List<GraphicElement> selectedElementHistory, GraphicElement element)
+        {
+            // Always place the newly selected element at the top of the list, removing any previously selected element.
+            selectedElementHistory.Remove(element);
+            selectedElementHistory.Insert(0, element);
         }
 
         protected void DoMove(Point dir)

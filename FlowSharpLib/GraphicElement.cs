@@ -254,12 +254,14 @@ namespace FlowSharpLib
                 () =>
                 {
                     canvas.Controller.Redraw(this, (el) => el.Text = newVal);
-                    canvas.Controller.ElementSelected.Fire(this, new ElementEventArgs() { Element = this });
+                    // Updates the property grid with the text change.
+                    canvas.Controller.ElementSelected.Fire(canvas.Controller, new ElementEventArgs() { Element = this });
                 },
                 () =>
                 {
                     canvas.Controller.Redraw(this, (el) => el.Text = oldVal);
-                    canvas.Controller.ElementSelected.Fire(this, new ElementEventArgs() { Element = this });
+                    // Updates the property grid with the text change.
+                    canvas.Controller.ElementSelected.Fire(canvas.Controller, new ElementEventArgs() { Element = this });
                 });
         }
 

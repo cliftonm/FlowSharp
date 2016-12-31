@@ -11,12 +11,4 @@
   <Module AssemblyName='FlowSharpMenuService.dll'/>
   <Module AssemblyName='FlowSharpEditService.dll'/>
   <Module AssemblyName='FlowSharpDebugWindowService.dll'/>
-  
-  <!-- For REST services, include this module -->
-  <Module AssemblyName='FlowSharpRestService.dll'/>
-
-  <!-- Exclude these if you don't want the FlowSharpCode services -->
-  <Module AssemblyName='FlowSharpCodeService.dll'/>
-  <Module AssemblyName='FlowSharpCodeCompilerService.dll'/>
-  <Module AssemblyName='FlowSharpCodeICSharpDevelopService.dll'/>
 </Modules>

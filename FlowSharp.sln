@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpRestService", "Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpWindowsControlShapes", "Plugins\FlowSharpWindowsControlShapes\FlowSharpWindowsControlShapes.csproj", "{F41CB0C7-B2A0-48A7-85EE-874913598A6A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpWebSocketService", "Services\FlowSharpWebSocketService\FlowSharpWebSocketService.csproj", "{3548AF21-B8CB-4C45-88B6-80FAD43EB561}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +143,10 @@ Global
 		{F41CB0C7-B2A0-48A7-85EE-874913598A6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F41CB0C7-B2A0-48A7-85EE-874913598A6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F41CB0C7-B2A0-48A7-85EE-874913598A6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3548AF21-B8CB-4C45-88B6-80FAD43EB561}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3548AF21-B8CB-4C45-88B6-80FAD43EB561}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3548AF21-B8CB-4C45-88B6-80FAD43EB561}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3548AF21-B8CB-4C45-88B6-80FAD43EB561}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -165,5 +171,6 @@ Global
 		{2E0FAF22-7B2D-4898-B634-EA9B5E561D82} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
 		{BCEC4BD9-9227-41C7-8585-A05041D5AD2A} = {2E0FAF22-7B2D-4898-B634-EA9B5E561D82}
 		{51D2B194-CFFC-4905-8F06-90F1A0000DF2} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
+		{3548AF21-B8CB-4C45-88B6-80FAD43EB561} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
 	EndGlobalSection
 EndGlobal

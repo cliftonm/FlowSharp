@@ -12,17 +12,18 @@
 	<li><a href="FlowSharp.zip">Download FlowSharp.zip - 746.7 KB</a></li>
 </ul>
 
-<p><b><a href="#110616">Reason for this update:</a></b></p>
+<p><b><a href="#123116">Reason for this update:</a></b></p>
 <ul>
-	<li><a href="#112216">Added Undo/Redo</a>, and valuable lessons learned</li>
-	<li><a href="#110616">Added Diagonal Connector</a></li>
+	<li>Refactoring of code components into services</li>
+	<li>UI now implements docking panels and multiple documents</li>
+	<li>FlowSharp and FlowSharpCode are now unified</li>
+	<li>Bookmark navigation of shapes</li>
+	<li>Ctrl-Tab navigation of shape selection history</li>
 </ul>
 
-<p>Visit my other project,
-<a href="http://www.codeproject.com/Articles/1156593/V-A-P-O-R-ware-Visual-Assisted-Programming-Organiz">
-FlowSharpCode</a> (aka V.A.P.O.R.ware)</p>
+<p>&nbsp;</p>
 
-<p align="center"><img border="0" height="400" src="flowsharp2.png" width="754" /></p>
+<p align="center"><img border="0" src="welcome2.png" width="856" height="469"></p>
 
 <h2 align="left">Table of Contents</h2>
 
@@ -128,6 +129,19 @@ FlowSharpCode</a> (aka V.A.P.O.R.ware)</p>
 	<li><a href="#revisions">Revisions</a>
 	
 <ul>
+	<li><a href="#123116">12/31/16 - SOA, Docking, FlowSharpCode, Bookmarks and Navigation</a><ul>
+	<li><a href="soa">Service Oriented Architecture</a></li>
+	<li><a href="soa1">FlowSharpCode as a Service</a><ul>
+	<li><a href="soa2">Service Basics - Initialization</a></li>
+	<li><a href="soa3">Service Basics - Interaction</a></li>
+</ul>
+	</li>
+	<li><a href="dps">Docking with DockPanelSuite</a></li>
+	<li><a href="bookmark1">Bookmarking of Shapes</a></li>
+	<li><a href="bookmark2">Ctrl-Tab Navigation of Selection History</a></li>
+</ul>
+
+	</li>
 	<li><a href="#112216">11/22/16 - Undo/Redo</a></li>
 	<li><a href="#102316">10/23/16 - Grouping</a></li>
 	<li><a href="#101816">10/18/16 - Bug Fixes</a></li>
@@ -1797,6 +1811,142 @@ canvasController.SelectElement(el);</pre>
 Issues</a> page.</p>
 
 <h2><a name="revisions">Revisions</a></h2>
+<p><a name="123116">12/31/2016</a></p>
+<h3><a name="soa">Service Oriented Architecture</a></h3>
+<p><img border="0" src="architecture-small.png" width="1024" height="711"></p>
+<p>FlowSharp has undergone significant refactoring to implement a more 
+service-oriented architecture.&nbsp; As the above diagram illustrates, the 
+various core components of FlowSharp have been separated into distinct services:</p>
+<ul>
+	<li>FlowSharpService - Interfaces with the docking manager to support 
+	management of canvases and docking events.</li>
+	<li>FlowSharpCanvasService - Handles all canvas related operations.</li>
+	<li>FlowSharpEditService - Handles all operations related to editing shapes: 
+	copy, cut, paste, shape text, etc.</li>
+	<li>FlowSharpMouseControllerService - Handles actions related to mouse 
+	activity.</li>
+	<li>FlowSharpDebugWindowService - Handles the debug window notifications and 
+	user actions.</li>
+	<li>FlowSharpMenuService - Handles actions related to menu selection.</li>
+	<li>FlowSharpPropertyGridService - Handles the property grid.</li>
+	<li>FlowSharpToolboxService - Handles the toolbox.</li>
+</ul>
+<p>This architecture utilizes the SOA approach that I wrote about in
+<a href="https://www.codeproject.com/Articles/1120517/The-Clifton-Method-Part-II">
+The Clifton Method - Part II: Service Manager</a>.&nbsp; The primary reason for 
+refactoring the code is so that FlowSharp becomes extensible without touching 
+the code base.&nbsp; The plug-in modules to support FlowSharpCode is an 
+excellent example of how FlowSharp can be extended for new behavior.</p>
+<p>The core FlowSharp application is now defined by the services in modules.xml:</p>
+<pre>&lt;Modules&gt;
+  &lt;Module AssemblyName='Clifton.SemanticProcessorService.dll'/&gt;
+  &lt;Module AssemblyName='Clifton.DockingFormService.dll'/&gt;
+
+  &lt;Module AssemblyName='FlowSharpService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpCanvasService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpToolboxService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpMouseControllerService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpPropertyGridService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpMenuService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpEditService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpDebugWindowService.dll'/&gt;
+&lt;/Modules&gt;</pre>
+<h4><a name="soa1">FlowSharpCode as a Service</a></h4>
+<p>Please note that FlowSharpCode is still in the prototype stage! </p>
+<p>Previously, I wrote about the ability to use FlowSharp as an IDE for code development in 
+the article
+<a href="https://www.codeproject.com/Articles/1156593/V-A-P-O-R-ware-Visual-Assisted-Programming-Organiz">
+V.A.P.O.R.ware - Visual Assisted Programming / Organizational Representation</a>.&nbsp; 
+At the time that I wrote that article, the code base there was a completely 
+separate application.&nbsp; The various code pieces to support FlowSharpCode are 
+now implemented as services (see above diagram):</p>
+<ul>
+	<li>FlowSharpCodeService - Handles the association of code with shapes.</li>
+	<li>FlowSharpCodeCompilerService - Provides compiler services for shape 
+	code-behind and code generation.</li>
+	<li>FlowSharpCodeICSharpDevelopService - The code editor uses the Avalon WPF 
+	editor used by ICSharpCode</li>
+</ul>
+<p>To &quot;activate&quot; the FlowSharpCode features, the module FlowSharpCodeModules.xml 
+is specified as a parameter to FlowSharp.exe.&nbsp; This file pulls in the 
+additional services:</p>
+<pre>&lt;Modules&gt;
+  &lt;Module AssemblyName='Clifton.SemanticProcessorService.dll'/&gt;
+  &lt;Module AssemblyName='Clifton.DockingFormService.dll'/&gt;
+
+  &lt;Module AssemblyName='FlowSharpService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpCanvasService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpToolboxService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpMouseControllerService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpPropertyGridService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpMenuService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpEditService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpDebugWindowService.dll'/&gt;
+
+  &lt;!-- Exclude these if you don't want the FlowSharpCode services --&gt;
+  &lt;Module AssemblyName='FlowSharpCodeService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpCodeCompilerService.dll'/&gt;
+  &lt;Module AssemblyName='FlowSharpCodeICSharpDevelopService.dll'/&gt;
+&lt;/Modules&gt;</pre>
+<p>When using this file, the application includes an editor panel and adds a 
+&quot;Build&quot; menu:</p>
+<p><img border="0" src="flowsharpcode1.png" width="727" height="557"></p>
+<h4><a name="soa2"></a>Service Basics - Initialization</a></h4>
+<p>Each service implements <code>IModule</code>, which registers a singleton service.&nbsp; 
+For example, here is how the Menu Service is implemented:</p>
+<pre>public class FlowSharpMenuModule : IModule
+{
+  public void InitializeServices(IServiceManager serviceManager)
+  {
+    serviceManager.RegisterSingleton&lt;IFlowSharpMenuService, FlowSharpMenuService&gt;();
+  }
+}
+
+public class FlowSharpMenuService : ServiceBase, IFlowSharpMenuService
+{
+  ... Implementation if IFlowSharMenuService ...
+}</pre>
+<h4><a name="soa3">Service Basics - Interaction</a></h4>
+<p>The base class <code>ServiceBase</code> is always initialized with an instance of the 
+service manager:</p>
+<pre>public abstract class ServiceBase : IService
+{
+  protected ServiceBase();
+
+  public IServiceManager ServiceManager { get; set; }
+
+  public virtual void FinishedInitialization();
+  public virtual void Initialize(IServiceManager svcMgr);
+}</pre>
+<p>so once the service is instantiated, any method in the service can access other services.&nbsp; 
+A very common thing to do is to get the active canvas controller:</p>
+<pre>BaseController canvasController = serviceManager.Get&lt;IFlowSharpCanvasService&gt;().ActiveController;</pre>
+<p>Refer to the assembly <code>FlowSharpServiceInterfaces</code>, specifically <code>interfaces.cs</code>, 
+to see what methods are exposed in each service.</p>
+<h3><a name="dps">Docking with DockPanelSuite</a></h3>
+<p>A slightly different screenshot as compared to the one at the top of the 
+article -</p>
+<p><img border="0" src="welcome3.png" width="807" height="463"></p>
+<p>Docking is implement using <a href="http://dockpanelsuite.com/">DockPanelSuite</a> and is managed by the 
+<code>Clifton.DockingFormService</code> asembly (the source code for which is found in the 
+<a href="https://github.com/cliftonm/clifton/tree/master/Clifton.WinForm">Clifton GitHub repo</a>.)&nbsp; There's a few rough edges to be worked out 
+(having nothing to do with the excellent DockPanelSuite), however, things like 
+persisting the layout configuration and saving (and loading!) all the documents 
+associated with a diagram file appears to be working -- not without my having 
+lost some work as bugs were discovered!</p>
+<h3><a name="bookmark1">Bookmarking of Shapes</a></h3>
+<p><img border="0" src="bookmark1.png" width="410" height="194"></p>
+<p>Shapes can now be bookmarked.&nbsp; A bookmarked shape is indicated by a 
+small green square at the top left of the shape's display rectangle.&nbsp; 
+Pressing Ctrl+K or &quot;Go To Bookmark&quot; from the menu brings up a dialog from which 
+you can select a bookmarked shape:</p>
+<p><img border="0" src="bookmark2.png" width="531" height="268"></p>
+<p>All shapes can also be navigated to using Ctrl+H or &quot;Go To Shape&quot; from the 
+menu, whether they are bookmarked or not.&nbsp; When you select a shape, it is 
+&quot;focused&quot; to the center of the canvas.</p>
+<h3><a name="bookmark2">Ctrl-Tab Navigation of Selection History</a></h3>
+<p>Another useful feature, especially with FlowSharpCode, is the ability to 
+navigate the selection history using Ctrl-Tab.</p>
 <p><a name="112216">11/22/2016</a></p>
 <h3>Undo/Redo</h3>
 <p><img border="0" src="undo1.png" width="998" height="497"></p>

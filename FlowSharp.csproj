@@ -94,6 +94,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Debug\FlowSharpCodeModules.xml" />
     <Content Include="bin\Debug\modules.xml">
       <SubType>Designer</SubType>
     </Content>

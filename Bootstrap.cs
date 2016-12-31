@@ -19,7 +19,7 @@ namespace FlowSharp
     {
         public static ServiceManager ServiceManager;
 
-        static void Bootstrap()
+        static void Bootstrap(string moduleFilename = "modules.xml")
         {
             ServiceManager = new ServiceManager();
             ServiceManager.RegisterSingleton<IServiceModuleManager, ServiceModuleManager>();
@@ -27,7 +27,7 @@ namespace FlowSharp
             try
             {
                 IModuleManager moduleMgr = (IModuleManager)ServiceManager.Get<IServiceModuleManager>();
-                List<AssemblyFileName> modules = GetModuleList(XmlFileName.Create("modules.xml"));
+                List<AssemblyFileName> modules = GetModuleList(XmlFileName.Create(moduleFilename));
                 moduleMgr.RegisterModules(modules);
                 ServiceManager.FinishedInitialization();
             }

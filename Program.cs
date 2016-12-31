@@ -15,11 +15,18 @@ namespace FlowSharp
     static partial class Program
     {
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
+            string modules = "modules.xml";
+
+            if (args.Length == 1)
+            {
+                modules = args[0];
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Bootstrap();
+            Bootstrap(modules);
             Icon icon = Properties.Resources.FlowSharp;
             Form form = ServiceManager.Get<IFlowSharpService>().CreateDockingForm(icon);
             Application.Run(form);

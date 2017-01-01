@@ -7,7 +7,7 @@
 using System.Net;
 using System.IO;
 
-namespace FlowSharpWindowsControlShapes
+namespace FlowSharpRestService
 {
     public static class Http
     {

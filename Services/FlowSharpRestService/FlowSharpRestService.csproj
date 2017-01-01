@@ -49,6 +49,8 @@
   <ItemGroup>
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="FlowSharpRestService.cs" />
+    <Compile Include="HttpGet.cs" />
+    <Compile Include="HttpSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Routes.cs" />
     <Compile Include="WebServer.cs" />

@@ -155,6 +155,10 @@
       <Project>{aae37a5e-07fe-4cdb-b4d4-a176213fce2b}</Project>
       <Name>FlowSharpToolboxService</Name>
     </ProjectReference>
+    <ProjectReference Include="Services\FlowSharpWebSocketService\FlowSharpWebSocketService.csproj">
+      <Project>{3548af21-b8cb-4c45-88b6-80fad43eb561}</Project>
+      <Name>FlowSharpWebSocketService</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -30,9 +30,10 @@ namespace FlowSharpWindowsControlShapes
 
         private void OnValueChanged(object sender, System.EventArgs e)
         {
-            string url = "http://localhost:8002/" + ValueChangedName + "?ShapeName=" + Name;
-            url = AppendData(url);
-            Http.Get(url);
+            Send(ValueChangedName);
+            //string url = "http://localhost:8002/" + ValueChangedName + "?ShapeName=" + Name;
+            //url = AppendData(url);
+            //Http.Get(url);
         }
 
         public override ElementProperties CreateProperties()

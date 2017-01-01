@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ArrayOfElementPropertyBag xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ElementPropertyBag Name="box" ElementName="FlowSharpLib.Box, FlowSharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="331dc7f5-108f-414a-8cff-3e3bac7a66f4" Text="" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>20</X>
+        <Y>20</Y>
+      </Location>
+      <Size>
+        <Width>155</Width>
+        <Height>60</Height>
+      </Size>
+      <X>20</X>
+      <Y>20</Y>
+      <Width>155</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <Json>{"Code":"using System;\r\nusing WebSocketSharp;\r\n\r\nnamespace App\r\n{\r\n\tpublic class MyListener { }\t\r\n\r\n\tpublic static class Program\r\n\t{\r\n\t\tpublic static void Main()\r\n\t\t{\r\n\t\t\tWebSocket ws = new WebSocket(\"ws://127.0.0.1:1100/flowsharp\", new MyListener());\t\r\n\t\t\tws.Connect();\r\n\t\t\tws.Send(\"cmd=CmdUpdateProperty&amp;Name=box&amp;PropertyName=Text&amp;Value=Hello World\");\r\n\t\t\tConsole.WriteLine(\"Press a key to exit.\");\r\n\t\t\tConsole.ReadLine();\r\n\t\t}\r\n\t}\r\n}"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+</ArrayOfElementPropertyBag>

@@ -18,6 +18,8 @@ namespace FlowSharpWindowsControlShapes
         public string ClickEventName { get; set; }
         [Category("Click")]
         public string ClickEventData { get; set; }
+        [Category("Click")]
+        public SendProtocol SendProtocol { get; set; }
 
         [Category("Visual")]
         public bool Enabled { get; set; }
@@ -30,6 +32,7 @@ namespace FlowSharpWindowsControlShapes
             ClickEventData = ((ControlShape)el).ClickEventData;
             Enabled = ((ControlShape)el).Enabled;
             Visible = ((ControlShape)el).Visible;
+            SendProtocol = ((ControlShape)el).SendProtocol;
         }
 
         public override void Update(GraphicElement el, string label)
@@ -39,6 +42,7 @@ namespace FlowSharpWindowsControlShapes
             (label == nameof(ClickEventData)).If(() => ((ControlShape)el).ClickEventData = ClickEventData);
             (label == nameof(Enabled)).If(() => ((ControlShape)el).Enabled = Enabled);
             (label == nameof(Visible)).If(() => ((ControlShape)el).Visible = Visible);
+            (label == nameof(SendProtocol)).If(() => ((ControlShape)el).SendProtocol = SendProtocol);
         }
     }
 }

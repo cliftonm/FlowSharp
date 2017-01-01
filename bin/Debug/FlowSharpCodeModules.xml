@@ -14,6 +14,7 @@
   
   <!-- For REST services, include this module -->
   <Module AssemblyName='FlowSharpRestService.dll'/>
+  <Module AssemblyName='FlowSharpWebSocketService.dll'/>
 
   <!-- Exclude these if you don't want the FlowSharpCode services -->
   <Module AssemblyName='FlowSharpCodeService.dll'/>

@@ -55,6 +55,7 @@
     <Compile Include="EventArgs.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="Membranes.cs" />
+    <Compile Include="Notifiers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

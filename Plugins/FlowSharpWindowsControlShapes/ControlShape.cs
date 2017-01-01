@@ -4,11 +4,16 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Clifton.Core.Semantics;
+using Clifton.Core.ServiceManagement;
+
 using FlowSharpLib;
+using FlowSharpServiceInterfaces;
 
 namespace FlowSharpWindowsControlShapes
 {
@@ -18,6 +23,7 @@ namespace FlowSharpWindowsControlShapes
         public string ClickEventData { get; set; }
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
+        public SendProtocol SendProtocol { get; set; }
 
         protected Control control;
 
@@ -48,6 +54,7 @@ namespace FlowSharpWindowsControlShapes
         {
             Json["ClickEventName"] = ClickEventName;
             Json["ClickEventData"] = ClickEventData;
+            Json["SendProtocol"] = SendProtocol.ToString();
             base.Serialize(epb, elementsBeingSerialized);
         }
 
@@ -66,6 +73,13 @@ namespace FlowSharpWindowsControlShapes
             if (Json.TryGetValue("ClickEventData", out data))
             {
                 ClickEventData = data;
+            }
+
+            string sendProtocol;
+
+            if (Json.TryGetValue("SendProtocol", out sendProtocol))
+            {
+                SendProtocol = (SendProtocol)Enum.Parse(typeof(SendProtocol), sendProtocol);
             }
         }
 
@@ -87,14 +101,45 @@ namespace FlowSharpWindowsControlShapes
             control.Visible = Visible;
         }
 
-        protected virtual string AppendData(string url)
+        protected void Send(string cmd)
+        {
+            // This allows the user to configure, for each control, whether it sends a web socket or HTTP message.
+            // We also assume for now that it is best to send these messages synchronously, so that order is preserved.
+            switch (SendProtocol)
+            {
+                case SendProtocol.Http:
+                    {
+                        string url = "http://localhost:8002/" + cmd;
+                        string data = "ShapeName=" + Name;
+                        data = AppendData(data);
+                        ServiceManager.Instance.Get<ISemanticProcessor>().ProcessInstance<FlowSharpMembrane, HttpSend>(d =>
+                        {
+                            d.Url = url;
+                            d.Data = data;
+                        }, true);
+                        break;
+                    }
+                case SendProtocol.WebSocket:
+                    {
+                        string data = "cmd=" + cmd + "&ShapeName=" + Name;
+                        data = AppendData(data);
+                        ServiceManager.Instance.Get<ISemanticProcessor>().ProcessInstance<FlowSharpMembrane, WebSocketSend>(d =>
+                        {
+                            d.Data = data;
+                        }, true);
+                        break;
+                    }
+            }
+        }
+
+        protected virtual string AppendData(string data)
         {
             if (!string.IsNullOrEmpty(ClickEventData))
             {
-                url += "&" + ClickEventData;
+                data += "&" + ClickEventData;
             }
 
-            return url;
+            return data;
         }
     }
 }

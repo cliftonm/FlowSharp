@@ -522,6 +522,7 @@ namespace FlowSharpMenuService
                     // Let canvas controller assign filenames.
                     SaveDiagram(filename);
                     UpdateCaption();
+                    UpdateMru(filename);
                 }
             }
 

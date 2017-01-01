@@ -405,6 +405,7 @@ namespace FlowSharpCodeCompilerService
             parameters.ReferencedAssemblies.Add("System.Xml.dll");
             parameters.ReferencedAssemblies.Add("System.Xml.Linq.dll");
             parameters.ReferencedAssemblies.Add("Clifton.Core.dll");
+            parameters.ReferencedAssemblies.Add("websocket-sharp.dll");
             parameters.ReferencedAssemblies.AddRange(refs.ToArray());
             parameters.OutputAssembly = assyFilename;
 

@@ -22,9 +22,7 @@ namespace FlowSharpWindowsControlShapes
 
         private void OnClick(object sender, System.EventArgs e)
         {
-            string url = "http://localhost:8002/" + ClickEventName + "?ShapeName=" + Name;
-            url = AppendData(url);
-            Http.Get(url);
+            Send(ClickEventName);
         }
 
         public override void Draw(Graphics gr)

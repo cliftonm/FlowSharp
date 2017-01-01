@@ -29,6 +29,7 @@ namespace FlowSharpRestService
             base.FinishedInitialization();
             InitializeListener();
             ServiceManager.Get<ISemanticProcessor>().Register<FlowSharpMembrane, CommandProcessor>();
+            ServiceManager.Get<ISemanticProcessor>().Register<FlowSharpMembrane, HttpSender>();
         }
 
         protected void InitializeListener()

@@ -54,10 +54,6 @@ namespace FlowSharpWebSocketService
         {
             wss.Stop();
         }
-
-        public void Send(string msg)
-        {
-        }
     }
 
     public class Server : WebSocketBehavior

@@ -27,7 +27,7 @@ namespace FlowSharpWebSocketService
         protected void EstablishConnection()
         {
             // TODO: Right now, we're assuming one web socket client.
-            if (ws == null)
+            if (ws == null || !ws.IsAlive)
             {
                 ws = new WebSocket("ws://127.0.0.1:1101/flowsharpapp", new MyListener());
                 ws.Connect();

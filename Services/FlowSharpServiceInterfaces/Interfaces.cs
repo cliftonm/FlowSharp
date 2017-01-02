@@ -113,8 +113,5 @@ namespace FlowSharpServiceInterfaces
 
     public interface IFlowSharpRestService : IService { }
 
-    public interface IFlowSharpWebSocketService : IService
-    {
-        void Send(string msg);
-    }
+    public interface IFlowSharpWebSocketService : IService { }
 }

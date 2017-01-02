@@ -164,24 +164,38 @@ namespace FlowSharpCodeCompilerService
             {
                 if (el is Diamond)
                 {
-                    sb.AppendLine(strIndent + "bool " + el.Text.ToLower() + " = workflow." + el.Text + "(packet);");
-                    sb.AppendLine();
-                    sb.AppendLine(strIndent + "if (" + el.Text.ToLower() + ")");
-                    sb.AppendLine(strIndent + "{");
 
                     // True clause
                     var elTrue = GetTruePathFirstShape(el);
-                    GenerateCodeForWorkflow(sb, elTrue, indent + 1);
-
-                    sb.AppendLine(strIndent + "}");
-                    sb.AppendLine(strIndent + "else");
-                    sb.AppendLine(strIndent + "{");
-
                     // False clause
                     var elFalse = GetFalsePathFirstShape(el);
-                    GenerateCodeForWorkflow(sb, elFalse, indent + 1);
 
-                    sb.AppendLine(strIndent + "}");
+                    if (elTrue != null)
+                    {
+                        sb.AppendLine(strIndent + "bool " + el.Text.ToLower() + " = workflow." + el.Text + "(packet);");
+                        sb.AppendLine();
+                        sb.AppendLine(strIndent + "if (" + el.Text.ToLower() + ")");
+                        sb.AppendLine(strIndent + "{");
+                        GenerateCodeForWorkflow(sb, elTrue, indent + 1);
+                        sb.AppendLine(strIndent + "}");
+
+                        if (elFalse != null)
+                        {
+                            sb.AppendLine(strIndent + "else");
+                            sb.AppendLine(strIndent + "{");
+                            GenerateCodeForWorkflow(sb, elFalse, indent + 1);
+                            sb.AppendLine(strIndent + "}");
+                        }
+                    }
+                    else if (elFalse != null)
+                    {
+                        sb.AppendLine(strIndent + "bool " + el.Text.ToLower() + " = workflow." + el.Text + "(packet);");
+                        sb.AppendLine();
+                        sb.AppendLine(strIndent + "if (!" + el.Text.ToLower() + ")");
+                        sb.AppendLine(strIndent + "{");
+                        GenerateCodeForWorkflow(sb, elTrue, indent + 1);
+                        sb.AppendLine(strIndent + "}");
+                    }
 
                     // TODO: How to join back up with workflows that rejoin from if-then-else?
                     break;
@@ -199,7 +213,13 @@ namespace FlowSharpCodeCompilerService
         // True path is always the bottom of the diamond.
         protected GraphicElement GetTruePathFirstShape(GraphicElement el)
         {
-            GraphicElement trueStart = ((Connector)el.Connections.First(c => c.ElementConnectionPoint.Type == GripType.BottomMiddle).ToElement).EndConnectedShape;
+            GraphicElement trueStart = null;
+            Connection connection = el.Connections.FirstOrDefault(c => c.ElementConnectionPoint.Type == GripType.BottomMiddle);
+
+            if (connection != null)
+            {
+                trueStart = ((Connector)connection.ToElement).EndConnectedShape;
+            }
 
             return trueStart;
         }
@@ -207,7 +227,13 @@ namespace FlowSharpCodeCompilerService
         // False path is always the left or right point of the diamond.
         public GraphicElement GetFalsePathFirstShape(GraphicElement el)
         {
-            GraphicElement falseStart = ((Connector)el.Connections.First(c => c.ElementConnectionPoint.Type == GripType.LeftMiddle || c.ElementConnectionPoint.Type == GripType.RightMiddle).ToElement).EndConnectedShape;
+            GraphicElement falseStart = null;
+            Connection connection = el.Connections.FirstOrDefault(c => c.ElementConnectionPoint.Type == GripType.LeftMiddle || c.ElementConnectionPoint.Type == GripType.RightMiddle);
+
+            if (connection != null)
+            {
+                falseStart = ((Connector)connection.ToElement).EndConnectedShape;
+            }
 
             return falseStart;
         }

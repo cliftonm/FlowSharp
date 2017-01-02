@@ -1,0 +1,384 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Intercommunication Between the F</title>
+</head>
+
+<body>
+
+<p>Intercommunication Between the FlowSharp Canvas and a FlowSharpCode 
+Application</p>
+<p>Illustrating both HTTP and WebSockets Intercommunication</p>
+<p><img border="0" src="app6-small.png" width="808" height="381"></p>
+<p><a href="app6.png">(larger picture)</a></p>
+<h2>Introduction</h2>
+<p>FlowSharpCode is a proof of concept of something I've always dreamed of doing 
+-- writing applications as a graphical schematic.&nbsp; In this article, I've 
+put together a simple demonstration of communicating between UI elements on the 
+FlowSharp canvas and an application built with the FlowSharpCode services.&nbsp; 
+The goal here is to introduce the reader to a completely different approach to 
+application development.&nbsp; Think of code as a schematic, complete with 
+annotations, workflows, data pathways, etc.&nbsp; Remember, this is a prototype 
+to inspire the imagination!</p>
+<h3>As You Read This Article...</h3>
+<p>In all the articles I've written in the past, I've always had to resort to 
+some diagramming tool (usually Visio) to create a picture of what is going on in 
+the code.&nbsp; No more!&nbsp; Using FlowSharpCode, the diagram <i>is</i> <i>the 
+code</i>.&nbsp; And the UI.&nbsp; Keep that in mind when you read this--that 
+what you are seeing are screenshots of shapes and connectors that tell you how 
+the code-behind is wired up.</p>
+<h2>What's The Buzz, Tell Me What's Happening</h2>
+<p><img border="0" src="whatsthebuzz.png" width="184" height="142"><br>
+<small>(from Jesus Christ Superstar)</small></p>
+<h3>Shapes</h3>
+<p>First off, you have FlowSharp, which is a diagramming tool.&nbsp; On the 
+diagram, you can drop shapes, for example a box with some text:</p>
+<p><img border="0" src="fsc1.png" width="309" height="261"></p>
+<h3>Shape Code-Behind</h3>
+<p>These shapes can be have code-behind, for example:</p>
+<p><img border="0" src="fsc2.png" width="435" height="389"></p>
+<h3>Code-Behind Compilation and Execution</h3>
+<p>The code-behind, using the FlowSharpCode services, gets compiled to (in 
+this case) a console application using Build Compile and Run menu:</p>
+<p><img border="0" src="fsc3.png" width="311" height="262"></p>
+<p>And because I write perfect code the first time, all the time, the result is:</p>
+<p><img border="0" src="fsc4.png" width="475" height="181"></p>
+<h3>Changing Shape Properties Remotely</h3>
+<p>Using the FlowSharp HTTP and WebSocket services, you can control shape properties on 
+the canvas with your FlowSharpCode application (or any other application.)&nbsp; 
+Here, we use HTTP and this URL:</p>
+<pre>http://localhost:8001/flowsharp?cmd=CmdUpdateProperty&amp;Name=box1&amp;PropertyName=Text&amp;Value=Say+Goodbye!</pre>
+<p>to change the shape's text:</p>
+<p><img border="0" src="fsc5.png" width="942" height="310"></p>
+
+<h3>Creating a UI on the Canvas</h3>
+<p>You can also drop UI elements with one of the FlowSharpCode plug-in shapes:</p>
+<p><img border="0" src="fsc6.png" width="561" height="236"></p>
+<p>Very few controls are supported at the moment, but I'm adding more as I go 
+along.</p>
+<h3>Receiving UI Events from FlowSharp</h3>
+<p>Again using the FlowSharp HTTP or WebSocket services, you can send event messages from 
+the canvas' UI elements to your FlowSharpCode application (or any application, 
+whether it's written with FlowSharpCode or not.)&nbsp; To do this, we need 
+either (or both) a simple HTTP server or WebSocket server, which I'll describe 
+next.</p>
+<h2>A Semantic HTTP Server</h2>
+<p><img border="0" src="fsc7.png" width="426" height="388"></p>
+<p>One of the goals of FlowSharpCode is to ensure that you are, as much as 
+possible, <i>not constrained to code in a particular style.</i>&nbsp; This 
+server was something I wrote in FlowSharpCode before I had implemented workflows 
+(more on this later) and is a sort of ugly implementation.&nbsp; I am also 
+leveraging the semantic publisher/subscriber that I wrote about in
+<a href="https://www.codeproject.com/Articles/1120520/The-Clifton-Method-Part-IV">
+The Clifton Method - Part IV : The Semantic Publisher / Subscriber</a>.</p>
+<p>The code is written in FlowSharpCode since the server has to run as a the 
+FlowSharpCode application.&nbsp; We have the various things you'd expect.&nbsp; 
+These are screenshots, as this is FlowSharpCode and the code is code-behind for 
+the various shapes.&nbsp; In particular, note how <code>partial</code> classes are leveraged 
+to separate the various code fragments.</p>
+<h3>Starting the Server</h3>
+<p><img border="0" src="httpserver1.png" width="615" height="522"></p>
+<h3>Starting the Listener</h3>
+<p><img border="0" src="httpserver2.png" width="421" height="569"></p>
+<h3>Silly Method to Construct the Server Address</h3>
+<p><img border="0" src="httpserver3.png" width="648" height="479"></p>
+<h3>Waiting for a Connection</h3>
+<p><img border="0" src="httpserver4.png" width="934" height="642"></p>
+<h3>A Route Class for Managing Routes</h3>
+<p><img border="0" src="httpserver5.png" width="637" height="577"></p>
+<h3>Executing a Route</h3>
+<p><img border="0" src="httpserver6.png" width="763" height="587"></p>
+<h3>Defining Routes</h3>
+<p>Just one in this case:</p>
+<p><img border="0" src="httpserver7.png" width="546" height="260"></p>
+<h3>Processing a Request</h3>
+<p><img border="0" src="httpserver8.png" width="592" height="375"></p>
+<h3>Publishing the Request as a Semantic Message</h3>
+<p>This is particularly not ideal because typically one would create three 
+separate shapes for this, as well as turn it into a workflow.&nbsp; You'll see 
+this done next for the WebSocket Server!&nbsp; But it does illustrate my point 
+of not being constrained.</p>
+<p><img border="0" src="httpserver9.png" width="1065" height="965"></p>
+<h2>A Semantic WebSocket Server</h2>
+<p><img border="0" src="websocketserver1.png" width="593" height="507"></p>
+<p>This implementation a more &quot;modern&quot; approach, mainly because it uses 
+FlowSharpCode's workflow feature.&nbsp; Here is where you, the developer, are 
+slightly constrained.</p>
+<h3>All About Workflows</h3>
+<p>Workflows are linear execution of methods, with optional conditions to 
+redirect the execution path.&nbsp; In the above screenshot, there is no &quot;False&quot; 
+execution path, only a &quot;True&quot; one.</p>
+<h4>Workflows are Packet Oriented</h4>
+<p><img border="0" src="websocketserver2.png" width="531" height="266"></p>
+<p>All methods in the workflow operate on a packet.&nbsp; The packet contains 
+all the fields that each method in the workflow needs, as well as updates.</p>
+<p>Constraints are:</p>
+<ul>
+	<li>The workflow name must be <code>[PacketName]Workflow</code></li>
+	<li>A non-branching workflow always has the signature:</li>
+</ul>
+<pre>public partial class [PacketName]Workflow
+{
+  protected void [ShapeText]([PacketName] p)
+  { 
+     ... operate on packet p ...
+  }
+}</pre>
+<ul>
+	<li>A branching workflow always has the signature:</li>
+</ul>
+<pre>public partial class [PacketName]Workflow
+{
+  protected bool [ShapeText]([PacketName] p)
+  { 
+     ... return true or false based on some state of packet p ...
+  }
+}</pre>
+<h3>The WebServerPacket</h3>
+<p>OK, I really should have renamed this to <code>WebServerSocketPacket</code>.&nbsp; Oh 
+well.</p>
+<p>Given the above (and the fact that we're using the semantic publisher / 
+subscriber), the web socket server packet is defined like this:</p>
+<p><img border="0" src="websocketserver3.png" width="483" height="388"></p>
+<p>This defines all the fields (as properties) that the workflow requires to 
+handle web socket messages.</p>
+<h3>Starting the Web Socket Server</h3>
+<p><img border="0" src="websocketserver4.png" width="803" height="587"></p>
+<h3>The OnMessage Handler</h3>
+<p>When a message is received, the handler fires off the workflow:</p>
+<p><img border="0" src="websocketserver5.png" width="818" height="333"></p>
+<p>So, what does the workflow do?</p>
+<h3>Step 1: Is it a Text Message?</h3>
+<p>This is the first step in the workflow.&nbsp; Notice how it complies with the 
+constraints of a workflow step signature, in this case for a decision point:</p>
+<p><img border="0" src="websocketserver6.png" width="389" height="362"></p>
+<h3>Step 2: Parse the Message</h3>
+<p>Here we parse the message, which is in the same format as the parameter 
+portion of an HTTP GET:</p>
+<p><img border="0" src="websocketserver7.png" width="447" height="505"></p>
+<h3>Step 3: Create the Semantic Message</h3>
+<p><img border="0" src="websocketserver8.png" width="595" height="449"></p>
+<h3>Step 4: Populate the Semantic Message with Parameter Values</h3>
+<p><img border="0" src="websocketserver9.png" width="702" height="575"></p>
+<h3>Step 5: Publish the Message on the Semantic Bus</h3>
+<p><img border="0" src="websocketserver10.png" width="971" height="492"></p>
+<p>Now isn't that just totally cool?</p>
+<h2>Semantic Message Handling</h2>
+<p><img border="0" src="sem1.png" width="801" height="217"></p>
+<h3>Channels and Receptors</h3>
+<p>As I described in my article on
+<a href="https://www.codeproject.com/Articles/1120520/The-Clifton-Method-Part-IV">
+the semantic publisher / subscriber</a>, there are communication channels (which 
+I call membranes, named after
+<a href="https://en.wikipedia.org/wiki/Membrane_computing">Membrane Computing</a>) 
+and receptors, which is based on my work on
+<a href="https://www.codeproject.com/Articles/777843/HOPE-Higher-Order-Programming-Environment">
+Higher Order Programming</a> and Eric Harris-Braun / Arthur Brock's work on
+<a href="https://www.codeproject.com/Articles/894188/Introducing-Semtrex">
+Semtrex</a> and <a href="http://ceptr.org/">Ceptr</a>.</p>
+<p>Membranes (or channels, if you prefer) tend to be simple <i>type</i> 
+containers:</p>
+<p><img border="0" src="sem2.png" width="514" height="231"></p>
+<p>The receptor in this case is also simply a placeholder:</p>
+<p><img border="0" src="sem3.png" width="423" height="322"></p>
+<h4>The HttpButtonClick Message</h4>
+<p>The semantic publisher / subscriber invokes handlers for message <i>types.</i>&nbsp; 
+Read more about the concept of semantic types in
+<a href="https://www.codeproject.com/Articles/1031504/Strong-Type-Checking-with-Semantic-Types">
+my article</a> and
+<a href="https://www.codeproject.com/articles/860646/introducing-semantic-types-in-net">
+Matt Perdeck's</a> article.&nbsp; So we need a semantic type for the HTTP and 
+WebSocket messages.</p>
+<p><img border="0" src="sem4.png" width="377" height="303"></p>
+<h4>The WebSocketButtonClickMessage</h4>
+<p><img border="0" src="sem5.png" width="430" height="304"></p>
+<h4>The Message Receptor</h4>
+<p>We also need a class that has been registered (more on this later) with the 
+semantic publisher/subscriber that receives these messages:</p>
+<p><img border="0" src="sem6.png" width="863" height="566"></p>
+<p>As the code illustrates, the message is emitted to the console window, and a 
+UI element <i>on the canvas</i> is updated.&nbsp; More on this shortly.</p>
+<h3>The Counter Class</h3>
+<p>How many times you've clicked (which I haven't shown you yet) on the &quot;send 
+via HTTP&quot; or &quot;send via WebSocket&quot; button is counted in this class.</p>
+<p><img border="0" src="sem7.png" width="494" height="432"></p>
+<h2>Putting it Together - Initialization</h2>
+<p>Now we'll add the final pieces.</p>
+<h3>Main</h3>
+<p>Let's glue it all together now.&nbsp; First, there's Main(), which does the 
+startup work:</p>
+<ul>
+	<li>Bootstraps the runtime semantic processor module.</li>
+	<li>Initializes the servers.</li>
+	<li>Registers the receptor.</li>
+</ul>
+<p>This could be implemented as a workflow, but again, the programmer is not 
+constrained to code in a particular style, so I decided to just leave this all 
+here in one method:</p>
+<p><img border="0" src="app1.png" width="726" height="549"></p>
+<h3>Helper Stuff</h3>
+<p><img border="0" src="app2.png" width="202" height="324"></p>
+<p>There are some helper pieces, including the bootstrapper which I wrote about 
+in
+<a href="https://www.codeproject.com/Articles/1120518/The-Clifton-Method-Part-III">
+The Clifton Method - Part III: Bootstrapping with the Module Manager and the 
+Service Manager</a>.&nbsp; </p>
+<h4>HttpGet</h4>
+<p>This is a simple class to issue an HTTP request back to FlowSharp.</p>
+<p><img border="0" src="app3.png" width="895" height="535"></p>
+<h4>HttpHelpers and WebSocketHelpers</h4>
+<p>These two classes put together the data packet that is sent over HTTP or the 
+web socket.&nbsp; They are very similar and could be refactored.</p>
+<p><img border="0" src="app4.png" width="773" height="582"></p>
+<h2>Putting it Together - The UI</h2>
+<p><img border="0" src="ui1.png" width="413" height="177"></p>
+<p>Now here's another really fun part.&nbsp; We put a couple button shapes onto 
+the FlowSharp surface, as well as some plain vanilla text shapes.&nbsp; The 
+button shapes define the semantics and parameters for when they are clicked:</p>
+<p><img border="0" src="ui2.png" width="578" height="415"></p>
+<p>Notice the event name is ButtonClick - this matches the route name!</p>
+<pre>routes[new Route() {Verb = &quot;GET&quot;, Path = &quot;buttonclick&quot;}] = 
+     CreateSemanticObject&lt;AppMembrane, HttpButtonClick&gt;;</pre>
+<p>Also notice that the send protocol is selected to be &quot;HTTP&quot;</p>
+<p><img border="0" src="ui3.png" width="579" height="418"></p>
+<p>Here notice that the send protocol is &quot;WebSocket.&quot;&nbsp; Also notice that the 
+event name is WebSocketButtonClick - this matches directly the semantic type 
+that is instantiated to process this message:</p>
+<p><img border="0" src="sem5.png" width="430" height="304"></p>
+<p>We also have to box shapes, named &quot;cntHttp&quot; and &quot;cntWebSocket&quot;:</p>
+<p><img border="0" src="sem8.png" width="788" height="296"></p>
+<p>It should now be clear what this code is doing:</p>
+<p><img border="0" src="sem6.png" width="863" height="566"></p>
+<h2>Running The Demo</h2>
+<p>When we run the demo, we get a console app.&nbsp; Clicking on the buttons <i>
+on the canvas</i> issues HTTP / WebSocket calls to the console application, which 
+in turn issues HTTP/WebSocket calls <i>back to the FlowSharp</i> to update the 
+counter shapes:</p>
+<p><img border="0" src="app5.png" width="492" height="357"></p>
+<h2>Behind the Scenes</h2>
+<p>The canvas buttons are implemented as shapes with WinForm controls, for 
+example:</p>
+<pre>using System.Drawing;
+using System.Windows.Forms;
+
+using FlowSharpLib;
+
+namespace FlowSharpWindowsControlShapes
+{
+  public class ButtonShape : ControlShape
+  {
+    public ButtonShape(Canvas canvas) : base(canvas)
+    {
+      control = new Button();
+      canvas.Controls.Add(control);
+      control.Click += OnClick;
+    }
+
+    private void OnClick(object sender, System.EventArgs e)
+    {
+      Send(ClickEventName);
+    }
+
+    public override void Draw(Graphics gr)
+    {
+      control.Visible = Visible;
+
+      if (Visible)
+      {
+        base.Draw(gr);
+        Rectangle r = DisplayRectangle.Grow(-4);
+        control.Location = r.Location;
+        control.Size = r.Size;
+        control.Text = Text;
+        control.Enabled = Enabled;
+      }
+    }
+  }
+}</pre>
+<p>The <code>Send</code> method, in the base class, posts the actual HTTP or WebSocket 
+message (hardcoded endpoints!!!):</p>
+<pre>protected void Send(string cmd)
+{
+  // This allows the user to configure, for each control, whether it sends a web socket or HTTP message.
+  // We also assume for now that it is best to send these messages synchronously, so that order is preserved.
+  switch (SendProtocol)
+  {
+    case SendProtocol.Http:
+    {
+      string url = &quot;http://localhost:8002/&quot; + cmd;
+      string data = &quot;ShapeName=&quot; + Name;
+      data = AppendData(data);
+      ServiceManager.Instance.Get&lt;ISemanticProcessor&gt;().ProcessInstance&lt;FlowSharpMembrane, HttpSend&gt;(d =&gt;
+      {
+        d.Url = url;
+        d.Data = data;
+      }, true);
+      break;
+    }
+    case SendProtocol.WebSocket:
+    {
+      string data = &quot;cmd=&quot; + cmd + &quot;&amp;ShapeName=&quot; + Name;
+      data = AppendData(data);
+      ServiceManager.Instance.Get&lt;ISemanticProcessor&gt;().ProcessInstance&lt;FlowSharpMembrane, WebSocketSend&gt;(d =&gt;
+      {
+        d.Data = data;
+      }, true);
+      break;
+    }
+  }
+}</pre>
+<p>On the receiver side (here's where the WebSocket messages are processed) we 
+again use the semantic publisher/subscriber to process the message for both HTTP 
+and WebSocket messages:</p>
+<pre>public class CommandProcessor : IReceptor
+{
+  public void Process(ISemanticProcessor proc, IMembrane membrane, CmdUpdateProperty cmd)
+  {
+    BaseController controller = proc.ServiceManager.Get&lt;IFlowSharpCanvasService&gt;().ActiveController;
+    var els = controller.Elements.Where(e =&gt; e.Name == cmd.Name);
+
+    els.ForEach(el =&gt;
+    {
+      PropertyInfo pi = el.GetType().GetProperty(cmd.PropertyName);
+      object cval = Converter.Convert(cmd.Value, pi.PropertyType);
+
+      el?.Canvas.Invoke(() =&gt;
+      {
+        pi.SetValue(el, cval);
+        controller.Redraw(el);
+      });
+    });
+  }
+}</pre>
+<p>If you want to learn more about FlowSharp, please visit 
+<a href="https://www.codeproject.com/Articles/1136050/FlowSharp">FlowSharp</a> 
+article, and particularly the update on the Service Oriented Architecture.&nbsp; 
+For an early prototype of the code compiler services in FlowSharpCode, please 
+visit the
+<a href="https://www.codeproject.com/Articles/1156593/V-A-P-O-R-ware-Visual-Assisted-Programming-Organiz">
+FlowSharpCode</a> article.</p>
+<h2>Conclusion</h2>
+<p><img border="0" src="js2.png" width="344" height="147"></br><small>(from Jesus Christ Superstar)</small></p>
+<p>OK, frankly, I think this stuff is the cat's meow.&nbsp; I wish I had tools 
+like this years ago, and I intend to continue developing this concept into a 
+multi-language, multi-platform implementation.&nbsp; But I can't do it without 
+the help of others!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</body>
+
+</html>

@@ -183,6 +183,8 @@ namespace FlowSharpEditService
             {
                 List<ZOrderMap> originalZOrder = canvasController.GetZOrderOfSelectedElements();
                 List<GraphicElement> selectedElements = canvasController.SelectedElements.ToList();
+                Dictionary<GraphicElement, GraphicElement> elementParent = new Dictionary<GraphicElement, GraphicElement>();
+                selectedElements.ForEach(el => elementParent[el] = el.Parent);
 
                 // TODO: Better implementation would be for the mouse controller to hook a shape deleted event?
                 IFlowSharpMouseControllerService mouseController = ServiceManager.Get<IFlowSharpMouseControllerService>();
@@ -192,6 +194,13 @@ namespace FlowSharpEditService
                     () =>
                     {
                         canvasController.DeleteSelectedElementsHierarchy(false);
+
+                        // Delete any parent association:
+                        selectedElements.Where(el=>el.Parent != null).ForEach(el =>
+                        {
+                            el.Parent.GroupChildren.Remove(el);
+                            el.Parent = null;
+                        });
                     },
                     () =>
                     {
@@ -199,6 +208,17 @@ namespace FlowSharpEditService
                         RestoreConnections(originalZOrder);
                         canvasController.DeselectCurrentSelectedElements();
                         canvasController.SelectElements(selectedElements);
+
+                        // Restore parent associations:
+                        selectedElements.ForEach(el =>
+                        {
+                            el.Parent = elementParent[el];
+
+                            if (el.Parent != null)
+                            {
+                                el.Parent.GroupChildren.Add(el);
+                            }
+                        });
                     });
             }
         }

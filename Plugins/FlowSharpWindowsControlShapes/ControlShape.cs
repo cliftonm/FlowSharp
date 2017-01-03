@@ -39,6 +39,17 @@ namespace FlowSharpWindowsControlShapes
             return new ControlShapeProperties(this);
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                control.Parent = null;
+                control.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
         public override void DrawText(Graphics gr)
         {
             // Do nothing, as we don't display the text in the shape itself, only the edit control.

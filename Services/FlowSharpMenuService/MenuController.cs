@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -142,6 +143,155 @@ namespace FlowSharpMenuService
             mnuToggleBookmark.Click += ToogleBookmark;
             mnuClearBookmarks.Click += ClearBookmarks;
 
+            mnuAlignLefts.Click += AlignLefts;
+            mnuAlignRights.Click += AlignRights;
+            mnuAlignTops.Click += AlignTops;
+            mnuAlignBottoms.Click += AlignBottoms;
+            mnuAlignCenters.Click += AlignCenters;
+            mnuAlignSizes.Click += AlignSizes;
+        }
+
+        private void AlignLefts(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            List<GraphicElement> selectedElements = new List<GraphicElement>(canvasController.SelectedElements);        // For closure
+            Dictionary<GraphicElement, int> shapeOffsets = new Dictionary<GraphicElement, int>();                       // For closure
+            int minLeft = selectedElements.Min(el => el.DisplayRectangle.Left);
+            selectedElements.ForEach(el => shapeOffsets[el] = el.DisplayRectangle.Left - minLeft);
+
+            canvasController.UndoStack.UndoRedo("AlignLefts",
+                () =>
+                {
+                    selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(-shapeOffsets[el], 0)));
+                },
+                () =>
+                {
+                    selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(shapeOffsets[el], 0)));
+                });
+        }
+
+        private void AlignRights(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            List<GraphicElement> selectedElements = new List<GraphicElement>(canvasController.SelectedElements);        // For closure
+            Dictionary<GraphicElement, int> shapeOffsets = new Dictionary<GraphicElement, int>();                       // For closure
+            int maxRight = canvasController.SelectedElements.Max(el => el.DisplayRectangle.Right);
+            selectedElements.ForEach(el => shapeOffsets[el] = maxRight - el.DisplayRectangle.Right);
+
+            canvasController.UndoStack.UndoRedo("AlignRights",
+                () =>
+                {
+                    selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(shapeOffsets[el], 0)));
+                },
+                () =>
+                {
+                    selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(-shapeOffsets[el], 0)));
+                });
+        }
+
+    private void AlignTops(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            List<GraphicElement> selectedElements = new List<GraphicElement>(canvasController.SelectedElements);        // For closure
+            Dictionary<GraphicElement, int> shapeOffsets = new Dictionary<GraphicElement, int>();                       // For closure
+            int minTop = canvasController.SelectedElements.Min(el => el.DisplayRectangle.Top);
+            selectedElements.ForEach(el => shapeOffsets[el] = el.DisplayRectangle.Top - minTop);
+
+            canvasController.UndoStack.UndoRedo("AlignTops",
+                () =>
+                {
+                    selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(0, -shapeOffsets[el])));
+                },
+                () =>
+                {
+                    selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(0, shapeOffsets[el])));
+                });
+        }
+
+        private void AlignBottoms(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            List<GraphicElement> selectedElements = new List<GraphicElement>(canvasController.SelectedElements);        // For closure
+            Dictionary<GraphicElement, int> shapeOffsets = new Dictionary<GraphicElement, int>();                       // For closure
+            int maxBottom = canvasController.SelectedElements.Max(el => el.DisplayRectangle.Bottom);
+            selectedElements.ForEach(el => shapeOffsets[el] = maxBottom - el.DisplayRectangle.Bottom);
+
+            canvasController.UndoStack.UndoRedo("AlignBottoms",
+                () =>
+                {
+                    selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(0, shapeOffsets[el])));
+                },
+                () =>
+                {
+                    selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(0, -shapeOffsets[el])));
+                });
+        }
+
+        private void AlignCenters(object sender, EventArgs e)
+        {
+            // Figure out whether we're aligning vertically or horizontally based on the positions of the shapes.
+
+            // If the shapes are horizontally aligned (more or less), we center vertically.
+            // If the shapes are vertically aligned (more or less), we center horizontally.
+
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            List<GraphicElement> selectedElements = new List<GraphicElement>(canvasController.SelectedElements);        // For closure
+            Dictionary<GraphicElement, int> shapeOffsets = new Dictionary<GraphicElement, int>();                       // For closure
+
+            int dx = 0;
+            int dy = 0;
+
+            if (selectedElements.Count >= 2)
+            {
+                for (int n = 1; n < selectedElements.Count; n++)
+                {
+                    dx += (selectedElements[n - 1].DisplayRectangle.Center().X - selectedElements[n].DisplayRectangle.Center().X).Abs();
+                    dy += (selectedElements[n - 1].DisplayRectangle.Center().Y - selectedElements[n].DisplayRectangle.Center().Y).Abs();
+                }
+
+                if (dx < dy)
+                {
+                    // Center vertically
+                    int avgx = (int)selectedElements.Average(el => el.DisplayRectangle.Center().X);
+                    selectedElements.ForEach(el => shapeOffsets[el] = el.DisplayRectangle.Center().X - avgx);
+
+                    canvasController.UndoStack.UndoRedo("AlignCenters",
+                        () =>
+                        {
+                            selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(-shapeOffsets[el], 0)));
+                        },
+                        () =>
+                        {
+                            selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(shapeOffsets[el], 0)));
+                        });
+                }
+                else
+                {
+                    // Center horizontally
+                    int avgy = (int)selectedElements.Average(el => el.DisplayRectangle.Center().Y);
+                    selectedElements.ForEach(el => shapeOffsets[el] = el.DisplayRectangle.Center().Y - avgy);
+
+                    canvasController.UndoStack.UndoRedo("AlignCenters",
+                        () =>
+                        {
+                            selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(0, -shapeOffsets[el])));
+                        },
+                        () =>
+                        {
+                            selectedElements.ForEach(el => canvasController.MoveElement(el, new Point(0, shapeOffsets[el])));
+                        });
+                }
+            }
+        }
+
+        /// <summary>
+        /// Use the first selected element to determine the size of all the other elements.
+        /// </summary>
+        private void AlignSizes(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            List<GraphicElement> selectedElements = new List<GraphicElement>(canvasController.SelectedElements);              // For closure
+            Dictionary<GraphicElement, Point> shapeOffsets = new Dictionary<GraphicElement, Point>();                       // For closure
         }
 
         private void GoToShape(object sender, EventArgs e)

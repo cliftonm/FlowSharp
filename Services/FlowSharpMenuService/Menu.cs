@@ -46,6 +46,14 @@ namespace FlowSharpMenuService
         private ToolStripMenuItem mnuLoadLayout;
         private ToolStripMenuItem mnuSaveLayout;
 
+        private ToolStripMenuItem alignToolStripMenuItem;
+        private ToolStripMenuItem mnuAlignLefts;
+        private ToolStripMenuItem mnuAlignTops;
+        private ToolStripMenuItem mnuAlignBottoms;
+        private ToolStripMenuItem mnuAlignRights;
+        private ToolStripMenuItem mnuAlignCenters;
+        private ToolStripMenuItem mnuAlignSizes;
+
         private ToolStripMenuItem mnuGoToShape;
         private ToolStripMenuItem mnuGoToBookmark;
         private ToolStripMenuItem mnuToggleBookmark;
@@ -97,16 +105,25 @@ namespace FlowSharpMenuService
             mnuToggleBookmark = new ToolStripMenuItem();
             mnuClearBookmarks = new ToolStripMenuItem();
 
-            // 
-            // menuStrip1
-            // 
-            menuStrip.ImageScalingSize = new Size(18, 18);
+            alignToolStripMenuItem = new ToolStripMenuItem();
+            mnuAlignLefts = new ToolStripMenuItem();
+            mnuAlignTops = new ToolStripMenuItem();
+            mnuAlignBottoms = new ToolStripMenuItem();
+            mnuAlignRights = new ToolStripMenuItem();
+            mnuAlignCenters = new ToolStripMenuItem();
+            mnuAlignSizes = new ToolStripMenuItem();
+
+        // 
+        // menuStrip1
+        // 
+        menuStrip.ImageScalingSize = new Size(18, 18);
             menuStrip.Items.AddRange(new ToolStripItem[] {
             fileToolStripMenuItem,
             editToolStripMenuItem,
             viewToolStripMenuItem,
             navigateStripMenuItem,
             orderToolStripMenuItem,
+            alignToolStripMenuItem,
             groupToolStripMenuItem});
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip1";
@@ -312,6 +329,25 @@ namespace FlowSharpMenuService
             mnuDebugWindow.Text = "&Debug Window";
             // TODO: Implement handler
             // mnuDebugWindow.Click += new System.EventHandler(mnuDebugWindow_Click);
+
+            // alignToolStripMenuItem
+            alignToolStripMenuItem.Text = "Al&ign";
+            alignToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[]
+                {
+                    mnuAlignLefts,
+                    mnuAlignRights,
+                    mnuAlignTops,
+                    mnuAlignBottoms,
+                    mnuAlignCenters,
+                    mnuAlignSizes
+                });
+
+            mnuAlignLefts.Text = "Align &Lefts";
+            mnuAlignRights.Text = "Align &Rights";
+            mnuAlignTops.Text = "Align &Tops";
+            mnuAlignBottoms.Text = "Align &Bottoms";
+            mnuAlignCenters.Text = "Align &Centers";
+            mnuAlignSizes.Text = "Align &Sizes";
 
             // 
             // orderToolStripMenuItem

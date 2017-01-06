@@ -10,6 +10,7 @@ using System.Drawing.Drawing2D;
 
 namespace FlowSharpLib
 {
+    [ToolboxOrder(6)]
     public class UpTriangle : GraphicElement
     {
         protected Point[] path;

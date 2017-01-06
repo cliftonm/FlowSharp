@@ -254,6 +254,9 @@ namespace FlowSharpToolboxService
             {
                 el.DisplayRectangle = new Rectangle(new Point(x, y), el.DisplayRectangle.Size);
 
+                // TODO: Fix this, so that when we change the display rectangle, or we use some other to-be-created method,
+                // the StartPoint/EndPoint works correctly.  Or maybe the StartPoint/EndPoint can always be calculated from the
+                // DisplayRectangle?
                 if (el is DynamicConnector)
                 {
                     ((DynamicConnector)el).StartPoint = el.DisplayRectangle.TopLeftCorner();

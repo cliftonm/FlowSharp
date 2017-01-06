@@ -12,6 +12,7 @@ using Clifton.Core.ExtensionMethods;
 
 namespace FlowSharpLib
 {
+    [ExcludeFromToolbox]
     public class GroupBox : Box
     {
         public GroupBox(Canvas canvas) : base(canvas)

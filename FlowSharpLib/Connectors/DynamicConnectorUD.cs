@@ -10,11 +10,12 @@ using System.Windows.Forms;
 
 namespace FlowSharpLib
 {
-	/// <summary>
-	/// Up-Down dynamic connector.
-	/// Routing around shapes is ignored, which means that the best route may include going inside a connected shape.
-	/// </summary>
-	public class DynamicConnectorUD : DynamicConnector
+    /// <summary>
+    /// Up-Down dynamic connector.
+    /// Routing around shapes is ignored, which means that the best route may include going inside a connected shape.
+    /// </summary>
+    [ToolboxOrder(12)]
+    public class DynamicConnectorUD : DynamicConnector
 	{
 		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
 

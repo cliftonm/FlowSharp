@@ -15,7 +15,8 @@ namespace FlowSharpLib
         Diamond,
 	};
 
-	public class HorizontalLine : Line
+    [ToolboxOrder(8)]
+    public class HorizontalLine : Line
 	{
 		// Fixes background erase issues with dynamic connector.
 		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 2 + BorderPen.Width); } }

@@ -12,6 +12,7 @@ using System.Windows.Forms;
 
 namespace FlowSharpLib
 {
+    [ToolboxOrder(9)]
     public class DiagonalConnector : DynamicConnector
     {
         public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }

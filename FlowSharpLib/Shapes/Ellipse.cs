@@ -8,6 +8,7 @@ using System.Drawing;
 
 namespace FlowSharpLib
 {
+    [ToolboxOrder(2)]
     public class Ellipse : GraphicElement
     {
         public Ellipse(Canvas canvas) : base(canvas)

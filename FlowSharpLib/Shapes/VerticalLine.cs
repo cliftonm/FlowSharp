@@ -8,7 +8,8 @@ using System.Drawing;
 
 namespace FlowSharpLib
 {
-	public class VerticalLine : Line
+    [ToolboxOrder(8)]
+    public class VerticalLine : Line
 	{
 		// Fixes background erase issues with dynamic connector with endcaps.
         // + 1 needed for arrows, + 2 needed for diamonds.

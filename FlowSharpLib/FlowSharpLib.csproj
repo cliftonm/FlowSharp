@@ -86,9 +86,9 @@
     <Compile Include="Shapes\LeftTriangle.cs" />
     <Compile Include="Shapes\TextShape.cs" />
     <Compile Include="SnapController.cs" />
-    <Compile Include="ToolboxText.cs" />
     <Compile Include="Shapes\UpTriangle.cs" />
     <Compile Include="Shapes\VerticalLine.cs" />
+    <Compile Include="ToolboxShapeAttribute.cs" />
     <Compile Include="UndoRedo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

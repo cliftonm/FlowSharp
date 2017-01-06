@@ -14,6 +14,7 @@ using FlowSharpLib;
 
 namespace FlowSharpWindowsControlShapes
 {
+    [ExcludeFromToolbox]
     public class TextboxShape : ControlShape
     {
         public bool Multiline { get; set; }
@@ -55,6 +56,43 @@ namespace FlowSharpWindowsControlShapes
             control.Text = Text;
             control.Font = TextFont;
             ((TextBox)control).Multiline = Multiline;
+        }
+    }
+
+    [ToolboxShape]
+    public class ToolboxTextboxShape : GraphicElement
+    {
+        public const string TOOLBOX_TEXT = "txtbox";
+
+        protected Brush brush = new SolidBrush(Color.Black);
+
+        public ToolboxTextboxShape(Canvas canvas) : base(canvas)
+        {
+            TextFont.Dispose();
+            TextFont = new Font(FontFamily.GenericSansSerif, 8);
+        }
+
+        public override GraphicElement CloneDefault(Canvas canvas)
+        {
+            return CloneDefault(canvas, Point.Empty);
+        }
+
+        public override GraphicElement CloneDefault(Canvas canvas, Point offset)
+        {
+            TextboxShape shape = new TextboxShape(canvas);
+            shape.DisplayRectangle = shape.DefaultRectangle().Move(offset);
+            shape.UpdateProperties();
+            shape.UpdatePath();
+
+            return shape;
+        }
+
+        public override void Draw(Graphics gr)
+        {
+            SizeF size = gr.MeasureString(TOOLBOX_TEXT, TextFont);
+            Point textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
+            gr.DrawString(TOOLBOX_TEXT, TextFont, brush, textpos);
+            base.Draw(gr);
         }
     }
 }

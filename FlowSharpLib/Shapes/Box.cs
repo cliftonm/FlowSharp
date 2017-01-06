@@ -8,6 +8,7 @@ using System.Drawing;
 
 namespace FlowSharpLib
 {
+    [ToolboxOrder(1)]
     public class Box : GraphicElement
     {
         public Box(Canvas canvas) : base(canvas)

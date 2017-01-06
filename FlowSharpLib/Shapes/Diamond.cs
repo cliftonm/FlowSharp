@@ -8,7 +8,8 @@ using System.Drawing;
 
 namespace FlowSharpLib
 {
-	public class Diamond : GraphicElement
+    [ToolboxOrder(3)]
+    public class Diamond : GraphicElement
 	{
 		protected Point[] path;
 

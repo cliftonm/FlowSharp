@@ -10,6 +10,7 @@ using System.Drawing.Drawing2D;
 
 namespace FlowSharpLib
 {
+    [ToolboxOrder(4)]
     public class LeftTriangle : GraphicElement
     {
         protected Point[] path;

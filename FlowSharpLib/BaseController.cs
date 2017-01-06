@@ -98,7 +98,7 @@ namespace FlowSharpLib
         protected string filename;
 
         // Diagnostic
-        private int eraseCount = 0;
+        protected int eraseCount = 0;
 
 		public BaseController(Canvas canvas)
 		{

@@ -5,6 +5,7 @@
 */
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -32,7 +33,7 @@ namespace FlowSharpToolboxService
         public ToolboxController(IServiceManager serviceManager, Canvas canvas) : base(canvas)
 		{
             this.serviceManager = serviceManager;
-			canvas.PaintComplete = CanvasPaintComplete;
+			canvas.PaintComplete = ToolboxCanvasPaintComplete;
 			canvas.MouseClick += OnMouseClick;
             canvas.MouseDown += OnMouseDown;
             canvas.MouseUp += OnMouseUp;
@@ -232,6 +233,41 @@ namespace FlowSharpToolboxService
                 DrawBottomToTop(els);
                 UpdateScreen(els);
                 selectedElements.Clear();
+            }
+        }
+
+
+        protected void ToolboxCanvasPaintComplete(Canvas canvas)
+        {
+            Trace.WriteLine("*** ToolboxCanvasPaintComplete");
+            eraseCount = 1;         // Diagnostics
+            RepositionToolboxElements();
+            DrawBottomToTop(elements);
+        }
+
+        protected void RepositionToolboxElements()
+        {
+            int y = 15;
+            int x = 15;
+
+            foreach (GraphicElement el in Elements)
+            {
+                el.DisplayRectangle = new Rectangle(new Point(x, y), el.DisplayRectangle.Size);
+
+                if (el is DynamicConnector)
+                {
+                    ((DynamicConnector)el).StartPoint = el.DisplayRectangle.TopLeftCorner();
+                    ((DynamicConnector)el).EndPoint = el.DisplayRectangle.BottomRightCorner();
+                }
+
+                el.UpdatePath();
+                x += 50;
+
+                if (x + 25 + 10 > Canvas.Width)
+                {
+                    y += 50;
+                    x = 15;
+                }
             }
         }
     }

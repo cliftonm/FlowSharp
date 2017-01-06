@@ -14,9 +14,10 @@ namespace FlowSharpLib
 {
 	public abstract class DynamicConnector : Connector
 	{
-		protected List<Line> lines = new List<Line>();
-		protected Point StartPoint { get; set; }
-		protected Point EndPoint { get; set; }
+        public Point StartPoint { get; set; }
+        public Point EndPoint { get; set; }
+
+        protected List<Line> lines = new List<Line>();
 
         public override void Select()
         {

@@ -527,6 +527,7 @@ namespace FlowSharpLib
                 //el.MoveUndoRedo(delta, false);
                 el.Move(delta);
 				el.UpdatePath();
+                UpdateConnections(el);
 				DrawBottomToTop(els, dx, dy);
 				UpdateScreen(els, dx, dy);
 			}
@@ -776,7 +777,7 @@ namespace FlowSharpLib
             return r;
         }
 
-        protected void UpdateConnections(GraphicElement el)
+        public void UpdateConnections(GraphicElement el)
         {
             el.Connections.ForEach(c =>
             {

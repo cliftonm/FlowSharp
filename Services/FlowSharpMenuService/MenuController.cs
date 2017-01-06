@@ -286,12 +286,49 @@ namespace FlowSharpMenuService
 
         /// <summary>
         /// Use the first selected element to determine the size of all the other elements.
+        /// This updates only the size of each shape without affecting the location.  An alternative would be to resize
+        /// around the center of each shape.
+        /// Unlike the other align operations, align sizes uses the first element's size to set all the other shape sizes.
         /// </summary>
         private void AlignSizes(object sender, EventArgs e)
         {
             BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
-            List<GraphicElement> selectedElements = new List<GraphicElement>(canvasController.SelectedElements);              // For closure
-            Dictionary<GraphicElement, Point> shapeOffsets = new Dictionary<GraphicElement, Point>();                       // For closure
+            List<GraphicElement> selectedElements = new List<GraphicElement>(canvasController.SelectedElements);            // For closure
+            Dictionary<GraphicElement, Size> shapeSizes = new Dictionary<GraphicElement, Size>();                           // For closure
+
+            if (selectedElements.Count >= 2)
+            {
+                Size setToSize = selectedElements[0].DisplayRectangle.Size;
+                selectedElements.ForEach(el => shapeSizes[el] = el.DisplayRectangle.Size);
+
+                canvasController.UndoStack.UndoRedo("AlignSizes",
+                    () =>
+                    {
+                        // Do/redo:
+                        selectedElements.Skip(1).ForEach(el =>
+                        {
+                            canvasController.Redraw(el, _ =>
+                            {
+                                el.DisplayRectangle = new Rectangle(el.DisplayRectangle.Location, setToSize);
+                                el.UpdatePath();
+                                canvasController.UpdateConnections(el);
+                            });
+                        });
+                    },
+                    () =>
+                    {
+                        // Undo:
+                        selectedElements.Skip(1).ForEach(el =>
+                        {
+                            canvasController.Redraw(el, _ =>
+                            {
+                                el.DisplayRectangle = new Rectangle(el.DisplayRectangle.Location, shapeSizes[el]);
+                                el.UpdatePath();
+                                canvasController.UpdateConnections(el);
+                            });
+                        });
+                    });
+            }
         }
 
         private void GoToShape(object sender, EventArgs e)

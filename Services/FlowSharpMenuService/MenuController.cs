@@ -651,10 +651,17 @@ namespace FlowSharpMenuService
                 if (groupBox != null)
                 {
                     List<GraphicElement> groupedShapes = new List<GraphicElement>(groupBox.GroupChildren);
+                    bool collapsed = groupBox.State == FlowSharpLib.GroupBox.CollapseState.Collapsed;            // For closure.
 
                     canvasController.UndoStack.UndoRedo("Ungroup",
                     () =>
                     {
+                        if (collapsed)
+                        {
+                            var children = canvasController.Elements.Where(el => el.Parent == groupBox);
+                            ExpandGroupBox(canvasController, groupBox, children);
+                        }
+
                         // ElementCache.Instance.Add(groupBox);
                         canvasController.UngroupShapes(groupBox, false);
                         canvasController.DeselectCurrentSelectedElements();
@@ -666,6 +673,12 @@ namespace FlowSharpMenuService
                         canvasController.GroupShapes(groupBox);
                         canvasController.DeselectCurrentSelectedElements();
                         canvasController.SelectElement(groupBox);
+
+                        if (collapsed)
+                        {
+                            var children = canvasController.Elements.Where(el => el.Parent == groupBox);
+                            CollapseGroupBox(canvasController, groupBox, children);
+                        }
                     });
                 }
             }
@@ -678,33 +691,9 @@ namespace FlowSharpMenuService
             var children = canvasController.Elements.Where(el => el.Parent == gb);
 
             canvasController.UndoStack.UndoRedo("Collapse Group",
-                () =>
-                {
-                    canvasController.Redraw(gb, _ =>
-                    {
-                        gb.SetCollapsedState();
-                        gb.SaveExpandedSize();
-                        canvasController.UpdateConnections(gb);
-                        canvasController.Elements.Where(el => el.Parent == gb).ForEach(el => el.Visible = false);
-                        Rectangle r = gb.DisplayRectangle;
-                        gb.DisplayRectangle = new Rectangle(r.Location, new Size(r.Width, 30));
-                    });
-                    // In a collapse, the children, being intersecting with the groupbox, will be redrawn.
-                },
-                () =>
-                {
-                    canvasController.Redraw(gb, _ =>
-                    {
-                        gb.SetExpandedState();
-                        canvasController.UpdateConnections(gb);
-                        children.ForEach(el => el.Visible = true);
-                        Rectangle r = gb.DisplayRectangle;
-                        gb.DisplayRectangle = new Rectangle(r.Location, gb.ExpandedSize);
-                    });
-
-                    // In an expand (undo collapse), not all the children may redraw because the collapsed groupbox does not intersect them!
-                    children.ForEach(el => el.Redraw());
-                });
+                () => CollapseGroupBox(canvasController, gb, children),
+                () => ExpandGroupBox(canvasController, gb, children)
+                );
         }
 
         private void mnuExpandGroup_Click(object sender, EventArgs e)
@@ -714,33 +703,43 @@ namespace FlowSharpMenuService
             var children = canvasController.Elements.Where(el => el.Parent == gb);
 
             canvasController.UndoStack.UndoRedo("Expand Group",
-                () =>
-                {
-                    canvasController.Redraw(gb, _ =>
-                    {
-                        gb.SetExpandedState();
-                        canvasController.UpdateConnections(gb);
-                        canvasController.Elements.Where(el => el.Parent == gb).ForEach(el => el.Visible = true);
-                        Rectangle r = gb.DisplayRectangle;
-                        gb.DisplayRectangle = new Rectangle(r.Location, gb.ExpandedSize);
-                    });
+                () => ExpandGroupBox(canvasController, gb, children),
+                () => CollapseGroupBox(canvasController, gb, children)
+                );
+        }
 
-                    // In an expand , not all the children may redraw because the collapsed groupbox does not intersect them!
-                    children.ForEach(el => el.Redraw());
-                },
-                () =>
-                {
-                    canvasController.Redraw(gb, _ =>
-                    {
-                        gb.SetCollapsedState();
-                        gb.SaveExpandedSize();
-                        canvasController.UpdateConnections(gb);
-                        canvasController.Elements.Where(el => el.Parent == gb).ForEach(el => el.Visible = false);
-                        Rectangle r = gb.DisplayRectangle;
-                        gb.DisplayRectangle = new Rectangle(r.Location, new Size(r.Width, 30));
-                    });
-                    // In a collapse (undo expand), the children, being intersecting with the groupbox, will be redrawn.
-                });
+        private void CollapseGroupBox(BaseController canvasController, FlowSharpLib.GroupBox gb, IEnumerable<GraphicElement> children)
+        {
+            canvasController.Redraw(gb, _ =>
+            {
+                gb.SetCollapsedState();
+                gb.SaveExpandedSize();
+                canvasController.Elements.Where(el => el.Parent == gb).ForEach(el => el.Visible = false);
+                Rectangle r = gb.DisplayRectangle;
+                gb.DisplayRectangle = new Rectangle(r.Location, new Size(r.Width, 30));
+                // Update connections after display rectangle has been updated, as this adjusts the connection points.
+                canvasController.UpdateConnections(gb);
+            });
+            // In a collapse, the children, being intersecting with the groupbox, will be redrawn.
+        }
+
+        private void ExpandGroupBox(BaseController canvasController, FlowSharpLib.GroupBox gb, IEnumerable<GraphicElement> children)
+        {
+            canvasController.Redraw(gb, _ =>
+            {
+                gb.SetExpandedState();
+                Rectangle r = gb.DisplayRectangle;
+                gb.DisplayRectangle = new Rectangle(r.Location, gb.ExpandedSize);
+                // Update connections after display rectangle has been updated, as this adjusts the connection points.
+                canvasController.UpdateConnections(gb);
+            });
+
+            // In an expand , not all the children may redraw because the collapsed groupbox does not intersect them!
+            children.ForEach(el =>
+            {
+                el.Visible = true;
+                el.Redraw();
+            });
         }
 
         private void mnuUndo_Click(object sender, EventArgs e)

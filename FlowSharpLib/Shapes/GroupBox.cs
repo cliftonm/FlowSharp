@@ -4,7 +4,9 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 
@@ -50,6 +52,32 @@ namespace FlowSharpLib
         public void SetExpandedState()
         {
             State = CollapseState.Expanded;
+        }
+
+        public override void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
+        {
+            Json["State"] = State.ToString();
+            Json["ExpandedSize"] = ExpandedSize.Width + "," + ExpandedSize.Height;
+            base.Serialize(epb, elementsBeingSerialized);
+        }
+
+        public override void Deserialize(ElementPropertyBag epb)
+        {
+            base.Deserialize(epb);
+            string state;
+
+            if (Json.TryGetValue("State", out state))
+            {
+                State = (CollapseState)Enum.Parse(typeof(CollapseState), state);
+            }
+
+            string size;
+
+            if (Json.TryGetValue("ExpandedSize", out size))
+            {
+                TypeConverter tc = TypeDescriptor.GetConverter(typeof(Size));
+                ExpandedSize = (Size)tc.ConvertFromString(size);
+            }
         }
 
         public override void Move(Point delta)

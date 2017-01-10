@@ -206,22 +206,22 @@ namespace FlowSharpLib
 
         public bool IsRootShapeSelectable(Point p)
         {
-            return elements.Any(e => e.IsSelectable(p) && e.Parent == null);
+            return elements.Any(e => e.IsSelectable(p) && e.Parent == null && e.Visible);
         }
 
         public bool IsChildShapeSelectable(Point p)
         {
-            return elements.Any(e => e.IsSelectable(p) && e.Parent != null);
+            return elements.Any(e => e.IsSelectable(p) && e.Parent != null && e.Visible);
         }
 
         public GraphicElement GetRootShapeAt(Point p)
         {
-            return elements.FirstOrDefault(e => e.IsSelectable(p) && e.Parent == null);
+            return elements.FirstOrDefault(e => e.IsSelectable(p) && e.Parent == null && e.Visible);
         }
 
         public GraphicElement GetChildShapeAt(Point p)
         {
-            return elements.FirstOrDefault(e => e.IsSelectable(p) && e.Parent != null);
+            return elements.FirstOrDefault(e => e.IsSelectable(p) && e.Parent != null && e.Visible);
         }
 
         public void SelectElements(List<GraphicElement> els)

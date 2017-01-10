@@ -53,6 +53,12 @@ namespace FlowSharpWindowsControlShapes
             // Do nothing, as we don't display the text in the shape itself, only the edit control.
         }
 
+        public override void Hide()
+        {
+            control.Visible = false;
+            base.Hide();
+        }
+
         public override void Move(Point delta)
         {
             // Prevents trails being left by controls when canvas is dragged.

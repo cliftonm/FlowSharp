@@ -23,6 +23,8 @@ namespace FlowSharpLib
 
         public CollapseState State { get; protected set; }
 
+        public Size ExpandedSize { get; protected set; }
+
         public GroupBox(Canvas canvas) : base(canvas)
 		{
             FillBrush.Color = Color.FromArgb(240, 240, 240);
@@ -38,6 +40,11 @@ namespace FlowSharpLib
         public void SetCollapsedState()
         {
             State = CollapseState.Collapsed;
+        }
+
+        public void SaveExpandedSize()
+        {
+            ExpandedSize = DisplayRectangle.Size;
         }
 
         public void SetExpandedState()

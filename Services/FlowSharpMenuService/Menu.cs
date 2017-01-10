@@ -32,9 +32,13 @@ namespace FlowSharpMenuService
         private ToolStripSeparator toolStripMenuItem2;
         private ToolStripMenuItem viewToolStripMenuItem;
         private ToolStripMenuItem mnuDebugWindow;
+
         private ToolStripMenuItem groupToolStripMenuItem;
         private ToolStripMenuItem mnuGroup;
         private ToolStripMenuItem mnuUngroup;
+        private ToolStripMenuItem mnuCollapseGroup;
+        private ToolStripMenuItem mnuExpandGroup;
+
         private ToolStripMenuItem mnuPlugins;
         private ToolStripSeparator toolStripMenuItem4;
         private ToolStripSeparator toolStripMenuItem5;
@@ -91,9 +95,13 @@ namespace FlowSharpMenuService
             mnuBottommost = new ToolStripMenuItem();
             mnuMoveUp = new ToolStripMenuItem();
             mnuMoveDown = new ToolStripMenuItem();
+
             groupToolStripMenuItem = new ToolStripMenuItem();
             mnuGroup = new ToolStripMenuItem();
             mnuUngroup = new ToolStripMenuItem();
+            mnuCollapseGroup = new ToolStripMenuItem();
+            mnuExpandGroup = new ToolStripMenuItem();
+
             toolStripMenuItem6 = new ToolStripSeparator();
             toolStripMenuItem7 = new ToolStripSeparator();
             mnuEdit = new ToolStripMenuItem();
@@ -393,7 +401,9 @@ namespace FlowSharpMenuService
             // 
             groupToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
             mnuGroup,
-            mnuUngroup});
+            mnuUngroup,
+            mnuCollapseGroup,
+            mnuExpandGroup});
             groupToolStripMenuItem.Name = "groupToolStripMenuItem";
             groupToolStripMenuItem.Size = new Size(52, 21);
             groupToolStripMenuItem.Text = "&Group";
@@ -411,6 +421,10 @@ namespace FlowSharpMenuService
             mnuUngroup.ShortcutKeys = ((Keys)((Keys.Control | Keys.U)));
             mnuUngroup.Size = new Size(166, 24);
             mnuUngroup.Text = "&Ungroup";
+
+            mnuCollapseGroup.Text = "&Collapse";
+            mnuExpandGroup.Text = "&Expand";
+
             // 
             // toolStripMenuItem6
             // 

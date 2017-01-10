@@ -41,7 +41,9 @@ namespace FlowSharpLib
 		public string ElementName { get; set; }
 		[XmlAttribute]
 		public Guid Id { get; set; }
-		[XmlAttribute]
+        [XmlAttribute]
+        public bool Visible { get; set; }
+        [XmlAttribute]
 		public string Text { get; set; }
         [XmlAttribute]
         public bool IsBookmarked { get; set; }
@@ -123,6 +125,7 @@ namespace FlowSharpLib
 		{
 			Connections = new List<ConnectionPropertyBag>();
             Children = new List<ChildPropertyBag>();
+            Visible = true;     // Default, if not defined, for older fsd's that don't have this property.
 		}
 	}
 

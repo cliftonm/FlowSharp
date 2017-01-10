@@ -15,15 +15,34 @@ namespace FlowSharpLib
     [ExcludeFromToolbox]
     public class GroupBox : Box
     {
+        public enum CollapseState
+        {
+            Collapsed,
+            Expanded,
+        }
+
+        public CollapseState State { get; protected set; }
+
         public GroupBox(Canvas canvas) : base(canvas)
 		{
             FillBrush.Color = Color.FromArgb(240, 240, 240);
+            State = CollapseState.Expanded;
         }
 
         public override List<ShapeAnchor> GetAnchors()
         {
             // GroupBox doesn't have anchors - it can't be resized.
             return new List<ShapeAnchor>();
+        }
+
+        public void SetCollapsedState()
+        {
+            State = CollapseState.Collapsed;
+        }
+
+        public void SetExpandedState()
+        {
+            State = CollapseState.Expanded;
         }
 
         public override void Move(Point delta)
@@ -43,6 +62,11 @@ namespace FlowSharpLib
                     g.Connections.Where(c => c.ToElement.Parent == null).ForEach(c => canvas.Controller.MoveLineOrAnchor(c, delta));
                 }
             });
+        }
+
+        public override void Draw(Graphics gr)
+        {
+            base.Draw(gr);
         }
     }
 }

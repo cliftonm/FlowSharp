@@ -93,8 +93,21 @@ namespace FlowSharpMenuService
             mnuMoveDown.Enabled = elementSelected;
             mnuCopy.Enabled = elementSelected;
             mnuDelete.Enabled = elementSelected;
+
+            // Group disabled if any selected element is part of a group:
             mnuGroup.Enabled = elementSelected && !canvasController.SelectedElements.Any(el => el.Parent != null);
+
+            // Ungroup disabled if the selected element is not a groupbox:
             mnuUngroup.Enabled = canvasController.SelectedElements.Count == 1 && canvasController.SelectedElements[0].GroupChildren.Any();
+
+            mnuCollapseGroup.Enabled = canvasController.SelectedElements.Count == 1 
+                && (canvasController.SelectedElements[0] is FlowSharpLib.GroupBox)
+                && ((FlowSharpLib.GroupBox)canvasController.SelectedElements[0]).State==FlowSharpLib.GroupBox.CollapseState.Expanded;
+
+            mnuExpandGroup.Enabled = canvasController.SelectedElements.Count == 1 
+                && (canvasController.SelectedElements[0] is FlowSharpLib.GroupBox)
+                && ((FlowSharpLib.GroupBox)canvasController.SelectedElements[0]).State == FlowSharpLib.GroupBox.CollapseState.Collapsed;
+
             mnuUndo.Enabled = canvasController.UndoStack.CanUndo;
             mnuRedo.Enabled = canvasController.UndoStack.CanRedo;
         }
@@ -125,8 +138,12 @@ namespace FlowSharpMenuService
             mnuBottommost.Click += mnuBottommost_Click;
             mnuMoveUp.Click += mnuMoveUp_Click;
             mnuMoveDown.Click += mnuMoveDown_Click;
+
             mnuGroup.Click += mnuGroup_Click;
             mnuUngroup.Click += mnuUngroup_Click;
+            mnuCollapseGroup.Click += mnuCollapseGroup_Click;
+            mnuExpandGroup.Click += mnuExpandGroup_Click;
+
             mnuUndo.Click += mnuUndo_Click;
             mnuRedo.Click += mnuRedo_Click;
             mnuEdit.Click += (sndr, args) => serviceManager.Get<IFlowSharpEditService>().EditText();
@@ -652,6 +669,82 @@ namespace FlowSharpMenuService
                     });
                 }
             }
+        }
+
+        private void mnuCollapseGroup_Click(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            var gb = ((FlowSharpLib.GroupBox)canvasController.SelectedElements[0]);
+            var children = canvasController.Elements.Where(el => el.Parent == gb);
+
+            canvasController.UndoStack.UndoRedo("Collapse Group",
+                () =>
+                {
+                    canvasController.Redraw(gb, _ =>
+                    {
+                        gb.SetCollapsedState();
+                        canvasController.UpdateConnections(gb);
+                        canvasController.Elements.Where(el => el.Parent == gb).ForEach(el => el.Visible = false);
+                        Rectangle r = gb.DisplayRectangle;
+                        gb.DisplayRectangle = new Rectangle(r.Location, new Size(r.Width, 30));
+                    });
+                    // In a collapse, the children, being intersecting with the groupbox, will be redrawn.
+                },
+                () =>
+                {
+                    canvasController.Redraw(gb, _ =>
+                    {
+                        gb.SetExpandedState();
+                        canvasController.UpdateConnections(gb);
+                        children.ForEach(el => el.Visible = true);
+
+                        // Resize the groupbox to fit the children again.
+                        Rectangle r = canvasController.GetExtents(children);
+                        r.Inflate(BaseController.GROUPBOX_INFLATE, BaseController.GROUPBOX_INFLATE);
+                        gb.DisplayRectangle = r;
+                    });
+
+                    // In an expand (undo collapse), not all the children may redraw because the collapsed groupbox does not intersect them!
+                    children.ForEach(el => el.Redraw());
+                });
+        }
+
+        private void mnuExpandGroup_Click(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            var gb = ((FlowSharpLib.GroupBox)canvasController.SelectedElements[0]);
+            var children = canvasController.Elements.Where(el => el.Parent == gb);
+
+            canvasController.UndoStack.UndoRedo("Expand Group",
+                () =>
+                {
+                    canvasController.Redraw(gb, _ =>
+                    {
+                        gb.SetExpandedState();
+                        canvasController.UpdateConnections(gb);
+                        canvasController.Elements.Where(el => el.Parent == gb).ForEach(el => el.Visible = true);
+
+                        // Resize the groupbox to fit the children again.
+                        Rectangle r = canvasController.GetExtents(children);
+                        r.Inflate(BaseController.GROUPBOX_INFLATE, BaseController.GROUPBOX_INFLATE);
+                        gb.DisplayRectangle = r;
+                    });
+
+                    // In an expand , not all the children may redraw because the collapsed groupbox does not intersect them!
+                    children.ForEach(el => el.Redraw());
+                },
+                () =>
+                {
+                    canvasController.Redraw(gb, _ =>
+                    {
+                        gb.SetCollapsedState();
+                        canvasController.UpdateConnections(gb);
+                        canvasController.Elements.Where(el => el.Parent == gb).ForEach(el => el.Visible = false);
+                        Rectangle r = gb.DisplayRectangle;
+                        gb.DisplayRectangle = new Rectangle(r.Location, new Size(r.Width, 30));
+                    });
+                    // In a collapse (undo expand), the children, being intersecting with the groupbox, will be redrawn.
+                });
         }
 
         private void mnuUndo_Click(object sender, EventArgs e)

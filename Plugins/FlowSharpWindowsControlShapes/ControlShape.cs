@@ -22,7 +22,6 @@ namespace FlowSharpWindowsControlShapes
         public string ClickEventName { get; set; }
         public string ClickEventData { get; set; }
         public bool Enabled { get; set; }
-        public bool Visible { get; set; }
         public SendProtocol SendProtocol { get; set; }
 
         protected Control control;
@@ -31,7 +30,6 @@ namespace FlowSharpWindowsControlShapes
         {
             ClickEventName = "ButtonClick";     // Default.
             Enabled = true;
-            Visible = true;
         }
 
         public override ElementProperties CreateProperties()

@@ -769,9 +769,9 @@ namespace FlowSharpLib
             children.ForEach(child => RecursiveGetAllGroupedShapes(child.GroupChildren, acc));
         }
 
-        protected Rectangle GetExtents(List<GraphicElement> elements)
+        public Rectangle GetExtents(IEnumerable<GraphicElement> elements)
         {
-            Rectangle r = elements[0].DisplayRectangle;
+            Rectangle r = elements.First().DisplayRectangle;
             elements.Skip(1).ForEach(el => r = r.Union(el.DisplayRectangle));
 
             return r;

@@ -42,6 +42,7 @@ namespace FlowSharpLib
 		public Guid Id { get; set; }
 		public virtual bool Selected { get; protected set; }
         public bool Tagged { get; protected set; }
+        public bool Visible { get; set; }                   // Used at the moment to hide collapsed groupbox elements.
 		public bool ShowConnectionPoints { get; set; }
 		// public bool HideConnectionPoints { get; set; }
 		public bool ShowAnchors { get; set; }
@@ -107,6 +108,7 @@ namespace FlowSharpLib
         public GraphicElement(Canvas canvas)
         {
             this.canvas = canvas;
+            Visible = true;
             Id = Guid.NewGuid();
             Json = new Dictionary<string, string>();
             selectionPen = new Pen(Color.Red);
@@ -270,6 +272,7 @@ namespace FlowSharpLib
             epb.Name = Name;
 			epb.ElementName = GetType().AssemblyQualifiedName;
 			epb.Id = Id;
+            epb.Visible = Visible;
             epb.Json = JsonConvert.SerializeObject(Json);
 			epb.DisplayRectangle = DisplayRectangle;
 			epb.BorderPenColor = BorderPen.Color;
@@ -302,6 +305,7 @@ namespace FlowSharpLib
 		public virtual void Deserialize(ElementPropertyBag epb)
 		{
 			Id = epb.Id;
+            Visible = epb.Visible;
 
             if (!String.IsNullOrEmpty(epb.Json))
             {
@@ -401,7 +405,7 @@ namespace FlowSharpLib
         {
 			Graphics gr = canvas.AntiAliasGraphics;
 
-            if (canvas.OnScreen(UpdateRectangle))
+            if (canvas.OnScreen(UpdateRectangle) && Visible)
             {
                 Trace.WriteLine("Shape:Draw " + ToString());
                 Draw(gr);

@@ -17,6 +17,15 @@ namespace FlowSharpCodeServiceInterfaces
     {
     }
 
+    public interface IFlowSharpCodeOutputWindowService : IService
+    {
+        void CreateOutputWindow();
+        void CreateOutputWindow(Control parent);
+        void WriteLine(string line);
+        void Clear();
+        void Closed();
+    }
+
     public interface IFlowSharpCodeCompilerService : IService
     {
         void Compile();

@@ -115,9 +115,17 @@
       <Project>{0f9d2405-725f-4859-ab13-75dfafa6ba35}</Project>
       <Name>FlowSharpCodeICSharpDevelopService</Name>
     </ProjectReference>
+    <ProjectReference Include="Services\FlowSharpCodeServices\FlowSharpCodeOutputWindowService\FlowSharpCodeOutputWindowService.csproj">
+      <Project>{5fa0c1a5-bde5-41fb-b031-eb8285fc549b}</Project>
+      <Name>FlowSharpCodeOutputWindowService</Name>
+    </ProjectReference>
     <ProjectReference Include="Services\FlowSharpCodeServices\FlowSharpCodeService\FlowSharpCodeService.csproj">
       <Project>{d11163a6-8f20-4b74-9627-02831d1df1b2}</Project>
       <Name>FlowSharpCodeService</Name>
+    </ProjectReference>
+    <ProjectReference Include="Services\FlowSharpCodeServices\FlowSharpCodeShapes\FlowSharpCodeShapes.csproj">
+      <Project>{ef1bb007-e326-4305-94f0-c4a589fdb08a}</Project>
+      <Name>FlowSharpCodeShapes</Name>
     </ProjectReference>
     <ProjectReference Include="Services\FlowSharpDebugWindowService\FlowSharpDebugWindowService.csproj">
       <Project>{ef3a8598-238b-4b29-9d77-79cd805cd0e7}</Project>

@@ -51,6 +51,9 @@ namespace FlowSharpCodeCompilerService
 
         public void Compile()
         {
+            var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
+            outputWindow.Clear();
+
             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
             IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
             BaseController canvasController = canvasService.ActiveController;
@@ -461,7 +464,8 @@ namespace FlowSharpCodeCompilerService
                     }
                 }
 
-                MessageBox.Show(sb.ToString(), assyFilename, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // MessageBox.Show(sb.ToString(), assyFilename, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ServiceManager.Get<IFlowSharpCodeOutputWindowService>().WriteLine(sb.ToString());
             }
 
             return ok;

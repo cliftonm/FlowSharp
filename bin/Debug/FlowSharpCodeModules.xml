@@ -20,4 +20,5 @@
   <Module AssemblyName='FlowSharpCodeService.dll'/>
   <Module AssemblyName='FlowSharpCodeCompilerService.dll'/>
   <Module AssemblyName='FlowSharpCodeICSharpDevelopService.dll'/>
+  <Module AssemblyName='FlowSharpCodeOutputWindowService.dll'/>
 </Modules>

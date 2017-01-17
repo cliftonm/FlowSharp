@@ -314,10 +314,23 @@ namespace FlowSharpService
         {
             Control ctrl = document as Control;
 
-            if (ctrl != null && ctrl.Controls.Count == 1 && ((IDockDocument)document).Metadata.LeftOf(",") == Constants.META_CANVAS)
+            if (ctrl != null && ctrl.Controls.Count == 1)
             {
-                Control child = ctrl.Controls[0];
-                ServiceManager.Get<IFlowSharpCanvasService>().DeleteCanvas(child);
+                switch(((IDockDocument)document).Metadata.LeftOf(","))
+                {
+                    case Constants.META_CANVAS:
+                        Control child = ctrl.Controls[0];
+                        ServiceManager.Get<IFlowSharpCanvasService>().DeleteCanvas(child);
+                        break;
+
+                    case Constants.META_PROPERTYGRID:
+                        // TODO
+                        break;
+
+                    case Constants.META_TOOLBOX:
+                        // TODO:
+                        break;
+                }
             }
         }
 

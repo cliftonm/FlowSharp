@@ -23,8 +23,6 @@ namespace FlowSharpCodeService
 
     public class FlowSharpCodeService : ServiceBase, IFlowSharpCodeService
     {
-        protected IFlowSharpCodeEditorService csCodeEditorService;
-
         public override void FinishedInitialization()
         {
             base.FinishedInitialization();
@@ -44,12 +42,12 @@ namespace FlowSharpCodeService
             ToolStripMenuItem mnuRun = new ToolStripMenuItem();
 
             mnuRun.Name = "mnuRun";
-            mnuRun.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.R)));
+            mnuRun.ShortcutKeys = Keys.Alt | Keys.R;
             mnuRun.Size = new System.Drawing.Size(165, 24);
             mnuRun.Text = "&Run";
 
             mnuCompile.Name = "mnuCompile";
-            mnuCompile.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.C)));
+            mnuCompile.ShortcutKeys = Keys.Alt | Keys.C;
             mnuCompile.Size = new System.Drawing.Size(165, 24);
             mnuCompile.Text = "&Compile";
 
@@ -76,6 +74,12 @@ namespace FlowSharpCodeService
 
         protected void OnFlowSharpInitialized(object sender, EventArgs args)
         {
+            CreateEditor();
+            CreateOutputWindow();
+        }
+
+        protected void CreateEditor()
+        {
             IDockingFormService dockingService = ServiceManager.Get<IDockingFormService>();
             Panel dock = dockingService.DockPanel;
             Control docCanvas = FindDocument(dockingService, FlowSharpServiceInterfaces.Constants.META_CANVAS);
@@ -84,9 +88,24 @@ namespace FlowSharpCodeService
             Control pnlCsCodeEditor = new Panel() { Dock = DockStyle.Fill };
             csDocEditor.Controls.Add(pnlCsCodeEditor);
 
-            csCodeEditorService = ServiceManager.Get<IFlowSharpCodeEditorService>();
+            IFlowSharpCodeEditorService csCodeEditorService = ServiceManager.Get<IFlowSharpCodeEditorService>();
             csCodeEditorService.CreateEditor(pnlCsCodeEditor);
             csCodeEditorService.AddAssembly("Clifton.Core.dll");
+        }
+
+        protected void CreateOutputWindow()
+        {
+            //IDockingFormService dockingService = ServiceManager.Get<IDockingFormService>();
+            //Panel dock = dockingService.DockPanel;
+            //Control docCanvas = FindDocument(dockingService, FlowSharpServiceInterfaces.Constants.META_CANVAS);
+
+            //Control outputWindow = dockingService.CreateDocument(docCanvas, DockAlignment.Bottom, "Output", FlowSharpCodeServiceInterfaces.Constants.META_OUTPUT, 0.50);
+            //Control pnlOutputWindow = new Panel() { Dock = DockStyle.Fill };
+            //outputWindow.Controls.Add(pnlOutputWindow);
+
+            IFlowSharpCodeOutputWindowService outputWindowService = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
+            outputWindowService.CreateOutputWindow();
+            // outputWindowService.CreateOutputWindow(pnlOutputWindow);
         }
 
         protected void OnContentResolver(object sender, ContentLoadedEventArgs e)
@@ -97,9 +116,17 @@ namespace FlowSharpCodeService
                     Panel pnlEditor = new Panel() { Dock = DockStyle.Fill, Tag = FlowSharpCodeServiceInterfaces.Constants.META_EDITOR};
                     e.DockContent.Controls.Add(pnlEditor);
                     e.DockContent.Text = "Editor";
-                    csCodeEditorService = ServiceManager.Get<IFlowSharpCodeEditorService>();
+                    IFlowSharpCodeEditorService csCodeEditorService = ServiceManager.Get<IFlowSharpCodeEditorService>();
                     csCodeEditorService.CreateEditor(pnlEditor);
                     csCodeEditorService.AddAssembly("Clifton.Core.dll");
+                    break;
+
+                case FlowSharpCodeServiceInterfaces.Constants.META_OUTPUT:
+                    Panel pnlOutputWindow = new Panel() { Dock = DockStyle.Fill, Tag = FlowSharpCodeServiceInterfaces.Constants.META_OUTPUT };
+                    e.DockContent.Controls.Add(pnlOutputWindow);
+                    e.DockContent.Text = "Output";
+                    IFlowSharpCodeOutputWindowService outputWindowService = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
+                    outputWindowService.CreateOutputWindow(pnlOutputWindow);
                     break;
             }
         }
@@ -112,6 +139,7 @@ namespace FlowSharpCodeService
         protected void OnElementSelected(object controller, ElementEventArgs args)
         {
             ElementProperties elementProperties = null;
+            IFlowSharpCodeEditorService csCodeEditorService = ServiceManager.Get<IFlowSharpCodeEditorService>();
 
             if (args.Element != null)
             {
@@ -172,7 +200,7 @@ namespace FlowSharpCodeService
         /// </summary>
         protected Control FindDocument(IDockingFormService dockingService, string tag)
         {
-            return (Control)dockingService.Documents.SingleOrDefault(d => d.Metadata == tag);
+            return (Control)dockingService.Documents.SingleOrDefault(d => d.Metadata.LeftOf(",") == tag);
         }
     }
 }

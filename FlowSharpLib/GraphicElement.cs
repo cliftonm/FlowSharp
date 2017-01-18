@@ -287,6 +287,7 @@ namespace FlowSharpLib
             epb.TextFontUnderline = TextFont.Underline;
             epb.TextFontStrikeout = TextFont.Strikeout;
             epb.TextFontItalic = TextFont.Italic;
+            epb.TextFontBold = TextFont.Bold;
 
             epb.HasCornerAnchors = HasCornerAnchors;
             epb.HasCenterAnchors = HasCenterAnchors;
@@ -324,7 +325,7 @@ namespace FlowSharpLib
             // If missing (backwards compatibility) middle-center align.
             TextAlign = epb.TextAlign == 0 ? ContentAlignment.MiddleCenter : epb.TextAlign;
             TextFont.Dispose();
-            FontStyle fontStyle = (epb.TextFontUnderline ? FontStyle.Underline : FontStyle.Regular) | (epb.TextFontItalic ? FontStyle.Italic : FontStyle.Regular) | (epb.TextFontStrikeout ? FontStyle.Strikeout : FontStyle.Regular);
+            FontStyle fontStyle = (epb.TextFontUnderline ? FontStyle.Underline : FontStyle.Regular) | (epb.TextFontItalic ? FontStyle.Italic : FontStyle.Regular) | (epb.TextFontStrikeout ? FontStyle.Strikeout : FontStyle.Regular) | (epb.TextFontBold ? FontStyle.Bold : FontStyle.Regular); ;
             TextFont = new Font(epb.TextFontFamily, epb.TextFontSize, fontStyle);
 
             HasCornerAnchors = epb.HasCornerAnchors;
@@ -664,9 +665,14 @@ namespace FlowSharpLib
         }
 
         public virtual void DrawText(Graphics gr)
-		{
-			SizeF size = gr.MeasureString(Text, TextFont);
-			Brush brush = new SolidBrush(TextColor);
+        {
+            DrawText(gr, Text, TextFont, TextColor, TextAlign);
+        }
+
+        protected virtual void DrawText(Graphics gr, string text, Font textFont, Color textColor, ContentAlignment textAlign)
+        {
+			SizeF size = gr.MeasureString(text, textFont);
+			Brush brush = new SolidBrush(textColor);
             Point textpos;
 
             // TextRenderer is terrible when font is bolded.  Not sure why.
@@ -683,7 +689,7 @@ namespace FlowSharpLib
             //TextFormatFlags flags = TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.WordBreak;
             //TextRenderer.DrawText(gr, Text, TextFont, DisplayRectangle, TextColor, flags);
 
-            switch (TextAlign)
+            switch (textAlign)
             {
                 case ContentAlignment.TopLeft:
                     textpos = DisplayRectangle.TopLeftCorner().Move(5, 5);
@@ -726,7 +732,7 @@ namespace FlowSharpLib
                     break;
             }
 
-            gr.DrawString(Text, TextFont, brush, textpos);
+            gr.DrawString(text, textFont, brush, textpos);
             brush.Dispose();
 		}
 	}

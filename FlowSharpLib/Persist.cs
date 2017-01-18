@@ -83,6 +83,7 @@ namespace FlowSharpLib
 		public bool TextFontUnderline { get; set; }
 		public bool TextFontStrikeout { get; set; }
 		public bool TextFontItalic { get; set; }
+        public bool TextFontBold { get; set; }
 
         // TODO: Deprecated with the addition of the JSON string?
         public string ExtraData { get; set; }

@@ -55,8 +55,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpWebSocketService",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodeOutputWindowService", "Services\FlowSharpCodeServices\FlowSharpCodeOutputWindowService\FlowSharpCodeOutputWindowService.csproj", "{5FA0C1A5-BDE5-41FB-B031-EB8285FC549B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clifton.DockingFormService", "..\clifton\Clifton.WinForm\Services\Clifton.DockingFormService\Clifton.DockingFormService.csproj", "{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,10 +153,6 @@ Global
 		{5FA0C1A5-BDE5-41FB-B031-EB8285FC549B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FA0C1A5-BDE5-41FB-B031-EB8285FC549B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FA0C1A5-BDE5-41FB-B031-EB8285FC549B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -185,6 +179,5 @@ Global
 		{51D2B194-CFFC-4905-8F06-90F1A0000DF2} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
 		{3548AF21-B8CB-4C45-88B6-80FAD43EB561} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
 		{5FA0C1A5-BDE5-41FB-B031-EB8285FC549B} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
-		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
 	EndGlobalSection
 EndGlobal

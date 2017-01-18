@@ -11,6 +11,11 @@ namespace FlowSharpCodeShapeInterfaces
         string Filename { get; }
     }
 
+    public interface IAssemblyReferenceBox
+    {
+        string Filename { get; }
+    }
+
     public interface IFileBox
     {
         string Filename { get; }

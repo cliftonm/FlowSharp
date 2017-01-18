@@ -70,6 +70,11 @@ namespace FlowSharpCodeCompilerService
 
             List<string> refs = new List<string>();
             List<string> sources = new List<string>();
+
+            // Add specific assembly references on the drawing.
+            List<IAssemblyReferenceBox> references = GetReferences(canvasController);
+            refs.AddRange(references.Select(r => r.Filename));
+
             List<GraphicElement> rootSourceShapes = GetSources(canvasController);
             rootSourceShapes.ForEach(root => GetReferencedAssemblies(root).Where(refassy => refassy is IAssemblyBox).ForEach(refassy => refs.Add(((IAssemblyBox)refassy).Filename)));
 
@@ -430,11 +435,11 @@ namespace FlowSharpCodeCompilerService
             parameters.ReferencedAssemblies.Add("System.Drawing.dll");
             parameters.ReferencedAssemblies.Add("System.Net.dll");
             parameters.ReferencedAssemblies.Add("System.Net.Http.dll");
-            parameters.ReferencedAssemblies.Add("System.Speech.dll");
+            // parameters.ReferencedAssemblies.Add("System.Speech.dll");
             parameters.ReferencedAssemblies.Add("System.Xml.dll");
             parameters.ReferencedAssemblies.Add("System.Xml.Linq.dll");
-            parameters.ReferencedAssemblies.Add("Clifton.Core.dll");
-            parameters.ReferencedAssemblies.Add("websocket-sharp.dll");
+            // parameters.ReferencedAssemblies.Add("Clifton.Core.dll");
+            // parameters.ReferencedAssemblies.Add("websocket-sharp.dll");
             parameters.ReferencedAssemblies.AddRange(refs.ToArray());
             parameters.OutputAssembly = assyFilename;
 
@@ -469,6 +474,11 @@ namespace FlowSharpCodeCompilerService
             }
 
             return ok;
+        }
+
+        protected List<IAssemblyReferenceBox> GetReferences(BaseController canvasController)
+        {
+            return canvasController.Elements.Where(el => el is IAssemblyReferenceBox).Cast<IAssemblyReferenceBox>().ToList();
         }
 
         /// <summary>

@@ -58,7 +58,7 @@ namespace FlowSharpCodeOutputWindowService
         public void WriteLine(string line)
         {
             CreateOutputWindowIfNeeded();
-            outputWindow.AppendText(line);
+            outputWindow.AppendText(line + "\r\n");
         }
 
         public void Clear()

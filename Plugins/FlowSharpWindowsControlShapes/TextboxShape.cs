@@ -18,11 +18,35 @@ namespace FlowSharpWindowsControlShapes
     public class TextboxShape : ControlShape
     {
         public bool Multiline { get; set; }
+        public bool ReadOnly { get; set; }
 
         public TextboxShape(Canvas canvas) : base(canvas)
         {
             control = new TextBox();
             canvas.Controls.Add(control);
+            control.Leave += OnLeave;
+            control.TextChanged += OnTextChanged;
+        }
+
+        private void OnLeave(object sender, System.EventArgs e)
+        {
+            // TODO: This does NOT fire when a text change occurs from an http/socket cmd, and possibly also because reflection is used.
+            Send("TextChanged");
+        }
+
+        // Update our version of the Text immediately, as a redraw, for example when the mouse is moved during editing and the
+        // shape is redrawn to remove anchors.
+        private void OnTextChanged(object sender, System.EventArgs e)
+        {
+            Text = control.Text;
+        }
+
+        protected override string AppendData(string data)
+        {
+            data = base.AppendData(data);
+            data += "&Text=" + control.Text;
+
+            return data;
         }
 
         public override ElementProperties CreateProperties()
@@ -33,6 +57,7 @@ namespace FlowSharpWindowsControlShapes
         public override void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
         {
             Json["Multiline"] = Multiline.ToString();
+            Json["ReadOnly"] = ReadOnly.ToString();
             base.Serialize(epb, elementsBeingSerialized);
         }
 
@@ -40,10 +65,16 @@ namespace FlowSharpWindowsControlShapes
         {
             base.Deserialize(epb);
             string multiline;
+            string readOnly;
 
             if (Json.TryGetValue("Multiline", out multiline))
             {
                 Multiline = multiline.to_b();
+            }
+
+            if (Json.TryGetValue("ReadOnly", out readOnly))
+            {
+                ReadOnly = readOnly.to_b();
             }
         }
 
@@ -56,6 +87,7 @@ namespace FlowSharpWindowsControlShapes
             control.Text = Text;
             control.Font = TextFont;
             ((TextBox)control).Multiline = Multiline;
+            ((TextBox)control).ReadOnly = ReadOnly;
         }
     }
 

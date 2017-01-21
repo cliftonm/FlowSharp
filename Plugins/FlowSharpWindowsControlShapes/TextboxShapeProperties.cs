@@ -16,16 +16,20 @@ namespace FlowSharpWindowsControlShapes
     {
         [Category("Options")]
         public bool Multiline { get; set; }
+        [Category("Options")]
+        public bool ReadOnly { get; set; }
 
         public TextboxShapeProperties(GraphicElement el) : base(el)
         {
             Multiline = ((TextboxShape)el).Multiline;
+            ReadOnly = ((TextboxShape)el).ReadOnly;
         }
 
         public override void Update(GraphicElement el, string label)
         {
             base.Update(el, label);
             (label == nameof(Multiline)).If(() => ((TextboxShape)el).Multiline = Multiline);
+            (label == nameof(ReadOnly)).If(() => ((TextboxShape)el).ReadOnly = ReadOnly);
         }
     }
 }

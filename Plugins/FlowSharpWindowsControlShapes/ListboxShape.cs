@@ -17,14 +17,14 @@ using FlowSharpLib;
 
 namespace FlowSharpWindowsControlShapes
 {
-    public class ComboboxItem
+    public class ListBoxItem
     {
         public object Id { get; set; }
         public object Display { get; set; }
     }
 
     [ExcludeFromToolbox]
-    public class ComboboxShape : ControlShape
+    public class ListBoxShape : ControlShape
     {
         protected string jsonItems;
 
@@ -41,34 +41,18 @@ namespace FlowSharpWindowsControlShapes
             }
         }
 
-        public ComboboxShape(Canvas canvas) : base(canvas)
+        public ListBoxShape(Canvas canvas) : base(canvas)
         {
-            ComboBox cb = new ComboBox();
-            control = cb;
+            ListBox lb = new ListBox();
+            control = lb;
             canvas.Controls.Add(control);
-            cb.ValueMember = "Id";
-            cb.DisplayMember = "Display";
-            cb.SelectedIndexChanged += OnSelectedIndexChanged;
-        }
-
-        private void OnSelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            Send("ItemSelected");
-        }
-
-        protected override string AppendData(string data)
-        {
-            ComboBox cb = (ComboBox)control;
-            string id = ((ComboboxItem)cb.SelectedItem).Id.ToString();
-            data = base.AppendData(data);
-            data += "&Id=" + id;
-
-            return data;
+            lb.ValueMember = "Id";
+            lb.DisplayMember = "Display";
         }
 
         public override ElementProperties CreateProperties()
         {
-            return new ComboboxShapeProperties(this);
+            return new ListBoxShapeProperties(this);
         }
 
         public override void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
@@ -99,12 +83,12 @@ namespace FlowSharpWindowsControlShapes
             {
                 control.Location = r.Location;
             }
-            
+
             if (control.Size != r.Size)
             {
-                control.Size = new Size(r.Width, control.Height);
+                control.Size = r.Size;
             }
-            
+
             if (control.Enabled != Enabled)
             {
                 control.Enabled = Enabled;
@@ -117,37 +101,37 @@ namespace FlowSharpWindowsControlShapes
         }
 
         /// <summary>
-        /// Map "Id" and "Display" in ComboboxItem to the ID and display field names in the JSON.
+        /// Map "Id" and "Display" in ListBoxItem to the ID and display field names in the JSON.
         /// </summary>
         private void UpdateList()
         {
-            ComboBox cb = (ComboBox)control;
-            cb.Items.Clear();
+            ListBox lb = (ListBox)control;
+            lb.Items.Clear();
 
             dynamic items = JArray.Parse(JsonItems);
-            List<ComboboxItem> cbItems = new List<ComboboxItem>();
+            List<ListBoxItem> cbItems = new List<ListBoxItem>();
 
             foreach (var item in items)
             {
-                ComboboxItem cbItem = new ComboboxItem();
+                ListBoxItem cbItem = new ListBoxItem();
                 cbItem.Id = item[IdFieldName];
                 cbItem.Display = item[DisplayFieldName].ToString();
                 cbItems.Add(cbItem);
             }
 
-            cb.Items.AddRange(cbItems.ToArray());
-            cb.SelectedIndex = 0;
+            lb.Items.AddRange(cbItems.ToArray());
+            lb.SelectedIndex = 0;
         }
     }
 
     [ToolboxShape]
-    public class ToolboxComboboxShape : GraphicElement
+    public class ToolboxListBoxShape : GraphicElement
     {
-        public const string TOOLBOX_TEXT = "cmbbox";
+        public const string TOOLBOX_TEXT = "lbbox";
 
         protected Brush brush = new SolidBrush(Color.Black);
 
-        public ToolboxComboboxShape(Canvas canvas) : base(canvas)
+        public ToolboxListBoxShape(Canvas canvas) : base(canvas)
         {
             TextFont.Dispose();
             TextFont = new Font(FontFamily.GenericSansSerif, 8);
@@ -160,7 +144,7 @@ namespace FlowSharpWindowsControlShapes
 
         public override GraphicElement CloneDefault(Canvas canvas, Point offset)
         {
-            ComboboxShape shape = new ComboboxShape(canvas);
+            ListBoxShape shape = new ListBoxShape(canvas);
             shape.DisplayRectangle = shape.DefaultRectangle().Move(offset);
             shape.UpdateProperties();
             shape.UpdatePath();

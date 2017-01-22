@@ -18,7 +18,7 @@ namespace FlowSharpRestService
 {
     public class CommandProcessor : IReceptor
     {
-        // Ex: localhost:8001:flowsharp?cmd=CmdUpdateProperty&Name=btnTest&PropertyName=Text&Value=Foobar
+        // Ex: localhost:8001/flowsharp?cmd=CmdUpdateProperty&Name=btnTest&PropertyName=Text&Value=Foobar
         public void Process(ISemanticProcessor proc, IMembrane membrane, CmdUpdateProperty cmd)
         {
             BaseController controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;

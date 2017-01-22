@@ -32,9 +32,10 @@ namespace PluginExample
         /// </summary>
         private void OnMouseUp(object sender, MouseEventArgs e)
         {
-            if (target.Contains(e.Location) && !string.IsNullOrEmpty(NavigateTo))
+            if (target.Contains(e.Location))
             {
-                var navto = canvas.Controller.Elements.Where(el => el.Name == NavigateTo);
+                string navtoname = string.IsNullOrEmpty(NavigateTo) ? Text : NavigateTo;
+                var navto = canvas.Controller.Elements.Where(el => el.Name == navtoname);
 
                 if (navto.Count() == 1)
                 {
@@ -50,7 +51,7 @@ namespace PluginExample
 
         public override void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
         {
-            Json["NavitageTo"] = NavigateTo;
+            Json["NavigateTo"] = NavigateTo;
             base.Serialize(epb, elementsBeingSerialized);
         }
 

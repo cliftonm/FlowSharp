@@ -34,6 +34,10 @@
     <Reference Include="Clifton.Core">
       <HintPath>..\..\Libs\Clifton.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -48,6 +52,8 @@
   <ItemGroup>
     <Compile Include="ButtonShape.cs" />
     <Compile Include="CheckboxShape.cs" />
+    <Compile Include="ComboboxShape.cs" />
+    <Compile Include="ComboboxShapeProperties.cs" />
     <Compile Include="ControlShapeProperties.cs" />
     <Compile Include="ControlShape.cs" />
     <Compile Include="Enums.cs" />

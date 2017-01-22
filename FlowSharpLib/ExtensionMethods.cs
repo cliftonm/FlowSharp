@@ -43,6 +43,11 @@ namespace FlowSharpLib
             return Math.Sign(n);
         }
 
+        //public static int Min(this int a, int max)
+        //{
+        //    return (a > max) ? max : a;
+        //}
+
         public static int Max(this int a, int min)
         {
             return (a < min) ? min : a;

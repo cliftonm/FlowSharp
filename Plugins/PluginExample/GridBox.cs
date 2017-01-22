@@ -140,12 +140,12 @@ namespace FlowSharpLib.Shapes
                 () =>
                 {
                     canvas.Controller.Redraw(this, (el) => cellText[cell] = newVal);
-                    canvas.Controller.ElementSelected.Fire(this, new ElementEventArgs() { Element = this });
+                    canvas.Controller.ElementSelected.Fire(canvas.Controller, new ElementEventArgs() { Element = this });
                 },
                 () =>
                 {
                     canvas.Controller.Redraw(this, (el) => cellText[cell] = oldValClosure);
-                    canvas.Controller.ElementSelected.Fire(this, new ElementEventArgs() { Element = this });
+                    canvas.Controller.ElementSelected.Fire(canvas.Controller, new ElementEventArgs() { Element = this });
                 });
         }
 

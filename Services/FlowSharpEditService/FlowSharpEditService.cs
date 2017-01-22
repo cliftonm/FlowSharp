@@ -391,7 +391,8 @@ namespace FlowSharpEditService
             // Make sure this isn't a de-select.
             if (element != null)
             {
-                BaseController controller = (BaseController)sender;
+                //BaseController controller = ((GraphicElement)sender).Canvas.Controller;
+                BaseController controller = ((BaseController)sender);
 
                 // Make sure we're not selecting a group of elements.
                 if (controller.SelectedElements.Count == 1)

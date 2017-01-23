@@ -24,22 +24,24 @@ namespace PluginExample
         public NavTo(Canvas canvas) : base(canvas)
         {
             TextAlign = ContentAlignment.TopCenter;
-            canvas.MouseUp += OnMouseUp;
         }
 
-        /// <summary>
-        /// Tests whether mouse up occurred in target, and if so, focuses on the shape with the Name value of the NavigateTo value.
-        /// </summary>
-        private void OnMouseUp(object sender, MouseEventArgs e)
+        public override void ElementSelected()
         {
-            if (target.Contains(e.Location))
+            base.ElementSelected();
+            Point p = Cursor.Position;
+            p = canvas.FindForm().PointToClient(p);
+
+            if (target.Contains(p))
             {
                 string navtoname = string.IsNullOrEmpty(NavigateTo) ? Text : NavigateTo;
                 var navto = canvas.Controller.Elements.Where(el => el.Name == navtoname);
 
                 if (navto.Count() == 1)
                 {
+                    canvas.FindForm().Cursor = Cursors.WaitCursor;
                     canvas.Controller.FocusOn(navto.First());
+                    canvas.FindForm().Cursor = Cursors.Arrow;
                 }
             }
         }

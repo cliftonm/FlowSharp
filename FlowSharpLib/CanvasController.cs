@@ -103,6 +103,10 @@ namespace FlowSharpLib
                 DrawBottomToTop(els);
                 UpdateScreen(els);
                 ElementSelected.Fire(this, new ElementEventArgs() { Element = el });
+                // Added this to support the NavTo feature, so that the element
+                // can override this behavior (which is empty in the GraphicElement)
+                // to do other things AFTER the rendering of the selected element has taken place.
+                el.ElementSelected();
             }
         }
 

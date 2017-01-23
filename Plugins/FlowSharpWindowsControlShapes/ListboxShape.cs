@@ -49,6 +49,8 @@ namespace FlowSharpWindowsControlShapes
             lb.ValueMember = "Id";
             lb.DisplayMember = "Display";
             // Listbox height is quantized by default.
+            // If we don't set this to false, the listbox changes its size, resulting
+            // in continuous redraws as its size conflicts with the size we want to set it to.
             lb.IntegralHeight = false;
         }
 

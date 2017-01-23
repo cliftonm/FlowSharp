@@ -102,6 +102,7 @@ namespace FlowSharpWindowsControlShapes
             
             if (control.Size != r.Size)
             {
+                // Use the control's height so we don't get continuous redraws.
                 control.Size = new Size(r.Width, control.Height);
             }
             

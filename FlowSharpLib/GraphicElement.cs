@@ -136,6 +136,8 @@ namespace FlowSharpLib
             Selected = true;
         }
 
+        public virtual void ElementSelected() { }
+
         public virtual void Deselect()
         {
             Selected = false;

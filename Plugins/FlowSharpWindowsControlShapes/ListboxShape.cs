@@ -48,6 +48,8 @@ namespace FlowSharpWindowsControlShapes
             canvas.Controls.Add(control);
             lb.ValueMember = "Id";
             lb.DisplayMember = "Display";
+            // Listbox height is quantized by default.
+            lb.IntegralHeight = false;
         }
 
         public override ElementProperties CreateProperties()
@@ -120,7 +122,11 @@ namespace FlowSharpWindowsControlShapes
             }
 
             lb.Items.AddRange(cbItems.ToArray());
-            lb.SelectedIndex = 0;
+
+            if (cbItems.Count > 0)
+            {
+                lb.SelectedIndex = 0;
+            }
         }
     }
 

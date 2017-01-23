@@ -136,7 +136,11 @@ namespace FlowSharpWindowsControlShapes
             }
 
             cb.Items.AddRange(cbItems.ToArray());
-            cb.SelectedIndex = 0;
+
+            if (cbItems.Count > 0)
+            {
+                cb.SelectedIndex = 0;
+            }
         }
     }
 

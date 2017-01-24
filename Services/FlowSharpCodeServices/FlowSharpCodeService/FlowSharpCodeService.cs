@@ -40,24 +40,32 @@ namespace FlowSharpCodeService
             ToolStripMenuItem buildToolStripMenuItem = new ToolStripMenuItem();
             ToolStripMenuItem mnuCompile = new ToolStripMenuItem();
             ToolStripMenuItem mnuRun = new ToolStripMenuItem();
-
-            mnuRun.Name = "mnuRun";
-            mnuRun.ShortcutKeys = Keys.Alt | Keys.R;
-            mnuRun.Size = new System.Drawing.Size(165, 24);
-            mnuRun.Text = "&Run";
+            ToolStripMenuItem mnuStop = new ToolStripMenuItem();
 
             mnuCompile.Name = "mnuCompile";
             mnuCompile.ShortcutKeys = Keys.Alt | Keys.C;
             mnuCompile.Size = new System.Drawing.Size(165, 24);
             mnuCompile.Text = "&Compile";
 
-            buildToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {mnuCompile, mnuRun});
+            mnuRun.Name = "mnuRun";
+            mnuRun.ShortcutKeys = Keys.Alt | Keys.R;
+            mnuRun.Size = new System.Drawing.Size(165, 24);
+            mnuRun.Text = "&Run";
+
+            mnuStop.Name = "mnuStop";
+            mnuStop.ShortcutKeys = Keys.Alt | Keys.S;
+            // mnuStop.ShortcutKeys = Keys.Alt | Keys.R;
+            mnuStop.Size = new System.Drawing.Size(165, 24);
+            mnuStop.Text = "&Stop";
+
+            buildToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {mnuCompile, mnuRun, mnuStop});
             buildToolStripMenuItem.Name = "buildToolStripMenuItem";
             buildToolStripMenuItem.Size = new System.Drawing.Size(37, 21);
             buildToolStripMenuItem.Text = "Bu&ild";
 
             mnuCompile.Click += OnCompile;
             mnuRun.Click += OnRun;
+            mnuStop.Click += OnStop;
 
             ServiceManager.Get<IFlowSharpMenuService>().AddMenu(buildToolStripMenuItem);
         }
@@ -70,6 +78,11 @@ namespace FlowSharpCodeService
         protected void OnRun(object sender, EventArgs e)
         {
             ServiceManager.Get<IFlowSharpCodeCompilerService>().Run();
+        }
+
+        protected void OnStop(object sender, EventArgs e)
+        {
+            ServiceManager.Get<IFlowSharpCodeCompilerService>().Stop();
         }
 
         protected void OnFlowSharpInitialized(object sender, EventArgs args)

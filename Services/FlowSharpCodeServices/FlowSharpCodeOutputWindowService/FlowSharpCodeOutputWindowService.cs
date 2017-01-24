@@ -55,16 +55,34 @@ namespace FlowSharpCodeOutputWindowService
             this.parent = parent;
         }
 
+        public void Write(string text)
+        {
+            if (text != null)
+            {
+                Application.OpenForms[0].BeginInvoke(() =>
+                {
+                    CreateOutputWindowIfNeeded();
+                    outputWindow.AppendText(text ?? "");
+                });
+            }
+        }
+
         public void WriteLine(string line)
         {
-            CreateOutputWindowIfNeeded();
-            outputWindow.AppendText(line + "\r\n");
+            Application.OpenForms[0].BeginInvoke(() =>
+            {
+                CreateOutputWindowIfNeeded();
+                outputWindow.AppendText((line ?? "") + "\r\n");
+            });
         }
 
         public void Clear()
         {
-            CreateOutputWindowIfNeeded();
-            outputWindow.Clear();
+            Application.OpenForms[0].BeginInvoke(() =>
+            {
+                CreateOutputWindowIfNeeded();
+                outputWindow.Clear();
+            });
         }
 
         public void Closed()

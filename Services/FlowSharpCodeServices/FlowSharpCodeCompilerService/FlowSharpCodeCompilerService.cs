@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows.Forms;
+using System.Threading.Tasks;
 
 using Microsoft.CSharp;
 
@@ -30,13 +31,24 @@ namespace FlowSharpCodeCompilerService
 
     public class FlowSharpCodeCompilerService : ServiceBase, IFlowSharpCodeCompilerService
     {
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private const int SW_HIDE = 0;
+        private const int SW_SHOW = 5;
+
         protected Dictionary<string, string> tempToTextBoxMap = new Dictionary<string, string>();
         protected string exeFilename;
         protected CompilerResults results;
+        protected Process runningProcess;
 
-        public void Run()
+        public async void Run()
         {
+            TerminateRunningProcess();
+            var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
+
             // Ever compiled?
+            // TODO: Compile when code has changed!
             if (results == null || results.Errors.HasErrors)
             {
                 Compile();
@@ -45,12 +57,46 @@ namespace FlowSharpCodeCompilerService
             // If no errors:
             if (!results.Errors.HasErrors)
             {
-                Process p = Process.Start(exeFilename);
+                Process p = new Process();
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.RedirectStandardError = true;
+                p.StartInfo.RedirectStandardInput = true;
+                p.StartInfo.FileName = exeFilename;
+
+                p.OutputDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
+                p.ErrorDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
+
+                p.Start();
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+                runningProcess = p;
+
+                await Task.Run(() =>
+                {
+                    bool found = false;
+
+                    while (!found)
+                    {
+                        System.Threading.Thread.Sleep(100);
+                        found = Process.GetProcesses().Any(pr => pr.ProcessName == runningProcess.ProcessName);
+                    }
+                });
+
+                IntPtr hWnd = runningProcess.MainWindowHandle;
+                ShowWindow(hWnd, SW_HIDE);
             }
+        }
+
+        public void Stop()
+        {
+            TerminateRunningProcess();
         }
 
         public void Compile()
         {
+            TerminateRunningProcess();
+
             var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
             outputWindow.Clear();
 
@@ -96,6 +142,20 @@ namespace FlowSharpCodeCompilerService
             exeFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.exe" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".exe";
             Compile(exeFilename, sources, refs, true);
             DeleteTempFiles();
+
+            if (!results.Errors.HasErrors)
+            {
+                outputWindow.WriteLine("No Errors");
+            }
+        }
+
+        protected void TerminateRunningProcess()
+        {
+            if (runningProcess != null)
+            {
+                runningProcess.Kill();
+                runningProcess = null;
+            }
         }
 
         protected void CreateCodeFile(GraphicElement root, List<string> sources, string code)

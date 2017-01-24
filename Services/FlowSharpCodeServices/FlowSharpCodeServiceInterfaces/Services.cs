@@ -21,6 +21,7 @@ namespace FlowSharpCodeServiceInterfaces
     {
         void CreateOutputWindow();
         void CreateOutputWindow(Control parent);
+        void Write(string text);
         void WriteLine(string line);
         void Clear();
         void Closed();
@@ -30,6 +31,7 @@ namespace FlowSharpCodeServiceInterfaces
     {
         void Compile();
         void Run();
+        void Stop();
     }
 
     public interface IFlowSharpCodeEditorService : IService

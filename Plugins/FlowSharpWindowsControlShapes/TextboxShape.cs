@@ -83,8 +83,8 @@ namespace FlowSharpWindowsControlShapes
             base.Draw(gr);
             Rectangle r = DisplayRectangle.Grow(-4);
             control.Location = r.Location;
-            // Use the control's height so we don't get continuous redraws.
-            control.Size = new Size(r.Width, control.Height);
+            // Use the control's height so we don't get continuous redraws, unless the textbox is a multiline textbox.
+            control.Size = new Size(r.Width, Multiline ? r.Height : control.Height);
             control.Text = Text;
             control.Font = TextFont;
             ((TextBox)control).Multiline = Multiline;

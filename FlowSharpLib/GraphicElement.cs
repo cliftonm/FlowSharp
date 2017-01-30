@@ -246,6 +246,7 @@ namespace FlowSharpLib
         {
             TextBox tb = new TextBox();
             tb.Multiline = Multiline;
+            tb.WordWrap = false;
 
             if (Multiline)
             {

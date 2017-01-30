@@ -679,7 +679,7 @@ namespace FlowSharpEditService
 
         protected void OnEditBoxKey(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == 27 || e.KeyChar == 13)
+            if (e.KeyChar == 27 || (e.KeyChar == 13 && !editBox.Multiline))
             {
                 TerminateEditing();
                 e.Handled = true;       // Suppress beep.

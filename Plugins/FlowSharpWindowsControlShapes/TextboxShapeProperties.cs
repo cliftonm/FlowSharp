@@ -15,8 +15,6 @@ namespace FlowSharpWindowsControlShapes
     public class TextboxShapeProperties : ControlShapeProperties
     {
         [Category("Options")]
-        public bool Multiline { get; set; }
-        [Category("Options")]
         public bool ReadOnly { get; set; }
 
         public TextboxShapeProperties(GraphicElement el) : base(el)

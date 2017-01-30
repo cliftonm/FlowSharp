@@ -94,6 +94,7 @@ namespace FlowSharpLib
         public List<ChildPropertyBag> Children { get; set; }
 
         public ContentAlignment TextAlign { get; set; }
+        public bool Multiline { get; set; }
 
 		[XmlIgnore]
 		public Color TextColor { get; set; }

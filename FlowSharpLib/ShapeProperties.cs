@@ -21,6 +21,8 @@ namespace FlowSharpLib
         public Color TextColor { get; set; }
         [Category("Text")]
         public ContentAlignment TextAlign { get; set; }
+        [Category("Text")]
+        public bool Multiline { get; set; }
 
         public ShapeProperties(GraphicElement el) : base(el)
         {
@@ -28,6 +30,7 @@ namespace FlowSharpLib
             Font = el.TextFont;
             TextColor = el.TextColor;
             TextAlign = el.TextAlign;
+            Multiline = el.Multiline;
         }
 
         public override void Update(GraphicElement el, string label)
@@ -41,6 +44,7 @@ namespace FlowSharpLib
             (label == nameof(Font)).If(() => el.TextFont = Font);
             (label == nameof(TextColor)).If(() => el.TextColor = TextColor);
             (label == nameof(TextAlign)).If(() => el.TextAlign = TextAlign);
+            (label == nameof(Multiline)).If(() => el.Multiline = Multiline);
             base.Update(el, label);
         }
     }

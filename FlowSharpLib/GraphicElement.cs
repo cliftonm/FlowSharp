@@ -78,6 +78,7 @@ namespace FlowSharpLib
         public Font TextFont { get; set; }
         public Color TextColor { get; set; }
         public ContentAlignment TextAlign { get; set; }
+        public bool Multiline { get; set; }
         // TODO: Text location - left, top, right, middle, bottom
 
         protected bool HasCornerAnchors { get; set; }
@@ -244,8 +245,19 @@ namespace FlowSharpLib
         public virtual TextBox CreateTextBox(Point mousePosition)
         {
             TextBox tb = new TextBox();
-            tb.Location = DisplayRectangle.LeftMiddle().Move(0, -10);
-            tb.Size = new Size(DisplayRectangle.Width, 20);
+            tb.Multiline = Multiline;
+
+            if (Multiline)
+            {
+                tb.Location = DisplayRectangle.Location;
+                tb.Size = new Size(DisplayRectangle.Width, DisplayRectangle.Height);
+            }
+            else
+            {
+                tb.Location = DisplayRectangle.LeftMiddle().Move(0, -10);
+                tb.Size = new Size(DisplayRectangle.Width, 20);
+            }
+
             tb.Text = Text;
 
             return tb;
@@ -284,6 +296,7 @@ namespace FlowSharpLib
             epb.Text = Text;
             epb.TextColor = TextColor;
             epb.TextAlign = TextAlign;
+            epb.Multiline = Multiline;
             epb.TextFontFamily = TextFont.FontFamily.Name;
             epb.TextFontSize = TextFont.Size;
             epb.TextFontUnderline = TextFont.Underline;
@@ -326,6 +339,7 @@ namespace FlowSharpLib
             IsBookmarked = epb.IsBookmarked;
             // If missing (backwards compatibility) middle-center align.
             TextAlign = epb.TextAlign == 0 ? ContentAlignment.MiddleCenter : epb.TextAlign;
+            Multiline = epb.Multiline;
             TextFont.Dispose();
             FontStyle fontStyle = (epb.TextFontUnderline ? FontStyle.Underline : FontStyle.Regular) | (epb.TextFontItalic ? FontStyle.Italic : FontStyle.Regular) | (epb.TextFontStrikeout ? FontStyle.Strikeout : FontStyle.Regular) | (epb.TextFontBold ? FontStyle.Bold : FontStyle.Regular); ;
             TextFont = new Font(epb.TextFontFamily, epb.TextFontSize, fontStyle);
@@ -734,7 +748,53 @@ namespace FlowSharpLib
                     break;
             }
 
-            gr.DrawString(text, textFont, brush, textpos);
+            TextFormatFlags tff = TextFormatFlags.Default;
+
+            switch (textAlign)
+            {
+                case ContentAlignment.TopLeft:
+                    tff |= TextFormatFlags.Left;
+                    break;
+
+                case ContentAlignment.TopCenter:
+                    tff |= TextFormatFlags.Top | TextFormatFlags.HorizontalCenter;
+                    break;
+
+                case ContentAlignment.TopRight:
+                    tff |= TextFormatFlags.Top | TextFormatFlags.Right;
+                    break;
+
+                case ContentAlignment.MiddleLeft:
+                    tff |= TextFormatFlags.VerticalCenter | TextFormatFlags.Left;
+                    break;
+
+                case ContentAlignment.MiddleCenter:
+                    tff |= TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter;
+                    break;
+
+                case ContentAlignment.MiddleRight:
+                    tff |= TextFormatFlags.VerticalCenter | TextFormatFlags.Right;
+                    break;
+
+                case ContentAlignment.BottomLeft:
+                    tff |= TextFormatFlags.Bottom | TextFormatFlags.Left;
+                    break;
+
+                case ContentAlignment.BottomCenter:
+                    tff |= TextFormatFlags.Bottom | TextFormatFlags.HorizontalCenter;
+                    break;
+
+                case ContentAlignment.BottomRight:
+                    tff |= TextFormatFlags.Bottom | TextFormatFlags.Right;
+                    break;
+
+                default:        // middle center
+                    tff |= TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter;
+                    break;
+            }
+
+            TextRenderer.DrawText(gr, text, textFont, DisplayRectangle, textColor, tff);
+            // gr.DrawString(text, textFont, brush, textpos);
             brush.Dispose();
 		}
 	}

@@ -5,6 +5,7 @@
 */
 
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace FlowSharpLib
 {
@@ -28,7 +29,7 @@ namespace FlowSharpLib
 			base.GetBackground();
 		}
 
-		public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr)
 		{
 			UpdateDisplayRectangle(gr);
 			gr.FillRectangle(FillBrush, DisplayRectangle);
@@ -38,11 +39,13 @@ namespace FlowSharpLib
 
 		protected void UpdateDisplayRectangle(Graphics gr)
 		{
-			SizeF size = gr.MeasureString(Text, TextFont);
-			Point center = DisplayRectangle.Center();
-			// Grow so selection is not right on top of text, and so that anti-aliasing has some room.
-			DisplayRectangle = new Rectangle(center.X - (int)(size.Width / 2), center.Y - (int)(size.Height) / 2, (int)size.Width, (int)size.Height).Grow(3);
-		}
+            SizeF size = TextRenderer.MeasureText(gr, Text, TextFont);
+            // SizeF size = gr.MeasureString(Text, TextFont);
+            // Grow so selection is not right on top of text, and so that anti-aliasing has some room.
+            // Point center = DisplayRectangle.Center();
+            // DisplayRectangle = new Rectangle(center.X - (int)(size.Width / 2), center.Y - (int)(size.Height) / 2, (int)size.Width, (int)size.Height).Grow(3);
+            DisplayRectangle = new Rectangle(DisplayRectangle.X+3, DisplayRectangle.Y+3, (int)size.Width, (int)size.Height).Grow(3);
+        }
 	}
 
     /// <summary>
@@ -79,6 +82,7 @@ namespace FlowSharpLib
 
         public override void Draw(Graphics gr)
         {
+            // Use ContentAlignment to position text.
             SizeF size = gr.MeasureString(TOOLBOX_TEXT, TextFont);
             Point textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
             gr.DrawString(TOOLBOX_TEXT, TextFont, brush, textpos);

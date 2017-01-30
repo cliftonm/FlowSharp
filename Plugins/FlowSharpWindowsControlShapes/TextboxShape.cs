@@ -17,7 +17,6 @@ namespace FlowSharpWindowsControlShapes
     [ExcludeFromToolbox]
     public class TextboxShape : ControlShape
     {
-        public bool Multiline { get; set; }
         public bool ReadOnly { get; set; }
 
         public TextboxShape(Canvas canvas) : base(canvas)

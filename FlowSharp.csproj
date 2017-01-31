@@ -119,6 +119,10 @@
       <Project>{5fa0c1a5-bde5-41fb-b031-eb8285fc549b}</Project>
       <Name>FlowSharpCodeOutputWindowService</Name>
     </ProjectReference>
+    <ProjectReference Include="Services\FlowSharpCodeServices\FlowSharpCodeScintillaEditorService\FlowSharpCodeScintillaEditorService.csproj">
+      <Project>{3452537d-7fa0-4916-baa9-b4985f11581e}</Project>
+      <Name>FlowSharpCodeScintillaEditorService</Name>
+    </ProjectReference>
     <ProjectReference Include="Services\FlowSharpCodeServices\FlowSharpCodeService\FlowSharpCodeService.csproj">
       <Project>{d11163a6-8f20-4b74-9627-02831d1df1b2}</Project>
       <Name>FlowSharpCodeService</Name>

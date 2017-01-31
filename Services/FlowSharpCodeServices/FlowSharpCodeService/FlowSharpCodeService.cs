@@ -31,7 +31,7 @@ namespace FlowSharpCodeService
             fss.FlowSharpInitialized += OnFlowSharpInitialized;
             fss.ContentResolver += OnContentResolver;
             fss.NewCanvas += OnNewCanvas;
-            ces.TextChanged += OnCodeEditorServiceTextChanged;
+            ces.TextChanged += OnCSharpEditorServiceTextChanged;
             InitializeMenu();
         }
 
@@ -87,14 +87,18 @@ namespace FlowSharpCodeService
 
         protected void OnFlowSharpInitialized(object sender, EventArgs args)
         {
-            CreateEditor();
+            IDockDocument csEditor = CreateCSharpEditor();
+            CreatePythonEditor();
             CreateOutputWindow();
+
+            // Select C# editor, as it's the first tab in the code editor panel.
+            ServiceManager.Get<IDockingFormService>().SetActiveDocument(csEditor);
         }
 
-        protected void CreateEditor()
+        protected IDockDocument CreateCSharpEditor()
         {
             IDockingFormService dockingService = ServiceManager.Get<IDockingFormService>();
-            Panel dock = dockingService.DockPanel;
+            // Panel dock = dockingService.DockPanel;
             Control docCanvas = FindDocument(dockingService, FlowSharpServiceInterfaces.Constants.META_CANVAS);
 
             Control csDocEditor = dockingService.CreateDocument(docCanvas, DockAlignment.Bottom, "C# Editor", FlowSharpCodeServiceInterfaces.Constants.META_EDITOR, 0.50);
@@ -104,6 +108,21 @@ namespace FlowSharpCodeService
             IFlowSharpCodeEditorService csCodeEditorService = ServiceManager.Get<IFlowSharpCodeEditorService>();
             csCodeEditorService.CreateEditor(pnlCsCodeEditor);
             csCodeEditorService.AddAssembly("Clifton.Core.dll");
+
+            return (IDockDocument)csDocEditor;
+        }
+
+        protected void CreatePythonEditor()
+        {
+            IDockingFormService dockingService = ServiceManager.Get<IDockingFormService>();
+            // Panel dock = dockingService.DockPanel;
+            // Interestingly, this uses the current document page, which, I guess because the C# editor was created first, means its using that pane.
+            Control pyDocEditor = dockingService.CreateDocument(DockState.Document, "Python Editor", FlowSharpCodeServiceInterfaces.Constants.META_PYTHON_EDITOR);
+            Control pnlPyCodeEditor = new Panel() { Dock = DockStyle.Fill };
+            pyDocEditor.Controls.Add(pnlPyCodeEditor);
+
+            IFlowSharpScintillaEditorService scintillaEditorService = ServiceManager.Get<IFlowSharpScintillaEditorService>();
+            scintillaEditorService.CreateEditor(pnlPyCodeEditor);
         }
 
         protected void CreateOutputWindow()
@@ -169,7 +188,7 @@ namespace FlowSharpCodeService
             }
         }
 
-        protected void OnCodeEditorServiceTextChanged(object sender, TextChangedEventArgs e)
+        protected void OnCSharpEditorServiceTextChanged(object sender, TextChangedEventArgs e)
         {
             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
             if (canvasService.ActiveController.SelectedElements.Count == 1)

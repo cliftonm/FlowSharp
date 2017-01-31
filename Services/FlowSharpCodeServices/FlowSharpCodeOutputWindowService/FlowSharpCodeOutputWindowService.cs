@@ -34,10 +34,10 @@ namespace FlowSharpCodeOutputWindowService
         public void CreateOutputWindow()
         {
             IDockingFormService dockingService = ServiceManager.Get<IDockingFormService>();
-            Panel dock = dockingService.DockPanel;
-            Control docCanvas = FindDocument(dockingService, FlowSharpServiceInterfaces.Constants.META_CANVAS); // create output window relative to the canvas.
+            // Panel dock = dockingService.DockPanel;
+            Control docCanvas = FindDocument(dockingService, Constants.META_EDITOR); // create output window relative to the editor window.
 
-            Control outputContainer = dockingService.CreateDocument(docCanvas, DockAlignment.Bottom, "Output", Constants.META_OUTPUT, 0.50);
+            Control outputContainer = dockingService.CreateDocument(docCanvas, DockAlignment.Right, "Output", Constants.META_OUTPUT, 0.50);
             Control pnlOutputWindow = new Panel() { Dock = DockStyle.Fill };
             outputContainer.Controls.Add(pnlOutputWindow);
             CreateOutputWindow(pnlOutputWindow);

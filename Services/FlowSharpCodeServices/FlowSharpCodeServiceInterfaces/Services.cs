@@ -34,15 +34,22 @@ namespace FlowSharpCodeServiceInterfaces
         void Stop();
     }
 
-    public interface IFlowSharpCodeEditorService : IService
+    public interface IFlowSharpCodeEditor
     {
         event EventHandler<TextChangedEventArgs> TextChanged;
 
         void CreateEditor(Control parent);
+        void SetText(string text);
+    }
+
+    public interface IFlowSharpCodeEditorService : IFlowSharpCodeEditor, IService
+    {
         void AddAssembly(string filename);
         void AddAssembly(Type t);
+    }
 
-        void SetText(string text);
+    public interface IFlowSharpScintillaEditorService : IFlowSharpCodeEditor, IService
+    {
     }
 
     //public interface IPythonCodeEditorService : IService

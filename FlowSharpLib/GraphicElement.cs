@@ -794,7 +794,7 @@ namespace FlowSharpLib
                     break;
             }
 
-            TextRenderer.DrawText(gr, text, textFont, DisplayRectangle, textColor, tff);
+            TextRenderer.DrawText(gr, text, textFont, DisplayRectangle.Grow(-3), textColor, FillColor, tff);
             // gr.DrawString(text, textFont, brush, textpos);
             brush.Dispose();
 		}

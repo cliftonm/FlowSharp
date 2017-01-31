@@ -72,8 +72,7 @@ namespace FlowSharpCodeICSharpDevelopService
         }
     }
 
-    public class CodeEditorReceptor : IReceptor
+    public class CsCodeEditorReceptor : IReceptor
     {
-
     }
 }

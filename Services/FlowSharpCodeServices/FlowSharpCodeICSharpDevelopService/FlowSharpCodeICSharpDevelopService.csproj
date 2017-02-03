@@ -90,6 +90,10 @@
     <Compile Include="ScriptProvider.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\clifton\Clifton.WinForm\Clifton.WinForm.ServiceInterfaces\Clifton.WinForm.ServiceInterfaces.csproj">
+      <Project>{2c326de7-2f39-49cb-9a2b-1fe6de7918b0}</Project>
+      <Name>Clifton.WinForm.ServiceInterfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FlowSharpCodeServiceInterfaces\FlowSharpCodeServiceInterfaces.csproj">
       <Project>{f8d75cfd-fb07-4a09-97d6-0ac3871aa35a}</Project>
       <Name>FlowSharpCodeServiceInterfaces</Name>

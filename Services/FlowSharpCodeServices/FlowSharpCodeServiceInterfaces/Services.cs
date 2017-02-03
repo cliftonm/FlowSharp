@@ -7,6 +7,7 @@ namespace FlowSharpCodeServiceInterfaces
 {
     public class TextChangedEventArgs : EventArgs
     {
+        public string Language { get; set; }
         public string Text { get; set; }
     }
 
@@ -15,6 +16,8 @@ namespace FlowSharpCodeServiceInterfaces
     /// </summary>
     public interface IFlowSharpCodeService : IService
     {
+        void OutputWindowClosed();
+        void EditorWindowClosed(string language);
     }
 
     public interface IFlowSharpCodeOutputWindowService : IService
@@ -24,7 +27,6 @@ namespace FlowSharpCodeServiceInterfaces
         void Write(string text);
         void WriteLine(string line);
         void Clear();
-        void Closed();
     }
 
     public interface IFlowSharpCodeCompilerService : IService
@@ -38,18 +40,20 @@ namespace FlowSharpCodeServiceInterfaces
     {
         event EventHandler<TextChangedEventArgs> TextChanged;
 
-        void CreateEditor(Control parent);
-        void SetText(string text);
+        void SetText(string language, string text);
     }
 
     public interface IFlowSharpCodeEditorService : IFlowSharpCodeEditor, IService
     {
+        void CreateEditor(Control parent);
         void AddAssembly(string filename);
         void AddAssembly(Type t);
     }
 
     public interface IFlowSharpScintillaEditorService : IFlowSharpCodeEditor, IService
     {
+        void CreateEditor(Control parent, string language);
+        // void CreateEditor<T>(Control parent) where T : IGenericEditor, new();
     }
 
     //public interface IPythonCodeEditorService : IService

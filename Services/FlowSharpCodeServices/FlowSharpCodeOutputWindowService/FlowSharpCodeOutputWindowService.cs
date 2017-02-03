@@ -33,11 +33,34 @@ namespace FlowSharpCodeOutputWindowService
 
         public void CreateOutputWindow()
         {
+            Control outputContainer = null;
             IDockingFormService dockingService = ServiceManager.Get<IDockingFormService>();
             // Panel dock = dockingService.DockPanel;
-            Control docCanvas = FindDocument(dockingService, Constants.META_EDITOR); // create output window relative to the editor window.
 
-            Control outputContainer = dockingService.CreateDocument(docCanvas, DockAlignment.Right, "Output", Constants.META_OUTPUT, 0.50);
+            // If an editor is open, create the output window to the right of the editor.
+            // If no editor is open, create the output window below the canvas.
+            // If no canvas is even open, create the output window as the primary document.
+            // We need to implement this as a basic pattern of rules for how to position new windows.
+            Control ctrl = FindDocument(dockingService, Constants.META_CSHARP_EDITOR); // create output window relative to the editor window.
+
+            if (ctrl == null)
+            {
+                ctrl = FindDocument(dockingService, FlowSharpServiceInterfaces.Constants.META_CANVAS);
+
+                if (ctrl == null)
+                {
+                    outputContainer = dockingService.CreateDocument(DockState.Document, "Output", Constants.META_OUTPUT);
+                }
+                else
+                {
+                    outputContainer = dockingService.CreateDocument(ctrl, DockAlignment.Bottom, "Output", Constants.META_OUTPUT, 0.50);
+                }
+            }
+            else
+            {
+                outputContainer = dockingService.CreateDocument(ctrl, DockAlignment.Right, "Output", Constants.META_OUTPUT, 0.50);
+            }
+
             Control pnlOutputWindow = new Panel() { Dock = DockStyle.Fill };
             outputContainer.Controls.Add(pnlOutputWindow);
             CreateOutputWindow(pnlOutputWindow);
@@ -85,10 +108,11 @@ namespace FlowSharpCodeOutputWindowService
             });
         }
 
-        public void Closed()
+        protected void Closed()
         {
             parent.Controls.Remove(outputWindow);
             outputWindow = null;
+            ServiceManager.Get<IFlowSharpCodeService>().OutputWindowClosed();
         }
 
         protected void CreateOutputWindowIfNeeded()

@@ -16,6 +16,7 @@ using FlowSharpCodeShapeInterfaces;
 
 namespace FlowSharpCodeShapes
 {
+    /*
     public class HtmlFileBox : Box, IFileBox
     {
         public string Filename { get; set; }
@@ -110,4 +111,5 @@ namespace FlowSharpCodeShapes
             base.Update(el, label);
         }
     }
+    */
 }

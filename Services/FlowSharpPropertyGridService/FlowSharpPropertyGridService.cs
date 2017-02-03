@@ -44,17 +44,17 @@ namespace FlowSharpPropertyGridService
 
         public void Initialize(BaseController controller)
         {
-            pgController.HookEvents(controller);
+            pgController?.HookEvents(controller);
         }
 
         public void Terminate(BaseController controller)
         {
-            pgController.UnhookEvents(controller);
+            pgController?.UnhookEvents(controller);
         }
 
         public void ShowProperties(IPropertyObject propObject)
         {
-            pgController.Show(propObject);
+            pgController?.Show(propObject);
         }
     }
 

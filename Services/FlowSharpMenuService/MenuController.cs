@@ -768,7 +768,12 @@ namespace FlowSharpMenuService
             else if (state != ClosingState.CancelClose)
             {
                 BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
-                canvasController.UndoStack.ClearStacks();       // Prevents second "are you sure" when exiting with Ctrl+X
+
+                if (canvasController != null)
+                {
+                    canvasController.UndoStack.ClearStacks();       // Prevents second "are you sure" when exiting with Ctrl+X
+                }
+
                 ret = false;
             }
 

@@ -282,7 +282,7 @@ namespace FlowSharpEditService
             Action act;
             bool ret = false;
 
-            if (editBox == null)
+            if (editBox == null && canvasController != null)
             {
                 if (canvasController.Canvas.Focused && keyActions.TryGetValue(keyData, out act))
                 {

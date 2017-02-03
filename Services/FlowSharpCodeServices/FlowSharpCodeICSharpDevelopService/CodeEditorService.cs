@@ -10,6 +10,7 @@ using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ModuleManagement;
 using Clifton.Core.Semantics;
 using Clifton.Core.ServiceManagement;
+using Clifton.WinForm.ServiceInterfaces;
 
 using FlowSharpCodeServiceInterfaces;
 
@@ -29,10 +30,19 @@ namespace FlowSharpCodeICSharpDevelopService
 
         protected CodeTextEditor editor;
         protected CSharpCompletion completion;
+        protected Control parent;
+        protected ElementHost host;
+
+        public override void FinishedInitialization()
+        {
+            base.FinishedInitialization();
+            IDockingFormService dockingService = ServiceManager.Get<IDockingFormService>();
+            dockingService.DocumentClosing += (sndr, args) => OnDocumentClosing(sndr);
+        }
 
         public void CreateEditor(Control parent)
         {
-            ElementHost host = new ElementHost();
+            host = new ElementHost();
             host.Dock = DockStyle.Fill;
 
             completion = new CSharpCompletion(new ScriptProvider());
@@ -49,6 +59,7 @@ namespace FlowSharpCodeICSharpDevelopService
 
             host.Child = editor;
             parent.Controls.Add(host);
+            this.parent = parent;
         }
 
         public void AddAssembly(string filename)
@@ -61,14 +72,39 @@ namespace FlowSharpCodeICSharpDevelopService
             completion.AddAssembly(t.Assembly.Location);
         }
 
-        public void SetText(string text)
+        public void SetText(string language, string text)
         {
-            editor.Text = text;
+            // We ignore language as the ICSharp editor is only used for C# at the moment.
+            // Editor may not exist.
+            if (editor != null)
+            {
+                editor.Text = text;
+            }
         }
 
         protected void OnTextChanged(object sender, EventArgs e)
         {
-            TextChanged.Fire(this, new TextChangedEventArgs() { Text = editor.Text });
+            // TODO: Fix this hardcoded language name and generalize with how editors are handled.
+            TextChanged.Fire(this, new TextChangedEventArgs() { Language = "C#", Text = editor.Text });
+        }
+
+        protected void Closed()
+        {
+            parent.Controls.Remove(host);
+            host = null;
+            editor = null;
+            // TODO: Fix this hardcoded language name and generalize with how editors are handled.
+            ServiceManager.Get<IFlowSharpCodeService>().EditorWindowClosed("C#");
+        }
+
+        protected void OnDocumentClosing(object document)
+        {
+            Control ctrl = document as Control;
+
+            if ((ctrl != null && ctrl.Controls.Count == 1) && ((IDockDocument)document).Metadata.LeftOf(",") == Constants.META_CSHARP_EDITOR)
+            {
+                Closed();
+            }
         }
     }
 

@@ -164,8 +164,14 @@ namespace FlowSharpService
             canvasService.Controllers.ForEach(c => c.Canvas.EndInit());
             canvasService.Controllers.ForEach(c => c.Canvas.Invalidate());
             IFlowSharpToolboxService toolboxService = ServiceManager.Get<IFlowSharpToolboxService>();
-            toolboxService.Controller.Canvas.EndInit();
-            toolboxService.Controller.Canvas.Invalidate();
+
+            // Will be null if canvas was not created when app starts.  Sanity check here
+            // mainly for when we debug a form with no panels initialized by default.
+            if (toolboxService.Controller != null)
+            {
+                toolboxService.Controller.Canvas.EndInit();
+                toolboxService.Controller.Canvas.Invalidate();
+            }
         }
 
         protected void Initialize()
@@ -174,12 +180,18 @@ namespace FlowSharpService
             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
             IFlowSharpMouseControllerService mouseService = ServiceManager.Get<IFlowSharpMouseControllerService>();
             menuService.Initialize(form);
-            menuService.Initialize(canvasService.ActiveController);
             canvasService.AddCanvas += (sndr, args) => CreateCanvas();
             canvasService.LoadLayout += OnLoadLayout;
             canvasService.SaveLayout += OnSaveLayout;
             // mouseService.Initialize(canvasService.ActiveController);
-            InformServicesOfNewCanvas(canvasService.ActiveController);
+
+            // Will be null if canvas was not created when app starts.  Sanity check here
+            // mainly for when we debug a form with no panels initialized by default.
+            if (canvasService.ActiveController != null)
+            {
+                menuService.Initialize(canvasService.ActiveController);
+                InformServicesOfNewCanvas(canvasService.ActiveController);
+            }
         }
 
         protected void OnLoadLayout(object sender, FileEventArgs e)

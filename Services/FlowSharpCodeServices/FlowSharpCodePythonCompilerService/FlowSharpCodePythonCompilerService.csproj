@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0F9D2405-725F-4859-AB13-75DFAFA6BA35}</ProjectGuid>
+    <ProjectGuid>{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FlowSharpCodeICSharpDevelopService</RootNamespace>
-    <AssemblyName>FlowSharpCodeICSharpDevelopService</AssemblyName>
+    <RootNamespace>FlowSharpCodePythonCompilerService</RootNamespace>
+    <AssemblyName>FlowSharpCodePythonCompilerService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -34,46 +34,9 @@
     <Reference Include="Clifton.Core">
       <HintPath>..\..\..\Libs\Clifton.Core.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.AvalonEdit">
-      <HintPath>..\..\..\Libs\ICSharpCode\ICSharpCode.AvalonEdit.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.CodeCompletion">
-      <HintPath>..\..\..\Libs\ICSharpCode\ICSharpCode.CodeCompletion.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.Core">
-      <HintPath>..\..\..\Libs\ICSharpCode\ICSharpCode.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.Core.Presentation">
-      <HintPath>..\..\..\Libs\ICSharpCode\ICSharpCode.Core.Presentation.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.NRefactory">
-      <HintPath>..\..\..\Libs\ICSharpCode\ICSharpCode.NRefactory.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.NRefactory.Cecil">
-      <HintPath>..\..\..\Libs\ICSharpCode\ICSharpCode.NRefactory.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.NRefactory.CSharp">
-      <HintPath>..\..\..\Libs\ICSharpCode\ICSharpCode.NRefactory.CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.NRefactory.Xml">
-      <HintPath>..\..\..\Libs\ICSharpCode\ICSharpCode.NRefactory.Xml.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpDevelop">
-      <HintPath>..\..\..\Libs\ICSharpCode\ICSharpCode.SharpDevelop.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpDevelop.Widgets">
-      <HintPath>..\..\..\Libs\ICSharpCode\ICSharpCode.SharpDevelop.Widgets.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.TreeView">
-      <HintPath>..\..\..\Libs\ICSharpCode\ICSharpCode.TreeView.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\..\..\Libs\ICSharpCode\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -81,13 +44,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeEditorService.cs" />
+    <Compile Include="FlowSharpCodePythonCompilerService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScriptProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\clifton\Clifton.WinForm\Clifton.WinForm.ServiceInterfaces\Clifton.WinForm.ServiceInterfaces.csproj">
@@ -98,9 +58,17 @@
       <Project>{07f65ca7-b8d3-4716-bfbf-812ef4da68be}</Project>
       <Name>FlowSharpLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\FlowSharpServiceInterfaces\FlowSharpServiceInterfaces.csproj">
+      <Project>{caa4fd23-1392-4dee-907a-cb3dc7315a98}</Project>
+      <Name>FlowSharpServiceInterfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FlowSharpCodeServiceInterfaces\FlowSharpCodeServiceInterfaces.csproj">
       <Project>{f8d75cfd-fb07-4a09-97d6-0ac3871aa35a}</Project>
       <Name>FlowSharpCodeServiceInterfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlowSharpCodeShapeInterfaces\FlowSharpCodeShapeInterfaces.csproj">
+      <Project>{8c7d37d1-f9d9-4633-b863-eac44b9dd999}</Project>
+      <Name>FlowSharpCodeShapeInterfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

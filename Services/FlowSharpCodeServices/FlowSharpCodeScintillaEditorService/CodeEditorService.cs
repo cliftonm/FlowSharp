@@ -62,20 +62,20 @@ namespace FlowSharpCodeScintillaEditorService
 
             switch (language.ToLower())
             {
-                case "csharp":
-                    break;
-
                 case "python":
                     editor = CreateEditor<PythonEditor>(parent);
                     break;
 
                 case "javascript":
+                    editor = CreateEditor<JavascriptEditor>(parent);
                     break;
 
                 case "html":
+                    editor = CreateEditor<HtmlEditor>(parent);
                     break;
 
                 case "css":
+                    editor = CreateEditor<CssEditor>(parent);
                     break;                
             }
 
@@ -138,6 +138,26 @@ namespace FlowSharpCodeScintillaEditorService
                 string language = ((ctrl.Controls[0].Controls[0]) as ScintillaEditor).Language;
                 Closed(language);
             }
+        }
+    }
+    public class JavascriptEditor : ScintillaEditor
+    {
+        public override void ConfigureLexer()
+        {
+        }
+    }
+
+    public class HtmlEditor : ScintillaEditor
+    {
+        public override void ConfigureLexer()
+        {
+        }
+    }
+
+    public class CssEditor : ScintillaEditor
+    {
+        public override void ConfigureLexer()
+        {
         }
     }
 

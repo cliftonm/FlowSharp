@@ -16,8 +16,7 @@ using FlowSharpCodeShapeInterfaces;
 
 namespace FlowSharpCodeShapes
 {
-    /*
-    public class PythonFileBox : Box, IFileBox
+    public class PythonFileBox : Box, IPythonClass
     {
         public string Filename { get; set; }
 
@@ -26,7 +25,7 @@ namespace FlowSharpCodeShapes
             Text = ".py";
             TextFont.Dispose();
             TextFont = new Font(FontFamily.GenericSansSerif, 6);
-            TextAlign = ContentAlignment.TopCenter;
+            TextAlign = ContentAlignment.TopLeft;
         }
 
         public void UpdateCodeBehind()
@@ -38,7 +37,7 @@ namespace FlowSharpCodeShapes
                 data = File.ReadAllText(Filename);
             }
 
-            Json["Code"] = data;
+            Json["python"] = data;
         }
 
         public override GraphicElement CloneDefault(Canvas canvas)
@@ -46,7 +45,7 @@ namespace FlowSharpCodeShapes
             GraphicElement el = base.CloneDefault(canvas);
             el.TextFont.Dispose();
             el.TextFont = new Font(FontFamily.GenericSansSerif, 10);
-            el.TextAlign = ContentAlignment.MiddleCenter;
+            el.TextAlign = ContentAlignment.TopLeft;
 
             return el;
         }
@@ -56,7 +55,7 @@ namespace FlowSharpCodeShapes
             GraphicElement el = base.CloneDefault(canvas, offset);
             el.TextFont.Dispose();
             el.TextFont = new Font(FontFamily.GenericSansSerif, 10);
-            el.TextAlign = ContentAlignment.MiddleCenter;
+            el.TextAlign = ContentAlignment.TopLeft;
 
             return el;
         }
@@ -73,9 +72,9 @@ namespace FlowSharpCodeShapes
             base.Serialize(epb, elementsBeingSerialized);
 
             // Also update the backing file.
-            if (Json.ContainsKey("Code"))
+            if (Json.ContainsKey("python"))
             {
-                File.WriteAllText(Filename, Json["Code"]);
+                File.WriteAllText(Filename, Json["python"]);
             }
         }
 
@@ -87,9 +86,9 @@ namespace FlowSharpCodeShapes
         }
     }
 
-    public class PythonFileBoxProperties : ElementProperties
+    public class PythonFileBoxProperties : ShapeProperties
     {
-        [Category("Assembly")]
+        [Category("Class")]
         public string Filename { get; set; }
 
         public PythonFileBoxProperties(PythonFileBox el) : base(el)
@@ -111,5 +110,4 @@ namespace FlowSharpCodeShapes
             base.Update(el, label);
         }
     }
-    */
 }

@@ -7,9 +7,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 using Microsoft.CSharp;
 
+using Clifton.Core.Assertions;
 using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ModuleManagement;
 using Clifton.Core.ServiceManagement;
@@ -42,6 +44,12 @@ namespace FlowSharpCodeCompilerService
         protected CompilerResults results;
         protected Process runningProcess;
 
+        public override void FinishedInitialization()
+        {
+            base.FinishedInitialization();
+            InitializeBuildMenu();
+        }
+
         public async void Run()
         {
             TerminateRunningProcess();
@@ -67,6 +75,9 @@ namespace FlowSharpCodeCompilerService
                 p.OutputDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
                 p.ErrorDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
 
+                // This unfortunately doesn't work!
+                // p.Exited += (object sender, EventArgs e) => runningProcess = null;
+
                 p.Start();
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
@@ -79,12 +90,23 @@ namespace FlowSharpCodeCompilerService
                     while (!found)
                     {
                         System.Threading.Thread.Sleep(100);
-                        found = Process.GetProcesses().Any(pr => pr.ProcessName == runningProcess.ProcessName);
+                        Application.DoEvents();         // Necessary for Exited event to fire.
+
+                        if (runningProcess != null)
+                        {
+                            Assert.SilentTry(() => found = Process.GetProcesses().Any(pr => pr.ProcessName == runningProcess.ProcessName));
+                        }
                     }
                 });
 
-                IntPtr hWnd = runningProcess.MainWindowHandle;
-                ShowWindow(hWnd, SW_HIDE);
+                Assert.SilentTry(() =>
+                {
+                    if (runningProcess != null)
+                    {
+                        IntPtr hWnd = runningProcess.MainWindowHandle;
+                        ShowWindow(hWnd, SW_HIDE);
+                    }
+                });
             }
         }
 
@@ -149,11 +171,61 @@ namespace FlowSharpCodeCompilerService
             }
         }
 
+        protected void InitializeBuildMenu()
+        {
+            ToolStripMenuItem buildToolStripMenuItem = new ToolStripMenuItem();
+            ToolStripMenuItem mnuCompile = new ToolStripMenuItem();
+            ToolStripMenuItem mnuRun = new ToolStripMenuItem();
+            ToolStripMenuItem mnuStop = new ToolStripMenuItem();
+
+            mnuCompile.Name = "mnuCompile";
+            mnuCompile.ShortcutKeys = Keys.Alt | Keys.C;
+            mnuCompile.Size = new System.Drawing.Size(165, 24);
+            mnuCompile.Text = "&Compile";
+
+            mnuRun.Name = "mnuRun";
+            mnuRun.ShortcutKeys = Keys.Alt | Keys.R;
+            mnuRun.Size = new System.Drawing.Size(165, 24);
+            mnuRun.Text = "&Run";
+
+            mnuStop.Name = "mnuStop";
+            mnuStop.ShortcutKeys = Keys.Alt | Keys.S;
+            // mnuStop.ShortcutKeys = Keys.Alt | Keys.R;
+            mnuStop.Size = new System.Drawing.Size(165, 24);
+            mnuStop.Text = "&Stop";
+
+            buildToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { mnuCompile, mnuRun, mnuStop });
+            buildToolStripMenuItem.Name = "buildToolStripMenuItem";
+            buildToolStripMenuItem.Size = new System.Drawing.Size(37, 21);
+            buildToolStripMenuItem.Text = "C#";
+
+            mnuCompile.Click += OnCompile;
+            mnuRun.Click += OnRun;
+            mnuStop.Click += OnStop;
+
+            ServiceManager.Get<IFlowSharpMenuService>().AddMenu(buildToolStripMenuItem);
+        }
+
+        protected void OnCompile(object sender, EventArgs e)
+        {
+            Compile();
+        }
+
+        protected void OnRun(object sender, EventArgs e)
+        {
+            Run();
+        }
+
+        protected void OnStop(object sender, EventArgs e)
+        {
+            Stop();
+        }
+
         protected void TerminateRunningProcess()
         {
             if (runningProcess != null)
             {
-                runningProcess.Kill();
+                Assert.SilentTry(() => runningProcess.Kill());
                 runningProcess = null;
             }
         }

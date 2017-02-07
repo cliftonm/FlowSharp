@@ -121,6 +121,10 @@
       <Project>{5fa0c1a5-bde5-41fb-b031-eb8285fc549b}</Project>
       <Name>FlowSharpCodeOutputWindowService</Name>
     </ProjectReference>
+    <ProjectReference Include="Services\FlowSharpCodeServices\FlowSharpCodePythonCompilerService\FlowSharpCodePythonCompilerService.csproj">
+      <Project>{526a7092-2ee6-49a6-beee-2c22f1e7cdce}</Project>
+      <Name>FlowSharpCodePythonCompilerService</Name>
+    </ProjectReference>
     <ProjectReference Include="Services\FlowSharpCodeServices\FlowSharpCodeScintillaEditorService\FlowSharpCodeScintillaEditorService.csproj">
       <Project>{3452537d-7fa0-4916-baa9-b4985f11581e}</Project>
       <Name>FlowSharpCodeScintillaEditorService</Name>

@@ -47,7 +47,6 @@ namespace FlowSharpCodeService
             fss.NewCanvas += OnNewCanvas;
             ces.TextChanged += OnCSharpEditorServiceTextChanged;
             ses.TextChanged += OnScintillaEditorServiceTextChanged;
-            InitializeBuildMenu();
             InitializeEditorsMenu();
         }
 
@@ -85,41 +84,6 @@ namespace FlowSharpCodeService
                         break;
                 }
             }
-        }
-
-        protected void InitializeBuildMenu()
-        {
-            ToolStripMenuItem buildToolStripMenuItem = new ToolStripMenuItem();
-            ToolStripMenuItem mnuCompile = new ToolStripMenuItem();
-            ToolStripMenuItem mnuRun = new ToolStripMenuItem();
-            ToolStripMenuItem mnuStop = new ToolStripMenuItem();
-
-            mnuCompile.Name = "mnuCompile";
-            mnuCompile.ShortcutKeys = Keys.Alt | Keys.C;
-            mnuCompile.Size = new System.Drawing.Size(165, 24);
-            mnuCompile.Text = "&Compile";
-
-            mnuRun.Name = "mnuRun";
-            mnuRun.ShortcutKeys = Keys.Alt | Keys.R;
-            mnuRun.Size = new System.Drawing.Size(165, 24);
-            mnuRun.Text = "&Run";
-
-            mnuStop.Name = "mnuStop";
-            mnuStop.ShortcutKeys = Keys.Alt | Keys.S;
-            // mnuStop.ShortcutKeys = Keys.Alt | Keys.R;
-            mnuStop.Size = new System.Drawing.Size(165, 24);
-            mnuStop.Text = "&Stop";
-
-            buildToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {mnuCompile, mnuRun, mnuStop});
-            buildToolStripMenuItem.Name = "buildToolStripMenuItem";
-            buildToolStripMenuItem.Size = new System.Drawing.Size(37, 21);
-            buildToolStripMenuItem.Text = "Bu&ild";
-
-            mnuCompile.Click += OnCompile;
-            mnuRun.Click += OnRun;
-            mnuStop.Click += OnStop;
-
-            ServiceManager.Get<IFlowSharpMenuService>().AddMenu(buildToolStripMenuItem);
         }
 
         protected void InitializeEditorsMenu()
@@ -175,21 +139,6 @@ namespace FlowSharpCodeService
         {
             mnuOutput.Checked.Else(() => CreateOutputWindow());
             mnuOutput.Checked = true;
-        }
-
-        protected void OnCompile(object sender, EventArgs e)
-        {
-            ServiceManager.Get<IFlowSharpCodeCompilerService>().Compile();
-        }
-
-        protected void OnRun(object sender, EventArgs e)
-        {
-            ServiceManager.Get<IFlowSharpCodeCompilerService>().Run();
-        }
-
-        protected void OnStop(object sender, EventArgs e)
-        {
-            ServiceManager.Get<IFlowSharpCodeCompilerService>().Stop();
         }
 
         protected void OnFlowSharpInitialized(object sender, EventArgs args)
@@ -276,6 +225,7 @@ namespace FlowSharpCodeService
             //Control pyDocEditor = dockingService.CreateDocument(DockState.Document, "Python Editor", FlowSharpCodeServiceInterfaces.Constants.META_PYTHON_EDITOR);
             Control pnlCodeEditor = new Panel() { Dock = DockStyle.Fill, Tag = language };
             docEditor.Controls.Add(pnlCodeEditor);
+            ((IDockDocument)docEditor).Metadata += "," + language;      // Add language to metadata so we know what editor to create.
 
             IFlowSharpScintillaEditorService scintillaEditorService = ServiceManager.Get<IFlowSharpScintillaEditorService>();
             scintillaEditorService.CreateEditor(pnlCodeEditor, language);
@@ -303,7 +253,7 @@ namespace FlowSharpCodeService
                 case FlowSharpCodeServiceInterfaces.Constants.META_CSHARP_EDITOR:
                     Panel pnlEditor = new Panel() { Dock = DockStyle.Fill, Tag = FlowSharpCodeServiceInterfaces.Constants.META_CSHARP_EDITOR};
                     e.DockContent.Controls.Add(pnlEditor);
-                    e.DockContent.Text = "Editor";
+                    e.DockContent.Text = "C# Editor";
                     IFlowSharpCodeEditorService csCodeEditorService = ServiceManager.Get<IFlowSharpCodeEditorService>();
                     csCodeEditorService.CreateEditor(pnlEditor);
                     csCodeEditorService.AddAssembly("Clifton.Core.dll");
@@ -315,6 +265,16 @@ namespace FlowSharpCodeService
                     e.DockContent.Text = "Output";
                     IFlowSharpCodeOutputWindowService outputWindowService = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
                     outputWindowService.CreateOutputWindow(pnlOutputWindow);
+                    break;
+
+                case FlowSharpCodeServiceInterfaces.Constants.META_SCINTILLA_EDITOR:
+                    string language = e.Metadata.RightOf(",");
+                    Panel pnlCodeEditor = new Panel() { Dock = DockStyle.Fill, Tag = language };
+                    e.DockContent.Controls.Add(pnlCodeEditor);
+                    e.DockContent.Text = language.CamelCase() + " Editor";
+
+                    IFlowSharpScintillaEditorService scintillaEditorService = ServiceManager.Get<IFlowSharpScintillaEditorService>();
+                    scintillaEditorService.CreateEditor(pnlCodeEditor, language);
                     break;
             }
         }
@@ -339,7 +299,7 @@ namespace FlowSharpCodeService
                 el.Json.TryGetValue("Code", out code);
                 csCodeEditorService.SetText("C#", code ?? String.Empty);
 
-                el.Json.TryGetValue("Python", out code);
+                el.Json.TryGetValue("python", out code);
                 editorService.SetText("python", code ?? String.Empty);
             }
             else
@@ -407,7 +367,7 @@ namespace FlowSharpCodeService
         /// </summary>
         protected Control FindDocument(IDockingFormService dockingService, string tag)
         {
-            return (Control)dockingService.Documents.SingleOrDefault(d => d.Metadata.LeftOf(",") == tag);
+            return (Control)dockingService.Documents.FirstOrDefault(d => d.Metadata.LeftOf(",") == tag);
         }
     }
 }

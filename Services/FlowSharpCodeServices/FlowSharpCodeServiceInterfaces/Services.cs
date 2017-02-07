@@ -36,6 +36,11 @@ namespace FlowSharpCodeServiceInterfaces
         void Stop();
     }
 
+    public interface IFlowSharpCodePythonCompilerService : IService
+    {
+        void Compile();
+    }
+
     public interface IFlowSharpCodeEditor
     {
         event EventHandler<TextChangedEventArgs> TextChanged;

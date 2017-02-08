@@ -49,15 +49,13 @@ namespace FlowSharpCodeCompilerService
         {
             ToolStripMenuItem buildToolStripMenuItem = new ToolStripMenuItem();
             ToolStripMenuItem mnuCompile = new ToolStripMenuItem();
-            ToolStripMenuItem mnuRun = new ToolStripMenuItem();
-            ToolStripMenuItem mnuStop = new ToolStripMenuItem();
 
             mnuCompile.Name = "mnuCompile";
             // mnuCompile.ShortcutKeys = Keys.Alt | Keys.C;
             mnuCompile.Size = new System.Drawing.Size(165, 24);
             mnuCompile.Text = "&Compile";
 
-            buildToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { mnuCompile, mnuRun, mnuStop });
+            buildToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { mnuCompile });
             buildToolStripMenuItem.Name = "buildToolStripMenuItem";
             buildToolStripMenuItem.Size = new System.Drawing.Size(37, 21);
             buildToolStripMenuItem.Text = "Python";
@@ -104,38 +102,42 @@ namespace FlowSharpCodeCompilerService
 
             foreach (GraphicElement elClass in canvasController.Elements.Where(el => el is IPythonClass))
             {
+                List<string> imports = GetImports(canvasController, elClass);
                 List<string> classSources = GetClassSources(canvasController, elClass);
                 string filename = ((IPythonClass)elClass).Filename;
+                string className = filename.LeftOf(".");
                 StringBuilder sb = new StringBuilder();
 
-                string py = elClass.Json["python"] ?? "";
-                string className = filename.LeftOf(".");
-
-                if (!String.IsNullOrEmpty(py))
+                imports.Where(src => !String.IsNullOrEmpty(src)).ForEach(src =>
                 {
-                    py += "\r\n";
-                }
+                    string[] lines = src.Split('\n');
+                    lines.ForEach(line => sb.AppendLine(line.TrimEnd()));
+                });
 
-                sb.Append(py);
+                sb.AppendLine();
 
                 // Don't create the class definition if there's no functions defined in the class.
                 if (classSources.Count > 0)
                 {
-
-                    // If the class definition is missing, we need to create it here, otherwise the user has overridden the class
-                    if (!py.Contains("class " + className))
-                    {
-                        sb.AppendLine("class " + className + ":");
-                    }
+                    sb.AppendLine("class " + className + ":");
 
                     classSources.Where(src => !String.IsNullOrEmpty(src)).ForEach(src =>
                     {
-                        string[] lines = src.Split('\n');
+                        List<string> lines = src.Split('\n').ToList();
+                        // Remove all blank lines from end of each source file.
+                        lines = ((IEnumerable<string>)lines).Reverse().SkipWhile(line => String.IsNullOrWhiteSpace(line)).Reverse().ToList();
                         lines.ForEach(line => sb.AppendLine("  " + line.TrimEnd()));
+                        sb.AppendLine();
                     });
+                }
+                else
+                {
+                    // If there's no classes, then use whatever is in the actual class shape for code.
+                    sb.Append(elClass.Json["python"] ?? "");
                 }
 
                 File.WriteAllText(filename, sb.ToString());
+                elClass.Json["python"] = sb.ToString();
             }
 
             return ok;
@@ -144,10 +146,23 @@ namespace FlowSharpCodeCompilerService
         /// <summary>
         /// Returns sources contained in an element (ie., AssemblyBox shape).
         /// </summary>
+        protected List<string> GetImports(BaseController canvasController, GraphicElement elClass)
+        {
+            return canvasController.Elements.
+                Where(srcEl => srcEl != elClass && (srcEl.Text ?? "").ToLower() == "imports" && elClass.DisplayRectangle.
+                Contains(srcEl.DisplayRectangle)).
+                OrderBy(srcEl => srcEl.DisplayRectangle.Y).
+                Select(srcEl => srcEl.Json["python"] ?? "").
+                ToList();
+        }
+
+        /// <summary>
+        /// Returns sources contained in an element (ie., AssemblyBox shape).
+        /// </summary>
         protected List<string> GetClassSources(BaseController canvasController, GraphicElement elClass)
         {
             return canvasController.Elements.
-                Where(srcEl => srcEl != elClass && elClass.DisplayRectangle.
+                Where(srcEl => srcEl != elClass && (srcEl.Text ?? "").ToLower() != "imports" && elClass.DisplayRectangle.
                 Contains(srcEl.DisplayRectangle)).
                 OrderBy(srcEl=>srcEl.DisplayRectangle.Y).
                 Select(srcEl => srcEl.Json["python"] ?? "").

@@ -24,6 +24,7 @@ namespace FlowSharpRestService
     {
         protected Dictionary<Route, Action<HttpListenerContext, string>> routes;
         protected IServiceManager serviceManager;
+        private const string OK = "OK";
 
         public Routes(IServiceManager serviceManager)
         {
@@ -46,6 +47,7 @@ namespace FlowSharpRestService
 
         protected void PublishSemanticMessage(HttpListenerContext context, string data)
         {
+            string resp = OK;
             NameValueCollection nvc = context.Request.QueryString;
             string stname = nvc["cmd"];
             Type st = Type.GetType("FlowSharpServiceInterfaces." + stname + ",FlowSharpServiceInterfaces");
@@ -54,7 +56,13 @@ namespace FlowSharpRestService
             // Synchronous, because however we're processing the command doesn't know (or need to know) that it's
             // coming from an HTTP GET, but we don't want to issue the response until the action has been performed.
             serviceManager.Get<ISemanticProcessor>().ProcessInstance<FlowSharpMembrane>(t, true);
-            Response(context);      
+
+            if (t is IHasResponse)
+            {
+                resp = ((IHasResponse)t).SerializeResponse();
+            }
+
+            Response(context, resp, resp == OK ? "text/plain" : "application/json");
         }
 
         protected void PopulateType(ISemanticType packet, NameValueCollection nvc)
@@ -71,10 +79,10 @@ namespace FlowSharpRestService
             }
         }
 
-        public void Response(HttpListenerContext context)
+        public void Response(HttpListenerContext context, string resp, string contentType)
         {
-            byte[] utf8data = Encoding.UTF8.GetBytes("OK");
-            context.Response.ContentType = "text/html";
+            byte[] utf8data = Encoding.UTF8.GetBytes(resp);
+            context.Response.ContentType = contentType;
             context.Response.ContentEncoding = Encoding.UTF8;
             context.Response.ContentLength64 = utf8data.Length;
             context.Response.OutputStream.Write(utf8data, 0, utf8data.Length);

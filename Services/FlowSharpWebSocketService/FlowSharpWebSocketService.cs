@@ -64,7 +64,12 @@ namespace FlowSharpWebSocketService
             {
                 string msg = e.Data;
                 Dictionary<string, string> data = ParseMessage(msg);
-                PublishSemanticMessage(data);
+                string jsonResp = PublishSemanticMessage(data);
+
+                if (jsonResp != null)
+                {
+                    Send(jsonResp);
+                }
             }
         }
 
@@ -83,14 +88,22 @@ namespace FlowSharpWebSocketService
             return data;
         }
 
-        protected void PublishSemanticMessage(Dictionary<string, string> data)
+        protected string PublishSemanticMessage(Dictionary<string, string> data)
         {
+            string ret = null;
             Type st = Type.GetType("FlowSharpServiceInterfaces." + data["cmd"] + ",FlowSharpServiceInterfaces");
             ISemanticType t = Activator.CreateInstance(st) as ISemanticType;
             PopulateType(t, data);
             // Synchronous, because however we're processing the commands in order, otherwise we lose the point of a web socket,
             // which keeps the messages in order.
             ServiceManager.Instance.Get<ISemanticProcessor>().ProcessInstance<FlowSharpMembrane>(t, true);
+
+            if (t is IHasResponse)
+            {
+                ret = ((IHasResponse)t).SerializeResponse();
+            }
+
+            return ret;
         }
 
         protected void PopulateType(ISemanticType packet, Dictionary<string, string> data)

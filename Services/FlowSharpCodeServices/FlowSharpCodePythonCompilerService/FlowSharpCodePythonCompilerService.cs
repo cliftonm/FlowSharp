@@ -1,16 +1,15 @@
-﻿using System;
-using System.CodeDom.Compiler;
+﻿/* 
+* Copyright (c) Marc Clifton
+* The Code Project Open License (CPOL) 1.02
+* http://www.codeproject.com/info/cpol10.aspx
+*/
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using Microsoft.CSharp;
 
 using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ModuleManagement;

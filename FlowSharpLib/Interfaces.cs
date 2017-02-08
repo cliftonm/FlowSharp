@@ -11,4 +11,10 @@ namespace FlowSharpLib
         // void Update(GraphicElement el, string label);
         void Update(string label);
     }
+
+    // TODO: Probably not the best place for this interface, but I wanted it removed from FlowSharpCodeShapeInterfaces
+    public interface IFileBox
+    {
+        string Filename { get; }
+    }
 }

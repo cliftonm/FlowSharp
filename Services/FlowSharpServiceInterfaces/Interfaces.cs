@@ -114,4 +114,9 @@ namespace FlowSharpServiceInterfaces
     public interface IFlowSharpRestService : IService { }
 
     public interface IFlowSharpWebSocketService : IService { }
+
+    public interface IHasResponse
+    {
+        string SerializeResponse();
+    }
 }

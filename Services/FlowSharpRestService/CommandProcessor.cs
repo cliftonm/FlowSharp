@@ -4,6 +4,7 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System;
 using System.Linq;
 using System.Reflection;
 
@@ -47,6 +48,14 @@ namespace FlowSharpRestService
             {
                 controller.FocusOn(el);
             });
+        }
+
+        // Ex: localhost:8001/flowsharp?cmd=CmdGetShapeFiles
+        public void Process(ISemanticProcessor proc, IMembrane membrane, CmdGetShapeFiles cmd)
+        {
+            BaseController controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            var els = controller.Elements.Where(e => e is IFileBox);
+            cmd.Filenames.AddRange(els.Cast<IFileBox>().Where(el => !String.IsNullOrEmpty(el.Filename)).Select(el => el.Filename));
         }
     }
 }

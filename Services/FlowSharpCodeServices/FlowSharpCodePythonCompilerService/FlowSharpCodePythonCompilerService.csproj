@@ -50,10 +50,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\clifton\Clifton.WinForm\Clifton.WinForm.ServiceInterfaces\Clifton.WinForm.ServiceInterfaces.csproj">
-      <Project>{2c326de7-2f39-49cb-9a2b-1fe6de7918b0}</Project>
-      <Name>Clifton.WinForm.ServiceInterfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\FlowSharpLib\FlowSharpLib.csproj">
       <Project>{07f65ca7-b8d3-4716-bfbf-812ef4da68be}</Project>
       <Name>FlowSharpLib</Name>

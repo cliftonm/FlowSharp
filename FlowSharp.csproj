@@ -41,8 +41,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\Clifton.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Clifton.DockingFormService">
+      <HintPath>Libs\Clifton.DockingFormService.dll</HintPath>
+    </Reference>
     <Reference Include="Clifton.SemanticProcessorService">
       <HintPath>Libs\Clifton.SemanticProcessorService.dll</HintPath>
+    </Reference>
+    <Reference Include="Clifton.WinForm.ServiceInterfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\Clifton.WinForm.ServiceInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -101,10 +108,6 @@
     <None Include="Resources\FlowSharp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\clifton\Clifton.WinForm\Services\Clifton.DockingFormService\Clifton.DockingFormService.csproj">
-      <Project>{543d44b1-ba75-4a6e-adca-7b8d8f3d7492}</Project>
-      <Name>Clifton.DockingFormService</Name>
-    </ProjectReference>
     <ProjectReference Include="Services\FlowSharpCanvasService\FlowSharpCanvasService.csproj">
       <Project>{8072dc59-f5de-46c3-98a2-e483484b253c}</Project>
       <Name>FlowSharpCanvasService</Name>

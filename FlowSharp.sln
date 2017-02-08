@@ -57,10 +57,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodeOutputWindowSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodeScintillaEditorService", "Services\FlowSharpCodeServices\FlowSharpCodeScintillaEditorService\FlowSharpCodeScintillaEditorService.csproj", "{3452537D-7FA0-4916-BAA9-B4985F11581E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clifton.DockingFormService", "..\clifton\Clifton.WinForm\Services\Clifton.DockingFormService\Clifton.DockingFormService.csproj", "{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clifton.WinForm.ServiceInterfaces", "..\clifton\Clifton.WinForm\Clifton.WinForm.ServiceInterfaces\Clifton.WinForm.ServiceInterfaces.csproj", "{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodePythonCompilerService", "Services\FlowSharpCodeServices\FlowSharpCodePythonCompilerService\FlowSharpCodePythonCompilerService.csproj", "{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE}"
 EndProject
 Global
@@ -165,14 +161,6 @@ Global
 		{3452537D-7FA0-4916-BAA9-B4985F11581E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3452537D-7FA0-4916-BAA9-B4985F11581E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3452537D-7FA0-4916-BAA9-B4985F11581E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -204,8 +192,6 @@ Global
 		{3548AF21-B8CB-4C45-88B6-80FAD43EB561} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
 		{5FA0C1A5-BDE5-41FB-B031-EB8285FC549B} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 		{3452537D-7FA0-4916-BAA9-B4985F11581E} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
-		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
-		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 		{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 	EndGlobalSection
 EndGlobal

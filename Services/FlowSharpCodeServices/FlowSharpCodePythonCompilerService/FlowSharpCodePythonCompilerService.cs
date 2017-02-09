@@ -113,17 +113,21 @@ namespace FlowSharpCodeCompilerService
                     lines.ForEach(line => sb.AppendLine(line.TrimEnd()));
                 });
 
-                sb.AppendLine();
-
                 // Don't create the class definition if there's no functions defined in the class.
                 if (classSources.Count > 0)
                 {
+                    // Formatting.
+                    if (imports.Count > 0)
+                    {
+                        sb.AppendLine();
+                    }
+
                     sb.AppendLine("class " + className + ":");
 
                     classSources.Where(src => !String.IsNullOrEmpty(src)).ForEach(src =>
                     {
                         List<string> lines = src.Split('\n').ToList();
-                        // Remove all blank lines from end of each source file.
+                        // Formatting: remove all blank lines from end of each source file.
                         lines = ((IEnumerable<string>)lines).Reverse().SkipWhile(line => String.IsNullOrWhiteSpace(line)).Reverse().ToList();
                         lines.ForEach(line => sb.AppendLine("  " + line.TrimEnd()));
                         sb.AppendLine();

@@ -799,6 +799,8 @@ namespace FlowSharpMenuService
                 else
                 {
                     filename = sfd.FileName;
+                    // TODO: What about other canvases that are open in the diagram?
+                    canvasController.Filename = String.Empty;       // Force blank filename so filename is saved to the new destination.  See FlowSharpCanvasService.cs, SaveDiagrams
                     // Let canvas controller assign filenames.
                     SaveDiagram(filename);
                     UpdateCaption();

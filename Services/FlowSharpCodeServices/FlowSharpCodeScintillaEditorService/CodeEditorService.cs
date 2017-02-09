@@ -173,6 +173,7 @@ namespace FlowSharpCodeScintillaEditorService
 
             // Set the lexer
             Lexer = Lexer.Python;
+            IndentWidth = 2;
 
             // Known lexer properties:
             // "tab.timmy.whinge.level",

@@ -793,10 +793,14 @@ namespace FlowSharpLib
         /// </summary>
         private void RecursiveFindAllIntersections(List<GraphicElement> intersections, GraphicElement el, int dx = 0, int dy = 0)
 		{
+            int elIdx = elements.IndexOf(el);
+
 			// Cool thing here is that if the element has no intersections, this list still returns that element because it intersects with itself!
-			elements.Where(e => !intersections.Contains(e) && e.UpdateRectangle.IntersectsWith(el.UpdateRectangle.Grow(dx, dy))).ForEach((e) =>
+            // Optimization here is that we only collect shapes that intersect and are above (on top of) the current shape. 
+            // This optimization works really well!
+			elements.Where(e => !intersections.Contains(e) && elements.IndexOf(e) <= elIdx && e.UpdateRectangle.IntersectsWith(el.UpdateRectangle.Grow(dx, dy))).ForEach((e) =>
 			{
-				intersections.Add(e);
+                intersections.Add(e);
                 RecursiveFindAllIntersections(intersections, e);
 			});
 		}

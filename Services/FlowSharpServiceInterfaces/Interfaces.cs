@@ -81,6 +81,7 @@ namespace FlowSharpServiceInterfaces
         bool SaveOrSaveAs();
         void UpdateMenu();
         void AddMenu(ToolStripMenuItem menuItem);
+        void EnableCopyPasteDel(bool state);
     }
 
     public interface IFlowSharpEditService : IService

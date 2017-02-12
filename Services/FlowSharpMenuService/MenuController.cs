@@ -67,6 +67,18 @@ namespace FlowSharpMenuService
             UpdateMenu(false);
         }
 
+        // Enable/disable to copy, paste, and delete menu shortcuts, as certain editors, like Scintilla,
+        // do not capture these keystrokes early enough, and we need to stop the Form from intercepting them
+        // and treating them as canvas operations when the canvas isn't focused.
+        public void EnableCopyPasteDel(bool state)
+        {
+            mnuCopy.Enabled = state;
+            mnuPaste.Enabled = state;
+            mnuDelete.Enabled = state;
+            mnuUndo.Enabled = state;
+            mnuRedo.Enabled = state;
+        }
+
         // TODO: The save/load operations might be best moved to the edit service?
         public bool SaveOrSaveAs(bool forceSaveAs = false)
         {

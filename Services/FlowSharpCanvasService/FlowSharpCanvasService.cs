@@ -69,6 +69,8 @@ namespace FlowSharpCanvasService
             // Canvas.Initialize requires that the parent be attached to the form!
             canvas.Initialize(parent);
             activeCanvasController = canvasController;
+            canvas.GotFocus += (sndr, args) => ServiceManager.Get<IFlowSharpMenuService>().EnableCopyPasteDel(true);
+            canvas.LostFocus += (sndr, args) => ServiceManager.Get<IFlowSharpMenuService>().EnableCopyPasteDel(false);
         }
 
         public void DeleteCanvas(Control parent)

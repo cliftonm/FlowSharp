@@ -165,7 +165,7 @@ namespace FlowSharpCodeCompilerService
         protected List<string> GetClassSources(BaseController canvasController, GraphicElement elClass)
         {
             return canvasController.Elements.
-                Where(srcEl => srcEl != elClass && (srcEl.Text ?? "").ToLower() != "imports" && elClass.DisplayRectangle.
+                Where(srcEl => srcEl != elClass && (srcEl.Text ?? "").ToLower() != "imports" && srcEl.Json.ContainsKey("python") && elClass.DisplayRectangle.
                 Contains(srcEl.DisplayRectangle)).
                 OrderBy(srcEl=>srcEl.DisplayRectangle.Y).
                 Select(srcEl => srcEl.Json["python"] ?? "").

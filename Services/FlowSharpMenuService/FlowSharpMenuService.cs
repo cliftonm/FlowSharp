@@ -68,6 +68,11 @@ namespace FlowSharpMenuService
         {
             menuController.AddMenu(menuItem);
         }
+
+        public void EnableCopyPasteDel(bool state)
+        {
+            menuController.EnableCopyPasteDel(state);
+        }
     }
 
     public class FlowSharpMenuReceptor : IReceptor

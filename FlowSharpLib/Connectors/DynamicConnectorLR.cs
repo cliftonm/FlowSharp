@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
+
 namespace FlowSharpLib
 {
     /// <summary>
@@ -19,7 +21,7 @@ namespace FlowSharpLib
 	{
 		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
 
-		public DynamicConnectorLR(Canvas canvas) : base(canvas)
+        public DynamicConnectorLR(Canvas canvas) : base(canvas)
 		{
 			Initialize();
 		}
@@ -42,11 +44,13 @@ namespace FlowSharpLib
 		public override List<ShapeAnchor> GetAnchors()
 		{
 			Size szAnchor = new Size(anchorWidthHeight, anchorWidthHeight);
+            Rectangle vline = GetVerticalLineRectangle();
 
-			return new List<ShapeAnchor>() {
+            return new List<ShapeAnchor>() {
 				new ShapeAnchor(GripType.Start, new Rectangle(StartPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
 				new ShapeAnchor(GripType.End, new Rectangle(EndPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
-			};
+                new ShapeAnchor(GripType.LeftMiddle, new Rectangle(new Point(vline.X + szAnchor.Width, vline.Y + vline.Height/2 - szAnchor.Height/2), szAnchor), Cursors.SizeWE),
+            };
 		}
 
 		public override GraphicElement CloneDefault(Canvas canvas)
@@ -58,36 +62,46 @@ namespace FlowSharpLib
 			return line;
 		}
 
-		public override void UpdatePath()
+        public override void UpdateSize(ShapeAnchor anchor, Point delta)
+        {
+            if (anchor.Type == GripType.LeftMiddle)
+            {
+                vxAdjust += delta.X;
+                UpdatePath();
+                Rectangle newRect = RecalcDisplayRectangle();
+                canvas.Controller.UpdateDisplayRectangle(this, newRect, delta);
+            }
+            else
+            {
+                base.UpdateSize(anchor, delta);
+            }
+        }
+
+        public override void UpdatePath()
 		{
             UpdateCaps();
 
-            if (StartPoint.X < EndPoint.X)
-			{
-				lines[0].DisplayRectangle = new Rectangle(StartPoint.X, StartPoint.Y - BaseController.MIN_HEIGHT / 2, (EndPoint.X - StartPoint.X) / 2, BaseController.MIN_HEIGHT);
-			}
-            else
-            {
-                lines[0].DisplayRectangle = new Rectangle(EndPoint.X + (StartPoint.X - EndPoint.X) / 2, StartPoint.Y - BaseController.MIN_HEIGHT / 2, (StartPoint.X - EndPoint.X) / 2, BaseController.MIN_HEIGHT);
-            }
+            /*
+               ----!
+                   !
+                   !----
+            */
 
-            if (StartPoint.Y < EndPoint.Y)
-			{
-				lines[1].DisplayRectangle = new Rectangle(StartPoint.X + (EndPoint.X - StartPoint.X) / 2 - BaseController.MIN_WIDTH / 2, StartPoint.Y, BaseController.MIN_WIDTH, EndPoint.Y - StartPoint.Y);
-			}
-			else
-			{
-				lines[1].DisplayRectangle = new Rectangle(EndPoint.X + (StartPoint.X - EndPoint.X) / 2 - BaseController.MIN_WIDTH / 2, EndPoint.Y, BaseController.MIN_WIDTH, StartPoint.Y - EndPoint.Y);
-			}
+            int xmin = StartPoint.X.Min(EndPoint.X);
+            int xmax = StartPoint.X.Max(EndPoint.X);
+            int vx = xmin + (xmax - xmin) / 2 + vxAdjust;
+            int x1a = StartPoint.X.Min(vx);
+            int x1b = StartPoint.X.Max(vx);
+            int x2a = EndPoint.X.Min(vx);
+            int x2b = EndPoint.X.Max(vx);
+            int x1y = StartPoint.Y - BaseController.MIN_HEIGHT / 2;
+            int x2y = EndPoint.Y - BaseController.MIN_HEIGHT / 2;
+            int vy1 = StartPoint.Y.Min(EndPoint.Y);
+            int vy2 = StartPoint.Y.Max(EndPoint.Y);
 
-			if (StartPoint.X < EndPoint.X)
-			{
-				lines[2].DisplayRectangle = new Rectangle(StartPoint.X + (EndPoint.X - StartPoint.X) / 2, EndPoint.Y - BaseController.MIN_HEIGHT / 2, (EndPoint.X - StartPoint.X) / 2, BaseController.MIN_HEIGHT);
-			}
-			else
-			{
-				lines[2].DisplayRectangle = new Rectangle(EndPoint.X, EndPoint.Y - BaseController.MIN_HEIGHT / 2, (StartPoint.X - EndPoint.X) / 2, BaseController.MIN_HEIGHT);
-			}
+            lines[0].DisplayRectangle = new Rectangle(x1a, x1y, x1b - x1a, BaseController.MIN_HEIGHT);
+            lines[1].DisplayRectangle = new Rectangle(vx - BaseController.MIN_WIDTH / 2, vy1, BaseController.MIN_WIDTH, vy2 - vy1);
+            lines[2].DisplayRectangle = new Rectangle(x2a, x2y, x2b - x2a, BaseController.MIN_HEIGHT);
 
             lines.ForEach(l => l.UpdatePath());
 		}
@@ -110,7 +124,17 @@ namespace FlowSharpLib
             }
 
             lines.ForEach(l => l.UpdateProperties());
+        }
 
+        protected Rectangle GetVerticalLineRectangle()
+        {
+            int xmin = StartPoint.X.Min(EndPoint.X);
+            int xmax = StartPoint.X.Max(EndPoint.X);
+            int vx = xmin + (xmax - xmin) / 2 + vxAdjust;
+            int vy1 = StartPoint.Y.Min(EndPoint.Y);
+            int vy2 = StartPoint.Y.Max(EndPoint.Y);
+
+            return new Rectangle(vx - BaseController.MIN_WIDTH / 2, vy1, BaseController.MIN_WIDTH, vy2 - vy1);
         }
     }
 }

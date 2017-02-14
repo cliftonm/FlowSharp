@@ -71,14 +71,18 @@ namespace FlowSharpCodeCompilerService
                 p.StartInfo.RedirectStandardError = true;
                 p.StartInfo.RedirectStandardInput = true;
                 p.StartInfo.FileName = exeFilename;
+                p.StartInfo.CreateNoWindow = true;      // TODO: useful for console apps, not so good for WinForm apps?
 
                 p.OutputDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
                 p.ErrorDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
 
                 // This unfortunately doesn't work!
+                // TODO: p.EnableRaisingEvents = true should enable this.
                 // p.Exited += (object sender, EventArgs e) => runningProcess = null;
 
                 p.Start();
+
+                // Interestingly, this has to be called after Start().
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
                 runningProcess = p;
@@ -312,7 +316,7 @@ namespace FlowSharpCodeCompilerService
 
             while (el != null)
             {
-                if (el is Diamond)
+                if ( (el is Diamond) || (el is AngleBracketBox) )
                 {
 
                     // True clause

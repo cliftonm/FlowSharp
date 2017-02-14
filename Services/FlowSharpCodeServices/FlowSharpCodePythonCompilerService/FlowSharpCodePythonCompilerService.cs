@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -72,23 +73,69 @@ namespace FlowSharpCodeCompilerService
             BaseController canvasController = canvasService.ActiveController;
             // List<GraphicElement> rootSourceShapes = GetSources(canvasController);
             CompileClassSources(canvasController);
+            RunLint(canvasController);
         }
 
-        /*
-        protected List<GraphicElement> GetSources(BaseController canvasController)
+        protected void RunLint(BaseController canvasController)
         {
-            List<GraphicElement> sourceList = new List<GraphicElement>();
+            var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
+            outputWindow.Clear();
 
-            foreach (GraphicElement srcEl in canvasController.Elements.Where(
-                srcEl => !ContainedIn<IAssemblyBox>(canvasController, srcEl) &&
-                !(srcEl is IFileBox)))
+            foreach (GraphicElement elClass in canvasController.Elements.Where(el => el is IPythonClass).OrderBy(el => ((IPythonClass)el).Filename))
             {
-                sourceList.Add(srcEl);
-            }
+                string filename = ((IPythonClass)elClass).Filename;
+                Process p = new Process();
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.RedirectStandardError = true;
+                p.StartInfo.RedirectStandardInput = true;
+                p.StartInfo.FileName = "pylint";
+                p.StartInfo.Arguments = filename;
+                p.StartInfo.CreateNoWindow = true;
 
-            return sourceList;
+                outputWindow.WriteLine(filename);
+
+                List<string> warnings = new List<string>();
+                List<string> errors = new List<string>();
+
+                p.OutputDataReceived += (sndr, args) =>
+                {
+                    string line = args.Data;
+
+                    if (line != null)
+                    {
+                        if (line.StartsWith("W:"))
+                        {
+                            warnings.Add(line);
+                        }
+
+                        if (line.StartsWith("E:"))
+                        {
+                            errors.Add(line);
+                        }
+                    }
+                };
+
+                // p.ErrorDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
+
+                p.Start();
+
+                // Interestingly, this has to be called after Start().
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+
+                p.WaitForExit();
+
+                warnings.ForEach(w => outputWindow.WriteLine(w));
+                errors.ForEach(e => outputWindow.WriteLine(e));
+
+                if (warnings.Count + errors.Count > 0)
+                {
+                    // Cosmetic - separate filenames by a whitespace if a file has warnings/errors.
+                    outputWindow.WriteLine("");
+                }
+            }
         }
-        */
 
         protected bool ContainedIn<T>(BaseController canvasController, GraphicElement child)
         {
@@ -98,6 +145,7 @@ namespace FlowSharpCodeCompilerService
         protected bool CompileClassSources(BaseController canvasController)
         {
             bool ok = true;
+            const string PYLINT = "#pylint: disable=C0111, C0301, C0303, W0311, W0614, W0401, W0232";
 
             foreach (GraphicElement elClass in canvasController.Elements.Where(el => el is IPythonClass))
             {
@@ -106,6 +154,13 @@ namespace FlowSharpCodeCompilerService
                 string filename = ((IPythonClass)elClass).Filename;
                 string className = filename.LeftOf(".");
                 StringBuilder sb = new StringBuilder();
+
+                // If we have class sources, then we're building the full source file, replacing whatever is in the "class" shape.
+                if (classSources.Count > 0)
+                {
+                    elClass.Json["python"] = "";
+                    sb.AppendLine(PYLINT);
+                }
 
                 imports.Where(src => !String.IsNullOrEmpty(src)).ForEach(src =>
                 {
@@ -135,8 +190,21 @@ namespace FlowSharpCodeCompilerService
                 }
                 else
                 {
-                    // If there's no classes, then use whatever is in the actual class shape for code.
-                    sb.Append(elClass.Json["python"] ?? "");
+                    // If there's no classes, then use whatever is in the actual class shape for code, however we need to add/replace the #pylint line with 
+                    // whatever the current list of ignores are.
+                    string src = elClass.Json["python"] ?? "";
+                    string[] lines = src.Split('\n');
+
+                    if (lines.Length > 0 && lines[0].StartsWith("#pylint"))
+                    {
+                        // Remove the existing pylint options line.
+                        src = String.Join("\n", lines.Skip(1));
+                    }
+
+                    // Insert pylint options as the first line before any imports.
+                    sb.Insert(0, PYLINT + "\n");
+
+                    sb.Append(src);
                 }
 
                 File.WriteAllText(filename, sb.ToString());

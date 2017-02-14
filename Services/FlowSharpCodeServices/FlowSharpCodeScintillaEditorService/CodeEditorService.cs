@@ -96,10 +96,30 @@ namespace FlowSharpCodeScintillaEditorService
             }
         }
 
+        // Great resource: https://github.com/jacobslusser/ScintillaNET/wiki/Displaying-Line-Numbers
+        // Dynamically resizing the line number gutter:
+        /*
+            private int maxLineNumberCharLength;
+            private void scintilla_TextChanged(object sender, EventArgs e)
+            {
+                // Did the number of characters in the line number display change?
+                // i.e. nnn VS nn, or nnnn VS nn, etc...
+                var maxLineNumberCharLength = scintilla.Lines.Count.ToString().Length;
+                if (maxLineNumberCharLength == this.maxLineNumberCharLength)
+                    return;
+
+                // Calculate the width required to display the last line number
+                // and include some padding for good measure.
+                const int padding = 2;
+                scintilla.Margins[0].Width = scintilla.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
+                this.maxLineNumberCharLength = maxLineNumberCharLength;
+            }
+        */
+
         protected ScintillaEditor CreateEditor<T>(Control parent) where T: ScintillaEditor, new()
         {
             ScintillaEditor editor = new T();
-            editor.Margins[0].Width = 16;
+            editor.Margins[0].Width = 32;           // Wider than default of 16 so line numbers > 100 display.  Not sure if > 1000 will work correctly though.
             editor.Dock = DockStyle.Fill;
             editor.Lexer = Lexer.Python;
             editor.ConfigureLexer();

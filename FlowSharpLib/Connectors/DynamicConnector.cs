@@ -19,6 +19,12 @@ namespace FlowSharpLib
 
         protected List<Line> lines = new List<Line>();
 
+        // Up-down conenctor has a horizontal line between the up/down lines.
+        protected int hyAdjust = 0;         // Then hline anchor can adjust the vertical (y) position of the horizontal line up/down.
+
+        // left-right conenctor has a vertical line between the up/down lines.
+        protected int vxAdjust = 0;         // Then vline anchor can adjust the horizontal (x) position of the vertical line left/right.
+
         public override void Select()
         {
             base.Select();
@@ -210,16 +216,14 @@ namespace FlowSharpLib
             // base.Draw(gr);
         }
 
-
         protected Rectangle RecalcDisplayRectangle()
         {
-            int x1 = StartPoint.X.Min(EndPoint.X);
-            int y1 = StartPoint.Y.Min(EndPoint.Y);
-            int x2 = StartPoint.X.Max(EndPoint.X);
-            int y2 = StartPoint.Y.Max(EndPoint.Y);
+            int x1 = StartPoint.X.Min(EndPoint.X).MinDelta(vxAdjust);
+            int y1 = StartPoint.Y.Min(EndPoint.Y).MinDelta(hyAdjust);
+            int x2 = StartPoint.X.Max(EndPoint.X).MaxDelta(vxAdjust);
+            int y2 = StartPoint.Y.Max(EndPoint.Y).MaxDelta(hyAdjust);
 
             return new Rectangle(x1, y1, x2 - x1, y2 - y1);
         }
-        // ******************
     }
 }

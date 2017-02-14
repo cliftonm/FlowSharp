@@ -51,6 +51,8 @@ namespace FlowSharpLib
         public Rectangle DisplayRectangle { get; set; }
 		public Point StartPoint { get; set; }
 		public Point EndPoint { get; set; }
+        public int HyAdjust { get; set; }
+        public int VxAdjust { get; set; }
 
 		public int BorderPenWidth { get; set; }
 

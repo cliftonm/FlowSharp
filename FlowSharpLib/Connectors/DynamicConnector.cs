@@ -80,6 +80,8 @@ namespace FlowSharpLib
 			base.Serialize(epb, elementsBeingSerialized);
 			epb.StartPoint = StartPoint;
 			epb.EndPoint = EndPoint;
+            epb.HyAdjust = hyAdjust;
+            epb.VxAdjust = vxAdjust;
 		}
 
 		public override void Deserialize(ElementPropertyBag epb)
@@ -87,9 +89,11 @@ namespace FlowSharpLib
 			base.Deserialize(epb);
 			StartPoint = epb.StartPoint;
 			EndPoint = epb.EndPoint;
-		}
+            hyAdjust= epb.HyAdjust;
+            vxAdjust = epb.VxAdjust;
+        }
 
-		public override ElementProperties CreateProperties()
+        public override ElementProperties CreateProperties()
 		{
 			return new DynamicConnectorProperties(this);
 		}

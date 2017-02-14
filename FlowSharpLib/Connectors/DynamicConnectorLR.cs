@@ -108,18 +108,29 @@ namespace FlowSharpLib
 
         protected void UpdateCaps()
         {
-            if (StartPoint.X < EndPoint.X)
+            int xmin = StartPoint.X.Min(EndPoint.X);
+            int xmax = StartPoint.X.Max(EndPoint.X);
+            int vx = xmin + (xmax - xmin) / 2 + vxAdjust;
+
+            if (vx >= StartPoint.X)
             {
                 lines[0].EndCap = AvailableLineCap.None;
-                lines[2].StartCap = AvailableLineCap.None;
                 lines[0].StartCap = StartCap;
-                lines[2].EndCap = EndCap;
             }
             else
             {
                 lines[0].StartCap = AvailableLineCap.None;
-                lines[2].EndCap = AvailableLineCap.None;
                 lines[0].EndCap = StartCap;
+            }
+
+            if (vx <= EndPoint.X)
+            {
+                lines[2].StartCap = AvailableLineCap.None;
+                lines[2].EndCap = EndCap;
+            }
+            else
+            {
+                lines[2].EndCap = AvailableLineCap.None;
                 lines[2].StartCap = EndCap;
             }
 

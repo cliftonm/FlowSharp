@@ -46,4 +46,9 @@ namespace FlowSharpServiceInterfaces
             return JsonConvert.SerializeObject(Filenames);
         }
     }
+
+    public class CmdOutputMessage : ISemanticType
+    {
+        public string Text { get; set; }
+    }
 }

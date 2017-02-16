@@ -42,7 +42,8 @@ namespace FlowSharpWebSocketService
 
         public void StartServer()
         {
-            string address = "127.0.0.1";
+            // string address = "127.0.0.1";
+            string address = "192.168.0.4";
             int port = 1100;
             IPAddress ipaddr = new IPAddress(address.Split('.').Select(a => Convert.ToByte(a)).ToArray());
             wss = new WebSocketServer(ipaddr, port, null);

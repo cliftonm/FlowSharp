@@ -14,6 +14,7 @@ using Clifton.Core.Semantics;
 
 using FlowSharpLib;
 using FlowSharpServiceInterfaces;
+using FlowSharpCodeServiceInterfaces;
 
 namespace FlowSharpRestService
 {
@@ -56,6 +57,14 @@ namespace FlowSharpRestService
             BaseController controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
             var els = controller.Elements.Where(e => e is IFileBox);
             cmd.Filenames.AddRange(els.Cast<IFileBox>().Where(el => !String.IsNullOrEmpty(el.Filename)).Select(el => el.Filename));
+        }
+
+        // FlowSharpCodeOutputWindowService required for this behavior.
+        // Ex: localhost:8001/flowsharp?cmd=CmdOutputMessage&Text=foobar
+        public void Process(ISemanticProcessor proc, IMembrane membrane, CmdOutputMessage cmd)
+        {
+            var w = proc.ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
+            cmd.Text.Split('\n').Where(s=>!String.IsNullOrEmpty(s.Trim())).ForEach(s => w.WriteLine(s.Trim()));
         }
     }
 }

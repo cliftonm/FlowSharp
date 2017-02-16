@@ -60,6 +60,10 @@
       <Project>{07f65ca7-b8d3-4716-bfbf-812ef4da68be}</Project>
       <Name>FlowSharpLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FlowSharpCodeServices\FlowSharpCodeServiceInterfaces\FlowSharpCodeServiceInterfaces.csproj">
+      <Project>{f8d75cfd-fb07-4a09-97d6-0ac3871aa35a}</Project>
+      <Name>FlowSharpCodeServiceInterfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FlowSharpServiceInterfaces\FlowSharpServiceInterfaces.csproj">
       <Project>{caa4fd23-1392-4dee-907a-cb3dc7315a98}</Project>
       <Name>FlowSharpServiceInterfaces</Name>

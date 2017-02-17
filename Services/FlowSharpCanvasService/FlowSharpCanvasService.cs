@@ -93,12 +93,19 @@ namespace FlowSharpCanvasService
             LoadLayout.Fire(this, new FileEventArgs() { Filename = filename });
         }
 
-        public void SaveDiagramsAndLayout(string filename)
+        public void SaveDiagramsAndLayout(string filename, bool selectionOnly = false)
         {
-            SaveDiagrams(filename);
+            if (selectionOnly)
+            {
+                SaveSelection(filename);
+            }
+            else
+            {
+                SaveDiagrams(filename);
 
-            // Callback to app to save layout:
-            SaveLayout.Fire(this, new FileEventArgs() { Filename = filename });
+                // Callback to app to save layout:
+                SaveLayout.Fire(this, new FileEventArgs() { Filename = filename });
+            }
         }
 
         protected void SaveDiagrams(string filename)
@@ -129,6 +136,12 @@ namespace FlowSharpCanvasService
 
                 File.WriteAllText(controller.Filename, data);
             }
+        }
+
+        protected void SaveSelection(string filename)
+        {
+            string data = Persist.Serialize(ActiveController.SelectedElements);
+            File.WriteAllText(filename, data);
         }
     }
 

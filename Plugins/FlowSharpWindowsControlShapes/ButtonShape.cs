@@ -26,13 +26,13 @@ namespace FlowSharpWindowsControlShapes
             Send(ClickEventName);
         }
 
-        public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr, bool showSelection = true)
         {
             control.Visible = Visible;
 
             if (Visible)
             {
-                base.Draw(gr);
+                base.Draw(gr, showSelection);
                 Rectangle r = DisplayRectangle.Grow(-4);
                 control.Location = r.Location;
                 control.Size = r.Size;
@@ -70,12 +70,12 @@ namespace FlowSharpWindowsControlShapes
             return shape;
         }
 
-        public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr, bool showSelection = true)
         {
             SizeF size = gr.MeasureString(TOOLBOX_TEXT, TextFont);
             Point textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
             gr.DrawString(TOOLBOX_TEXT, TextFont, brush, textpos);
-            base.Draw(gr);
+            base.Draw(gr, showSelection);
         }
     }
 

@@ -66,9 +66,9 @@ namespace PluginExample
             NavigateTo = navigateTo;
         }
 
-        public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr, bool showSelection = true)
         {
-            base.Draw(gr);
+            base.Draw(gr, showSelection);
             int min = DisplayRectangle.Width.Min(DisplayRectangle.Height);
             min = min / 2;
             Point topleft = DisplayRectangle.Center();

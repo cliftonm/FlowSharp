@@ -15,6 +15,7 @@ namespace FlowSharpMenuService
         private ToolStripMenuItem mnuOpen;
         private ToolStripMenuItem mnuSave;
         private ToolStripMenuItem mnuSaveAs;
+        private ToolStripMenuItem mnuSaveSelectionAs;
         private ToolStripSeparator toolStripMenuItem1;
         private ToolStripMenuItem mnuRecentFiles;
         private ToolStripMenuItem mnuExit;
@@ -76,6 +77,7 @@ namespace FlowSharpMenuService
             toolStripMenuItem2 = new ToolStripSeparator();
             mnuSave = new ToolStripMenuItem();
             mnuSaveAs = new ToolStripMenuItem();
+            mnuSaveSelectionAs = new ToolStripMenuItem();
             toolStripMenuItem1 = new ToolStripSeparator();
             mnuPlugins = new ToolStripMenuItem();
             toolStripMenuItem4 = new ToolStripSeparator();
@@ -150,6 +152,7 @@ namespace FlowSharpMenuService
             toolStripMenuItem2,
             mnuSave,
             mnuSaveAs,
+            mnuSaveSelectionAs,
             toolStripMenuItem1,
             //mnuLoadLayout,            // We do not expose these menu items, as they happen automatically.
             //mnuSaveLayout,
@@ -231,7 +234,13 @@ namespace FlowSharpMenuService
             mnuSaveAs.Name = "mnuSaveAs";
             mnuSaveAs.ShortcutKeys = ((Keys)((Keys.Control | Keys.A)));
             mnuSaveAs.Size = new Size(165, 24);
-            mnuSaveAs.Text = "Save &as";
+            mnuSaveAs.Text = "Save &as...";
+            // 
+            // mnuSaveSelectionAs
+            // 
+            mnuSaveSelectionAs.Name = "mnuSaveSelectionAs";
+            mnuSaveSelectionAs.Size = new Size(165, 24);
+            mnuSaveSelectionAs.Text = "Save Selection As...";
             // 
             // toolStripMenuItem1
             // 

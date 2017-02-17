@@ -558,14 +558,14 @@ namespace FlowSharpLib
         /// </summary>
         public virtual void Hide() { }
 
-		public virtual void Draw(Graphics gr)
+		public virtual void Draw(Graphics gr, bool showSelection = true)
         {
-            if (Selected)
+            if (Selected && showSelection)      // show selection is overriden when we save the image as a PNG.
             {
 				DrawSelection(gr);
             }
 
-            if (Tagged)
+            if (Tagged && showSelection)
             {
                 DrawTag(gr);
             }

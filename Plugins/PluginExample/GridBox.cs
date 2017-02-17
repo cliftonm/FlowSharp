@@ -149,7 +149,7 @@ namespace FlowSharpLib.Shapes
                 });
         }
 
-        public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr, bool showSelection = true)
         {
             Rectangle r = DisplayRectangle;
             int cellWidth = DisplayRectangle.Width / Columns;
@@ -187,7 +187,7 @@ namespace FlowSharpLib.Shapes
             }
 
             brush.Dispose();
-            base.Draw(gr);
+            base.Draw(gr, showSelection);
         }
     }
 }

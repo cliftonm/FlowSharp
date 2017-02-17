@@ -16,11 +16,11 @@ namespace FlowSharpLib
 			HasCornerConnections = false;
 		}
 
-		public override void Draw(Graphics gr)
+		public override void Draw(Graphics gr, bool showSelection = true)
         {
             gr.FillEllipse(FillBrush, DisplayRectangle);
             gr.DrawEllipse(BorderPen, DisplayRectangle);
-            base.Draw(gr);
+            base.Draw(gr, showSelection);
         }
     }
 }

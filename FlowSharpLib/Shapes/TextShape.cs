@@ -29,12 +29,12 @@ namespace FlowSharpLib
 			base.GetBackground();
 		}
 
-        public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr, bool showSelection = true)
 		{
 			UpdateDisplayRectangle(gr);
 			gr.FillRectangle(FillBrush, DisplayRectangle);
 			gr.DrawRectangle(BorderPen, DisplayRectangle);
-			base.Draw(gr);
+			base.Draw(gr, showSelection);
 		}
 
 		protected void UpdateDisplayRectangle(Graphics gr)
@@ -80,13 +80,13 @@ namespace FlowSharpLib
             return shape;
         }
 
-        public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr, bool showSelection = true)
         {
             // Use ContentAlignment to position text.
             SizeF size = gr.MeasureString(TOOLBOX_TEXT, TextFont);
             Point textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
             gr.DrawString(TOOLBOX_TEXT, TextFont, brush, textpos);
-            base.Draw(gr);
+            base.Draw(gr, showSelection);
         }
     }
 }

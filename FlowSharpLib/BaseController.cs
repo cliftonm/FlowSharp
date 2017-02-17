@@ -564,8 +564,13 @@ namespace FlowSharpLib
             IsCanvasDragging = false;
         }
 
-        public void SaveAsPng(string filename)
-		{
+        public void SaveAsPng(string filename, bool selectionOnly = false)
+        {
+            selectionOnly.If(() => SaveAsPng(filename, SelectedElements.ToList())).Else(() => SaveAsPng(filename, elements));
+        }
+
+        protected void SaveAsPng(string filename, List<GraphicElement> elements)
+        {
 			// Get boundaries of of all elements.
 			int x1 = elements.Min(e => e.DisplayRectangle.X);
 			int y1 = elements.Min(e => e.DisplayRectangle.Y);
@@ -586,7 +591,7 @@ namespace FlowSharpLib
 				e.Move(offset);
 				e.UpdatePath();
 				e.SetCanvas(pngCanvas);
-				e.Draw(gr);
+				e.Draw(gr, false);      // Don't draw selection or tag shapes.
 				e.DrawText(gr);
 				e.SetCanvas(canvas);
 				e.Move(restore);

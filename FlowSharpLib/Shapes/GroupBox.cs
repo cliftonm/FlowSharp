@@ -98,10 +98,5 @@ namespace FlowSharpLib
                 }
             });
         }
-
-        public override void Draw(Graphics gr)
-        {
-            base.Draw(gr);
-        }
     }
 }

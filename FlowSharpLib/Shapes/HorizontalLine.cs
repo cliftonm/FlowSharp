@@ -60,11 +60,11 @@ namespace FlowSharpLib
 			canvas.Controller.Redraw(this, (cpShape.Point.X - cp.Point.X).Abs() + BaseController.MIN_WIDTH, (cpShape.Point.Y - cp.Point.Y).Abs() + BaseController.MIN_HEIGHT);
 		}
 
-		public override void Draw(Graphics gr)
+		public override void Draw(Graphics gr, bool showSelection = true)
 		{
 			Pen pen = (Pen)BorderPen.Clone();
 
-			if (ShowConnectorAsSelected)
+			if (ShowConnectorAsSelected && showSelection)
 			{
 				pen.Color = pen.Color.ToArgb() == Color.Red.ToArgb() ? Color.Blue : Color.Red;
 			}
@@ -72,7 +72,7 @@ namespace FlowSharpLib
             gr.DrawLine(pen, DisplayRectangle.LeftMiddle(), DisplayRectangle.RightMiddle());
 			pen.Dispose();
 
-			base.Draw(gr);
+			base.Draw(gr, showSelection);
 		}
 	}
 }

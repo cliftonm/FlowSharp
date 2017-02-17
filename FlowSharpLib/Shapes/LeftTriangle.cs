@@ -58,7 +58,7 @@ namespace FlowSharpLib
             return path;
         }
 
-        public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr, bool showSelection = true)
         {
             Rectangle r = DisplayRectangle.Grow(2);
             Bitmap bitmap = new Bitmap(r.Width, r.Height);
@@ -70,7 +70,7 @@ namespace FlowSharpLib
             gr.DrawImage(bitmap, DisplayRectangle.X, DisplayRectangle.Y);
             bitmap.Dispose();
             g2.Dispose();
-            base.Draw(gr);
+            base.Draw(gr, showSelection);
         }
     }
 }

@@ -77,7 +77,7 @@ namespace PluginExample
             base.Deserialize(epb);
         }
 
-        public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr, bool showSelection = true)
         {
             if (image == null)
             {
@@ -89,7 +89,7 @@ namespace PluginExample
             }
 
             gr.DrawRectangle(BorderPen, DisplayRectangle);
-            base.Draw(gr);
+            base.Draw(gr, showSelection);
         }
 
         protected void TryLoadImage()

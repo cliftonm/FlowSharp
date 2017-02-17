@@ -212,7 +212,7 @@ namespace FlowSharpLib
             lines.ForEach(l => l.UpdateScreen(ix, iy));
         }
 
-        public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr, bool showSelection = true)
         {
             lines.ForEach(l => l.Draw());
 

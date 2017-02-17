@@ -194,6 +194,9 @@ namespace FlowSharpCodeScintillaEditorService
             // Set the lexer
             Lexer = Lexer.Python;
             IndentWidth = 2;
+            TabWidth = 2;
+
+            CharAdded += AutoIndent;
 
             // Known lexer properties:
             // "tab.timmy.whinge.level",
@@ -274,6 +277,30 @@ namespace FlowSharpCodeScintillaEditorService
             var cython = "cdef cimport cpdef";
 
             SetKeywords(0, python2 + " " + cython);
+        }
+
+        private void AutoIndent(object sender, CharAddedEventArgs e)
+        {
+            Line currentLine = Lines[CurrentLine];
+            int currentPos = CurrentPosition;
+
+            if (e.Char == '\r')
+            {
+                Line previousLine = Lines[CurrentLine - 1];
+
+                if (previousLine.Text.Trim().EndsWith(":"))
+                {
+                    currentLine.Indentation = previousLine.Indentation + IndentWidth;
+                    CurrentPosition = currentPos + currentLine.Indentation;
+                    SelectionStart = CurrentPosition;
+                }
+                else
+                {
+                    currentLine.Indentation = previousLine.Indentation;
+                    CurrentPosition = currentPos + currentLine.Indentation;
+                    SelectionStart = CurrentPosition;
+                }
+            }
         }
     }
 }

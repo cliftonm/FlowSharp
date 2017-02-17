@@ -9,12 +9,13 @@ using System.Drawing;
 namespace FlowSharpLib
 {
     [ExcludeFromToolbox]
-    public class AngleBracketBox : GraphicElement
+    public class EndForLoopBox : GraphicElement
     {
         protected Point[] path;
-        protected const int INDENT_SIZE = 12;
+        protected const int INDENT_SIZE = 14;
+        protected const int Y_ADJUST = 5;
 
-        public AngleBracketBox(Canvas canvas) : base(canvas)
+        public EndForLoopBox(Canvas canvas) : base(canvas)
         {
             HasCornerConnections = false;
         }
@@ -23,11 +24,11 @@ namespace FlowSharpLib
         {
             path = new Point[]
             {
-                new Point(DisplayRectangle.X + INDENT_SIZE, DisplayRectangle.Y),                                                            // top left of indented left "arrow"
-                new Point(DisplayRectangle.X + DisplayRectangle.Width - INDENT_SIZE,    DisplayRectangle.Y),                                // top right of indented right "arrow"
+                new Point(DisplayRectangle.X, DisplayRectangle.Y + Y_ADJUST),                                                            // top left of indented left "arrow"
+                new Point(DisplayRectangle.X + DisplayRectangle.Width,    DisplayRectangle.Y + Y_ADJUST),                                // top right of indented right "arrow"
                 new Point(DisplayRectangle.X + DisplayRectangle.Width, DisplayRectangle.Y + DisplayRectangle.Height/2),                     // right tip (middle of box)
-                new Point(DisplayRectangle.X + DisplayRectangle.Width - INDENT_SIZE, DisplayRectangle.Y + DisplayRectangle.Height),         // bottom right of indented right "arrow"
-                new Point(DisplayRectangle.X + INDENT_SIZE, DisplayRectangle.Y + DisplayRectangle.Height),                                  // bottom left of indented left "arrow"
+                new Point(DisplayRectangle.X + DisplayRectangle.Width - INDENT_SIZE, DisplayRectangle.Y + DisplayRectangle.Height - Y_ADJUST),         // bottom right of indented right "arrow"
+                new Point(DisplayRectangle.X + INDENT_SIZE, DisplayRectangle.Y + DisplayRectangle.Height -  Y_ADJUST),                                  // bottom left of indented left "arrow"
                 new Point(DisplayRectangle.X, DisplayRectangle.Y + DisplayRectangle.Height/2),                                                            // middle left of indented left "arrow"
             };
         }
@@ -42,13 +43,13 @@ namespace FlowSharpLib
 
     [ToolboxShape]
     [ToolboxOrder(4)]
-    public class ToolboxAngleBracketBox : GraphicElement
+    public class ToolboxEndForLoopBox : GraphicElement
     {
         protected Point[] path;
-        protected const int INDENT_SIZE = 5;
-        protected const int V_ADJ = 3;
+        protected const int INDENT_SIZE = 6;
+        protected const int Y_ADJUST = 5;
 
-        public ToolboxAngleBracketBox(Canvas canvas) : base(canvas)
+        public ToolboxEndForLoopBox(Canvas canvas) : base(canvas)
         {
             HasCornerConnections = false;
         }
@@ -60,7 +61,7 @@ namespace FlowSharpLib
 
         public override GraphicElement CloneDefault(Canvas canvas, Point offset)
         {
-            AngleBracketBox shape = new AngleBracketBox(canvas);
+            EndForLoopBox shape = new EndForLoopBox(canvas);
             shape.DisplayRectangle = shape.DefaultRectangle().Move(offset);
             shape.UpdateProperties();
             shape.UpdatePath();
@@ -72,11 +73,11 @@ namespace FlowSharpLib
         {
             path = new Point[]
             {
-                new Point(DisplayRectangle.X + INDENT_SIZE, DisplayRectangle.Y + V_ADJ),                                                                  // top left of indented left "arrow"
-                new Point(DisplayRectangle.X + DisplayRectangle.Width - INDENT_SIZE, DisplayRectangle.Y + V_ADJ),                                         // top right of indented right "arrow"
-                new Point(DisplayRectangle.X + DisplayRectangle.Width, DisplayRectangle.Y + DisplayRectangle.Height/2),                                   // right tip (middle of box)
-                new Point(DisplayRectangle.X + DisplayRectangle.Width - INDENT_SIZE, DisplayRectangle.Y + DisplayRectangle.Height - V_ADJ),               // bottom right of indented right "arrow"
-                new Point(DisplayRectangle.X + INDENT_SIZE, DisplayRectangle.Y + DisplayRectangle.Height - V_ADJ),                                        // bottom left of indented left "arrow"
+                new Point(DisplayRectangle.X, DisplayRectangle.Y + Y_ADJUST),                                                            // top left of indented left "arrow"
+                new Point(DisplayRectangle.X + DisplayRectangle.Width,    DisplayRectangle.Y + Y_ADJUST),                                // top right of indented right "arrow"
+                new Point(DisplayRectangle.X + DisplayRectangle.Width, DisplayRectangle.Y + DisplayRectangle.Height/2),                     // right tip (middle of box)
+                new Point(DisplayRectangle.X + DisplayRectangle.Width - INDENT_SIZE, DisplayRectangle.Y + DisplayRectangle.Height - Y_ADJUST),         // bottom right of indented right "arrow"
+                new Point(DisplayRectangle.X + INDENT_SIZE, DisplayRectangle.Y + DisplayRectangle.Height -  Y_ADJUST),                                  // bottom left of indented left "arrow"
                 new Point(DisplayRectangle.X, DisplayRectangle.Y + DisplayRectangle.Height/2),                                                            // middle left of indented left "arrow"
             };
         }

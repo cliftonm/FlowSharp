@@ -124,11 +124,11 @@ namespace FlowSharpLib
             InternalUpdateScreen(ix, iy);
         }
 
-        public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr, bool showSelection = true)
         {
             Pen pen = (Pen)BorderPen.Clone();
 
-            if (ShowConnectorAsSelected || Selected)
+            if ( (ShowConnectorAsSelected || Selected) && showSelection)
             {
                 pen.Color = pen.Color.ToArgb() == Color.Red.ToArgb() ? Color.Blue : Color.Red;
             }
@@ -136,7 +136,7 @@ namespace FlowSharpLib
             gr.DrawLine(pen, StartPoint, EndPoint);
             pen.Dispose();
 
-            base.Draw(gr);
+            base.Draw(gr, showSelection);
         }
     }
 }

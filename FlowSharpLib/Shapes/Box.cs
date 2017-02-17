@@ -15,11 +15,11 @@ namespace FlowSharpLib
 		{
         }
 
-        public override void Draw(Graphics gr)
+        public override void Draw(Graphics gr, bool showSelection = true)
         {
             gr.FillRectangle(FillBrush, DisplayRectangle);
             gr.DrawRectangle(BorderPen, DisplayRectangle);
-            base.Draw(gr);
+            base.Draw(gr, showSelection);
         }
     }
 }

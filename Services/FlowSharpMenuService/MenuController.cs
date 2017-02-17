@@ -80,13 +80,13 @@ namespace FlowSharpMenuService
         }
 
         // TODO: The save/load operations might be best moved to the edit service?
-        public bool SaveOrSaveAs(bool forceSaveAs = false)
+        public bool SaveOrSaveAs(bool forceSaveAs = false, bool selectionOnly = false)
         {
             bool ret = true;
 
             if (String.IsNullOrEmpty(filename) || forceSaveAs)
             {
-                ret = SaveAs();
+                ret = SaveAs(selectionOnly);
             }
             else
             {
@@ -142,6 +142,7 @@ namespace FlowSharpMenuService
             };
             mnuSave.Click += mnuSave_Click;
             mnuSaveAs.Click += mnuSaveAs_Click;
+            mnuSaveSelectionAs.Click += mnuSaveSelectionAs_Click;
             mnuExit.Click += mnuExit_Click;
             mnuCopy.Click += mnuCopy_Click;
             mnuPaste.Click += mnuPaste_Click;
@@ -618,6 +619,21 @@ namespace FlowSharpMenuService
             }
         }
 
+        private void mnuSaveSelectionAs_Click(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
+            if (canvasController.SelectedElements.Count > 0)
+            {
+                SaveOrSaveAs(true, true);
+                UpdateCaption();
+            }
+            else
+            {
+                MessageBox.Show("Nothing to save.", "Empty Canvas", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
         private void mnuExit_Click(object sender, EventArgs e)
         {
             if (CheckForChanges()) return;
@@ -792,7 +808,7 @@ namespace FlowSharpMenuService
             return ret;
         }
 
-        protected bool SaveAs()
+        protected bool SaveAs(bool selectionOnly = false)
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "FlowSharp (*.fsd)|*.fsd|PNG (*.png)|*.png";
@@ -806,31 +822,44 @@ namespace FlowSharpMenuService
 
                 if (ext == ".png")
                 {
-                    canvasController.SaveAsPng(sfd.FileName);
+                    canvasController.SaveAsPng(sfd.FileName, selectionOnly);
                 }
                 else
                 {
                     filename = sfd.FileName;
                     // TODO: What about other canvases that are open in the diagram?
-                    canvasController.Filename = String.Empty;       // Force blank filename so filename is saved to the new destination.  See FlowSharpCanvasService.cs, SaveDiagrams
+
+                    if (!selectionOnly)
+                    {
+                        canvasController.Filename = String.Empty;       // Force blank filename so filename is saved to the new destination.  See FlowSharpCanvasService.cs, SaveDiagrams
+                    }
+
                     // Let canvas controller assign filenames.
-                    SaveDiagram(filename);
-                    UpdateCaption();
-                    UpdateMru(filename);
+                    SaveDiagram(filename, selectionOnly);
+
+                    if (!selectionOnly)
+                    {
+                        UpdateCaption();
+                        UpdateMru(filename);
+                    }
                 }
             }
 
             return res == DialogResult.OK && ext != ".png";
         }
 
-        protected void SaveDiagram(string filename)
+        protected void SaveDiagram(string filename, bool selectionOnly = false)
         {
             IFlowSharpCanvasService canvasService = serviceManager.Get<IFlowSharpCanvasService>();
-            canvasService.SaveDiagramsAndLayout(filename);
+            canvasService.SaveDiagramsAndLayout(filename, selectionOnly);
             //BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             //string data = Persist.Serialize(canvasController.Elements);
             //File.WriteAllText(filename, data);
-            serviceManager.Get<IFlowSharpEditService>().SetSavePoint();
+
+            if (!selectionOnly)
+            {
+                serviceManager.Get<IFlowSharpEditService>().SetSavePoint();
+            }
         }
 
         protected void UpdateCaption()

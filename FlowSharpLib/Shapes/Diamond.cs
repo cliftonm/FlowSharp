@@ -29,11 +29,11 @@ namespace FlowSharpLib
 			};
 		}
 
-		public override void Draw(Graphics gr)
+		public override void Draw(Graphics gr, bool showSelection = true)
 		{
 			gr.FillPolygon(FillBrush, path);
 			gr.DrawPolygon(BorderPen, path);
-			base.Draw(gr);
+			base.Draw(gr, showSelection);
 		}
 	}
 }

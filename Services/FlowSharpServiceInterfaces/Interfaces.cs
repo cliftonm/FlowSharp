@@ -42,7 +42,7 @@ namespace FlowSharpServiceInterfaces
         void SetActiveController(Control parent);
         void RequestNewCanvas();
         void LoadDiagrams(string filename);
-        void SaveDiagramsAndLayout(string filename);
+        void SaveDiagramsAndLayout(string filename, bool selectionOnly = false);
         void ClearControllers();
     }
 

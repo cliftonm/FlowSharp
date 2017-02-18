@@ -67,6 +67,10 @@
       <Project>{f8d75cfd-fb07-4a09-97d6-0ac3871aa35a}</Project>
       <Name>FlowSharpCodeServiceInterfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FlowSharpCodeShapeInterfaces\FlowSharpCodeShapeInterfaces.csproj">
+      <Project>{8c7d37d1-f9d9-4633-b863-eac44b9dd999}</Project>
+      <Name>FlowSharpCodeShapeInterfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

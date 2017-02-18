@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodeScintillaEdito
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodePythonCompilerService", "Services\FlowSharpCodeServices\FlowSharpCodePythonCompilerService\FlowSharpCodePythonCompilerService.csproj", "{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodeDrakonShapes", "Services\FlowSharpCodeServices\FlowSharpCodeDrakonShapes\FlowSharpCodeDrakonShapes.csproj", "{82DE83B7-6A8E-4BCB-8B12-5E80E30DDBAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,10 @@ Global
 		{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82DE83B7-6A8E-4BCB-8B12-5E80E30DDBAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82DE83B7-6A8E-4BCB-8B12-5E80E30DDBAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82DE83B7-6A8E-4BCB-8B12-5E80E30DDBAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82DE83B7-6A8E-4BCB-8B12-5E80E30DDBAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -193,5 +199,6 @@ Global
 		{5FA0C1A5-BDE5-41FB-B031-EB8285FC549B} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 		{3452537D-7FA0-4916-BAA9-B4985F11581E} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 		{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
+		{82DE83B7-6A8E-4BCB-8B12-5E80E30DDBAD} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 	EndGlobalSection
 EndGlobal

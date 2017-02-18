@@ -6,14 +6,17 @@
 
 using System.Drawing;
 
-namespace FlowSharpLib
+using FlowSharpCodeShapeInterfaces;
+using FlowSharpLib;
+
+namespace FlowSharpCodeDrakonShapes
 {
     [ExcludeFromToolbox]
-    public class BeginForLoopBox : GraphicElement
+    public class BeginForLoopBox : GraphicElement, IDrakonShape, IBeginForLoopBox
     {
         protected Point[] path;
         protected const int INDENT_SIZE = 14;
-        protected const int Y_ADJUST = 5;
+        protected const int Y_ADJUST = 0;
 
         public BeginForLoopBox(Canvas canvas) : base(canvas)
         {

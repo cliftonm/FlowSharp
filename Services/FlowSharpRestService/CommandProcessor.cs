@@ -15,6 +15,7 @@ using Clifton.Core.Semantics;
 using FlowSharpLib;
 using FlowSharpServiceInterfaces;
 using FlowSharpCodeServiceInterfaces;
+using FlowSharpCodeShapeInterfaces;
 
 namespace FlowSharpRestService
 {

@@ -4,19 +4,53 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 
-namespace FlowSharpLib
+using Clifton.Core.ExtensionMethods;
+
+using FlowSharpCodeShapeInterfaces;
+using FlowSharpLib;
+
+namespace FlowSharpCodeDrakonShapes
 {
     [ExcludeFromToolbox]
-    public class AngleBracketBox : GraphicElement
+    public class AngleBracketBox : GraphicElement, IDrakonShape, IIfBox
     {
+        public TruePath TruePath { get; set; }
+
         protected Point[] path;
         protected const int INDENT_SIZE = 12;
 
         public AngleBracketBox(Canvas canvas) : base(canvas)
         {
             HasCornerConnections = false;
+            TruePath = TruePath.Down;           // Default path for the true condition.
+        }
+
+        public override ElementProperties CreateProperties()
+        {
+            return new AngleBracketBoxProperties(this);
+        }
+
+        public override void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
+        {
+            Json["TruePath"] = TruePath.ToString();
+            base.Serialize(epb, elementsBeingSerialized);
+        }
+
+        public override void Deserialize(ElementPropertyBag epb)
+        {
+            base.Deserialize(epb);
+
+            string truePath;
+
+            if (Json.TryGetValue("TruePath", out truePath))
+            {
+                TruePath = (TruePath)Enum.Parse(typeof(TruePath), truePath);
+            }
         }
 
         public override void UpdatePath()
@@ -86,6 +120,23 @@ namespace FlowSharpLib
             gr.FillPolygon(FillBrush, path);
             gr.DrawPolygon(BorderPen, path);
             base.Draw(gr, showSelection);
+        }
+    }
+
+    public class AngleBracketBoxProperties : ElementProperties
+    {
+        [Category("Logic")]
+        public TruePath TruePath { get; set; }
+
+        public AngleBracketBoxProperties(AngleBracketBox el) : base(el)
+        {
+            TruePath = el.TruePath;
+        }
+
+        public override void Update(GraphicElement el, string label)
+        {
+            (label == nameof(TruePath)).If(() => ((AngleBracketBox)el).TruePath = TruePath);
+            base.Update(el, label);
         }
     }
 }

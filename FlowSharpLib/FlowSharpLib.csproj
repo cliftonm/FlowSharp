@@ -56,19 +56,14 @@
     <Compile Include="Connectors\DiagonalConnector.cs" />
     <Compile Include="ElementCache.cs" />
     <Compile Include="Interfaces.cs" />
-    <Compile Include="Shapes\AngleBracketBox.cs" />
-    <Compile Include="Shapes\BeginForLoopBox.cs" />
     <Compile Include="Shapes\DownTriangle.cs" />
     <Compile Include="Connectors\DynamicConnector.cs" />
     <Compile Include="Connectors\DynamicConnectorLD.cs" />
     <Compile Include="Connectors\DynamicConnectorProperties.cs" />
     <Compile Include="Connectors\DynamicConnectorUD.cs" />
-    <Compile Include="Shapes\EndForLoopBox.cs" />
     <Compile Include="Shapes\GroupBox.cs" />
-    <Compile Include="Shapes\InputBox.cs" />
     <Compile Include="Shapes\Line.cs" />
     <Compile Include="Persist.cs" />
-    <Compile Include="Shapes\OutputBox.cs" />
     <Compile Include="Shapes\RightTriangle.cs" />
     <Compile Include="ShapeAnchor.cs" />
     <Compile Include="BaseController.cs" />
@@ -95,6 +90,12 @@
     <Compile Include="Shapes\VerticalLine.cs" />
     <Compile Include="ToolboxShapeAttribute.cs" />
     <Compile Include="UndoRedo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Services\FlowSharpCodeServices\FlowSharpCodeShapeInterfaces\FlowSharpCodeShapeInterfaces.csproj">
+      <Project>{8c7d37d1-f9d9-4633-b863-eac44b9dd999}</Project>
+      <Name>FlowSharpCodeShapeInterfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

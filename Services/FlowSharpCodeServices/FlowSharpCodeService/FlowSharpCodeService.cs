@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -10,6 +11,7 @@ using Clifton.WinForm.ServiceInterfaces;
 using FlowSharpLib;
 using FlowSharpServiceInterfaces;
 using FlowSharpCodeServiceInterfaces;
+using FlowSharpCodeShapeInterfaces;
 
 namespace FlowSharpCodeService
 {
@@ -49,6 +51,163 @@ namespace FlowSharpCodeService
             ses.TextChanged += OnScintillaEditorServiceTextChanged;
             InitializeEditorsMenu();
         }
+
+        // Workflow processing:
+
+        public GraphicElement FindStartOfWorkflow(BaseController canvasController, GraphicElement wf)
+        {
+            GraphicElement start = null;
+
+            foreach (GraphicElement srcEl in canvasController.Elements.Where(srcEl => wf.DisplayRectangle.Contains(srcEl.DisplayRectangle)))
+            {
+                if (!srcEl.IsConnector && srcEl != wf)
+                {
+                    // Special case for a 1 step workflow.  Untested.
+                    // Exclude any text annotations.
+                    if (srcEl.Connections.Count == 0)
+                    {
+                        if (!(srcEl is TextShape))
+                        {
+                            start = srcEl;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // start begins with a box or diamond shape, having only Start connection types.
+                        if (srcEl.Connections.All(c => c.ToConnectionPoint.Type == GripType.Start))
+                        {
+                            start = srcEl;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return start;
+        }
+
+        protected GripType[] GetTrueConnections(IIfBox el)
+        {
+            GripType[] path;
+
+            if (el.TruePath == TruePath.Down)
+            {
+                path = new GripType[] { GripType.BottomMiddle };
+            }
+            else
+            {
+                path = new GripType[] { GripType.LeftMiddle, GripType.RightMiddle };
+            }
+
+            return path;
+        }
+
+        protected GripType[] GetFalseConnections(IIfBox el)
+        {
+            GripType[] path;
+
+            if (el.TruePath == TruePath.Down)
+            {
+                path = new GripType[] { GripType.LeftMiddle, GripType.RightMiddle };
+            }
+            else
+            {
+                path = new GripType[] { GripType.BottomMiddle };
+            }
+
+            return path;
+        }
+
+        // True path is always the bottom of the diamond.
+        public GraphicElement GetTruePathFirstShape(IIfBox el)
+        {
+            GripType[] path = GetTrueConnections(el);
+            GraphicElement trueStart = null;
+            Connection connection = ((GraphicElement)el).Connections.FirstOrDefault(c => path.Contains(c.ElementConnectionPoint.Type));
+
+            if (connection != null)
+            {
+                trueStart = ((Connector)connection.ToElement).EndConnectedShape;
+            }
+
+            return trueStart;
+        }
+
+        // False path is always the left or right point of the diamond.
+        public GraphicElement GetFalsePathFirstShape(IIfBox el)
+        {
+            GripType[] path = GetFalseConnections(el);
+            GraphicElement falseStart = null;
+            Connection connection = ((GraphicElement)el).Connections.FirstOrDefault(c => path.Contains(c.ElementConnectionPoint.Type));
+
+            if (connection != null)
+            {
+                falseStart = ((Connector)connection.ToElement).EndConnectedShape;
+            }
+
+            return falseStart;
+        }
+
+        /// <summary>
+        /// Find the next shape connected to el.
+        /// </summary>
+        /// <param name="el"></param>
+        /// <returns>The next connected shape or null if no connection exists.</returns>
+        public GraphicElement NextElementInWorkflow(GraphicElement el)
+        {
+            // Always the shape connected to the bottom of the current shape:
+            GraphicElement ret = null;
+
+            var connection = el.Connections.FirstOrDefault(c => c.ElementConnectionPoint.Type == GripType.BottomMiddle);
+
+            if (connection != null)
+            {
+                ret = ((Connector)connection.ToElement).EndConnectedShape;
+            }
+
+                /*
+                GraphicElement ret = null;
+
+                // The starting shape has one connection where the StartConnectedShape should be the el
+                // and the EndConnectedShape is the next shape in the workflow.
+
+                // A middle workflow element has two connections, again where the StartConnectedShape should be the el
+                // and the EndConnectedShape is the next shape in the workflow.
+
+                // The final workflow step has one connector, where the EndConnectedShape is the el.
+
+                // 12/20/16, because of a current bug with connectors, where shapes incorrectly retain
+                // connections to other shapes that they aren't actually connected to, we try to 
+                // compensate for this.
+
+                foreach (Connection connection in el.Connections)
+                {
+                    GraphicElement gr = connection.ToElement;       // a shape's Connections should always be a Connector
+
+                    if (gr is Connector)
+                    {
+                        Connector connector = (Connector)gr;
+
+                        if (connector.StartConnectedShape == el)
+                        {
+                            ret = connector.EndConnectedShape;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Trace.WriteLine("*** EXPECTED CONNECTOR FOR " + el.GetType().Name + " ID=" + el.Id.ToString() + " Text=" + el.Text + " ***");
+                    }
+                }
+                */
+
+            return ret;
+        }
+
+
+
+        // ===================================================
 
         public void OutputWindowClosed()
         {
@@ -320,6 +479,7 @@ namespace FlowSharpCodeService
             {
                 GraphicElement el = canvasService.ActiveController.SelectedElements[0];
                 el.Json["Code"] = e.Text;           // Should we call this C# or CSharp?
+                el.Json["TextChanged"] = true.ToString();
             }
         }
 
@@ -330,6 +490,7 @@ namespace FlowSharpCodeService
             {
                 GraphicElement el = canvasService.ActiveController.SelectedElements[0];
                 el.Json[e.Language] = e.Text;         // TODO: Should we call this Script or something else?
+                el.Json["TextChanged"] = true.ToString();
             }
         }
 

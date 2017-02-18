@@ -16,6 +16,7 @@ using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ModuleManagement;
 using Clifton.Core.ServiceManagement;
 
+using FlowSharpCodeDrakonShapes;
 using FlowSharpCodeServiceInterfaces;
 using FlowSharpCodeShapeInterfaces;
 using FlowSharpServiceInterfaces;
@@ -50,7 +51,7 @@ namespace FlowSharpCodeCompilerService
             InitializeBuildMenu();
         }
 
-        public async void Run()
+        public void Run()
         {
             TerminateRunningProcess();
             var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
@@ -87,6 +88,7 @@ namespace FlowSharpCodeCompilerService
                 p.BeginErrorReadLine();
                 runningProcess = p;
 
+                /*
                 await Task.Run(() =>
                 {
                     bool found = false;
@@ -111,6 +113,7 @@ namespace FlowSharpCodeCompilerService
                         ShowWindow(hWnd, SW_HIDE);
                     }
                 });
+                */
             }
         }
 
@@ -128,6 +131,7 @@ namespace FlowSharpCodeCompilerService
 
             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
             IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
+            IFlowSharpCodeService codeService = ServiceManager.Get<IFlowSharpCodeService>();
             BaseController canvasController = canvasService.ActiveController;
             tempToTextBoxMap.Clear();
 
@@ -154,7 +158,7 @@ namespace FlowSharpCodeCompilerService
             IEnumerable<GraphicElement> workflowShapes = canvasController.Elements.Where(el => el is IWorkflowBox);
             workflowShapes.ForEach(wf =>
             {
-                string code = GetWorkflowCode(canvasController, wf);
+                string code = GetWorkflowCode(codeService, canvasController, wf);
                 wf.Json["Code"] = code;
                 // CreateCodeFile(wf, sources, code);
             });
@@ -242,7 +246,7 @@ namespace FlowSharpCodeCompilerService
             sources.Add(filename);
         }
 
-        public string GetWorkflowCode(BaseController canvasController, GraphicElement wf)
+        public string GetWorkflowCode(IFlowSharpCodeService codeService, BaseController canvasController, GraphicElement wf)
         {
             StringBuilder sb = new StringBuilder();
             string packetName = Clifton.Core.ExtensionMethods.ExtensionMethods.LeftOf(wf.Text, "Workflow");
@@ -278,8 +282,8 @@ namespace FlowSharpCodeCompilerService
                 sb.AppendLine("\t\t\t" + wf.Text + " workflow = new " + wf.Text + "();");
 
                 // Fill in the workflow steps.
-                GraphicElement el = FindStartOfWorkflow(canvasController, wf);
-                GenerateCodeForWorkflow(sb, el, 3);
+                GraphicElement el = codeService.FindStartOfWorkflow(canvasController, wf);
+                GenerateCodeForWorkflow(codeService, sb, el, 3);
 
                 // We're all done.
                 sb.AppendLine("\t\t}");
@@ -310,19 +314,19 @@ namespace FlowSharpCodeCompilerService
             return ret;
         }
 
-        protected void GenerateCodeForWorkflow(StringBuilder sb, GraphicElement el, int indent)
+        protected void GenerateCodeForWorkflow(IFlowSharpCodeService codeService, StringBuilder sb, GraphicElement el, int indent)
         {
             string strIndent = new String('\t', indent);
 
             while (el != null)
             {
-                if ( (el is Diamond) || (el is AngleBracketBox) )
+                if ( (el is IIfBox) )
                 {
 
                     // True clause
-                    var elTrue = GetTruePathFirstShape(el);
+                    var elTrue = codeService.GetTruePathFirstShape((IIfBox)el);
                     // False clause
-                    var elFalse = GetFalsePathFirstShape(el);
+                    var elFalse = codeService.GetFalsePathFirstShape((IIfBox)el);
 
                     if (elTrue != null)
                     {
@@ -330,14 +334,14 @@ namespace FlowSharpCodeCompilerService
                         sb.AppendLine();
                         sb.AppendLine(strIndent + "if (" + el.Text.ToLower() + ")");
                         sb.AppendLine(strIndent + "{");
-                        GenerateCodeForWorkflow(sb, elTrue, indent + 1);
+                        GenerateCodeForWorkflow(codeService, sb, elTrue, indent + 1);
                         sb.AppendLine(strIndent + "}");
 
                         if (elFalse != null)
                         {
                             sb.AppendLine(strIndent + "else");
                             sb.AppendLine(strIndent + "{");
-                            GenerateCodeForWorkflow(sb, elFalse, indent + 1);
+                            GenerateCodeForWorkflow(codeService, sb, elFalse, indent + 1);
                             sb.AppendLine(strIndent + "}");
                         }
                     }
@@ -347,7 +351,7 @@ namespace FlowSharpCodeCompilerService
                         sb.AppendLine();
                         sb.AppendLine(strIndent + "if (!" + el.Text.ToLower() + ")");
                         sb.AppendLine(strIndent + "{");
-                        GenerateCodeForWorkflow(sb, elFalse, indent + 1);
+                        GenerateCodeForWorkflow(codeService, sb, elFalse, indent + 1);
                         sb.AppendLine(strIndent + "}");
                     }
 
@@ -360,113 +364,8 @@ namespace FlowSharpCodeCompilerService
                     sb.AppendLine(strIndent + "workflow." + el.Text + "(packet);");
                 }
 
-                el = NextElementInWorkflow(el);
+                el = codeService.NextElementInWorkflow(el);
             }
-        }
-
-        // True path is always the bottom of the diamond.
-        protected GraphicElement GetTruePathFirstShape(GraphicElement el)
-        {
-            GraphicElement trueStart = null;
-            Connection connection = el.Connections.FirstOrDefault(c => c.ElementConnectionPoint.Type == GripType.BottomMiddle);
-
-            if (connection != null)
-            {
-                trueStart = ((Connector)connection.ToElement).EndConnectedShape;
-            }
-
-            return trueStart;
-        }
-
-        // False path is always the left or right point of the diamond.
-        public GraphicElement GetFalsePathFirstShape(GraphicElement el)
-        {
-            GraphicElement falseStart = null;
-            Connection connection = el.Connections.FirstOrDefault(c => c.ElementConnectionPoint.Type == GripType.LeftMiddle || c.ElementConnectionPoint.Type == GripType.RightMiddle);
-
-            if (connection != null)
-            {
-                falseStart = ((Connector)connection.ToElement).EndConnectedShape;
-            }
-
-            return falseStart;
-        }
-
-        protected GraphicElement FindStartOfWorkflow(BaseController canvasController, GraphicElement wf)
-        {
-            GraphicElement start = null;
-
-            foreach (GraphicElement srcEl in canvasController.Elements.Where(srcEl => wf.DisplayRectangle.Contains(srcEl.DisplayRectangle)))
-            {
-                if (!srcEl.IsConnector && srcEl != wf)
-                {
-                    // Special case for a 1 step workflow.  Untested.
-                    // Exclude any text annotations.
-                    if (srcEl.Connections.Count == 0)
-                    {
-                        if (!(srcEl is TextShape))
-                        {
-                            start = srcEl;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        // start begins with a box or diamond shape, having only Start connection types.
-                        if (srcEl.Connections.All(c => c.ToConnectionPoint.Type == GripType.Start))
-                        {
-                            start = srcEl;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return start;
-        }
-
-        /// <summary>
-        /// Find the next shape connected to el.
-        /// </summary>
-        /// <param name="el"></param>
-        /// <returns>The next connected shape or null if no connection exists.</returns>
-        protected GraphicElement NextElementInWorkflow(GraphicElement el)
-        {
-            GraphicElement ret = null;
-
-            // The starting shape has one connection where the StartConnectedShape should be the el
-            // and the EndConnectedShape is the next shape in the workflow.
-
-            // A middle workflow element has two connections, again where the StartConnectedShape should be the el
-            // and the EndConnectedShape is the next shape in the workflow.
-
-            // The final workflow step has one connector, where the EndConnectedShape is the el.
-
-            // 12/20/16, because of a current bug with connectors, where shapes incorrectly retain
-            // connections to other shapes that they aren't actually connected to, we try to 
-            // compensate for this.
-
-            foreach (Connection connection in el.Connections)
-            {
-                GraphicElement gr = connection.ToElement;       // a shape's Connections should always be a Connector
-
-                if (gr is Connector)
-                {
-                    Connector connector = (Connector)gr;
-
-                    if (connector.StartConnectedShape == el)
-                    {
-                        ret = connector.EndConnectedShape;
-                        break;
-                    }
-                }
-                else
-                {
-                    Trace.WriteLine("*** EXPECTED CONNECTOR FOR " + el.GetType().Name + " ID=" + el.Id.ToString() + " Text=" + el.Text + " ***");
-                }
-            }
-
-            return ret;
         }
 
         protected void DeleteTempFiles()

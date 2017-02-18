@@ -59,6 +59,10 @@
       <Project>{caa4fd23-1392-4dee-907a-cb3dc7315a98}</Project>
       <Name>FlowSharpServiceInterfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FlowSharpCodeDrakonShapes\FlowSharpCodeDrakonShapes.csproj">
+      <Project>{82de83b7-6a8e-4bcb-8b12-5e80e30ddbad}</Project>
+      <Name>FlowSharpCodeDrakonShapes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FlowSharpCodeServiceInterfaces\FlowSharpCodeServiceInterfaces.csproj">
       <Project>{f8d75cfd-fb07-4a09-97d6-0ac3871aa35a}</Project>
       <Name>FlowSharpCodeServiceInterfaces</Name>

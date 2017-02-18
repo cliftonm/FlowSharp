@@ -6,10 +6,13 @@
 
 using System.Drawing;
 
-namespace FlowSharpLib
+using FlowSharpCodeShapeInterfaces;
+using FlowSharpLib;
+
+namespace FlowSharpCodeDrakonShapes
 {
     [ExcludeFromToolbox]
-    public class InputBox : GraphicElement
+    public class InputBox : GraphicElement, IDrakonShape, IInputBox
     {
         protected Point[] path;
         protected const int INDENT_SIZE = 12;
@@ -46,7 +49,7 @@ namespace FlowSharpLib
     {
         protected Point[] path;
         protected const int INDENT_SIZE = 5;
-        protected const int V_ADJ = 3;
+        protected const int V_ADJ = 4;
 
         public ToolboxInputBox(Canvas canvas) : base(canvas)
         {

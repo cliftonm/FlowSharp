@@ -119,6 +119,10 @@
       <Project>{91fcf1d4-91e0-41fa-a675-c3174f131104}</Project>
       <Name>FlowSharpCodeCompilerService</Name>
     </ProjectReference>
+    <ProjectReference Include="Services\FlowSharpCodeServices\FlowSharpCodeDrakonShapes\FlowSharpCodeDrakonShapes.csproj">
+      <Project>{82de83b7-6a8e-4bcb-8b12-5e80e30ddbad}</Project>
+      <Name>FlowSharpCodeDrakonShapes</Name>
+    </ProjectReference>
     <ProjectReference Include="Services\FlowSharpCodeServices\FlowSharpCodeICSharpDevelopService\FlowSharpCodeICSharpDevelopService.csproj">
       <Project>{0f9d2405-725f-4859-ab13-75dfafa6ba35}</Project>
       <Name>FlowSharpCodeICSharpDevelopService</Name>

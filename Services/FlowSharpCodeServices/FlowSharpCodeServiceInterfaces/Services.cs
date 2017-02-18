@@ -3,6 +3,9 @@ using System.Windows.Forms;
 
 using Clifton.Core.ServiceManagement;
 
+using FlowSharpCodeShapeInterfaces;
+using FlowSharpLib;
+
 namespace FlowSharpCodeServiceInterfaces
 {
     public class TextChangedEventArgs : EventArgs
@@ -18,6 +21,10 @@ namespace FlowSharpCodeServiceInterfaces
     {
         void OutputWindowClosed();
         void EditorWindowClosed(string language);
+        GraphicElement FindStartOfWorkflow(BaseController canvasController, GraphicElement wf);
+        GraphicElement GetTruePathFirstShape(IIfBox el);
+        GraphicElement GetFalsePathFirstShape(IIfBox el);
+        GraphicElement NextElementInWorkflow(GraphicElement el);
     }
 
     public interface IFlowSharpCodeOutputWindowService : IService
@@ -41,21 +48,21 @@ namespace FlowSharpCodeServiceInterfaces
         void Compile();
     }
 
-    public interface IFlowSharpCodeEditor
+    public interface IFlowSharpCodeEditorServiceBase : IService
     {
         event EventHandler<TextChangedEventArgs> TextChanged;
 
         void SetText(string language, string text);
     }
 
-    public interface IFlowSharpCodeEditorService : IFlowSharpCodeEditor, IService
+    public interface IFlowSharpCodeEditorService : IFlowSharpCodeEditorServiceBase
     {
         void CreateEditor(Control parent);
         void AddAssembly(string filename);
         void AddAssembly(Type t);
     }
 
-    public interface IFlowSharpScintillaEditorService : IFlowSharpCodeEditor, IService
+    public interface IFlowSharpScintillaEditorService : IFlowSharpCodeEditorServiceBase
     {
         void CreateEditor(Control parent, string language);
         // void CreateEditor<T>(Control parent) where T : IGenericEditor, new();

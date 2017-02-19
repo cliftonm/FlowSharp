@@ -639,7 +639,13 @@ public void Process(ISemanticProcessor proc, IMembrane membrane, CmdOutputMessag
   var w = proc.ServiceManager.Get&lt;IFlowSharpCodeOutputWindowService&gt;();
   cmd.Text.Split('\n').Where(s=&gt;!String.IsNullOrEmpty(s.Trim())).ForEach(s =&gt; w.WriteLine(s.Trim()));
 }</pre>
+<p>The high level architecture of what we're doing looks like this - the white 
+pieces (FlowSharpCode services and openSSH) already exist:</p>
+<p><img border="0" src="architecture.png" width="1547" height="326"></p>
+<p>The box on the left labeled &quot;Canvas Application&quot; are the pieces that we'll be 
+writing in FlowSharpCode.&nbsp; Let's start filling in the pieces!</p>
 <h3>A Simple Python WebSocket Client</h3>
+<p><img border="0" src="arch3.png" width="273" height="244"></p>
 <p>A WebSocket client is used to send the stdout from a process running on the 
 BeagleBone back to FlowSharp, so we can see the output of whatever we're running 
 on the BeagleBone (and of course this would work on an rPI and other IoT 
@@ -695,30 +701,211 @@ problems:</p>
 <p>Snazzy - we've created a simple class for sending messages to the FlowSharp 
 output window, which we'll use when we take the stdout of an application running 
 on the BeagleBone and send it back to FlowSharp.</p>
-<h3>Sending Files over SFTP to the BeagleBone</h3>
+<h3>C# WebSocket Server</h3>
+<p><img border="0" src="arch5.png" width="273" height="326"></p>
+<p>Why do we need this?&nbsp; FlowSharpCode includes WinForm shape controls 
+which allow you put WinForm controls (a very limited set at the moment) directly 
+on the canvas.&nbsp; We're going to put a &quot;Send Files&quot; button on the canvas, but 
+how do we know when the user clicks this button?&nbsp; FlowSharpCode will send 
+the button click event either over HTTP or using WebSockets.&nbsp; In our case, 
+we'll use WebSockets, since it's a slightly easier implementation.</p>
+<h4>Writing the Websocket Server</h4>
+<p>First we'll drag and drop the &quot;AssyRef&quot; shape onto the canvas so we can 
+reference the websocket-client dll:</p>
+<p><img border="0" src="wss1.png" width="565" height="315"></p>
+<p>Next, we'll create the program's Main method as code-behind:</p>
+<p><img border="0" src="wss2.png" width="460" height="339"></p>
+<p>This initializes a wrapper for the websocket-sharp server and waits for 
+messages.&nbsp; We'll implement this as a couple code-behind shapes wrapped in a 
+groupbox:</p>
+<p><img border="0" src="wss3.png" width="804" height="661"></p>
+<p>The C# editor is implemented as a FlowSharpCode service embedding the ICSharp 
+code editor, so you get some basic intellisense and code completion.</p>
+<p>The OnMessage implementation is a stub for now to verify that the socket 
+server code is working:</p>
+<p><img border="0" src="wss4.png" width="472" height="444"></p>
+<h4>Adding a Button on the Canvas to Send a Message to the Socket Server</h4>
+<p>Next, we'll put a button on the Canvas and select a few options:</p>
+<p><img border="0" src="wss5.png" width="564" height="434"></p>
+<p>Here we set the event name to &quot;ButtonClick&quot;, select the notification protocol 
+as WebSocket, and set the Name property to &quot;SendFiles&quot;, which is treated as the 
+control's ID.</p>
+<h4>Compiling and Running the Test</h4>
+<p>We're now ready to compile and run the program directly from FlowSharp.&nbsp; 
+From the menu, select C# -&gt; Run (which compiles the program if it doesn't 
+already exist.)&nbsp; Any errors will be displayed in the output window.&nbsp; 
+Happily, we don't have any:</p>
+<p><img border="0" src="wss6.png" width="94" height="51"></p>
+<p>When we run our program and click on the Send Files button (sitting on the 
+Canvas) we get a message in FlowSharp's Output window!</p>
+<p><img border="0" src="wss7.png" width="596" height="346"></p>
+<h4>Behind the Scenes - The Button</h4>
+<p>Drawing WinForm buttons on a canvas has its quirks, though buttons are 
+straight forward.&nbsp; A <code>ButtonShape</code> wraps the WinForm button:</p>
+<pre>[ExcludeFromToolbox]
+public class ButtonShape : ControlShape
+{
+  public ButtonShape(Canvas canvas) : base(canvas)
+  {
+    control = new Button();
+    canvas.Controls.Add(control);
+    control.Click += OnClick;
+  }
+
+  private void OnClick(object sender, System.EventArgs e)
+  {
+    Send(ClickEventName);
+  }
+
+  public override void Draw(Graphics gr, bool showSelection = true)
+  {
+    control.Visible = Visible;
+
+    if (Visible)
+    {
+      base.Draw(gr, showSelection);
+      Rectangle r = DisplayRectangle.Grow(-4);
+      control.Location = r.Location;
+      control.Size = r.Size;
+      control.Text = Text;
+      control.Enabled = Enabled;
+    }
+  }
+}</pre>
+<h4>Behind the Scenes - Button Click Event Handler</h4>
+<p>The salient point here is what happens when you click on the button sitting 
+on the canvas.&nbsp; As previously mentioned, UI events can be sent over HTTP or 
+WebSockets (forgive the hardcoded values for now):</p>
+<pre>protected void Send(string cmd)
+{
+  // This allows the user to configure, for each control, whether it sends a web socket or HTTP message.
+  // We also assume for now that it is best to send these messages synchronously, so that order is preserved.
+  switch (SendProtocol)
+  {
+    case SendProtocol.Http:
+    {
+      // TODO: Fix hardcoded URL
+      string url = &quot;http://localhost:8002/&quot; + cmd;
+      string data = &quot;ID=&quot; + Name;
+      data = AppendData(data);
+      ServiceManager.Instance.Get&lt;ISemanticProcessor&gt;().ProcessInstance&lt;FlowSharpMembrane, HttpSend&gt;(d =&gt;
+      {
+        d.Url = url;
+        d.Data = data;
+      }, true);
+      break;
+    }
+
+    case SendProtocol.WebSocket:
+    {
+      string data = &quot;cmd=&quot; + cmd + &quot;&amp;ID=&quot; + Name;
+      data = AppendData(data);
+      ServiceManager.Instance.Get&lt;ISemanticProcessor&gt;().ProcessInstance&lt;FlowSharpMembrane, WebSocketSend&gt;(d =&gt;
+      {
+        d.Data = data;
+      }, true);
+      break;
+    }
+  }
+}</pre>
+<h4>Behind the Scenes - Sending Over WebSockets</h4>
+<p>Observe that the above code publishes a message on the publisher/subscriber bus.&nbsp; 
+The <code>WebSocketSend</code> message is processed with a receiver method 
+(again, forgive the hardcoded IP address, but this explains where port 1101 
+comes from in the code above):</p>
+<pre>using WebSocketSharp;
+using Clifton.Core.Semantics;
+using FlowSharpServiceInterfaces;
+
+namespace FlowSharpWebSocketService
+{
+  public class MyListener { }
+
+  public class WebSocketSender : IReceptor
+  {
+    public static WebSocket ws = null;
+
+    public void Process(ISemanticProcessor proc, IMembrane membrane, WebSocketSend cmd)
+    {
+      EstablishConnection();
+      ws.Send(cmd.Data);
+    }
+
+    protected void EstablishConnection()
+    {
+      // TODO: Right now, we're assuming one web socket client.
+      if (ws == null || !ws.IsAlive)
+      {
+        // TODO: Fix hardcoded IP
+        ws = new WebSocket(&quot;ws://127.0.0.1:1101/flowsharpapp&quot;, new MyListener());
+        ws.Connect();
+      }
+    }
+  }
+}</pre>
+<h3>Getting the Python Files on the Canvas From FlowSharp</h3>
+<p><img border="0" src="cswsc1.png" width="273" height="326"></p>
+<p>Next, we need to get the Python files that are on the canvas so we know what 
+to send to the BeagleBone.&nbsp; We do this by asking FlowSharp for its shapes 
+via a WebSocket client (or we could use HTTP).&nbsp; In fact, you can test this 
+right now with HTTP:</p>
+<p><img border="0" src="cswsc2.png" width="669" height="74"></p>
+<h4>Making the WebSocket Request to FlowSharp</h4>
+<p><img border="0" src="cswsc4.png" width="271" height="155"></p>
+<p>We'll first write a couple helper methods, separated into their code-behind 
+blocks.&nbsp; At the moment, this is a bit kludgy, but hey, it works.&nbsp; We 
+define three code-behind regions:</p>
+<ol>
+	<li>Fields:</li>
+</ol>
+<p><img border="0" src="cswsc5.png" width="595" height="400"></p>
+<ol>
+	<li value="2">GetShapeFiles method:</li>
+</ol>
+<p><img border="0" src="cswsc6.png" width="599" height="590"></p>
+<ol>
+	<li value="3">Connect method:</li>
+</ol>
+<p><img border="0" src="cswsc7.png" width="680" height="648"></p>
+<p>Also, because we're using netwonsoft.Json, we need to add reference to that 
+dll so we easily parse the JSON (ok, overkill, it's not that complicated!):</p>
+<p><img border="0" src="cswsc3.png" width="276" height="111"></p>
+<h4>The DRAKON Workflow for SFTP'ing Python Files</h4>
+<p>Now let's write the workflow in DRAKON.&nbsp; I'm just showing you the 
+workflow and code that was generated -- everything inside the method RunWorkflow:</p>
+<p><img border="0" src="cswsc8.png" width="712" height="716"></p>
+<p>Now let's go back to the OnMessage method and call our newly created 
+workflow:</p>
+<p><img border="0" src="cswsc9.png" width="484" height="352"></p>
+<p>Now when we run the program, we can see that the workflow is ready to SFTP 
+the files:</p>
+<p><img border="0" src="cswsc10.png" width="710" height="589"></p>
+<p>Notice that we're picking up the Python files that are elsewhere on the 
+canvas.</p>
+<h3>Performing the SFTP</h3>
+<p><img border="0" src="arch4.png" width="273" height="326"></p>
 <p>Next, we'll write some C# code to send the Python files to the BeagleBone 
 using SFTP.&nbsp; My BeagleBones run on Debian, so openSSH is already running, 
 and, I better confess now, the username and password is still &quot;debian&quot; and &quot;temppwd&quot;.</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
+<p>To do the SFTP, we'll add a reference to Renci.SshNet.dll:</p>
+<p><img border="0" src="sftp1.png" width="279" height="169"></p>
+<p>Next, we'll write the Sftp class as separate shapes (ok, my BeagleBone is on 
+192.168.0.3, so it's harcoded for the moment):</p>
+<p><img border="0" src="sftp2.png" width="323" height="447"><img border="0" src="sftp3.png" width="540" height="494"></p>
+<p><img border="0" src="sftp4.png" width="320" height="479"><img border="0" src="sftp5.png" width="590" height="493"></p>
+<p>Now we'll adjust the DRAKON workflow to send the files:</p>
+<p><img border="0" src="sftp6.png" width="767" height="977"></p>
+<p>As before, the code inside the RunWorkflow method is generated by the DRAKON 
+C# code generator service, with of course a little help from the code-behind for 
+each step.</p>
+<p>Now when we run the program and click on Send Files:</p>
+<p><img border="0" src="sftp7.png" width="241" height="98"></p>
+<p>We see in the PuTTY session that the files were transferred!</p>
+<p><img border="0" src="sftp8.png" width="630" height="119"></p>
+<h2>Let's Take A Break</h2>
+<p>Here's what we've got so far on the canvas:</p>
+<p><img border="0" src="sofar.png" width="895" height="628"></p>
+<p>Ready to keep going?</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>

@@ -1,0 +1,733 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Automating IoT Development with</title>
+</head>
+
+<body>
+
+<p>Automating IoT Development with FlowSharpCode</p>
+<p>Using PyLint, WebSockets, SFTP, DRAKON, C#, Python, and FlowSharpCode to 
+Create an Integrated Development eXperience</p>
+<h2>Introduction</h2>
+<p>In this article I'm going to describe the current state of FlowSharpCode: the 
+flowcharting, code compilation, and execution services that are plugins to the 
+<a href="https://www.codeproject.com/Articles/1136050/FlowSharp">FlowSharp</a> diagramming tool.&nbsp; As it stands, FlowSharpCode is an incomplete 
+but very usable IDX (Integrated Development eXperience).&nbsp;&nbsp; </p>
+<h2>Part I - The Basics</h2>
+<p>In this section I'll cover the basics of creating a
+<a href="https://en.wikipedia.org/wiki/DRAKON">DRAKON</a> flowchart in 
+FlowSharpCode, which will be the backbone for the services that we'll write for 
+the IoT IDX (gotta love acronyms!)</p>
+<p>FlowSharpCode is not intended to restrict your development process.&nbsp; For 
+example, you could create a shape with implements an entire program (we'll be 
+using the <a href="https://en.wikipedia.org/wiki/Fizz_buzz">FizzBuzz</a> program as an example throughout this article.)&nbsp; Here 
+I've created a shape (any shape will do) and associated some Python code to it 
+using the Scintilla editor (a FlowSharpCode service):</p>
+<p><img border="0" src="fb1.png" width="802" height="520"></p>
+<p>The FlowSharpCodePythonCodeCompilerService module (that's a long name!) 
+extends the FlowSharp menu and adds a couple useful things.&nbsp; I can 
+&quot;compile&quot; the program, which does a PyLint verification, and then run it.&nbsp; 
+The output of the program is captured and redirected to the Output window 
+(another FlowSharpCode service.)</p>
+<h3>Behind the Scenes</h3>
+<p>This is the most basic of capabilities - the code compiler service does 
+little more than insert a kind of &quot;pragma&quot; directive to ignore certain PyLint 
+warnings, currently hard-coded as a constant.</p>
+<h4>Ignoring Certain PyLint Warnings</h4>
+<pre>protected bool BuildModuleFromModuleSource(GraphicElement elClass, string className, string filename)
+{
+  bool ok = true;
+  StringBuilder sb = new StringBuilder();
+
+  // If there's no shapes (def's), then use whatever is in the actual class shape for code, 
+  // however we need to add/replace the #pylint line with whatever the current list of ignores are.
+  string src = elClass.Json[&quot;python&quot;] ?? &quot;&quot;;
+  string[] lines = src.Split('\n');
+
+  if (lines.Length &gt; 0 &amp;&amp; lines[0].StartsWith(&quot;#pylint&quot;))
+  {
+    // Remove the existing pylint options line.
+    src = String.Join(&quot;\n&quot;, lines.Skip(1));
+  }
+
+  // Insert pylint options as the first line before any imports.
+  sb.Insert(0, PYLINT + &quot;\n&quot;);
+
+  sb.Append(src);
+
+  File.WriteAllText(filename, sb.ToString());
+  elClass.Json[&quot;python&quot;] = sb.ToString();
+
+  return ok;
+}</pre>
+<p>Shapes can have different code languages associated with them, which are 
+stored in a JSON dictionary associated with the shape -- this mechanism provides 
+a very simple and elegant way of extending a shape with custom attributes.</p>
+<h4>Running PyLint</h4>
+<p>PyLint is executed silently and the warning and errors it produces are 
+captured.&nbsp; These are then organized to display warnings first, then errors.</p>
+<pre>protected void RunLint(BaseController canvasController)
+{
+  var outputWindow = ServiceManager.Get&lt;IFlowSharpCodeOutputWindowService&gt;();
+  outputWindow.Clear();
+  bool lastModuleHadWarningsOrErrors = false;
+
+  foreach (GraphicElement elClass in canvasController.Elements.Where(el =&gt; el is IPythonClass).OrderBy(el =&gt; ((IPythonClass)el).Filename))
+  {
+    List&lt;string&gt; warnings = new List&lt;string&gt;();
+    List&lt;string&gt; errors = new List&lt;string&gt;();
+
+    string filename = ((IPythonClass)elClass).Filename;
+    LaunchProcessAndWaitForExit(&quot;pylint&quot;, filename,
+    stdout =&gt;
+    {
+      if (stdout.StartsWith(&quot;W:&quot;))
+      {
+        warnings.Add(stdout);
+      }
+
+      if (stdout.StartsWith(&quot;E:&quot;))
+      {
+        errors.Add(stdout);
+      }
+    });
+
+    if (lastModuleHadWarningsOrErrors || (!lastModuleHadWarningsOrErrors &amp;&amp; warnings.Count + errors.Count &gt; 0))
+    {
+      // Cosmetic - separate filenames by a whitespace if the last module had warnings/errors
+      // or if the current module has warnings or errors but the last one didn't.
+      outputWindow.WriteLine(&quot;&quot;);
+    }
+
+    lastModuleHadWarningsOrErrors = warnings.Count + errors.Count &gt; 0;
+
+    outputWindow.WriteLine(filename);
+    warnings.ForEach(w =&gt; outputWindow.WriteLine(w));
+    errors.ForEach(e =&gt; outputWindow.WriteLine(e));
+  }
+}</pre>
+<p>Here's an example of a simple indentation error output:</p>
+<p><img border="0" src="pylint1.png" width="593" height="422"></p>
+<h3>Launching a Process Silently and Capturing Standard Output</h3>
+<p>This is worth noting because of how the console application (in this case 
+PyLint) is started without creating a console window, and how the output is 
+captured:</p>
+<pre>protected Process LaunchProcess(string processName, string arguments, Action&lt;string&gt; onOutput, Action&lt;string&gt; onError = null)
+{
+  Process p = new Process();
+  p.StartInfo.UseShellExecute = false;
+  p.StartInfo.RedirectStandardOutput = true;
+  p.StartInfo.RedirectStandardError = true;
+  p.StartInfo.RedirectStandardInput = true;
+  p.StartInfo.FileName = processName;
+  p.StartInfo.Arguments = arguments;
+  p.StartInfo.CreateNoWindow = true;
+
+  p.OutputDataReceived += (sndr, args) =&gt; { if (args.Data != null) onOutput(args.Data); };
+
+  if (onError != null)
+  {
+    p.ErrorDataReceived += (sndr, args) =&gt; { if (args.Data != null) onError(args.Data); };
+  }
+
+  p.Start();
+
+  // Interestingly, this has to be called after Start().
+  p.BeginOutputReadLine();
+  p.BeginErrorReadLine();
+
+  return p;
+}
+
+protected void LaunchProcessAndWaitForExit(string processName, string arguments, Action&lt;string&gt; onOutput, Action&lt;string&gt; onError = null)
+{
+  var proc = LaunchProcess(processName, arguments, onOutput, onError);
+  proc.WaitForExit();
+}</pre>
+<h4>Running the Python Code</h4>
+<p>To run the Python code, select that class shape and then Python -&gt; Run from 
+the menu, which launches the process without waiting for exit:</p>
+<pre>protected void OnRun(object sender, EventArgs e)
+{
+  var outputWindow = ServiceManager.Get&lt;IFlowSharpCodeOutputWindowService&gt;();
+  outputWindow.Clear();
+  IFlowSharpCanvasService canvasService = ServiceManager.Get&lt;IFlowSharpCanvasService&gt;();
+  BaseController canvasController = canvasService.ActiveController;
+
+  // One and only one Python class element must be selected.
+  if (canvasController.SelectedElements.Count == 1)
+  {
+    var el = canvasController.SelectedElements[0];
+
+    if (el is IPythonClass)
+    {
+      // TODO: Unify with FlowSharpCodeCompilerService.Run
+      string filename = ((IPythonClass)el).Filename;
+      LaunchProcess(&quot;python&quot;, filename,
+      stdout =&gt; outputWindow.WriteLine(stdout),
+      stderr =&gt; outputWindow.WriteLine(stderr));
+    }
+    else
+    {
+      outputWindow.WriteLine(&quot;Please select a Python class file to run.&quot;);
+    }
+  }
+  else
+  {
+    outputWindow.WriteLine(&quot;Please select a single Python class file to run.&quot;);
+  }
+}</pre>
+<h2>Doing Something More Interesting - Flowcharting with DRAKON Shapes</h2>
+<p>The previous example is silly - why use FlowSharpCode to write a python file?&nbsp; 
+Instead, let's use DRAKON shapes to create a flowchart of the FizzBuzz program.&nbsp; </p>
+<p><i>The development of DRAKON started in 1986 and was directed by Vladimir 
+Parondzhanov with the participation of Russian Federal Space Agency (Academician 
+Pilyugin Center, Moscow) and Russian Academy of Sciences (Keldysh Institute of 
+Applied Mathematics). The language was constructed by formalization, 
+ergonomization and nonclassical structurization of flowcharts described in the 
+ISO 5807-85 standard and Russian standardand for the development of real time 
+programs. The goal was to replace specialized languages like PROL2 (assigned for 
+developing complex software for the
+<a href="https://books.google.com/books?id=VRb1yAGVWNsC&pg=PA132&lpg=PA132&dq=biser-4&source=bl&ots=UyZalEljFx&sig=75JF2R7K42Ar9pLEjlyhCqrKbk8&hl=en&sa=X&ved=0ahUKEwiqsb2dqprSAhUEKyYKHew5DHYQ6AEILTAD#v=onepage&q=biser-4&f=false">
+embedded computer system Biser-4</a> on board of the
+<a href="https://en.wikipedia.org/wiki/Buran_(spacecraft)">Buran spaceplane</a>), 
+and DIPOL (assigned for developing software for ground maintenance computer 
+system of Buran) and LAKS (assigned for modeling and used in the Buran project) 
+with one universal programming language. </i>(<a href="https://en.wikipedia.org/wiki/DRAKON">wikipedia</a>)
+<i>&nbsp;</i></p>
+<p>DRAKON still lives in the programming community.&nbsp; As of March 2016,
+<a href="http://drakon-editor.sourceforge.net/">this DRAKON editorr</a> can 
+generate code from flowcharts for the Go, Java, C#, Python, Erlang, Tcl, Lua, C, 
+C++ and D programming languages.&nbsp; The editor runs on Windows, Mac, and 
+Linux.&nbsp; There is also a <a href="https://drakon-editor.com/en">web-editor 
+version</a> with a limited free version.&nbsp; According the website &quot;Gradually, 
+DRAKON has gained recognition as a language of requirements for other types of 
+information systems, including web, desktop and mobile applications.&quot;</p>
+<p>I've added a limited set of DRAKON shapes to FlowSharpCode as well as some 
+limited parsing behavior (for example, an &quot;if-loop&quot; isn't implemented.)&nbsp; 
+Even with those limitations, we can code FizzBuzz with DRAKON shapes:</p>
+<p><img border="0" src="fb2.png" width="759" height="905"></p>
+<p>Observe how the code is now generated for you!</p>
+<h3>A Word About Arrows</h3>
+<p>You can certainly use arrows to indicate the flow (I left one in as an 
+example) but DRAKON flowcharts usually do not have arrows for normal downward 
+and decision flows because these are viewed as visual clutter -- it should be 
+obvious from the diagram that the workflow always moves in a downward direction, 
+unless a condition requires branching to the right.</p>
+<h3>Behind The Scenes</h3>
+<p>Let's take a look at how this is done.</p>
+<h4>DRAKON Shapes</h4>
+<p>Here's an example of DRAKON shape implemented in FlowSharpCode.&nbsp; </p>
+<pre>public class BeginForLoopBox : GraphicElement, IDrakonShape, IBeginForLoopBox
+{
+  protected Point[] path;
+  protected const int INDENT_SIZE = 14;
+  protected const int Y_ADJUST = 0;
+
+  public BeginForLoopBox(Canvas canvas) : base(canvas)
+  {
+    HasCornerConnections = false;
+  }
+
+  public override void UpdatePath()
+  {
+    path = new Point[]
+    {
+      new Point(DisplayRectangle.X + INDENT_SIZE, DisplayRectangle.Y + Y_ADJUST), // top left of indented left &quot;arrow&quot;
+      new Point(DisplayRectangle.X + DisplayRectangle.Width - INDENT_SIZE, DisplayRectangle.Y + Y_ADJUST), // top right of indented right &quot;arrow&quot;
+      new Point(DisplayRectangle.X + DisplayRectangle.Width, DisplayRectangle.Y + DisplayRectangle.Height/2), // right tip (middle of box)
+      new Point(DisplayRectangle.X + DisplayRectangle.Width, DisplayRectangle.Y + DisplayRectangle.Height - Y_ADJUST), // bottom right of indented right &quot;arrow&quot;
+      new Point(DisplayRectangle.X, DisplayRectangle.Y + DisplayRectangle.Height - Y_ADJUST), // bottom left of indented left &quot;arrow&quot;
+      new Point(DisplayRectangle.X, DisplayRectangle.Y + DisplayRectangle.Height/2), // middle left of indented left &quot;arrow&quot;
+    };
+  }
+
+  public override void Draw(Graphics gr, bool showSelection = true)
+  {
+    gr.FillPolygon(FillBrush, path);
+    gr.DrawPolygon(BorderPen, path);
+    base.Draw(gr, showSelection);
+  }
+}</pre>
+<p>The interfaces play an important role, as we'll see later on, but 
+interestingly, the interfaces are for the most part empty.&nbsp; Note the 
+comments:</p>
+<pre>public enum TruePath
+{
+  Down,
+  LeftOrRight
+}
+
+// Interfaces are required and must be separate from FlowSharpCodeDrakonShapes because the shapes are dynamically loaded,
+// as a result, statements like &quot;el is IDrakonShape&quot; returns false if the interface is defined in FlowSharpCodeDrakonShapes. 
+// Crazily, the debugger returns true in this situation.
+public interface IDrakonShape { }
+
+// We don't name these &quot;Drakon&quot; so that we could associate other kinds of flowcharting shapes with these statements.
+public interface IIfBox
+{
+  TruePath TruePath { get; set; }
+}
+
+public interface IBeginForLoopBox { }
+public interface IEndForLoopBox { }
+public interface IOutputBox { }
+public interface IInputBox { }</pre>
+<p>These shapes are part of the FlowSharpCodeDrakonShapes assembly which is 
+imported when FlowSharp launches.</p>
+<h4>Building the Code Tree</h4>
+<p>This is very simple code tree generator:</p>
+<pre>protected GraphicElement ParseDrakonWorkflow(DrakonCodeGenerator dcg, IFlowSharpCodeService codeService, BaseController canvasController, GraphicElement el, bool inCondition = false)
+{
+  while (el != null)
+  {
+    // If we're in a conditional and we encounter a shape with multiple &quot;merge&quot; connections, then we assume (I think rightly so)
+    // that this is the end of the conditional branch, and that code should continue at this point outside of the &quot;if-else&quot; statement.
+    if (inCondition)
+    {
+      var connections = el.Connections.Where(c =&gt; c.ElementConnectionPoint.Type == GripType.TopMiddle);
+
+      if (connections.Count() &gt; 1)
+      {
+        return el;
+      }
+    }
+
+    // All these if's. Yuck.
+    if (el is IBeginForLoopBox)
+    {
+      var drakonLoop = new DrakonLoop() { Code = ParseCode(el) };
+      dcg.AddInstruction(drakonLoop);
+      var nextEl = codeService.NextElementInWorkflow(el);
+      el = ParseDrakonWorkflow(drakonLoop.LoopInstructions, codeService, canvasController, nextEl);
+    }
+    else if (el is IEndForLoopBox)
+    {
+      return el;
+    }
+    else if (el is IIfBox)
+    {
+      var drakonIf = new DrakonIf() { Code = ParseCode(el) };
+      dcg.AddInstruction(drakonIf);
+
+      var elTrue = codeService.GetTruePathFirstShape((IIfBox)el);
+      var elFalse = codeService.GetFalsePathFirstShape((IIfBox)el);
+
+      if (elTrue != null)
+      {
+        ParseDrakonWorkflow(drakonIf.TrueInstructions, codeService, canvasController, elTrue, true);
+      }
+
+      if (elFalse != null)
+      {
+        ParseDrakonWorkflow(drakonIf.FalseInstructions, codeService, canvasController, elFalse, true);
+      }
+
+      // dcg.AddInstruction(new DrakonEndIf());
+    }
+    else if (el is IOutputBox)
+    {
+      dcg.AddInstruction(new DrakonOutput() { Code = ParseCode(el) });
+    }
+    else
+    {
+      string code;
+      if (el.Json.TryGetValue(&quot;python&quot;, out code))
+      {
+        dcg.AddInstruction(new DrakonStatement() { Code = code });
+      }
+    }
+
+    el = codeService.NextElementInWorkflow(el);
+  }
+
+  return null;
+}</pre>
+<h4>Finding the Start of the Workflow</h4>
+<p>A workflow start is defined as a shape that does not have any connectors 
+connecting to the top, left, or middle of the shape.&nbsp; The shape should only 
+have a connector connecting to the bottom of the shape:</p>
+<pre>public GraphicElement FindStartOfWorkflow(BaseController canvasController, GraphicElement wf)
+{
+  GraphicElement start = canvasController.Elements.Where(srcEl =&gt; wf.DisplayRectangle.Contains(srcEl.DisplayRectangle) &amp;&amp;
+  !srcEl.IsConnector &amp;&amp;
+  !srcEl.Connections.Any(c =&gt; 
+    new GripType[] { GripType.TopMiddle, GripType.LeftMiddle, GripType.RightMiddle }
+    .Contains(c.ElementConnectionPoint.Type)) &amp;&amp;
+  srcEl.Connections.All(c=&gt; c.ElementConnectionPoint.Type == GripType.BottomMiddle)).FirstOrDefault();
+
+  return start;
+}</pre>
+<h4>Finding the Next Shape in the Flow</h4>
+<p>The next shape should always be the shape connected to the bottom of the 
+current shape:</p>
+<pre>public GraphicElement NextElementInWorkflow(GraphicElement el)
+{
+  // Always the shape connected to the bottom of the current shape:
+  GraphicElement ret = null;
+
+  var connection = el.Connections.FirstOrDefault(c =&gt; c.ElementConnectionPoint.Type == GripType.BottomMiddle);
+
+  if (connection != null)
+  {
+    ret = ((Connector)connection.ToElement).EndConnectedShape;
+  }
+
+  return ret;
+}</pre>
+<h4>Decision Boxes are Special Cases</h4>
+<p>A decision box can have an &quot;if true&quot;, &quot;if false&quot; or both paths.&nbsp; 
+Furthermore, the shape has a property to determine if the &quot;if true&quot; path is 
+downwards (this is the default) or is to the left or right of the decision box.&nbsp; 
+We therefore need to get the next shape for the &quot;if true&quot; and &quot;if false&quot; branch, 
+depending on the state of the &quot;true path&quot; shape flag.</p>
+<pre>protected GripType[] GetTrueConnections(IIfBox el)
+{
+  GripType[] path;
+
+  if (el.TruePath == TruePath.Down)
+  {
+    path = new GripType[] { GripType.BottomMiddle };
+  }
+  else
+  {
+    path = new GripType[] { GripType.LeftMiddle, GripType.RightMiddle };
+  }
+
+  return path;
+}
+
+protected GripType[] GetFalseConnections(IIfBox el)
+{
+  GripType[] path;
+
+  if (el.TruePath == TruePath.Down)
+  {
+    path = new GripType[] { GripType.LeftMiddle, GripType.RightMiddle };
+  }
+  else
+  {
+    path = new GripType[] { GripType.BottomMiddle };
+  }
+
+  return path;
+}
+
+// True path is always the bottom of the diamond.
+public GraphicElement GetTruePathFirstShape(IIfBox el)
+{
+  GripType[] path = GetTrueConnections(el);
+  GraphicElement trueStart = null;
+  Connection connection = ((GraphicElement)el).Connections.FirstOrDefault(c =&gt; path.Contains(c.ElementConnectionPoint.Type));
+
+  if (connection != null)
+  {
+    trueStart = ((Connector)connection.ToElement).EndConnectedShape;
+  }
+
+  return trueStart;
+}
+
+// False path is always the left or right point of the diamond.
+public GraphicElement GetFalsePathFirstShape(IIfBox el)
+{
+  GripType[] path = GetFalseConnections(el);
+  GraphicElement falseStart = null;
+  Connection connection = ((GraphicElement)el).Connections.FirstOrDefault(c =&gt; path.Contains(c.ElementConnectionPoint.Type));
+
+  if (connection != null)
+  {
+    falseStart = ((Connector)connection.ToElement).EndConnectedShape;
+  }
+
+  return falseStart;
+}</pre>
+<h4>The DRAKON Code Tree Classes</h4>
+<p>These are really simple in that they manage a collection of workflow steps.&nbsp; 
+I haven't looked at how this is implemented in other systems, but plan on doing 
+so.&nbsp; 
+For special cases (like if-else statements and loops) a sub-tree is managed by 
+the decision node or the loop node:</p>
+<pre>public class DrakonCodeTree
+{
+  public bool HasInstructions { get { return instructions.Count &gt; 0; } }
+  protected List&lt;DrakonInstruction&gt; instructions;
+
+  public DrakonCodeTree()
+  {
+    instructions = new List&lt;DrakonInstruction&gt;();
+  }
+
+  public void AddInstruction(DrakonInstruction instruction)
+  {
+    instructions.Add(instruction);
+  }
+
+  public void GenerateCode(ICodeGeneratorService codeGenSvc)
+  {
+    instructions.ForEach(inst =&gt; inst.GenerateCode(codeGenSvc));
+  }
+}
+
+public abstract class DrakonInstruction
+{
+  public string Code { get; set; }
+  public abstract void GenerateCode(ICodeGeneratorService codeGenSvc);
+}
+
+public class DrakonIf : DrakonInstruction
+{
+  public DrakonCodeTree TrueInstructions { get; protected set; }
+  public DrakonCodeTree FalseInstructions { get; protected set; }
+
+  public DrakonIf()
+  {
+    TrueInstructions = new DrakonCodeTree();
+    FalseInstructions = new DrakonCodeTree();
+  }
+
+  public override void GenerateCode(ICodeGeneratorService codeGenSvc)
+  {
+    codeGenSvc.BeginIf(Code);
+    TrueInstructions.GenerateCode(codeGenSvc);
+
+    if (FalseInstructions.HasInstructions)
+    {
+      codeGenSvc.Else();
+      FalseInstructions.GenerateCode(codeGenSvc);
+    }
+
+    codeGenSvc.EndIf();
+  }
+}
+
+public class DrakonLoop : DrakonInstruction
+{
+  public DrakonCodeTree LoopInstructions { get; protected set; }
+
+  public DrakonLoop()
+  {
+    LoopInstructions = new DrakonCodeTree();
+  }
+
+  public override void GenerateCode(ICodeGeneratorService codeGenSvc)
+  {
+    codeGenSvc.BeginFor(Code);
+    LoopInstructions.GenerateCode(codeGenSvc);
+    codeGenSvc.EndFor();
+  }
+}
+
+public class DrakonOutput : DrakonInstruction
+{
+  public override void GenerateCode(ICodeGeneratorService codeGenSvc)
+  {
+    codeGenSvc.Statement(Code);
+  }
+}
+
+public class DrakonStatement : DrakonInstruction
+{
+  public override void GenerateCode(ICodeGeneratorService codeGenSvc)
+  {
+    codeGenSvc.Statement(Code);
+  }
+}</pre>
+<h4>Generating the Python Code</h4>
+<p>In the above DRAKON code tree classes, notice that there is a code generator 
+service that is passed in as the tree is walked.&nbsp; The code generator 
+service must implement the interface:</p>
+<pre>public interface ICodeGeneratorService
+{
+  void BeginIf(string code);
+  void Else();
+  void EndIf();
+  void BeginFor(string code);
+  void EndFor();
+  void Statement(string code);
+}</pre>
+<p>The Python code generator service handles adding the syntactical tidbits and 
+indentation depending on the statement type:</p>
+<pre>public class PythonCodeGeneratorService : ICodeGeneratorService
+{
+  public StringBuilder CodeResult { get; protected set; }
+
+  protected int indent = 0;
+
+  public PythonCodeGeneratorService()
+  {
+    CodeResult = new StringBuilder();
+  }
+
+  public void BeginIf(string code)
+  {
+    CodeResult.Append(new string(' ', indent));
+    CodeResult.AppendLine(&quot;if &quot; + code + &quot;:&quot;);
+    indent += 4;
+  }
+
+  public void Else()
+  {
+    indent = 0.MaxDelta(indent - 4);
+    CodeResult.Append(new string(' ', indent));
+    CodeResult.AppendLine(&quot;else:&quot;);
+    indent += 4;
+  }
+
+  public void EndIf()
+  {
+    indent = 0.MaxDelta(indent - 4);
+  }
+
+  public void BeginFor(string code)
+  {
+    CodeResult.Append(new string(' ', indent));
+    CodeResult.AppendLine(&quot;for &quot; + code + &quot;:&quot;);
+    indent += 4;
+  }
+
+  public void EndFor()
+  {
+    indent = 0.MaxDelta(indent - 4);
+  }
+
+  public void Statement(string code)
+  {
+    CodeResult.Append(new string(' ', indent));
+    CodeResult.AppendLine(code);
+  }
+}</pre>
+<p>It's actually a very simple process and can be easily extended to generate 
+the code structure for other languages.</p>
+<h2>What About The Python Code in the Shapes Themselves?</h2>
+<p><img border="0" src="fb3.png" width="284" height="159"></p>
+<p>We have some Python code embedded in the shapes.&nbsp; One solution to that 
+is to move the actual code out of the shape text and into the code-behind 
+associated with each shape.&nbsp; This improves the readability of the 
+flowchart:</p>
+<p><img border="0" src="fb4.png" width="699" height="710"></p>
+<p>Notice how the full Python syntax <code>for x in xrange(1, 31):</code> doesn't need to be 
+written out because the code generator adds those language elements for us.</p>
+<p>Yet we're still writing code-behind that is Python.&nbsp; However, this 
+brings up the interesting possibility of:</p>
+<ol>
+	<li>Parsing natural language statements like &quot;from 1 to to 31&quot;</li>
+	<li>Parsing some common language syntax to generate language-specific code</li>
+	<li>Fallback of simply using language-specific code-behind </li>
+</ol>
+<p>The DRAKON editor mentioned at the start of the article appears to use the 
+approach of embedding language-specific code in the shape itself:</p>
+<p><img border="0" src="drakon2.png" width="592" height="342"></p>
+<p>(<a href="http://drakon-editor.sourceforge.net/folder-parrot.png">source</a>)</p>
+<p>With code-behind, at least that ugliness can be hidden.&nbsp; Ultimately, it 
+probably won't be possible to automate the generation of many language-specific 
+features, but I'll be looking at this issue more closely in the future.</p>
+<h2>Part II - Integrating with the BeagleBone</h2>
+<p>I've already written an HTTP REST server and WebSocket server as services 
+that can be plugged into FlowSharp.&nbsp; These services provide some limited 
+behaviors for communicating with the FlowSharp UI.&nbsp; One of those services 
+is the ability to write to the output window in FlowSharp.&nbsp; The command 
+handler (which uses my 
+<a href="https://www.codeproject.com/articles/1120520/the-clifton-method-part-iv">semantic publisher/subscriber engine</a>) is basically two 
+lines of code:</p>
+<pre>// Ex: localhost:8001/flowsharp?cmd=CmdOutputMessage&amp;Text=foobar
+public void Process(ISemanticProcessor proc, IMembrane membrane, CmdOutputMessage cmd)
+{
+  var w = proc.ServiceManager.Get&lt;IFlowSharpCodeOutputWindowService&gt;();
+  cmd.Text.Split('\n').Where(s=&gt;!String.IsNullOrEmpty(s.Trim())).ForEach(s =&gt; w.WriteLine(s.Trim()));
+}</pre>
+<h3>A Simple Python WebSocket Client</h3>
+<p>A WebSocket client is used to send the stdout from a process running on the 
+BeagleBone back to FlowSharp, so we can see the output of whatever we're running 
+on the BeagleBone (and of course this would work on an rPI and other IoT 
+devices.)</p>
+<p>This code uses the <a href="https://pypi.python.org/pypi/websocket-client/">
+websocket-client</a> Python package.&nbsp; Assuming you have installed Python on 
+your Windows machine, you'll need to install the package with <code>pip install 
+websocket-client</code></p>
+<p>There's nothing particularly flowcharty about this code, so we'll implement 
+it as separate shapes.&nbsp; We'll need to know where the server is, and since 
+this is all running on my local network, we'll use the 192.168 address as a 
+constant in Config.py:</p>
+<p><img border="0" src="wsc1.png" width="481" height="123"></p>
+<p>(remember, the #pylint line is added by the &quot;compilation&quot; step)</p>
+<p>Next, we'll implement a simple client class that wraps the websocket client 
+implementation.&nbsp; For this, we'll create three shapes inside the class 
+shape:</p>
+<ol>
+	<li>the imports</li>
+</ol>
+<p><img border="0" src="wsc2.png" width="304" height="201"></p>
+<ol>
+	<li>the initializer</li>
+</ol>
+<p><img border="0" src="wsc3.png" width="351" height="216"></p>
+<ol>
+	<li value="3">the one and only function</li>
+</ol>
+<p><img border="0" src="wsc4.png" width="491" height="215"></p>
+<p>When we &quot;compile&quot; the class, FlowSharpCode puts it all together for us:</p>
+<p><img border="0" src="wsc5.png" width="520" height="357"></p>
+<h4>A Test Module</h4>
+<p>We'll write a simple test Python file to demonstrate that it works.</p>
+<p>Imports:</p>
+<p><img border="0" src="wsc6.png" width="319" height="177"></p>
+<p>The &quot;main&quot; function:</p>
+<p><img border="0" src="wsc7.png" width="356" height="281"></p>
+<p>The trick here is that we don't want the component shapes to be wrapped in a 
+class, so we'll set the GenerateClass flag to false in the Properties window:</p>
+<p><img border="0" src="wsc8.png" width="554" height="220"></p>
+<p>This way, FlowSharpCode puts the component shapes together for us like this:</p>
+<p><img border="0" src="wsc9.png" width="521" height="331"></p>
+<p>Look Ma, no class!</p>
+<p>The whole thing now looks like this in FlowSharpCode:</p>
+<p><img border="0" src="wsc10.png" width="494" height="177"></p>
+<p>And we have the makings of a re-usable component for communication to 
+FlowSharp.&nbsp; </p>
+<p>When we &quot;compile&quot; the application, we see that PyLint doesn't have any 
+problems:</p>
+<p><img border="0" src="wsc11.png" width="546" height="281"></p>
+<p>And when we run it, lo-and-behold, it's talking to FlowSharp:</p>
+<p><img border="0" src="wsc12.png" width="517" height="386"></p>
+<p>Snazzy - we've created a simple class for sending messages to the FlowSharp 
+output window, which we'll use when we take the stdout of an application running 
+on the BeagleBone and send it back to FlowSharp.</p>
+<h3>Sending Files over SFTP to the BeagleBone</h3>
+<p>Next, we'll write some C# code to send the Python files to the BeagleBone 
+using SFTP.&nbsp; My BeagleBones run on Debian, so openSSH is already running, 
+and, I better confess now, the username and password is still &quot;debian&quot; and &quot;temppwd&quot;.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</body>
+
+</html>

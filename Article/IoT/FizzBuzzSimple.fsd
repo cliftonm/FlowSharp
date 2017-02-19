@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ArrayOfElementPropertyBag xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.PythonFileBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="04fb4417-062e-420f-b6be-5bc247dc0fd9" Visible="true" Text="FizzBuzzSimple.py" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>231</X>
+        <Y>44</Y>
+      </Location>
+      <Size>
+        <Width>168</Width>
+        <Height>41</Height>
+      </Size>
+      <X>231</X>
+      <Y>44</Y>
+      <Width>168</Width>
+      <Height>41</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <ExtraData>FizzBuzzSimple.py</ExtraData>
+    <Json>{"python":"#pylint: disable=C0111, C0301, C0303, W0311, W0614, W0401, W0232\nfrom sys import stdout\r\n\ndef main():\r\n  for x in xrange(1, 31):\r\n    if x % 3 == 0:\r\n      stdout.write(\"Fizz\")\r\n    if x % 5 == 0:\r\n      stdout.write(\"Buzz\")\r\n    if not (x % 3 == 0) and not (x % 5 == 0):\r\n      stdout.write(str(x))\r\n    stdout.write(\"\\n\")\r\n\r\nif __name__ == '__main__':\r\n    main()\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopLeft</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+</ArrayOfElementPropertyBag>

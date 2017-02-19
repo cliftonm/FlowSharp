@@ -148,27 +148,9 @@ namespace FlowSharpCodeCompilerService
                 {
                     // TODO: Unify with FlowSharpCodeCompilerService.Run
                     string filename = ((IPythonClass)el).Filename;
-                    Process p = new Process();
-                    p.StartInfo.UseShellExecute = false;
-                    p.StartInfo.RedirectStandardOutput = true;
-                    p.StartInfo.RedirectStandardError = true;
-                    p.StartInfo.RedirectStandardInput = true;
-                    p.StartInfo.FileName = "python";
-                    p.StartInfo.Arguments = filename;
-                    p.StartInfo.CreateNoWindow = true;      // TODO: useful for console apps, not so good for WinForm apps?
-
-                    p.OutputDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
-                    p.ErrorDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
-
-                    // This unfortunately doesn't work!
-                    // TODO: p.EnableRaisingEvents = true should enable this.
-                    // p.Exited += (object sender, EventArgs e) => runningProcess = null;
-
-                    p.Start();
-
-                    // Interestingly, this has to be called after Start().
-                    p.BeginOutputReadLine();
-                    p.BeginErrorReadLine();
+                    LaunchProcess("python", filename,
+                        stdout => outputWindow.WriteLine(stdout),
+                        stderr => outputWindow.WriteLine(stderr));
                 }
                 else
                 {
@@ -181,64 +163,77 @@ namespace FlowSharpCodeCompilerService
             }
         }
 
+        protected Process LaunchProcess(string processName, string arguments, Action<string> onOutput, Action<string> onError = null)
+        {
+            Process p = new Process();
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardError = true;
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.FileName = processName;
+            p.StartInfo.Arguments = arguments;
+            p.StartInfo.CreateNoWindow = true;
+
+            p.OutputDataReceived += (sndr, args) => { if (args.Data != null) onOutput(args.Data); };
+
+            if (onError != null)
+            {
+                p.ErrorDataReceived += (sndr, args) => { if (args.Data != null) onError(args.Data); };
+            }
+
+            p.Start();
+
+            // Interestingly, this has to be called after Start().
+            p.BeginOutputReadLine();
+            p.BeginErrorReadLine();
+
+            return p;
+        }
+
+        protected void LaunchProcessAndWaitForExit(string processName, string arguments, Action<string> onOutput, Action<string> onError = null)
+        {
+            var proc = LaunchProcess(processName, arguments, onOutput, onError);
+            proc.WaitForExit();
+        }
+
         protected void RunLint(BaseController canvasController)
         {
             var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
             outputWindow.Clear();
+            bool lastModuleHadWarningsOrErrors = false;
 
             foreach (GraphicElement elClass in canvasController.Elements.Where(el => el is IPythonClass).OrderBy(el => ((IPythonClass)el).Filename))
             {
-                string filename = ((IPythonClass)elClass).Filename;
-                Process p = new Process();
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.RedirectStandardError = true;
-                p.StartInfo.RedirectStandardInput = true;
-                p.StartInfo.FileName = "pylint";
-                p.StartInfo.Arguments = filename;
-                p.StartInfo.CreateNoWindow = true;
-
-                outputWindow.WriteLine(filename);
-
                 List<string> warnings = new List<string>();
                 List<string> errors = new List<string>();
 
-                p.OutputDataReceived += (sndr, args) =>
-                {
-                    string line = args.Data;
-
-                    if (line != null)
+                string filename = ((IPythonClass)elClass).Filename;
+                LaunchProcessAndWaitForExit("pylint", filename,
+                    stdout =>
                     {
-                        if (line.StartsWith("W:"))
+                        if (stdout.StartsWith("W:"))
                         {
-                            warnings.Add(line);
+                            warnings.Add(stdout);
                         }
 
-                        if (line.StartsWith("E:"))
+                        if (stdout.StartsWith("E:"))
                         {
-                            errors.Add(line);
+                            errors.Add(stdout);
                         }
-                    }
-                };
+                    });
 
-                // p.ErrorDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
-
-                p.Start();
-
-                // Interestingly, this has to be called after Start().
-                p.BeginOutputReadLine();
-                p.BeginErrorReadLine();
-
-                p.WaitForExit();
-
-                warnings.ForEach(w => outputWindow.WriteLine(w));
-                errors.ForEach(e => outputWindow.WriteLine(e));
-
-                if (warnings.Count + errors.Count > 0)
+                if (lastModuleHadWarningsOrErrors || (!lastModuleHadWarningsOrErrors && warnings.Count + errors.Count > 0))
                 {
-                    // Cosmetic - separate filenames by a whitespace if a file has warnings/errors.
+                    // Cosmetic - separate filenames by a whitespace if the last module had warnings/errors
+                    // or if the current module has warnings or errors but the last one didn't.
                     outputWindow.WriteLine("");
                 }
+
+                lastModuleHadWarningsOrErrors = warnings.Count + errors.Count > 0;
+
+                outputWindow.WriteLine(filename);
+                warnings.ForEach(w => outputWindow.WriteLine(w));
+                errors.ForEach(e => outputWindow.WriteLine(e));
             }
         }
 
@@ -287,23 +282,27 @@ namespace FlowSharpCodeCompilerService
         {
             IFlowSharpCodeService codeService = ServiceManager.Get<IFlowSharpCodeService>();
             GraphicElement el = codeService.FindStartOfWorkflow(canvasController, elClass);
-            DrakonCodeGenerator dcg = new DrakonCodeGenerator();
-            ParseDrakonWorkflow(dcg, codeService, canvasController, el);
-            var codeGenSvc = new PythonCodeGeneratorService();
-            dcg.GenerateCode(codeGenSvc);
-            codeGenSvc.CodeResult.Insert(0, PYLINT + "\n");
-            File.WriteAllText(filename, codeGenSvc.CodeResult.ToString());
-            elClass.Json["python"] = codeGenSvc.CodeResult.ToString();
+
+            if (el == null)
+            {
+                var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
+                outputWindow.Clear();
+                outputWindow.WriteLine("Cannot find shape that is the start of the workflow.");
+            }
+            else
+            {
+                DrakonCodeTree dcg = new DrakonCodeTree();
+                ParseDrakonWorkflow(dcg, codeService, canvasController, el);
+                var codeGenSvc = new PythonCodeGeneratorService();
+                dcg.GenerateCode(codeGenSvc);
+                codeGenSvc.CodeResult.Insert(0, PYLINT + "\n");
+
+                File.WriteAllText(filename, codeGenSvc.CodeResult.ToString());
+                elClass.Json["python"] = codeGenSvc.CodeResult.ToString();
+            }
         }
 
-        /// <summary>
-        /// Return the structure of the Drakon code from the workflow.
-        /// </summary>
-        /// <param name="codeService"></param>
-        /// <param name="canvasController"></param>
-        /// <param name="el">The start element</param>
-        /// <returns></returns>
-        protected void ParseDrakonWorkflow(DrakonCodeGenerator dcg, IFlowSharpCodeService codeService, BaseController canvasController, GraphicElement el, bool inCondition = false)
+        protected GraphicElement ParseDrakonWorkflow(DrakonCodeTree dcg, IFlowSharpCodeService codeService, BaseController canvasController, GraphicElement el, bool inCondition = false)
         {
             while (el != null)
             {
@@ -315,20 +314,21 @@ namespace FlowSharpCodeCompilerService
 
                     if (connections.Count() > 1)
                     {
-                        return;
+                        return el;
                     }
                 }
 
-                // Yuck.
+                // All these if's.  Yuck.
                 if (el is IBeginForLoopBox)
                 {
-                    var drakonLoop = new DrakonBeginLoop() { Code = ParseCode(el) };
+                    var drakonLoop = new DrakonLoop() { Code = ParseCode(el) };
                     dcg.AddInstruction(drakonLoop);
-                    // Get next shape and add instructions to "loop"
+                    var nextEl = codeService.NextElementInWorkflow(el);
+                    el = ParseDrakonWorkflow(drakonLoop.LoopInstructions, codeService, canvasController, nextEl);
                 }
                 else if (el is IEndForLoopBox)
                 {
-                    dcg.AddInstruction(new DrakonEndLoop());
+                    return el;
                 }
                 else if (el is IIfBox)
                 {
@@ -365,12 +365,19 @@ namespace FlowSharpCodeCompilerService
 
                 el = codeService.NextElementInWorkflow(el);
             }
+
+            return null;
         }
 
         protected string ParseCode(GraphicElement el)
         {
+            string ret;
+
             // Replace crlf with space and if element has 'python" code in Json, use that instead.
-            string ret = el.Text;
+            if (!el.Json.TryGetValue("python", out ret))
+            {
+                ret = el.Text;
+            }
 
             ret = ret.Replace("\r", "").Replace("\n", " ");
 
@@ -404,17 +411,27 @@ namespace FlowSharpCodeCompilerService
                     sb.AppendLine();
                 }
 
-                sb.AppendLine("class " + className + ":");
+                int indent = 0;
+
+                // Option used when a python file contains a "main" and we don't typically create a class for it.
+                if (((IPythonClass)elClass).GenerateClass)
+                {
+                    sb.AppendLine("class " + className + ":");
+                    indent = 2;
+                }
 
                 classSources.Where(src => !String.IsNullOrEmpty(src)).ForEach(src =>
                 {
                     List<string> lines = src.Split('\n').ToList();
                     // Formatting: remove all blank lines from end of each source file.
                     lines = ((IEnumerable<string>)lines).Reverse().SkipWhile(line => String.IsNullOrWhiteSpace(line)).Reverse().ToList();
-                    lines.ForEach(line => sb.AppendLine("  " + line.TrimEnd()));
+                    lines.ForEach(line => sb.AppendLine(new string(' ', indent) + line.TrimEnd()));
                     sb.AppendLine();
                 });
             }
+
+            File.WriteAllText(filename, sb.ToString());
+            elClass.Json["python"] = sb.ToString();
 
             return ok;
         }
@@ -424,8 +441,8 @@ namespace FlowSharpCodeCompilerService
             bool ok = true;
             StringBuilder sb = new StringBuilder();
 
-            // If there's no classes, then use whatever is in the actual class shape for code, however we need to add/replace the #pylint line with 
-            // whatever the current list of ignores are.
+            // If there's no shapes (def's), then use whatever is in the actual class shape for code, 
+            // however we need to add/replace the #pylint line with whatever the current list of ignores are.
             string src = elClass.Json["python"] ?? "";
             string[] lines = src.Split('\n');
 

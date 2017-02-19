@@ -252,7 +252,8 @@ namespace FlowSharpToolboxService
 
             foreach (GraphicElement el in Elements)
             {
-                el.DisplayRectangle = new Rectangle(new Point(x, y), el.DisplayRectangle.Size);
+                // standard width/height is 25x25
+                el.DisplayRectangle = new Rectangle(new Point(x - (el.DisplayRectangle.Width - 25)/2, y - (el.DisplayRectangle.Height-25)/2), el.DisplayRectangle.Size);
 
                 // TODO: Fix this, so that when we change the display rectangle, or we use some other to-be-created method,
                 // the StartPoint/EndPoint works correctly.  Or maybe the StartPoint/EndPoint can always be calculated from the
@@ -266,7 +267,7 @@ namespace FlowSharpToolboxService
                 el.UpdatePath();
                 x += 50;
 
-                if (x + 25 + 10 > Canvas.Width)
+                if (x + el.DisplayRectangle.Width + 10 > Canvas.Width)
                 {
                     y += 50;
                     x = 15;

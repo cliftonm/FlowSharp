@@ -101,7 +101,7 @@ namespace FlowSharpToolboxService
                 if (t.ShapeType.GetCustomAttribute(typeof(ExcludeFromToolboxAttribute)) == null)
                 {
                     GraphicElement el = Activator.CreateInstance(t.ShapeType, new object[] { toolboxCanvas }) as GraphicElement;
-                    el.DisplayRectangle = new Rectangle(0, 0, 25, 25);     // Default size
+                    el.DisplayRectangle = el.ToolboxDisplayRectangle;
                     toolboxController.AddElement(el);
                 }
             });

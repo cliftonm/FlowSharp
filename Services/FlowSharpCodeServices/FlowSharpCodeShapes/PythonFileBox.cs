@@ -4,6 +4,7 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -19,6 +20,7 @@ namespace FlowSharpCodeShapes
     public class PythonFileBox : Box, IPythonClass
     {
         public string Filename { get; set; }
+        public bool GenerateClass { get; set; }
 
         public PythonFileBox(Canvas canvas) : base(canvas)
         {
@@ -26,6 +28,7 @@ namespace FlowSharpCodeShapes
             TextFont.Dispose();
             TextFont = new Font(FontFamily.GenericSansSerif, 6);
             TextAlign = ContentAlignment.TopLeft;
+            GenerateClass = true;
         }
 
         public void UpdateCodeBehind()
@@ -69,20 +72,29 @@ namespace FlowSharpCodeShapes
         {
             // TODO: Use JSON dictionary instead.
             epb.ExtraData = Filename;
-            base.Serialize(epb, elementsBeingSerialized);
 
             // Also update the backing file.
             if (Json.ContainsKey("python"))
             {
                 File.WriteAllText(Filename, Json["python"]);
             }
+
+            Json["GenerateClass"] = GenerateClass.ToString();
+            base.Serialize(epb, elementsBeingSerialized);
         }
 
         public override void Deserialize(ElementPropertyBag epb)
         {
+            base.Deserialize(epb);
             // TODO: Use JSON dictionary instead.
             Filename = epb.ExtraData;
-            base.Deserialize(epb);
+
+            string strGenerateClass;
+
+            if (Json.TryGetValue("GenerateClass", out strGenerateClass))
+            {
+                GenerateClass = Convert.ToBoolean(strGenerateClass);
+            }
         }
     }
 
@@ -90,22 +102,27 @@ namespace FlowSharpCodeShapes
     {
         [Category("Class")]
         public string Filename { get; set; }
+        [Category("Class")]
+        public bool GenerateClass { get; set; }
 
         public PythonFileBoxProperties(PythonFileBox el) : base(el)
         {
             Filename = el.Filename;
+            GenerateClass = el.GenerateClass;
         }
 
         public override void Update(GraphicElement el, string label)
         {
             PythonFileBox box = (PythonFileBox)el;
 
-            (label == "Filename").If(() =>
+            (label == nameof(Filename)).If(() =>
             {
                 box.Filename = Filename;
                 box.UpdateCodeBehind();
                 box.Text = string.IsNullOrEmpty(Filename) ? "?.py" : (Path.GetFileName(Filename));
             });
+
+            (label == nameof(GenerateClass)).If(() => box.GenerateClass = GenerateClass);
 
             base.Update(el, label);
         }

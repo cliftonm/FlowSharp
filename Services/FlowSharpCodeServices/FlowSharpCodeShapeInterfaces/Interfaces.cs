@@ -27,6 +27,7 @@ namespace FlowSharpCodeShapeInterfaces
 
     public interface IPythonClass : IFileBox
     {
+        bool GenerateClass { get; set; }
     }
 
     public interface IWorkflowBox

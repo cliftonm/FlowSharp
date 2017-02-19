@@ -18,18 +18,12 @@ namespace FlowSharpCodeServiceInterfaces
         void Statement(string code);
     }
 
-    public abstract class DrakonInstruction
-    {
-        public string Code { get; set; }
-        public abstract void GenerateCode(ICodeGeneratorService codeGenSvc);
-    }
-
-    public class DrakonCodeGenerator
+    public class DrakonCodeTree
     {
         public bool HasInstructions { get { return instructions.Count > 0; } }
         protected List<DrakonInstruction> instructions;
 
-        public DrakonCodeGenerator()
+        public DrakonCodeTree()
         {
             instructions = new List<DrakonInstruction>();
         }
@@ -45,15 +39,21 @@ namespace FlowSharpCodeServiceInterfaces
         }
     }
 
+    public abstract class DrakonInstruction
+    {
+        public string Code { get; set; }
+        public abstract void GenerateCode(ICodeGeneratorService codeGenSvc);
+    }
+
     public class DrakonIf : DrakonInstruction
     {
-        public DrakonCodeGenerator TrueInstructions { get; protected set; }
-        public DrakonCodeGenerator FalseInstructions { get; protected set; }
+        public DrakonCodeTree TrueInstructions { get; protected set; }
+        public DrakonCodeTree FalseInstructions { get; protected set; }
 
         public DrakonIf()
         {
-            TrueInstructions = new DrakonCodeGenerator();
-            FalseInstructions = new DrakonCodeGenerator();
+            TrueInstructions = new DrakonCodeTree();
+            FalseInstructions = new DrakonCodeTree();
         }
 
         public override void GenerateCode(ICodeGeneratorService codeGenSvc)
@@ -71,26 +71,19 @@ namespace FlowSharpCodeServiceInterfaces
         }
     }
 
-    //public class DrakonEndIf : DrakonInstruction
-    //{
-    //    public override void GenerateCode(ICodeGeneratorService codeGenSvc)
-    //    {
-    //        codeGenSvc.EndIf();
-    //    }
-    //}
-
-    public class DrakonBeginLoop : DrakonInstruction
+    public class DrakonLoop : DrakonInstruction
     {
+        public DrakonCodeTree LoopInstructions { get; protected set; }
+
+        public DrakonLoop()
+        {
+            LoopInstructions = new DrakonCodeTree();
+        }
+
         public override void GenerateCode(ICodeGeneratorService codeGenSvc)
         {
             codeGenSvc.BeginFor(Code);
-        }
-    }
-
-    public class DrakonEndLoop : DrakonInstruction
-    {
-        public override void GenerateCode(ICodeGeneratorService codeGenSvc)
-        {
+            LoopInstructions.GenerateCode(codeGenSvc);
             codeGenSvc.EndFor();
         }
     }

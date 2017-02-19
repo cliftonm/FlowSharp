@@ -62,6 +62,7 @@ namespace FlowSharpLib
         public Dictionary<string, string> Json { get; set; }
 
         public Rectangle DisplayRectangle { get; set; }
+        public virtual Rectangle ToolboxDisplayRectangle { get { return new Rectangle(0, 0, 25, 25); } }
         public Pen BorderPen { get; set; }
         public SolidBrush FillBrush { get; set; }
 

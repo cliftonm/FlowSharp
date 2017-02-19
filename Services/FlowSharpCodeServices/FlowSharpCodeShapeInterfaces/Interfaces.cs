@@ -30,6 +30,8 @@ namespace FlowSharpCodeShapeInterfaces
         bool GenerateClass { get; set; }
     }
 
+    public interface ICSharpClass : IFileBox { }
+
     public interface IWorkflowBox
     {
     }

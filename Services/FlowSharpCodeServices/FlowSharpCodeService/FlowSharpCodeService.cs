@@ -150,6 +150,127 @@ namespace FlowSharpCodeService
 
         // ===================================================
 
+        // Process Launcher:
+
+        public Process LaunchProcess(string processName, string arguments, Action<string> onOutput, Action<string> onError = null)
+        {
+            Process p = new Process();
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardError = true;
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.FileName = processName;
+            p.StartInfo.Arguments = arguments;
+            p.StartInfo.CreateNoWindow = true;
+
+            p.OutputDataReceived += (sndr, args) => { if (args.Data != null) onOutput(args.Data); };
+
+            if (onError != null)
+            {
+                p.ErrorDataReceived += (sndr, args) => { if (args.Data != null) onError(args.Data); };
+            }
+
+            p.Start();
+
+            // Interestingly, this has to be called after Start().
+            p.BeginOutputReadLine();
+            p.BeginErrorReadLine();
+
+            return p;
+        }
+
+        public void LaunchProcessAndWaitForExit(string processName, string arguments, Action<string> onOutput, Action<string> onError = null)
+        {
+            var proc = LaunchProcess(processName, arguments, onOutput, onError);
+            proc.WaitForExit();
+        }
+
+        // ===================================================
+
+        // DRAKON workflow
+
+        public  GraphicElement ParseDrakonWorkflow(DrakonCodeTree dcg, IFlowSharpCodeService codeService, BaseController canvasController, GraphicElement el, bool inCondition = false)
+        {
+            while (el != null)
+            {
+                // If we're in a conditional and we encounter a shape with multiple "merge" connections, then we assume (I think rightly so)
+                // that this is the end of the conditional branch, and that code should continue at this point outside of the "if-else" statement.
+                if (inCondition)
+                {
+                    var connections = el.Connections.Where(c => c.ElementConnectionPoint.Type == GripType.TopMiddle);
+
+                    if (connections.Count() > 1)
+                    {
+                        return el;
+                    }
+                }
+
+                // All these if's.  Yuck.
+                if (el is IBeginForLoopBox)
+                {
+                    var drakonLoop = new DrakonLoop() { Code = ParseCode(el) };
+                    dcg.AddInstruction(drakonLoop);
+                    var nextEl = codeService.NextElementInWorkflow(el);
+                    el = ParseDrakonWorkflow(drakonLoop.LoopInstructions, codeService, canvasController, nextEl);
+                }
+                else if (el is IEndForLoopBox)
+                {
+                    return el;
+                }
+                else if (el is IIfBox)
+                {
+                    var drakonIf = new DrakonIf() { Code = ParseCode(el) };
+                    dcg.AddInstruction(drakonIf);
+
+                    var elTrue = codeService.GetTruePathFirstShape((IIfBox)el);
+                    var elFalse = codeService.GetFalsePathFirstShape((IIfBox)el);
+
+                    if (elTrue != null)
+                    {
+                        ParseDrakonWorkflow(drakonIf.TrueInstructions, codeService, canvasController, elTrue, true);
+                    }
+
+                    if (elFalse != null)
+                    {
+                        ParseDrakonWorkflow(drakonIf.FalseInstructions, codeService, canvasController, elFalse, true);
+                    }
+
+                    // dcg.AddInstruction(new DrakonEndIf());
+                }
+                else if (el is IOutputBox)
+                {
+                    dcg.AddInstruction(new DrakonOutput() { Code = ParseCode(el) });
+                }
+                else
+                {
+                    dcg.AddInstruction(new DrakonStatement() { Code = ParseCode(el) });
+                }
+
+                el = codeService.NextElementInWorkflow(el);
+            }
+
+            return null;
+        }
+
+        protected string ParseCode(GraphicElement el)
+        {
+            string ret;
+
+            // TODO: This is a mess.  Imagine what it will look like when we add more languages!
+            if (!el.Json.TryGetValue("python", out ret))
+            {
+                if (!el.Json.TryGetValue("Code", out ret))
+                {
+                    // Replace crlf with space and if element has 'python" code in Json, use that instead.
+                    ret = el.Text.Replace("\r", "").Replace("\n", " ");
+                }
+            }
+
+            return ret;
+        }
+
+        // ===================================================
+
         public void OutputWindowClosed()
         {
             mnuOutput.Checked = false;

@@ -32,9 +32,6 @@ namespace FlowSharpWebSocketService
                 ws = new WebSocket("ws://127.0.0.1:1101/flowsharpapp", new MyListener());
                 ws.Connect();
             }
-
-            // TODO: How do we close the connection???
-            // TODO: How do we recover from a broken connection?
         }
     }
 }

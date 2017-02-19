@@ -24,6 +24,101 @@ using FlowSharpLib;
 
 namespace FlowSharpCodeCompilerService
 {
+    // TODO: Fold into Clifton.Core.ExtensionMethods
+    public static class ExtMeth
+    {
+        /// <summary>
+        /// Returns the right of all text after matching p2 with p1.
+        /// </summary>
+        public static string RightOfMatching(this string src, char p1, char p2)
+        {
+            int count = 0;
+            int idx = 0;
+
+            while (idx < src.Length)
+            {
+                if (src[idx] == p1)
+                {
+                    count = 1;
+                    break;
+                }
+
+                ++idx;
+            }
+
+            while (idx < src.Length)
+            {
+                if (src[idx] == p1) ++count;
+
+                if (src[idx] == p2)
+                {
+                    if (--count == 0)
+                    {
+                        break;
+                    }
+                }
+
+                ++idx;
+            }
+
+            string ret = (idx < src.Length) ? src.Substring(idx) : String.Empty;
+
+            return ret;
+        }
+    }
+
+    public class CSharpCodeGeneratorService : ICodeGeneratorService
+    {
+        public StringBuilder CodeResult { get; protected set; }
+
+        protected int indent = 12;
+
+        public CSharpCodeGeneratorService()
+        {
+            CodeResult = new StringBuilder();
+        }
+
+        public void BeginIf(string code)
+        {
+            CodeResult.AppendLine(new string(' ', indent) + "if (" +code+")");
+            CodeResult.AppendLine(new string(' ', indent) + "{");
+            indent += 4;
+        }
+
+        public void Else()
+        {
+            indent = 0.MaxDelta(indent - 4);
+            CodeResult.AppendLine(new string(' ', indent) + "}");
+            CodeResult.AppendLine("else");
+            CodeResult.AppendLine(new string(' ', indent) + "{");
+            indent += 4;
+        }
+
+        public void EndIf()
+        {
+            indent = 0.MaxDelta(indent - 4);
+            CodeResult.Append(new string(' ', indent) + "{");
+        }
+
+        public void BeginFor(string code)
+        {
+            CodeResult.AppendLine(new string(' ', indent) + "foreach (" + code + ")");
+            CodeResult.AppendLine(new string(' ', indent) + "{");
+            indent += 4;
+        }
+
+        public void EndFor()
+        {
+            indent = 0.MaxDelta(indent - 4);
+            CodeResult.AppendLine(new string(' ', indent) + "}");
+        }
+
+        public void Statement(string code)
+        {
+            CodeResult.AppendLine(new string(' ', indent) + code +";");
+        }
+    }
+
     public class FlowSharpCodeCompilerModule : IModule
     {
         public void InitializeServices(IServiceManager serviceManager)
@@ -55,6 +150,8 @@ namespace FlowSharpCodeCompilerService
         {
             TerminateRunningProcess();
             var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
+            var fscSvc = ServiceManager.Get<IFlowSharpCodeService>();
+            outputWindow.Clear();
 
             // Ever compiled?
             // TODO: Compile when code has changed!
@@ -66,54 +163,9 @@ namespace FlowSharpCodeCompilerService
             // If no errors:
             if (!results.Errors.HasErrors)
             {
-                Process p = new Process();
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.RedirectStandardError = true;
-                p.StartInfo.RedirectStandardInput = true;
-                p.StartInfo.FileName = exeFilename;
-                p.StartInfo.CreateNoWindow = true;      // TODO: useful for console apps, not so good for WinForm apps?
-
-                p.OutputDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
-                p.ErrorDataReceived += (sndr, args) => outputWindow.WriteLine(args.Data);
-
-                // This unfortunately doesn't work!
-                // TODO: p.EnableRaisingEvents = true should enable this.
-                // p.Exited += (object sender, EventArgs e) => runningProcess = null;
-
-                p.Start();
-
-                // Interestingly, this has to be called after Start().
-                p.BeginOutputReadLine();
-                p.BeginErrorReadLine();
-                runningProcess = p;
-
-                /*
-                await Task.Run(() =>
-                {
-                    bool found = false;
-
-                    while (!found)
-                    {
-                        System.Threading.Thread.Sleep(100);
-                        Application.DoEvents();         // Necessary for Exited event to fire.
-
-                        if (runningProcess != null)
-                        {
-                            Assert.SilentTry(() => found = Process.GetProcesses().Any(pr => pr.ProcessName == runningProcess.ProcessName));
-                        }
-                    }
-                });
-
-                Assert.SilentTry(() =>
-                {
-                    if (runningProcess != null)
-                    {
-                        IntPtr hWnd = runningProcess.MainWindowHandle;
-                        ShowWindow(hWnd, SW_HIDE);
-                    }
-                });
-                */
+                runningProcess = fscSvc.LaunchProcess(exeFilename, null,
+                    stdout => outputWindow.WriteLine(stdout),
+                    stderr => outputWindow.WriteLine(stderr));
             }
         }
 
@@ -160,13 +212,34 @@ namespace FlowSharpCodeCompilerService
             {
                 string code = GetWorkflowCode(codeService, canvasController, wf);
                 wf.Json["Code"] = code;
-                // CreateCodeFile(wf, sources, code);
             });
 
-            // TODO: Better Linq!
-            rootSourceShapes.Where(root => !String.IsNullOrEmpty(GetCode(root))).ForEach(root =>
+            List<GraphicElement> excludeClassShapes = new List<GraphicElement>();
+            List<GraphicElement> classes = GetClasses(canvasController);
+
+            // Get CSharpClass shapes that contain DRAKON shapes.
+            classes.Where(cls => HasDrakonShapes(canvasController, cls)).ForEach(cls =>
             {
-                CreateCodeFile(root, sources, GetCode(root));
+                excludeClassShapes.AddRange(canvasController.Elements.Where(el => cls.DisplayRectangle.Contains(el.DisplayRectangle)));
+                DrakonCodeTree dcg = new DrakonCodeTree();
+                var workflowStart = codeService.FindStartOfWorkflow(canvasController, cls);
+                codeService.ParseDrakonWorkflow(dcg, codeService, canvasController, workflowStart);
+                var codeGenSvc = new CSharpCodeGeneratorService();
+                dcg.GenerateCode(codeGenSvc);
+                InsertCodeInRunWorkflowMethod(cls, codeGenSvc.CodeResult);
+                string filename = CreateCodeFile(cls);
+                sources.Add(filename);
+            });
+
+            rootSourceShapes.Where(root => !excludeClassShapes.Contains(root)).ForEach(root =>
+            {
+            // Get all other shapes that are not part of CSharpClass shapes:
+            // TODO: Better Linq!
+            if (!String.IsNullOrEmpty(GetCode(root)))
+                {
+                    string filename = CreateCodeFile(root);
+                    sources.Add(filename);
+                }
             });
 
             exeFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.exe" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".exe";
@@ -177,6 +250,28 @@ namespace FlowSharpCodeCompilerService
             {
                 outputWindow.WriteLine("No Errors");
             }
+        }
+
+        protected void InsertCodeInRunWorkflowMethod(GraphicElement root, StringBuilder code)
+        {
+            // TODO: Verify that root.Json["Code"] defines the namespace, class, and stub, or figure out how to include "using" and field initialization and properties such that 
+            // we can create the namespace, class, and stub for the user.
+            string existingCode = root.Json["Code"];
+
+            string before = existingCode.LeftOf("void RunWorkflow()");
+            string after = existingCode.RightOf("void RunWorkflow()").RightOfMatching('{', '}');
+            StringBuilder finalCode = new StringBuilder(before);
+            finalCode.Append("void RunWorkflow()\r\t\t{\r");
+            finalCode.Append(new String(' ', 12) + code.ToString().Trim() + "\r\t\t}\r\t");
+            finalCode.Append(after);
+            root.Json["Code"] = finalCode.ToString();
+        }
+
+        protected bool HasDrakonShapes(BaseController canvasController, GraphicElement elClass)
+        {
+            return canvasController.Elements.Any(srcEl => srcEl != elClass &&
+                elClass.DisplayRectangle.Contains(srcEl.DisplayRectangle) &&
+                srcEl is IDrakonShape);
         }
 
         protected void InitializeBuildMenu()
@@ -238,12 +333,14 @@ namespace FlowSharpCodeCompilerService
             }
         }
 
-        protected void CreateCodeFile(GraphicElement root, List<string> sources, string code)
+        protected string CreateCodeFile(GraphicElement root)
         {
+            string code = GetCode(root);
             string filename = Path.GetFileNameWithoutExtension(Path.GetTempFileName()) + ".cs";
             tempToTextBoxMap[filename] = root.Text;
             File.WriteAllText(filename, GetCode(root));
-            sources.Add(filename);
+
+            return filename;
         }
 
         public string GetWorkflowCode(IFlowSharpCodeService codeService, BaseController canvasController, GraphicElement wf)
@@ -524,6 +621,11 @@ namespace FlowSharpCodeCompilerService
         protected List<IAssemblyReferenceBox> GetReferences(BaseController canvasController)
         {
             return canvasController.Elements.Where(el => el is IAssemblyReferenceBox).Cast<IAssemblyReferenceBox>().ToList();
+        }
+
+        protected List<GraphicElement> GetClasses(BaseController canvasController)
+        {
+            return canvasController.Elements.Where(el => el is ICSharpClass).ToList();
         }
 
         /// <summary>

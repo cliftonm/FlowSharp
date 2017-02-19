@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="AssemblyBox.cs" />
     <Compile Include="AssemblyReferenceBox.cs" />
+    <Compile Include="CSharpClassBox.cs" />
     <Compile Include="FileBox.cs" />
     <Compile Include="HtmlFileBox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

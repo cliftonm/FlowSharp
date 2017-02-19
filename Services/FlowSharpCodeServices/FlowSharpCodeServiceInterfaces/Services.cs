@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 using Clifton.Core.ServiceManagement;
@@ -21,10 +22,16 @@ namespace FlowSharpCodeServiceInterfaces
     {
         void OutputWindowClosed();
         void EditorWindowClosed(string language);
+
         GraphicElement FindStartOfWorkflow(BaseController canvasController, GraphicElement wf);
         GraphicElement GetTruePathFirstShape(IIfBox el);
         GraphicElement GetFalsePathFirstShape(IIfBox el);
         GraphicElement NextElementInWorkflow(GraphicElement el);
+
+        Process LaunchProcess(string processName, string arguments, Action<string> onOutput, Action<string> onError = null);
+        void LaunchProcessAndWaitForExit(string processName, string arguments, Action<string> onOutput, Action<string> onError = null);
+
+        GraphicElement ParseDrakonWorkflow(DrakonCodeTree dcg, IFlowSharpCodeService codeService, BaseController canvasController, GraphicElement el, bool inCondition = false);
     }
 
     public interface IFlowSharpCodeOutputWindowService : IService

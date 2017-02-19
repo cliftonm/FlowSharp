@@ -125,7 +125,7 @@ namespace FlowSharpWindowsControlShapes
                 case SendProtocol.Http:
                     {
                         string url = "http://localhost:8002/" + cmd;
-                        string data = "ShapeName=" + Name;
+                        string data = "ID=" + Name;
                         data = AppendData(data);
                         ServiceManager.Instance.Get<ISemanticProcessor>().ProcessInstance<FlowSharpMembrane, HttpSend>(d =>
                         {
@@ -136,7 +136,7 @@ namespace FlowSharpWindowsControlShapes
                     }
                 case SendProtocol.WebSocket:
                     {
-                        string data = "cmd=" + cmd + "&ShapeName=" + Name;
+                        string data = "cmd=" + cmd + "&ID=" + Name;
                         data = AppendData(data);
                         ServiceManager.Instance.Get<ISemanticProcessor>().ProcessInstance<FlowSharpMembrane, WebSocketSend>(d =>
                         {

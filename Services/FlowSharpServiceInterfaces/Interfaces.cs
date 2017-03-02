@@ -55,6 +55,8 @@ namespace FlowSharpServiceInterfaces
         void InitializeToolbox();
         void InitializePluginsInToolbox();
         void UpdateToolboxPaths();
+
+        List<Type> ShapeList { get; }
     }
 
     public interface IFlowSharpMouseControllerService : IService

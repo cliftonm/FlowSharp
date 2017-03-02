@@ -33,9 +33,12 @@ namespace FlowSharpToolboxService
     public class FlowSharpToolboxService : ServiceBase, IFlowSharpToolboxService
     {
         public BaseController Controller { get { return toolboxController; } }
+        public List<Type> ShapeList { get { return allShapes; } }
+
         protected ToolboxCanvas toolboxCanvas;
         protected ToolboxController toolboxController;
         protected Control pnlToolbox;
+        protected List<Type> allShapes = new List<Type>();
 
         public override void Initialize(IServiceManager svcMgr)
         {
@@ -70,6 +73,7 @@ namespace FlowSharpToolboxService
             Assembly assy = Assembly.LoadFrom(fslPath);
             IEnumerable<Type> shapes = assy.GetTypes().Where(t => t.IsSubclassOf(typeof(GraphicElement)) && !t.IsAbstract);
             AddShapes(shapes);
+            allShapes.AddRange(shapes);
         }
 
         public void InitializePluginsInToolbox()
@@ -78,6 +82,7 @@ namespace FlowSharpToolboxService
             pluginManager.InitializePlugins();
             IEnumerable<Type> pluginShapes = pluginManager.GetShapeTypes().Where(t => !t.IsAbstract);
             AddShapes(pluginShapes);
+            allShapes.AddRange(pluginShapes);
         }
 
         public void UpdateToolboxPaths()

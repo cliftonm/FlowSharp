@@ -5,6 +5,8 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
@@ -66,6 +68,48 @@ namespace FlowSharpRestService
         {
             var w = proc.ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
             cmd.Text.Split('\n').Where(s=>!String.IsNullOrEmpty(s.Trim())).ForEach(s => w.WriteLine(s.Trim()));
+        }
+
+        // Ex: localhost:8001/flowsharp?cmd=CmdDropShape&ShapeName=Box&X=50&Y=100
+        // Ex: localhost:8001/flowsharp?cmd=CmdDropShape&ShapeName=Box&X=50&Y=100&Text=Foobar&FillColor=!FF00ff&Width=300
+        public void Process(ISemanticProcessor proc, IMembrane membrane, CmdDropShape cmd)
+        {
+            List<Type> shapes = proc.ServiceManager.Get<IFlowSharpToolboxService>().ShapeList;
+            var controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            Type t = shapes.Where(s => s.Name == cmd.ShapeName).SingleOrDefault();
+
+            if (t != null)
+            {
+                GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { controller.Canvas });
+                el.DisplayRectangle = new Rectangle(cmd.X, cmd.Y, cmd.Width ?? el.DefaultRectangle().Width, cmd.Height ?? el.DefaultRectangle().Height);
+                el.Text = cmd.Text;
+
+                cmd.FillColor.IfNotNull(c=> el.FillColor = GetColor(c));
+                cmd.BorderColor.IfNotNull(c => el.BorderPenColor = GetColor(c));
+                cmd.TextColor.IfNotNull(c => el.TextColor = GetColor(c));
+
+                el.UpdateProperties();
+                el.UpdatePath();
+                controller.Insert(el);
+                controller.Canvas.Invalidate();
+            }
+        }
+
+        protected Color GetColor(string colorString)
+        {
+            Color color;
+
+            // Get the color from its name or an RGB value as hex codes #RRGGBB
+            if (colorString[0] == '!')
+            {
+                color = ColorTranslator.FromHtml("#" + colorString.Substring(1));
+            }
+            else
+            {
+                color = Color.FromName(colorString);
+            }
+
+            return color;
         }
     }
 }

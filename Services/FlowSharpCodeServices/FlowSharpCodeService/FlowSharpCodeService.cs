@@ -61,7 +61,9 @@ namespace FlowSharpCodeService
                     !srcEl.Connections.Any(c => 
                         new GripType[] { GripType.TopMiddle, GripType.LeftMiddle, GripType.RightMiddle }
                         .Contains(c.ElementConnectionPoint.Type)) &&
-                     srcEl.Connections.All(c=> c.ElementConnectionPoint.Type == GripType.BottomMiddle)).FirstOrDefault();
+                    srcEl.Connections.Any(c =>
+                        new GripType[] { GripType.BottomMiddle }
+                        .Contains(c.ElementConnectionPoint.Type))).FirstOrDefault();
 
             return start;
         }

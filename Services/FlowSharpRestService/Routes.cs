@@ -79,7 +79,16 @@ namespace FlowSharpRestService
 
                 if (pi != null)
                 {
-                    object valOfType = Convert.ChangeType(Uri.UnescapeDataString(nvc[key].Replace('+', ' ')), pi.PropertyType);
+                    object valOfType = null;
+                    Type ptype = pi.PropertyType;
+
+                    if (ptype.IsGenericType)
+                    {
+                        // We assume it's a nullable type
+                        ptype = ptype.GenericTypeArguments[0];
+                    }
+
+                    valOfType = Convert.ChangeType(Uri.UnescapeDataString(nvc[key].Replace('+', ' ')), ptype);
                     pi.SetValue(packet, valOfType);
                 }
             }

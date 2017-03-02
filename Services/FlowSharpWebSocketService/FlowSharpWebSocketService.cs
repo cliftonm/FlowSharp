@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 
 using WebSocketSharp;
@@ -42,9 +43,8 @@ namespace FlowSharpWebSocketService
 
         public void StartServer()
         {
-            // string address = "127.0.0.1";
-            // TODO: Get the IP of the machine!
-            string address = "192.168.0.4";
+            List<IPAddress> ips = GetLocalHostIPs();
+            string address = ips[0].ToString();
             int port = 1100;
             IPAddress ipaddr = new IPAddress(address.Split('.').Select(a => Convert.ToByte(a)).ToArray());
             wss = new WebSocketServer(ipaddr, port, null);
@@ -55,6 +55,15 @@ namespace FlowSharpWebSocketService
         public void StopServer()
         {
             wss.Stop();
+        }
+
+        protected List<IPAddress> GetLocalHostIPs()
+        {
+            IPHostEntry host;
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            List<IPAddress> ret = host.AddressList.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork).ToList();
+
+            return ret;
         }
     }
 

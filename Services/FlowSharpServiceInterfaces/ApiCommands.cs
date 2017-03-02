@@ -51,4 +51,20 @@ namespace FlowSharpServiceInterfaces
     {
         public string Text { get; set; }
     }
+
+    /// <summary>
+    /// Place a shape on the drawing.
+    /// </summary>
+    public class CmdDropShape : ISemanticType
+    {
+        public string ShapeName { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int? Width { get; set; }
+        public int? Height { get; set; }
+        public string Text { get; set; }
+        public string FillColor { get; set; }
+        public string BorderColor { get; set; }
+        public string TextColor { get; set; }
+    }
 }

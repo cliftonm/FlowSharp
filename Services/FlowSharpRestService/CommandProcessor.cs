@@ -91,7 +91,25 @@ namespace FlowSharpRestService
                 el.UpdateProperties();
                 el.UpdatePath();
                 controller.Insert(el);
-                controller.Canvas.Invalidate();
+            }
+        }
+
+        // Ex: localhost:8001/flowsharp?cmd=CmdDropConnector&ConnectorName=DiagonalConnector&X1=50&Y1=100&X2=150&Y2=150
+        public void Process(ISemanticProcessor proc, IMembrane membrane, CmdDropConnector cmd)
+        {
+            List<Type> shapes = proc.ServiceManager.Get<IFlowSharpToolboxService>().ShapeList;
+            var controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            Type t = shapes.Where(s => s.Name == cmd.ConnectorName).SingleOrDefault();
+
+            if (t != null)
+            {
+                DynamicConnector el = (DynamicConnector)Activator.CreateInstance(t, new object[] { controller.Canvas });
+                el.StartPoint = new Point(cmd.X1, cmd.Y1);
+                el.EndPoint = new Point(cmd.X2, cmd.Y2);
+                
+                el.UpdateProperties();
+                el.UpdatePath();
+                controller.Insert(el);
             }
         }
 

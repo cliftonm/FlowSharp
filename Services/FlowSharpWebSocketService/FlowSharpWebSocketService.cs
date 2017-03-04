@@ -125,7 +125,16 @@ namespace FlowSharpWebSocketService
 
                 if (pi != null)
                 {
-                    object valOfType = Convert.ChangeType(data[key], pi.PropertyType);
+                    object valOfType = null;
+                    Type ptype = pi.PropertyType;
+
+                    if (ptype.IsGenericType)
+                    {
+                        // We assume it's a nullable type
+                        ptype = ptype.GenericTypeArguments[0];
+                    }
+
+                    valOfType = Convert.ChangeType(Uri.UnescapeDataString(data[key].Replace('+', ' ')), ptype);
                     pi.SetValue(packet, valOfType);
                 }
             }

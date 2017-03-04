@@ -28,6 +28,11 @@ namespace FlowSharpLib
             return new Point(p.X - p2.X, p.Y - p2.Y);
         }
 
+        public static Size Size(this Point p, Point p2)
+        {
+            return new Size(p.X - p2.X, p.Y - p2.Y);
+        }
+
         public static Point Add(this Point p, Point p2)
         {
             return new Point(p.X + p2.X, p.Y + p2.Y);
@@ -48,10 +53,10 @@ namespace FlowSharpLib
         //    return (a > max) ? max : a;
         //}
 
-        public static int Max(this int a, int min)
-        {
-            return (a < min) ? min : a;
-        }
+        //public static int Max(this int a, int min)
+        //{
+        //    return (a < min) ? min : a;
+        //}
         
         public static Rectangle Grow(this Rectangle r, float w)
         {

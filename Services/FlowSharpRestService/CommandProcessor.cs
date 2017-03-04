@@ -104,10 +104,17 @@ namespace FlowSharpRestService
             if (t != null)
             {
                 DynamicConnector el = (DynamicConnector)Activator.CreateInstance(t, new object[] { controller.Canvas });
+                // el = (DynamicConnector)el.CloneDefault(controller.Canvas, new Point(cmd.X1, cmd.Y1));
+                // el = (DynamicConnector)el.CloneDefault(controller.Canvas);
+
                 el.StartPoint = new Point(cmd.X1, cmd.Y1);
                 el.EndPoint = new Point(cmd.X2, cmd.Y2);
-                
-                el.UpdateProperties();
+                int x1 = cmd.X1.Min(cmd.X2);
+                int y1 = cmd.Y1.Min(cmd.Y2);
+                int x2 = cmd.X1.Max(cmd.X2);
+                int y2 = cmd.Y1.Max(cmd.Y2);
+                el.DisplayRectangle = new Rectangle(x1, y1, x2 - x1, y2 - y1);
+
                 el.UpdatePath();
                 controller.Insert(el);
             }

@@ -7,6 +7,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
+
 namespace FlowSharpLib
 {
 	public class ShapeAnchor

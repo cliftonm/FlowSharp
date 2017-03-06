@@ -82,6 +82,7 @@ namespace FlowSharpRestService
             {
                 GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { controller.Canvas });
                 el.DisplayRectangle = new Rectangle(cmd.X, cmd.Y, cmd.Width ?? el.DefaultRectangle().Width, cmd.Height ?? el.DefaultRectangle().Height);
+                el.Name = cmd.Name;
                 el.Text = cmd.Text;
 
                 cmd.FillColor.IfNotNull(c=> el.FillColor = GetColor(c));
@@ -107,6 +108,7 @@ namespace FlowSharpRestService
                 // el = (DynamicConnector)el.CloneDefault(controller.Canvas, new Point(cmd.X1, cmd.Y1));
                 // el = (DynamicConnector)el.CloneDefault(controller.Canvas);
 
+                el.Name = cmd.Name;
                 el.StartPoint = new Point(cmd.X1, cmd.Y1);
                 el.EndPoint = new Point(cmd.X2, cmd.Y2);
                 int x1 = cmd.X1.Min(cmd.X2);

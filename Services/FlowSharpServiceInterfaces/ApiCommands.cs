@@ -57,7 +57,8 @@ namespace FlowSharpServiceInterfaces
     /// </summary>
     public class CmdDropShape : ISemanticType
     {
-        public string ShapeName { get; set; }
+        public string ShapeName { get; set; }       // shape name to drop
+        public string Name { get; set; }            // name of shape to assign to Name property
         public int X { get; set; }
         public int Y { get; set; }
         public int? Width { get; set; }
@@ -71,6 +72,7 @@ namespace FlowSharpServiceInterfaces
     public class CmdDropConnector : ISemanticType
     {
         public string ConnectorName { get; set; }
+        public string Name { get; set; }
         public int X1 { get; set; }
         public int Y1 { get; set; }
         public int X2 { get; set; }

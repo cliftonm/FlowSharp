@@ -52,6 +52,8 @@ namespace FlowSharpServiceInterfaces
         public string Text { get; set; }
     }
 
+    public class CmdClearCanvas : ISemanticType { }
+
     /// <summary>
     /// Place a shape on the drawing.
     /// </summary>

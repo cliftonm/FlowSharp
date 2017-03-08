@@ -27,17 +27,21 @@ namespace FlowSharpRestService
         public void Process(ISemanticProcessor proc, IMembrane membrane, CmdUpdateProperty cmd)
         {
             BaseController controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
-            var els = controller.Elements.Where(e => e.Name == cmd.Name);
 
-            els.ForEach(el =>
+            controller.Canvas.FindForm().BeginInvoke(() =>
             {
-                PropertyInfo pi = el.GetType().GetProperty(cmd.PropertyName);
-                object cval = Converter.Convert(cmd.Value, pi.PropertyType);
+                var els = controller.Elements.Where(e => e.Name == cmd.Name);
 
-                el?.Canvas.Invoke(() =>
+                els.ForEach(el =>
                 {
-                    pi.SetValue(el, cval);
-                    controller.Redraw(el);
+                    PropertyInfo pi = el.GetType().GetProperty(cmd.PropertyName);
+                    object cval = Converter.Convert(cmd.Value, pi.PropertyType);
+
+                    el?.Canvas.BeginInvoke(() =>
+                    {
+                        pi.SetValue(el, cval);
+                        controller.Redraw(el);
+                    });
                 });
             });
         }
@@ -46,11 +50,15 @@ namespace FlowSharpRestService
         public void Process(ISemanticProcessor proc, IMembrane membrane, CmdShowShape cmd)
         {
             BaseController controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
-            var el = controller.Elements.Where(e => e.Name == cmd.Name).FirstOrDefault();
 
-            el?.Canvas.Invoke(() =>
+            controller.Canvas.FindForm().BeginInvoke(() =>
             {
-                controller.FocusOn(el);
+                var el = controller.Elements.Where(e => e.Name == cmd.Name).FirstOrDefault();
+
+                el?.Canvas.BeginInvoke(() =>
+                {
+                    controller.FocusOn(el);
+                });
             });
         }
 
@@ -58,16 +66,25 @@ namespace FlowSharpRestService
         public void Process(ISemanticProcessor proc, IMembrane membrane, CmdGetShapeFiles cmd)
         {
             BaseController controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
-            var els = controller.Elements.Where(e => e is IFileBox);
-            cmd.Filenames.AddRange(els.Cast<IFileBox>().Where(el => !String.IsNullOrEmpty(el.Filename)).Select(el => el.Filename));
+
+            controller.Canvas.FindForm().BeginInvoke(() =>
+            {
+                var els = controller.Elements.Where(e => e is IFileBox);
+                cmd.Filenames.AddRange(els.Cast<IFileBox>().Where(el => !String.IsNullOrEmpty(el.Filename)).Select(el => el.Filename));
+            });
         }
 
         // FlowSharpCodeOutputWindowService required for this behavior.
         // Ex: localhost:8001/flowsharp?cmd=CmdOutputMessage&Text=foobar
         public void Process(ISemanticProcessor proc, IMembrane membrane, CmdOutputMessage cmd)
         {
+            BaseController controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
             var w = proc.ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
-            cmd.Text.Split('\n').Where(s=>!String.IsNullOrEmpty(s.Trim())).ForEach(s => w.WriteLine(s.Trim()));
+
+            controller.Canvas.FindForm().BeginInvoke(() =>
+            {
+                cmd.Text.Split('\n').Where(s => !String.IsNullOrEmpty(s.Trim())).ForEach(s => w.WriteLine(s.Trim()));
+            });
         }
 
         // Ex: localhost:8001/flowsharp?cmd=CmdDropShape&ShapeName=Box&X=50&Y=100
@@ -80,18 +97,22 @@ namespace FlowSharpRestService
 
             if (t != null)
             {
-                GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { controller.Canvas });
-                el.DisplayRectangle = new Rectangle(cmd.X, cmd.Y, cmd.Width ?? el.DefaultRectangle().Width, cmd.Height ?? el.DefaultRectangle().Height);
-                el.Name = cmd.Name;
-                el.Text = cmd.Text;
 
-                cmd.FillColor.IfNotNull(c=> el.FillColor = GetColor(c));
-                cmd.BorderColor.IfNotNull(c => el.BorderPenColor = GetColor(c));
-                cmd.TextColor.IfNotNull(c => el.TextColor = GetColor(c));
+                controller.Canvas.FindForm().BeginInvoke(() =>
+                {
+                    GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { controller.Canvas });
+                    el.DisplayRectangle = new Rectangle(cmd.X, cmd.Y, cmd.Width ?? el.DefaultRectangle().Width, cmd.Height ?? el.DefaultRectangle().Height);
+                    el.Name = cmd.Name;
+                    el.Text = cmd.Text;
 
-                el.UpdateProperties();
-                el.UpdatePath();
-                controller.Insert(el);
+                    cmd.FillColor.IfNotNull(c => el.FillColor = GetColor(c));
+                    cmd.BorderColor.IfNotNull(c => el.BorderPenColor = GetColor(c));
+                    cmd.TextColor.IfNotNull(c => el.TextColor = GetColor(c));
+
+                    el.UpdateProperties();
+                    el.UpdatePath();
+                    controller.Insert(el);
+                });
             }
         }
 
@@ -104,22 +125,37 @@ namespace FlowSharpRestService
 
             if (t != null)
             {
-                DynamicConnector el = (DynamicConnector)Activator.CreateInstance(t, new object[] { controller.Canvas });
-                // el = (DynamicConnector)el.CloneDefault(controller.Canvas, new Point(cmd.X1, cmd.Y1));
-                // el = (DynamicConnector)el.CloneDefault(controller.Canvas);
 
-                el.Name = cmd.Name;
-                el.StartPoint = new Point(cmd.X1, cmd.Y1);
-                el.EndPoint = new Point(cmd.X2, cmd.Y2);
-                int x1 = cmd.X1.Min(cmd.X2);
-                int y1 = cmd.Y1.Min(cmd.Y2);
-                int x2 = cmd.X1.Max(cmd.X2);
-                int y2 = cmd.Y1.Max(cmd.Y2);
-                el.DisplayRectangle = new Rectangle(x1, y1, x2 - x1, y2 - y1);
+                controller.Canvas.FindForm().BeginInvoke(() =>
+                {
+                    DynamicConnector el = (DynamicConnector)Activator.CreateInstance(t, new object[] { controller.Canvas });
+                    // el = (DynamicConnector)el.CloneDefault(controller.Canvas, new Point(cmd.X1, cmd.Y1));
+                    // el = (DynamicConnector)el.CloneDefault(controller.Canvas);
 
-                el.UpdatePath();
-                controller.Insert(el);
+                    el.Name = cmd.Name;
+                    el.StartPoint = new Point(cmd.X1, cmd.Y1);
+                    el.EndPoint = new Point(cmd.X2, cmd.Y2);
+                    int x1 = cmd.X1.Min(cmd.X2);
+                    int y1 = cmd.Y1.Min(cmd.Y2);
+                    int x2 = cmd.X1.Max(cmd.X2);
+                    int y2 = cmd.Y1.Max(cmd.Y2);
+                    el.DisplayRectangle = new Rectangle(x1, y1, x2 - x1, y2 - y1);
+
+                    el.UpdatePath();
+                    controller.Insert(el);
+                });
             }
+        }
+
+        public void Process(ISemanticProcessor proc, IMembrane membrane, CmdClearCanvas cmd)
+        {
+            var controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
+
+            controller.Canvas.FindForm().BeginInvoke(() =>
+            {
+                controller.Clear();
+                controller.Canvas.Invalidate();
+            });
         }
 
         protected Color GetColor(string colorString)

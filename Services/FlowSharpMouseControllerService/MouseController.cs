@@ -182,7 +182,7 @@ namespace FlowSharpMouseControllerService
                     // So Ctrl+V paste works, as keystroke is intercepted only when canvas panel has focus.
                     BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
                     canvasController.Canvas.Focus();
-                    serviceManager.Get<IFlowSharpPropertyGridService>().ShowProperties(new CanvasProperties(canvasController.Canvas));
+                    serviceManager.IfExists<IFlowSharpPropertyGridService>(pgs => pgs.ShowProperties(new CanvasProperties(canvasController.Canvas)));
                 },
                 Else = () =>
                 {

@@ -84,7 +84,7 @@ namespace FlowSharpCodeCompilerService
     public class FlowSharpCodePythonCompilerService : ServiceBase, IFlowSharpCodePythonCompilerService
     {
         protected Dictionary<string, string> tempToTextBoxMap = new Dictionary<string, string>();
-        private const string PYLINT = "#pylint: disable=C0111, C0301, C0303, W0311, W0614, W0401, W0232";
+        private const string PYLINT = "#pylint: disable=C0111, C0301, C0303, W0311, W0614, W0401, W0232, W0702, W0703, W0201";
 
         public override void FinishedInitialization()
         {

@@ -34,6 +34,8 @@ namespace FlowSharpLib
 	{
         public event EventHandler<EventArgs> CanvasNameChanged;
         public event EventHandler<EventArgs> FilenameChanged;
+        public EventHandler<ElementEventArgs> ElementSelected;
+        public EventHandler<ElementEventArgs> UpdateSelectedElement;
 
         public const int MIN_WIDTH = 20;
         public const int MIN_HEIGHT = 20;
@@ -43,9 +45,6 @@ namespace FlowSharpLib
 
         public const int CAP_WIDTH = 5;
         public const int CAP_HEIGHT = 5;
-
-        public EventHandler<ElementEventArgs> ElementSelected;
-        public EventHandler<ElementEventArgs> UpdateSelectedElement;
 
         public Canvas Canvas { get { return canvas; } }
 

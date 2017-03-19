@@ -374,7 +374,7 @@ namespace FlowSharpLib
 
 		public void UpdateSize(GraphicElement el, ShapeAnchor anchor, Point delta)
 		{
-			Point adjustedDelta = anchor.AdjustedDelta(delta);
+			Point adjustedDelta = anchor.AdjustedDelta(InverseZoomAdjust(delta));
 			Rectangle newRect = anchor.Resize(el.DisplayRectangle, adjustedDelta);
 			UpdateDisplayRectangle(el, newRect, adjustedDelta);
 			UpdateConnections(el);
@@ -441,6 +441,8 @@ namespace FlowSharpLib
         {
             // TODO: We shouldn't even be calling this method if there are no selected elements!
             if (selectedElements.Count == 0) return;
+
+            delta = InverseZoomAdjust(delta);
 
             int dx = delta.X.Abs();
             int dy = delta.Y.Abs();
@@ -550,6 +552,7 @@ namespace FlowSharpLib
                 Trace.WriteLine("*** MoveAllElements Collision");
             }
 
+            delta = InverseZoomAdjust(delta);
             IsCanvasDragging = true;            // Kludgy workaround for Issue #34 (groupbox update)
             EraseTopToBottom(elements);
 
@@ -565,6 +568,18 @@ namespace FlowSharpLib
             DrawBottomToTop(elements, dx, dy);
             UpdateScreen(elements, dx, dy);
             IsCanvasDragging = false;
+        }
+
+        public Point InverseZoomAdjust(Point p)
+        {
+            Point ret = p;
+
+            if (Zoom != 100)
+            {
+                ret = new Point(p.X * 100 / Zoom, p.Y * 100 / Zoom);
+            }
+
+            return ret;
         }
 
         public void SetZoom(int zoom)

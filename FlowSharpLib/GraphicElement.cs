@@ -61,19 +61,19 @@ namespace FlowSharpLib
         /// </summary>
         public Dictionary<string, string> Json { get; set; }
 
-        public Rectangle DisplayRectangle { get; set; }
-        public Rectangle ZoomRectangle
+        protected Rectangle displayRectangle;
+        public Rectangle DisplayRectangle
         {
-            get
+            get { return displayRectangle; }
+            set
             {
-                double dz = canvas.Controller.Zoom / 100.0;
-                return new Rectangle(
-                    (int)(DisplayRectangle.X * dz),
-                    (int)(DisplayRectangle.Y * dz),
-                    (int)(DisplayRectangle.Width * dz),
-                    (int)(DisplayRectangle.Height * dz));
+                // Ew, side effect! :)
+                displayRectangle = value;
+                UpdateZoomRectangle();
             }
         }
+
+        public Rectangle ZoomRectangle { get; protected set; }
 
         public virtual Rectangle ToolboxDisplayRectangle { get { return new Rectangle(0, 0, 25, 25); } }
         public Pen BorderPen { get; set; }
@@ -586,6 +586,17 @@ namespace FlowSharpLib
 
 			// For illustration / debugging of what's being updated.
 			// DrawUpdateRectangle(gr);
+        }
+
+        public void UpdateZoomRectangle()
+        {
+            double dz = canvas.Controller.Zoom / 100.0;
+
+            ZoomRectangle = new Rectangle(
+                (int)(DisplayRectangle.X * dz),
+                (int)(DisplayRectangle.Y * dz),
+                (int)(DisplayRectangle.Width * dz),
+                (int)(DisplayRectangle.Height * dz));
         }
 
         protected void InternalUpdateScreen(int ix, int iy)

@@ -574,7 +574,12 @@ namespace FlowSharpLib
             UpdateScreen(elements);         
 
             Zoom = zoom;
-            elements.Where(e => e.Parent == null).ForEach(e => e.UpdatePath());
+            elements.ForEach(e =>
+            {
+                e.UpdateZoomRectangle();
+                e.UpdatePath();
+            });
+
             DrawBottomToTop(elements);
             UpdateScreen(elements);
         }

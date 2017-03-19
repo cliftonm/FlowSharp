@@ -81,14 +81,14 @@ namespace PluginExample
         {
             if (image == null)
             {
-                gr.FillRectangle(FillBrush, DisplayRectangle);
+                gr.FillRectangle(FillBrush, ZoomRectangle);
             }
             else
             {
-                gr.DrawImage(image, DisplayRectangle, new Rectangle(0, 0, image.Width, image.Height), GraphicsUnit.Pixel);
+                gr.DrawImage(image, ZoomRectangle, new Rectangle(0, 0, image.Width, image.Height), GraphicsUnit.Pixel);
             }
 
-            gr.DrawRectangle(BorderPen, DisplayRectangle);
+            gr.DrawRectangle(BorderPen, ZoomRectangle);
             base.Draw(gr, showSelection);
         }
 

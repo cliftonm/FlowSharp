@@ -36,10 +36,10 @@ namespace FlowSharpLib
 		{
 			path = new Point[]
 			{
-				new Point(DisplayRectangle.X,                             DisplayRectangle.Y + DisplayRectangle.Height/2),
-				new Point(DisplayRectangle.X + DisplayRectangle.Width/2,		DisplayRectangle.Y),
-				new Point(DisplayRectangle.X + DisplayRectangle.Width,    DisplayRectangle.Y + DisplayRectangle.Height/2),
-				new Point(DisplayRectangle.X + DisplayRectangle.Width/2,		DisplayRectangle.Y + DisplayRectangle.Height),
+				new Point(ZoomRectangle.X,                             ZoomRectangle.Y + ZoomRectangle.Height/2),
+				new Point(ZoomRectangle.X + ZoomRectangle.Width/2,		ZoomRectangle.Y),
+				new Point(ZoomRectangle.X + ZoomRectangle.Width,    ZoomRectangle.Y + ZoomRectangle.Height/2),
+				new Point(ZoomRectangle.X + ZoomRectangle.Width/2,		ZoomRectangle.Y + ZoomRectangle.Height),
 			};
 		}
 

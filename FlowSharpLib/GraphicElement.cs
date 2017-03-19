@@ -50,7 +50,7 @@ namespace FlowSharpLib
 
         // This is probably a ridiculous optimization -- should just grow pen width + connection point size / 2
         // public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + ((ShowConnectionPoints || HideConnectionPoints) ? 3 : 0)); } }
-        public virtual Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(BorderPen.Width + BaseController.CONNECTION_POINT_SIZE); } }
+        public virtual Rectangle UpdateRectangle { get { return ZoomRectangle.Grow(BorderPen.Width + BaseController.CONNECTION_POINT_SIZE); } }
         public virtual bool IsConnector { get { return false; } }
         public List<Connection> Connections = new List<Connection>();
         public List<GraphicElement> GroupChildren = new List<GraphicElement>();
@@ -62,6 +62,19 @@ namespace FlowSharpLib
         public Dictionary<string, string> Json { get; set; }
 
         public Rectangle DisplayRectangle { get; set; }
+        public Rectangle ZoomRectangle
+        {
+            get
+            {
+                double dz = canvas.Controller.Zoom / 100.0;
+                return new Rectangle(
+                    (int)(DisplayRectangle.X * dz),
+                    (int)(DisplayRectangle.Y * dz),
+                    (int)(DisplayRectangle.Width * dz),
+                    (int)(DisplayRectangle.Height * dz));
+            }
+        }
+
         public virtual Rectangle ToolboxDisplayRectangle { get { return new Rectangle(0, 0, 25, 25); } }
         public Pen BorderPen { get; set; }
         public SolidBrush FillBrush { get; set; }
@@ -476,7 +489,7 @@ namespace FlowSharpLib
         public virtual ShapeAnchor GetBottomRightAnchor()
         {
             Size anchorSize = new Size(anchorWidthHeight, anchorWidthHeight);
-            Rectangle r = new Rectangle(DisplayRectangle.BottomRightCorner().Move(-anchorWidthHeight, -anchorWidthHeight), anchorSize);
+            Rectangle r = new Rectangle(ZoomRectangle.BottomRightCorner().Move(-anchorWidthHeight, -anchorWidthHeight), anchorSize);
             ShapeAnchor anchor = new ShapeAnchor(GripType.BottomRight, r, Cursors.SizeNWSE);
 
             return anchor;
@@ -490,29 +503,29 @@ namespace FlowSharpLib
 
 			if (HasCornerAnchors)
 			{
-				r = new Rectangle(DisplayRectangle.TopLeftCorner(), anchorSize);
+				r = new Rectangle(ZoomRectangle.TopLeftCorner(), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.TopLeft, r, Cursors.SizeNWSE));
-				r = new Rectangle(DisplayRectangle.TopRightCorner().Move(-anchorWidthHeight, 0), anchorSize);
+				r = new Rectangle(ZoomRectangle.TopRightCorner().Move(-anchorWidthHeight, 0), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.TopRight, r, Cursors.SizeNESW));
-				r = new Rectangle(DisplayRectangle.BottomLeftCorner().Move(0, -anchorWidthHeight), anchorSize);
+				r = new Rectangle(ZoomRectangle.BottomLeftCorner().Move(0, -anchorWidthHeight), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.BottomLeft, r, Cursors.SizeNESW));
-				r = new Rectangle(DisplayRectangle.BottomRightCorner().Move(-anchorWidthHeight, -anchorWidthHeight), anchorSize);
+				r = new Rectangle(ZoomRectangle.BottomRightCorner().Move(-anchorWidthHeight, -anchorWidthHeight), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.BottomRight, r, Cursors.SizeNWSE));
 			}
 
 			if (HasCenterAnchors || HasLeftRightAnchors)
 			{
-				r = new Rectangle(DisplayRectangle.LeftMiddle().Move(0, -anchorWidthHeight / 2), anchorSize);
+				r = new Rectangle(ZoomRectangle.LeftMiddle().Move(0, -anchorWidthHeight / 2), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.LeftMiddle, r, Cursors.SizeWE));
-				r = new Rectangle(DisplayRectangle.RightMiddle().Move(-anchorWidthHeight, -anchorWidthHeight / 2), anchorSize);
+				r = new Rectangle(ZoomRectangle.RightMiddle().Move(-anchorWidthHeight, -anchorWidthHeight / 2), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.RightMiddle, r, Cursors.SizeWE));
 			}
 
 			if (HasCenterAnchors || HasTopBottomAnchors)
 			{ 
-				r = new Rectangle(DisplayRectangle.TopMiddle().Move(-anchorWidthHeight / 2, 0), anchorSize);
+				r = new Rectangle(ZoomRectangle.TopMiddle().Move(-anchorWidthHeight / 2, 0), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.TopMiddle, r, Cursors.SizeNS));
-				r = new Rectangle(DisplayRectangle.BottomMiddle().Move(-anchorWidthHeight / 2, -anchorWidthHeight), anchorSize);
+				r = new Rectangle(ZoomRectangle.BottomMiddle().Move(-anchorWidthHeight / 2, -anchorWidthHeight), anchorSize);
 				anchors.Add(new ShapeAnchor(GripType.BottomMiddle, r, Cursors.SizeNS));
 			}
 
@@ -620,12 +633,12 @@ namespace FlowSharpLib
 		{
 			if (BorderPen.Color.ToArgb() == selectionPen.Color.ToArgb())
 			{
-				Rectangle r = DisplayRectangle;
+				Rectangle r = ZoomRectangle;
 				gr.DrawRectangle(altSelectionPen, r);
 			}
 			else
 			{
-				Rectangle r = DisplayRectangle;
+				Rectangle r = ZoomRectangle;
 				gr.DrawRectangle(selectionPen, r);
 			}
 		}
@@ -666,11 +679,37 @@ namespace FlowSharpLib
 		{
 			GetConnectionPoints().ForEach(cp =>
 			{
-				gr.FillRectangle(anchorBrush, new Rectangle(cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, BaseController.CONNECTION_POINT_SIZE*2, BaseController.CONNECTION_POINT_SIZE*2));
-				gr.DrawLine(connectionPointPen, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
-				gr.DrawLine(connectionPointPen, cp.Point.X + BaseController.CONNECTION_POINT_SIZE, cp.Point.Y - BaseController.CONNECTION_POINT_SIZE, cp.Point.X - BaseController.CONNECTION_POINT_SIZE, cp.Point.Y + BaseController.CONNECTION_POINT_SIZE);
+                // We change where the connection point renders, not the unzoomed connection point.
+                var cpz = AdjustForZoom(cp);
+				gr.FillRectangle(anchorBrush, new Rectangle(cpz.Point.X - BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y - BaseController.CONNECTION_POINT_SIZE, BaseController.CONNECTION_POINT_SIZE*2, BaseController.CONNECTION_POINT_SIZE*2));
+				gr.DrawLine(connectionPointPen, cpz.Point.X - BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y - BaseController.CONNECTION_POINT_SIZE, cpz.Point.X + BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y + BaseController.CONNECTION_POINT_SIZE);
+				gr.DrawLine(connectionPointPen, cpz.Point.X + BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y - BaseController.CONNECTION_POINT_SIZE, cpz.Point.X - BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y + BaseController.CONNECTION_POINT_SIZE);
 			});
 		}
+
+        protected ConnectionPoint AdjustForZoom(ConnectionPoint cp)
+        {
+            ConnectionPoint ret = cp;
+
+            if (canvas.Controller.Zoom != 100)
+            {
+                ret = new ConnectionPoint(cp.Type, AdjustForZoom(cp.Point));
+            }
+
+            return ret;
+        }
+
+        protected Point AdjustForZoom(Point p)
+        {
+            Point ret = p;
+
+            if (canvas.Controller.Zoom != 100)
+            {
+                ret = new Point(p.X * canvas.Controller.Zoom / 100, p.Y * canvas.Controller.Zoom / 100);
+            }
+
+            return ret;
+        }
 
         protected virtual void DrawBookmark(Graphics gr)
         {
@@ -692,6 +731,15 @@ namespace FlowSharpLib
 			SizeF size = gr.MeasureString(text, textFont);
 			Brush brush = new SolidBrush(textColor);
             Point textpos;
+            Font font = textFont;
+            bool disposeFont = false;
+
+            // TODO: Should we just create the font and dispose it every time we draw?
+            if (canvas.Controller.Zoom != 100)
+            {
+                font = new Font(textFont.FontFamily, textFont.Size * canvas.Controller.Zoom / 100, textFont.Style);
+                disposeFont = true;
+            }
 
             // TextRenderer is terrible when font is bolded.  Not sure why.
             // Would be great to use this, but the rendering is so bad, I won't.
@@ -710,43 +758,43 @@ namespace FlowSharpLib
             switch (textAlign)
             {
                 case ContentAlignment.TopLeft:
-                    textpos = DisplayRectangle.TopLeftCorner().Move(5, 5);
+                    textpos = ZoomRectangle.TopLeftCorner().Move(5, 5);
                     break;
 
                 case ContentAlignment.TopCenter:
-                    textpos = DisplayRectangle.TopMiddle().Move((int)(-size.Width / 2), 5);
+                    textpos = ZoomRectangle.TopMiddle().Move((int)(-size.Width / 2), 5);
                     break;
 
                 case ContentAlignment.TopRight:
-                    textpos = DisplayRectangle.TopRightCorner().Move((int)(-(size.Width+5)), 5);
+                    textpos = ZoomRectangle.TopRightCorner().Move((int)(-(size.Width+5)), 5);
                     break;
 
                 case ContentAlignment.MiddleLeft:
-                    textpos = DisplayRectangle.LeftMiddle().Move(5, (int)(-size.Height / 2));
+                    textpos = ZoomRectangle.LeftMiddle().Move(5, (int)(-size.Height / 2));
                     break;
 
                 case ContentAlignment.MiddleCenter:
-                    textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
+                    textpos = ZoomRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
                     break;
 
                 case ContentAlignment.MiddleRight:
-                    textpos = DisplayRectangle.RightMiddle().Move((int)(-(size.Width + 5)), (int)(-size.Height / 2));
+                    textpos = ZoomRectangle.RightMiddle().Move((int)(-(size.Width + 5)), (int)(-size.Height / 2));
                     break;
 
                 case ContentAlignment.BottomLeft:
-                    textpos = DisplayRectangle.BottomLeftCorner().Move(5, (int)-(size.Height+5));
+                    textpos = ZoomRectangle.BottomLeftCorner().Move(5, (int)-(size.Height+5));
                     break;
 
                 case ContentAlignment.BottomCenter:
-                    textpos = DisplayRectangle.BottomMiddle().Move((int)(-size.Width / 2), (int)-(size.Height + 5));
+                    textpos = ZoomRectangle.BottomMiddle().Move((int)(-size.Width / 2), (int)-(size.Height + 5));
                     break;
 
                 case ContentAlignment.BottomRight:
-                    textpos = DisplayRectangle.BottomRightCorner().Move((int)(-(size.Width + 5)), (int)-(size.Height + 5));
+                    textpos = ZoomRectangle.BottomRightCorner().Move((int)(-(size.Width + 5)), (int)-(size.Height + 5));
                     break;
 
                 default:        // middle center
-                    textpos = DisplayRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
+                    textpos = ZoomRectangle.Center().Move((int)(-size.Width / 2), (int)(-size.Height / 2));
                     break;
             }
 
@@ -795,9 +843,14 @@ namespace FlowSharpLib
                     break;
             }
 
-            TextRenderer.DrawText(gr, text, textFont, DisplayRectangle.Grow(-3), textColor, FillColor, tff);
+            TextRenderer.DrawText(gr, text, font, ZoomRectangle.Grow(-3), textColor, FillColor, tff);
             // gr.DrawString(text, textFont, brush, textpos);
             brush.Dispose();
+
+            if (disposeFont)
+            {
+                font.Dispose();
+            }
 		}
 	}
 }

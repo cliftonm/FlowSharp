@@ -23,7 +23,7 @@ namespace FlowSharpWindowsControlShapes
         public override void Draw(Graphics gr, bool showSelection = true)
         {
             base.Draw(gr, showSelection);
-            Rectangle r = DisplayRectangle.Grow(-4);
+            Rectangle r = ZoomRectangle.Grow(-4);
             control.Location = r.Location;
             control.Size = r.Size;
             control.Text = Text;

@@ -15,7 +15,7 @@ namespace FlowSharpLib
     [ToolboxOrder(9)]
     public class DiagonalConnector : DynamicConnector
     {
-        public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
+        public override Rectangle UpdateRectangle { get { return ZoomRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
 
         public DiagonalConnector(Canvas canvas) : base(canvas)
         {
@@ -45,10 +45,10 @@ namespace FlowSharpLib
             if (UpdateRectangle.Contains(p))
             {
                 // Then check how close the point is.
-                int a = p.X - StartPoint.X;
-                int b = p.Y - StartPoint.Y;
-                int c = EndPoint.X - StartPoint.X;
-                int d = EndPoint.Y - StartPoint.Y;
+                int a = p.X - ZoomStartPoint.X;
+                int b = p.Y - ZoomStartPoint.Y;
+                int c = EndPoint.X - ZoomStartPoint.X;
+                int d = EndPoint.Y - ZoomStartPoint.Y;
 
                 int dist = (int)(Math.Abs(a * d - c * b) / Math.Sqrt(c * c + d * d));
                 ret = dist <= BaseController.MIN_HEIGHT;
@@ -62,8 +62,8 @@ namespace FlowSharpLib
             Size szAnchor = new Size(anchorWidthHeight, anchorWidthHeight);
 
             return new List<ShapeAnchor>() {
-                new ShapeAnchor(GripType.Start, new Rectangle(StartPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
-                new ShapeAnchor(GripType.End, new Rectangle(EndPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
+                new ShapeAnchor(GripType.Start, new Rectangle(ZoomStartPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
+                new ShapeAnchor(GripType.End, new Rectangle(ZoomEndPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
             };
         }
 
@@ -133,7 +133,7 @@ namespace FlowSharpLib
                 pen.Color = pen.Color.ToArgb() == Color.Red.ToArgb() ? Color.Blue : Color.Red;
             }
 
-            gr.DrawLine(pen, StartPoint, EndPoint);
+            gr.DrawLine(pen, ZoomStartPoint, ZoomEndPoint);
             pen.Dispose();
 
             base.Draw(gr, showSelection);

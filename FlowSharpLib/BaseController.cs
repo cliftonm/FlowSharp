@@ -90,6 +90,8 @@ namespace FlowSharpLib
 
         public SnapController SnapController { get; protected set; }
 
+        public int Zoom { get; protected set; }
+
         protected List<GraphicElement> elements;
 		protected Canvas canvas;
         protected UndoStack undoStack;
@@ -107,6 +109,7 @@ namespace FlowSharpLib
             elements = new List<GraphicElement>();
             selectedElements = new List<GraphicElement>();
             SnapController = new SnapController(this);
+            Zoom = 100;
 		}
 
         public virtual bool IsMultiSelect()
@@ -562,6 +565,28 @@ namespace FlowSharpLib
             DrawBottomToTop(elements, dx, dy);
             UpdateScreen(elements, dx, dy);
             IsCanvasDragging = false;
+        }
+
+        public void SetZoom(int zoom)
+        {
+            // erase and ppdate the screen, removing elements after erasure, so they don't leave their images when the zoom factor is changed.
+            EraseTopToBottom(elements);
+            UpdateScreen(elements);         
+
+            Zoom = zoom;
+            elements.Where(e => e.Parent == null).ForEach(e => e.UpdatePath());
+            DrawBottomToTop(elements);
+            UpdateScreen(elements);
+        }
+
+        public void RedrawAllElements()
+        {
+            EraseTopToBottom(elements);
+
+            // Don't move grouped children, as the groupbox will do this for us when it moves.
+            elements.Where(e => e.Parent == null).ForEach(e => e.UpdatePath());
+            DrawBottomToTop(elements);
+            UpdateScreen(elements);
         }
 
         public void SaveAsPng(string filename, bool selectionOnly = false)

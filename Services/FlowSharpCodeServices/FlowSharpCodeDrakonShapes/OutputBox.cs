@@ -26,12 +26,12 @@ namespace FlowSharpCodeDrakonShapes
         {
             path = new Point[]
             {
-                new Point(DisplayRectangle.X, DisplayRectangle.Y),                                                                           // top left
-                new Point(DisplayRectangle.X + DisplayRectangle.Width - INDENT_SIZE,    DisplayRectangle.Y),                                // top right of indented right "arrow"
-                new Point(DisplayRectangle.X + DisplayRectangle.Width, DisplayRectangle.Y + DisplayRectangle.Height/2),                     // right tip (middle of box)
-                new Point(DisplayRectangle.X + DisplayRectangle.Width - INDENT_SIZE, DisplayRectangle.Y + DisplayRectangle.Height),         // bottom right of indented right "arrow"
-                new Point(DisplayRectangle.X, DisplayRectangle.Y + DisplayRectangle.Height),                                              // bottom left 
-                new Point(DisplayRectangle.X, DisplayRectangle.Y + DisplayRectangle.Height/2),                                             // middle left of indented left "arrow"
+                new Point(ZoomRectangle.X, ZoomRectangle.Y),                                                                           // top left
+                new Point(ZoomRectangle.X + ZoomRectangle.Width - INDENT_SIZE,    ZoomRectangle.Y),                                // top right of indented right "arrow"
+                new Point(ZoomRectangle.X + ZoomRectangle.Width, ZoomRectangle.Y + ZoomRectangle.Height/2),                     // right tip (middle of box)
+                new Point(ZoomRectangle.X + ZoomRectangle.Width - INDENT_SIZE, ZoomRectangle.Y + ZoomRectangle.Height),         // bottom right of indented right "arrow"
+                new Point(ZoomRectangle.X, ZoomRectangle.Y + ZoomRectangle.Height),                                              // bottom left 
+                new Point(ZoomRectangle.X, ZoomRectangle.Y + ZoomRectangle.Height/2),                                             // middle left of indented left "arrow"
             };
         }
 

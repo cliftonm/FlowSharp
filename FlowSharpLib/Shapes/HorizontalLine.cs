@@ -19,7 +19,7 @@ namespace FlowSharpLib
     public class HorizontalLine : Line
 	{
 		// Fixes background erase issues with dynamic connector.
-		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 2 + BorderPen.Width); } }
+		public override Rectangle UpdateRectangle { get { return ZoomRectangle.Grow(anchorWidthHeight + 2 + BorderPen.Width); } }
 
 		public HorizontalLine(Canvas canvas) : base(canvas)
 		{
@@ -69,7 +69,7 @@ namespace FlowSharpLib
 				pen.Color = pen.Color.ToArgb() == Color.Red.ToArgb() ? Color.Blue : Color.Red;
 			}
 
-            gr.DrawLine(pen, DisplayRectangle.LeftMiddle(), DisplayRectangle.RightMiddle());
+            gr.DrawLine(pen, ZoomRectangle.LeftMiddle(), ZoomRectangle.RightMiddle());
 			pen.Dispose();
 
 			base.Draw(gr, showSelection);

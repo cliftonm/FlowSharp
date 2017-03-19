@@ -69,9 +69,9 @@ namespace PluginExample
         public override void Draw(Graphics gr, bool showSelection = true)
         {
             base.Draw(gr, showSelection);
-            int min = DisplayRectangle.Width.Min(DisplayRectangle.Height);
+            int min = ZoomRectangle.Width.Min(ZoomRectangle.Height);
             min = min / 2;
-            Point topleft = DisplayRectangle.Center();
+            Point topleft = ZoomRectangle.Center();
             topleft.X -= min / 2;
             topleft.Y -= 3;
             target = new Rectangle(topleft, new Size(min, min));

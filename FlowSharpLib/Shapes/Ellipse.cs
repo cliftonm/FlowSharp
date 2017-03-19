@@ -18,8 +18,8 @@ namespace FlowSharpLib
 
 		public override void Draw(Graphics gr, bool showSelection = true)
         {
-            gr.FillEllipse(FillBrush, DisplayRectangle);
-            gr.DrawEllipse(BorderPen, DisplayRectangle);
+            gr.FillEllipse(FillBrush, ZoomRectangle);
+            gr.DrawEllipse(BorderPen, ZoomRectangle);
             base.Draw(gr, showSelection);
         }
     }

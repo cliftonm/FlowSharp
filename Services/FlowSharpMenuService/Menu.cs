@@ -32,7 +32,19 @@ namespace FlowSharpMenuService
         private ToolStripMenuItem mnuImport;
         private ToolStripSeparator toolStripMenuItem2;
         private ToolStripMenuItem viewToolStripMenuItem;
+
         private ToolStripMenuItem mnuDebugWindow;
+        private ToolStripMenuItem mnuZoom;
+        private ToolStripMenuItem mnuZoom100;
+        private ToolStripMenuItem mnuZoom90;
+        private ToolStripMenuItem mnuZoom80;
+        private ToolStripMenuItem mnuZoom70;
+        private ToolStripMenuItem mnuZoom60;
+        private ToolStripMenuItem mnuZoom50;
+        private ToolStripMenuItem mnuZoom40;
+        private ToolStripMenuItem mnuZoom30;
+        private ToolStripMenuItem mnuZoom20;
+        private ToolStripMenuItem mnuZoom10;
 
         private ToolStripMenuItem groupToolStripMenuItem;
         private ToolStripMenuItem mnuGroup;
@@ -92,6 +104,17 @@ namespace FlowSharpMenuService
             mnuRedo = new ToolStripMenuItem();
             viewToolStripMenuItem = new ToolStripMenuItem();
             mnuDebugWindow = new ToolStripMenuItem();
+            mnuZoom = new ToolStripMenuItem();
+            mnuZoom100 = new ToolStripMenuItem();
+            mnuZoom90 = new ToolStripMenuItem();
+            mnuZoom80 = new ToolStripMenuItem();
+            mnuZoom70 = new ToolStripMenuItem();
+            mnuZoom60 = new ToolStripMenuItem();
+            mnuZoom50 = new ToolStripMenuItem();
+            mnuZoom40 = new ToolStripMenuItem();
+            mnuZoom30 = new ToolStripMenuItem();
+            mnuZoom20 = new ToolStripMenuItem();
+            mnuZoom10 = new ToolStripMenuItem();
             orderToolStripMenuItem = new ToolStripMenuItem();
             mnuTopmost = new ToolStripMenuItem();
             mnuBottommost = new ToolStripMenuItem();
@@ -334,7 +357,7 @@ namespace FlowSharpMenuService
             // viewToolStripMenuItem
             // 
             viewToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
-            mnuDebugWindow});
+            mnuDebugWindow, mnuZoom});
             viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             viewToolStripMenuItem.Size = new Size(44, 21);
             viewToolStripMenuItem.Text = "&View";
@@ -346,6 +369,52 @@ namespace FlowSharpMenuService
             mnuDebugWindow.Text = "&Debug Window";
             // TODO: Implement handler
             // mnuDebugWindow.Click += new System.EventHandler(mnuDebugWindow_Click);
+
+            mnuZoom.Name = "mnuZoom";
+            mnuZoom.Text = "&Zoom";
+            mnuZoom.DropDownItems.AddRange(new ToolStripItem[]
+            {
+                mnuZoom100,
+                mnuZoom90,
+                mnuZoom80,
+                mnuZoom70,
+                mnuZoom60,
+                mnuZoom50,
+                mnuZoom40,
+                mnuZoom30,
+                mnuZoom20,
+                mnuZoom10,
+            });
+
+            mnuZoom100.Text = "100%";
+            mnuZoom100.Tag = 100;
+        
+            mnuZoom90.Text = "90%";
+            mnuZoom90.Tag = 90;
+
+            mnuZoom80.Text = "80%";
+            mnuZoom80.Tag = 80;
+
+            mnuZoom70.Text = "70%";
+            mnuZoom70.Tag = 70;
+
+            mnuZoom60.Text = "60%";
+            mnuZoom60.Tag = 60;
+
+            mnuZoom50.Text = "50%";
+            mnuZoom50.Tag = 50;
+
+            mnuZoom40.Text = "40%";
+            mnuZoom40.Tag = 40;
+
+            mnuZoom30.Text = "30%";
+            mnuZoom30.Tag = 30;
+
+            mnuZoom20.Text = "20%";
+            mnuZoom20.Tag = 20;
+
+            mnuZoom10.Text = "10%";
+            mnuZoom10.Tag = 10;
 
             // alignToolStripMenuItem
             alignToolStripMenuItem.Text = "Al&ign";

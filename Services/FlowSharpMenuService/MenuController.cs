@@ -179,6 +179,23 @@ namespace FlowSharpMenuService
             mnuAlignBottoms.Click += AlignBottoms;
             mnuAlignCenters.Click += AlignCenters;
             mnuAlignSizes.Click += AlignSizes;
+
+            mnuZoom100.Click += MenuZoom;
+            mnuZoom90.Click += MenuZoom;
+            mnuZoom80.Click += MenuZoom;
+            mnuZoom70.Click += MenuZoom;
+            mnuZoom60.Click += MenuZoom;
+            mnuZoom50.Click += MenuZoom;
+            mnuZoom40.Click += MenuZoom;
+            mnuZoom30.Click += MenuZoom;
+            mnuZoom20.Click += MenuZoom;
+            mnuZoom10.Click += MenuZoom;
+        }
+
+        protected void MenuZoom(object sender, EventArgs e)
+        {
+            BaseController canvasController = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            canvasController.SetZoom((int)((ToolStripItem)sender).Tag);
         }
 
         private void AlignLefts(object sender, EventArgs e)

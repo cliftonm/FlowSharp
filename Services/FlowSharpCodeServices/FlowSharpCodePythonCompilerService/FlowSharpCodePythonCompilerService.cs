@@ -177,7 +177,7 @@ namespace FlowSharpCodeCompilerService
                 List<string> errors = new List<string>();
 
                 string filename = ((IPythonClass)elClass).Filename;
-                fscSvc.LaunchProcessAndWaitForExit("pylint", filename,
+                fscSvc.LaunchProcessAndWaitForExit("pylint.exe", filename,
                     stdout =>
                     {
                         if (stdout.StartsWith("W:"))

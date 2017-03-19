@@ -17,6 +17,9 @@ namespace FlowSharpLib
         public Point StartPoint { get; set; }
         public Point EndPoint { get; set; }
 
+        public Point ZoomStartPoint { get { return AdjustForZoom(StartPoint); } }
+        public Point ZoomEndPoint { get { return AdjustForZoom(EndPoint); } }
+
         protected List<Line> lines = new List<Line>();
 
         // Up-down conenctor has a horizontal line between the up/down lines.

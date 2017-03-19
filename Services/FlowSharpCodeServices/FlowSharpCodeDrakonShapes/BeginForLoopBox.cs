@@ -27,12 +27,12 @@ namespace FlowSharpCodeDrakonShapes
         {
             path = new Point[]
             {
-                new Point(DisplayRectangle.X + INDENT_SIZE, DisplayRectangle.Y + Y_ADJUST),                                                            // top left of indented left "arrow"
-                new Point(DisplayRectangle.X + DisplayRectangle.Width - INDENT_SIZE,    DisplayRectangle.Y + Y_ADJUST),                                // top right of indented right "arrow"
-                new Point(DisplayRectangle.X + DisplayRectangle.Width, DisplayRectangle.Y + DisplayRectangle.Height/2),                     // right tip (middle of box)
-                new Point(DisplayRectangle.X + DisplayRectangle.Width, DisplayRectangle.Y + DisplayRectangle.Height -  Y_ADJUST),         // bottom right of indented right "arrow"
-                new Point(DisplayRectangle.X, DisplayRectangle.Y + DisplayRectangle.Height - Y_ADJUST),                                  // bottom left of indented left "arrow"
-                new Point(DisplayRectangle.X, DisplayRectangle.Y + DisplayRectangle.Height/2),                                                            // middle left of indented left "arrow"
+                new Point(ZoomRectangle.X + INDENT_SIZE, ZoomRectangle.Y + Y_ADJUST),                                                            // top left of indented left "arrow"
+                new Point(ZoomRectangle.X + ZoomRectangle.Width - INDENT_SIZE,    ZoomRectangle.Y + Y_ADJUST),                                // top right of indented right "arrow"
+                new Point(ZoomRectangle.X + ZoomRectangle.Width, ZoomRectangle.Y + ZoomRectangle.Height/2),                     // right tip (middle of box)
+                new Point(ZoomRectangle.X + ZoomRectangle.Width, ZoomRectangle.Y + ZoomRectangle.Height -  Y_ADJUST),         // bottom right of indented right "arrow"
+                new Point(ZoomRectangle.X, ZoomRectangle.Y + ZoomRectangle.Height - Y_ADJUST),                                  // bottom left of indented left "arrow"
+                new Point(ZoomRectangle.X, ZoomRectangle.Y + ZoomRectangle.Height/2),                                                            // middle left of indented left "arrow"
             };
         }
 

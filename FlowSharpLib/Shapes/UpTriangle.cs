@@ -22,10 +22,10 @@ namespace FlowSharpLib
         public override List<ConnectionPoint> GetConnectionPoints()
         {
             List<ConnectionPoint> connectionPoints = new List<ConnectionPoint>();
-            connectionPoints.Add(new ConnectionPoint(GripType.TopMiddle, DisplayRectangle.TopMiddle()));
-            connectionPoints.Add(new ConnectionPoint(GripType.BottomMiddle, DisplayRectangle.BottomMiddle()));
-            connectionPoints.Add(new ConnectionPoint(GripType.BottomLeft, DisplayRectangle.BottomLeftCorner()));
-            connectionPoints.Add(new ConnectionPoint(GripType.BottomRight, DisplayRectangle.BottomRightCorner()));
+            connectionPoints.Add(new ConnectionPoint(GripType.TopMiddle, ZoomRectangle.TopMiddle()));
+            connectionPoints.Add(new ConnectionPoint(GripType.BottomMiddle, ZoomRectangle.BottomMiddle()));
+            connectionPoints.Add(new ConnectionPoint(GripType.BottomLeft, ZoomRectangle.BottomLeftCorner()));
+            connectionPoints.Add(new ConnectionPoint(GripType.BottomRight, ZoomRectangle.BottomRightCorner()));
 
             return connectionPoints;
         }
@@ -34,16 +34,16 @@ namespace FlowSharpLib
         {
             path = new Point[]
             {
-                new Point(DisplayRectangle.X + DisplayRectangle.Width/2,        DisplayRectangle.Y),        // middle, top
-                new Point(DisplayRectangle.X + DisplayRectangle.Width,          DisplayRectangle.Y + DisplayRectangle.Height),                              // right, bottom
-                new Point(DisplayRectangle.X,          DisplayRectangle.Y + DisplayRectangle.Height),          // left, bottom
-                new Point(DisplayRectangle.X + DisplayRectangle.Width/2,        DisplayRectangle.Y),        // middle, Top
+                new Point(ZoomRectangle.X + ZoomRectangle.Width/2,        ZoomRectangle.Y),        // middle, top
+                new Point(ZoomRectangle.X + ZoomRectangle.Width,          ZoomRectangle.Y + ZoomRectangle.Height),                              // right, bottom
+                new Point(ZoomRectangle.X,          ZoomRectangle.Y + ZoomRectangle.Height),          // left, bottom
+                new Point(ZoomRectangle.X + ZoomRectangle.Width/2,        ZoomRectangle.Y),        // middle, Top
             };
         }
 
         protected Point[] ZPath()
         {
-            Rectangle r = DisplayRectangle;
+            Rectangle r = ZoomRectangle;
             r.X = 0;
             r.Y = 0;
             int adjust = (int)((BorderPen.Width + 0) / 2);
@@ -60,14 +60,14 @@ namespace FlowSharpLib
 
         public override void Draw(Graphics gr, bool showSelection = true)
         {
-            Rectangle r = DisplayRectangle.Grow(2);
+            Rectangle r = ZoomRectangle.Grow(2);
             Bitmap bitmap = new Bitmap(r.Width, r.Height);
             Graphics g2 = Graphics.FromImage(bitmap);
             g2.SmoothingMode = SmoothingMode.AntiAlias;
             Point[] path = ZPath();
             g2.FillPolygon(FillBrush, path);
             g2.DrawPolygon(BorderPen, path);
-            gr.DrawImage(bitmap, DisplayRectangle.X, DisplayRectangle.Y);
+            gr.DrawImage(bitmap, ZoomRectangle.X, ZoomRectangle.Y);
             bitmap.Dispose();
             g2.Dispose();
             base.Draw(gr, showSelection);

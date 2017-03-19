@@ -22,17 +22,17 @@ namespace FlowSharpLib
         public override List<ConnectionPoint> GetConnectionPoints()
         {
             List<ConnectionPoint> connectionPoints = new List<ConnectionPoint>();
-            connectionPoints.Add(new ConnectionPoint(GripType.LeftMiddle, DisplayRectangle.LeftMiddle()));
-            connectionPoints.Add(new ConnectionPoint(GripType.RightMiddle, DisplayRectangle.RightMiddle()));
-            connectionPoints.Add(new ConnectionPoint(GripType.TopLeft, DisplayRectangle.TopLeftCorner()));
-            connectionPoints.Add(new ConnectionPoint(GripType.BottomLeft, DisplayRectangle.BottomLeftCorner()));
+            connectionPoints.Add(new ConnectionPoint(GripType.LeftMiddle, ZoomRectangle.LeftMiddle()));
+            connectionPoints.Add(new ConnectionPoint(GripType.RightMiddle, ZoomRectangle.RightMiddle()));
+            connectionPoints.Add(new ConnectionPoint(GripType.TopLeft, ZoomRectangle.TopLeftCorner()));
+            connectionPoints.Add(new ConnectionPoint(GripType.BottomLeft, ZoomRectangle.BottomLeftCorner()));
 
             return connectionPoints;
         }
 
         public override void UpdatePath()
         {
-            Rectangle r = DisplayRectangle;
+            Rectangle r = ZoomRectangle;
             path = new Point[]
             {
                 new Point(r.X + r.Width, r.Y + r.Height/2),        // right, middle
@@ -44,7 +44,7 @@ namespace FlowSharpLib
 
         protected Point[] ZPath()
         {
-            Rectangle r = DisplayRectangle; 
+            Rectangle r = ZoomRectangle; 
             r.X = 0;
             r.Y = 0;
             int adjust = (int)((BorderPen.Width + 0) / 2);
@@ -67,21 +67,21 @@ namespace FlowSharpLib
             gp.AddPolygon(path);
             Region region = new Region(gp);
             gr.SetClip(region, CombineMode.Replace);
-            gr.IntersectClip(DisplayRectangle);
+            gr.IntersectClip(ZoomRectangle);
             ...
             gr.ResetClip();
             */
 
             // Drawing onto a bitmap that constrains the drawing area fixes the trail problem
             // but still has issues with larger pen widths (try 10) as triangle points are clipped.
-            Rectangle r = DisplayRectangle.Grow(2);
+            Rectangle r = ZoomRectangle.Grow(2);
             Bitmap bitmap = new Bitmap(r.Width, r.Height);
             Graphics g2 = Graphics.FromImage(bitmap);
             g2.SmoothingMode = SmoothingMode.AntiAlias;
             Point[] path = ZPath();
             g2.FillPolygon(FillBrush, path);
             g2.DrawPolygon(BorderPen, path);
-            gr.DrawImage(bitmap, DisplayRectangle.X, DisplayRectangle.Y);
+            gr.DrawImage(bitmap, ZoomRectangle.X, ZoomRectangle.Y);
             bitmap.Dispose();
             g2.Dispose();
             base.Draw(gr, showSelection);

@@ -17,7 +17,7 @@ namespace FlowSharpLib
     [ToolboxOrder(10)]
     public class DynamicConnectorLD : DynamicConnector
 	{
-		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
+		public override Rectangle UpdateRectangle { get { return ZoomRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
 
 		public DynamicConnectorLD(Canvas canvas) : base(canvas)
 		{
@@ -43,8 +43,8 @@ namespace FlowSharpLib
 			Size szAnchor = new Size(anchorWidthHeight, anchorWidthHeight);
 
 			return new List<ShapeAnchor>() {
-				new ShapeAnchor(GripType.Start, new Rectangle(StartPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
-				new ShapeAnchor(GripType.End, new Rectangle(EndPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
+				new ShapeAnchor(GripType.Start, new Rectangle(ZoomStartPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
+				new ShapeAnchor(GripType.End, new Rectangle(ZoomEndPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
 			};
 		}
 

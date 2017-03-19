@@ -32,8 +32,8 @@ namespace FlowSharpLib
         public override void Draw(Graphics gr, bool showSelection = true)
 		{
 			UpdateDisplayRectangle(gr);
-			gr.FillRectangle(FillBrush, DisplayRectangle);
-			gr.DrawRectangle(BorderPen, DisplayRectangle);
+			gr.FillRectangle(FillBrush, ZoomRectangle);
+			gr.DrawRectangle(BorderPen, ZoomRectangle);
 			base.Draw(gr, showSelection);
 		}
 
@@ -42,8 +42,8 @@ namespace FlowSharpLib
             SizeF size = TextRenderer.MeasureText(gr, Text, TextFont);
             // SizeF size = gr.MeasureString(Text, TextFont);
             // Grow so selection is not right on top of text, and so that anti-aliasing has some room.
-            // Point center = DisplayRectangle.Center();
-            // DisplayRectangle = new Rectangle(center.X - (int)(size.Width / 2), center.Y - (int)(size.Height) / 2, (int)size.Width, (int)size.Height).Grow(3);
+            // Point center = ZoomRectangle.Center();
+            // ZoomRectangle = new Rectangle(center.X - (int)(size.Width / 2), center.Y - (int)(size.Height) / 2, (int)size.Width, (int)size.Height).Grow(3);
             DisplayRectangle = new Rectangle(DisplayRectangle.X+3, DisplayRectangle.Y+3, (int)size.Width, (int)size.Height).Grow(3);
         }
 	}

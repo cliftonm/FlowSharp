@@ -594,7 +594,7 @@ namespace FlowSharpMouseControllerService
                     if (doubleClickCounter == 0)
                     {
                         ++doubleClickCounter;
-                        serviceManager.Get<IFlowSharpEditService>().EditText();
+                        serviceManager.IfExists<IFlowSharpEditService>(svc => svc.EditText());
 
                         // Reset counter after 1/2 second, so the second double click is ignored.
                         Task.Run(() =>

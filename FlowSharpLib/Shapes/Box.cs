@@ -17,8 +17,9 @@ namespace FlowSharpLib
 
         public override void Draw(Graphics gr, bool showSelection = true)
         {
-            gr.FillRectangle(FillBrush, DisplayRectangle);
-            gr.DrawRectangle(BorderPen, DisplayRectangle);
+            Rectangle zdr = ZoomRectangle;
+            gr.FillRectangle(FillBrush, zdr);
+            gr.DrawRectangle(BorderPen, zdr);
             base.Draw(gr, showSelection);
         }
     }

@@ -19,7 +19,7 @@ namespace FlowSharpLib
     [ToolboxOrder(11)]
     public class DynamicConnectorLR : DynamicConnector
 	{
-		public override Rectangle UpdateRectangle { get { return DisplayRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
+		public override Rectangle UpdateRectangle { get { return ZoomRectangle.Grow(anchorWidthHeight + 1 + BorderPen.Width); } }
 
         public DynamicConnectorLR(Canvas canvas) : base(canvas)
 		{
@@ -47,8 +47,8 @@ namespace FlowSharpLib
             Rectangle vline = GetVerticalLineRectangle();
 
             return new List<ShapeAnchor>() {
-				new ShapeAnchor(GripType.Start, new Rectangle(StartPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
-				new ShapeAnchor(GripType.End, new Rectangle(EndPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
+				new ShapeAnchor(GripType.Start, new Rectangle(ZoomStartPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
+				new ShapeAnchor(GripType.End, new Rectangle(ZoomEndPoint.Move(-anchorWidthHeight/2, -anchorWidthHeight/2), szAnchor), Cursors.Arrow),
                 new ShapeAnchor(GripType.LeftMiddle, new Rectangle(new Point(vline.X + szAnchor.Width, vline.Y + vline.Height/2 - szAnchor.Height/2), szAnchor), Cursors.SizeWE),
             };
 		}
@@ -139,11 +139,11 @@ namespace FlowSharpLib
 
         protected Rectangle GetVerticalLineRectangle()
         {
-            int xmin = StartPoint.X.Min(EndPoint.X);
-            int xmax = StartPoint.X.Max(EndPoint.X);
-            int vx = xmin + (xmax - xmin) / 2 + vxAdjust;
-            int vy1 = StartPoint.Y.Min(EndPoint.Y);
-            int vy2 = StartPoint.Y.Max(EndPoint.Y);
+            int xmin = ZoomStartPoint.X.Min(ZoomEndPoint.X);
+            int xmax = ZoomStartPoint.X.Max(ZoomEndPoint.X);
+            int vx = xmin + (xmax - xmin) / 2 + vxAdjust * canvas.Controller.Zoom / 100;
+            int vy1 = ZoomStartPoint.Y.Min(ZoomEndPoint.Y);
+            int vy2 = ZoomStartPoint.Y.Max(ZoomEndPoint.Y);
 
             return new Rectangle(vx - BaseController.MIN_WIDTH / 2, vy1, BaseController.MIN_WIDTH, vy2 - vy1);
         }

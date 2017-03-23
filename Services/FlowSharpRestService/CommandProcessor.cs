@@ -67,7 +67,8 @@ namespace FlowSharpRestService
         {
             BaseController controller = proc.ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
 
-            controller.Canvas.FindForm().BeginInvoke(() =>
+            // Invoke, because we have to get the filenames before we respond.
+            controller.Canvas.FindForm().Invoke(() =>
             {
                 var els = controller.Elements.Where(e => e is IFileBox);
                 cmd.Filenames.AddRange(els.Cast<IFileBox>().Where(el => !String.IsNullOrEmpty(el.Filename)).Select(el => el.Filename));

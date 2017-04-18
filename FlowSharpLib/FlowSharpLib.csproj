@@ -62,6 +62,7 @@
     <Compile Include="Connectors\DynamicConnectorProperties.cs" />
     <Compile Include="Connectors\DynamicConnectorUD.cs" />
     <Compile Include="Shapes\GroupBox.cs" />
+    <Compile Include="Shapes\Hexagon.cs" />
     <Compile Include="Shapes\Line.cs" />
     <Compile Include="Persist.cs" />
     <Compile Include="Shapes\RightTriangle.cs" />

@@ -590,13 +590,17 @@ namespace FlowSharpLib
 
         public void UpdateZoomRectangle()
         {
-            double dz = canvas.Controller.Zoom / 100.0;
+			// TODO: canvas controller is null when saving as PNG!
+			if (canvas.Controller != null)
+			{
+				double dz = canvas.Controller.Zoom / 100.0;
 
-            ZoomRectangle = new Rectangle(
-                (int)(DisplayRectangle.X * dz),
-                (int)(DisplayRectangle.Y * dz),
-                (int)(DisplayRectangle.Width * dz),
-                (int)(DisplayRectangle.Height * dz));
+				ZoomRectangle = new Rectangle(
+					(int)(DisplayRectangle.X * dz),
+					(int)(DisplayRectangle.Y * dz),
+					(int)(DisplayRectangle.Width * dz),
+					(int)(DisplayRectangle.Height * dz));
+			}
         }
 
         protected void InternalUpdateScreen(int ix, int iy)
@@ -702,7 +706,8 @@ namespace FlowSharpLib
         {
             ConnectionPoint ret = cp;
 
-            if (canvas.Controller.Zoom != 100)
+			// TODO: controller is null when saving as PNG!
+            if (canvas.Controller != null && canvas.Controller.Zoom != 100)
             {
                 ret = new ConnectionPoint(cp.Type, AdjustForZoom(cp.Point));
             }
@@ -714,7 +719,8 @@ namespace FlowSharpLib
         {
             Point ret = p;
 
-            if (canvas.Controller.Zoom != 100)
+			// TODO: canvas.Controller is null when saving image as PNG!
+            if (canvas.Controller != null && canvas.Controller.Zoom != 100)
             {
                 ret = new Point(p.X * canvas.Controller.Zoom / 100, p.Y * canvas.Controller.Zoom / 100);
             }
@@ -746,7 +752,8 @@ namespace FlowSharpLib
             bool disposeFont = false;
 
             // TODO: Should we just create the font and dispose it every time we draw?
-            if (canvas.Controller.Zoom != 100)
+			// TODO: canvas.Controller is null when we save the drawing as a PNG!
+            if (canvas.Controller != null && canvas.Controller.Zoom != 100)
             {
                 font = new Font(textFont.FontFamily, textFont.Size * canvas.Controller.Zoom / 100, textFont.Style);
                 disposeFont = true;

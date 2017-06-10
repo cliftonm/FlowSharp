@@ -213,7 +213,17 @@ namespace FlowSharpCodeService
                     var drakonLoop = new DrakonLoop() { Code = ParseCode(el) };
                     dcg.AddInstruction(drakonLoop);
                     var nextEl = codeService.NextElementInWorkflow(el);
-                    el = ParseDrakonWorkflow(drakonLoop.LoopInstructions, codeService, canvasController, nextEl);
+
+					if (nextEl != null)
+					{
+						el = ParseDrakonWorkflow(drakonLoop.LoopInstructions, codeService, canvasController, nextEl);
+					}
+					else
+					{
+						// TODO: error -- there are no further elements after the beginning for loop box!
+						ServiceManager.Get<IFlowSharpCodeOutputWindowService>().WriteLine("Error: Drakon start 'for' loop does not have any statements!");
+						return el;
+					}
                 }
                 else if (el is IEndForLoopBox)
                 {

@@ -80,7 +80,13 @@ namespace FlowSharpCanvasService
 
         public void SetActiveController(Control parent)
         {
-            activeCanvasController = documents[parent];
+			BaseController controller;
+
+			// document won't contain parent if the window is a floating window.
+			if (documents.TryGetValue(parent, out controller))
+			{
+				activeCanvasController = controller;
+			}
         }
 
         public void RequestNewCanvas()

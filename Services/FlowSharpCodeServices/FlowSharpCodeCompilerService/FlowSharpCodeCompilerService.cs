@@ -254,6 +254,8 @@ namespace FlowSharpCodeCompilerService
 
         protected void InsertCodeInRunWorkflowMethod(GraphicElement root, StringBuilder code)
         {
+			ICSharpClass cls = (ICSharpClass)root;
+
 			string existingCode = String.Empty;
 			// TODO: Verify that root.Json["Code"] defines the namespace, class, and stub, or figure out how to include "using" and field initialization and properties such that 
 			// we can create the namespace, class, and stub for the user.
@@ -262,12 +264,25 @@ namespace FlowSharpCodeCompilerService
 				existingCode = root.Json["Code"];
 			}
 
-			string before = existingCode.LeftOf("void RunWorkflow()");
-			string after = existingCode.RightOf("void RunWorkflow()").RightOfMatching('{', '}');
-			StringBuilder finalCode = new StringBuilder(before);
-			finalCode.Append("void RunWorkflow()\r\t\t{\r");
-			finalCode.Append(new String(' ', 12) + code.ToString().Trim() + "\r\t\t}\r\t");
-			finalCode.Append(after);
+			//string before = existingCode.LeftOf("void RunWorkflow()");
+			//string after = existingCode.RightOf("void RunWorkflow()").RightOfMatching('{', '}');
+			//StringBuilder finalCode = new StringBuilder(before);
+			StringBuilder finalCode = new StringBuilder();
+			finalCode.AppendLine("using System;");
+			finalCode.AppendLine("using System.Linq;");
+			finalCode.AppendLine();
+
+			finalCode.AppendLine("namespace " + cls.NamespaceName);
+			finalCode.AppendLine("{");
+			finalCode.AppendLine("    public partial class " + cls.ClassName);
+			finalCode.AppendLine("    {");
+			finalCode.AppendLine(new String(' ', 8) + "public void " + cls.MethodName + "()");
+			finalCode.AppendLine(new String(' ', 8) + "{");
+			finalCode.AppendLine(new String(' ', 12) + code.ToString().Trim());
+			finalCode.AppendLine(new String(' ', 8) + "}");
+			finalCode.AppendLine("    }");
+			finalCode.AppendLine("}");
+			// finalCode.Append(after);
 			root.Json["Code"] = finalCode.ToString();
         }
 

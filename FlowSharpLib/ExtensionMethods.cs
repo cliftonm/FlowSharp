@@ -205,5 +205,10 @@ namespace FlowSharpLib
 
             return list;
         }
-    }
+
+		public static string ToHtmlColor(this Color c, char prefix = '#')
+		{
+			return prefix + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
+		}
+	}
 }

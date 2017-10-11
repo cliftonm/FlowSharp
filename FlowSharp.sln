@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharp", "FlowSharp.csproj", "{98E63D19-3D7A-4CB1-8EA9-31173D4BE05F}"
 EndProject
@@ -43,10 +43,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodeShapeInterface
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodeCompilerService", "Services\FlowSharpCodeServices\FlowSharpCodeCompilerService\FlowSharpCodeCompilerService.csproj", "{91FCF1D4-91E0-41FA-A675-C3174F131104}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HigherOrderProgrammingServices", "HigherOrderProgrammingServices", "{2E0FAF22-7B2D-4898-B634-EA9B5E561D82}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HigherOrderProgrammingShapes", "Services\HigherOrderProgrammingServices\HigherOrderProgrammingShapes\HigherOrderProgrammingShapes.csproj", "{BCEC4BD9-9227-41C7-8585-A05041D5AD2A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpRestService", "Services\FlowSharpRestService\FlowSharpRestService.csproj", "{51D2B194-CFFC-4905-8F06-90F1A0000DF2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpWindowsControlShapes", "Plugins\FlowSharpWindowsControlShapes\FlowSharpWindowsControlShapes.csproj", "{F41CB0C7-B2A0-48A7-85EE-874913598A6A}"
@@ -60,6 +56,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodePythonCompilerService", "Services\FlowSharpCodeServices\FlowSharpCodePythonCompilerService\FlowSharpCodePythonCompilerService.csproj", "{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpCodeDrakonShapes", "Services\FlowSharpCodeServices\FlowSharpCodeDrakonShapes\FlowSharpCodeDrakonShapes.csproj", "{82DE83B7-6A8E-4BCB-8B12-5E80E30DDBAD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FS-HOPE", "FS-HOPE", "{390FD219-6696-4F18-BFEE-8FDBBB15233A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpClient", "FlowSharpClient\FlowSharpClient.csproj", "{31890A66-32AD-4D5F-A5A3-F9976996111C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FsHopeLib", "FS-HOPE\FsHopeLib\FsHopeLib.csproj", "{032B8E55-9233-47B6-BD67-4A4ECE158039}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,10 +141,6 @@ Global
 		{91FCF1D4-91E0-41FA-A675-C3174F131104}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91FCF1D4-91E0-41FA-A675-C3174F131104}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91FCF1D4-91E0-41FA-A675-C3174F131104}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BCEC4BD9-9227-41C7-8585-A05041D5AD2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BCEC4BD9-9227-41C7-8585-A05041D5AD2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BCEC4BD9-9227-41C7-8585-A05041D5AD2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BCEC4BD9-9227-41C7-8585-A05041D5AD2A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{51D2B194-CFFC-4905-8F06-90F1A0000DF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{51D2B194-CFFC-4905-8F06-90F1A0000DF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51D2B194-CFFC-4905-8F06-90F1A0000DF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -171,6 +169,14 @@ Global
 		{82DE83B7-6A8E-4BCB-8B12-5E80E30DDBAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82DE83B7-6A8E-4BCB-8B12-5E80E30DDBAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82DE83B7-6A8E-4BCB-8B12-5E80E30DDBAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31890A66-32AD-4D5F-A5A3-F9976996111C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31890A66-32AD-4D5F-A5A3-F9976996111C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31890A66-32AD-4D5F-A5A3-F9976996111C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31890A66-32AD-4D5F-A5A3-F9976996111C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{032B8E55-9233-47B6-BD67-4A4ECE158039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{032B8E55-9233-47B6-BD67-4A4ECE158039}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{032B8E55-9233-47B6-BD67-4A4ECE158039}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{032B8E55-9233-47B6-BD67-4A4ECE158039}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,13 +198,15 @@ Global
 		{EF1BB007-E326-4305-94F0-C4A589FDB08A} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 		{8C7D37D1-F9D9-4633-B863-EAC44B9DD999} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 		{91FCF1D4-91E0-41FA-A675-C3174F131104} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
-		{2E0FAF22-7B2D-4898-B634-EA9B5E561D82} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
-		{BCEC4BD9-9227-41C7-8585-A05041D5AD2A} = {2E0FAF22-7B2D-4898-B634-EA9B5E561D82}
 		{51D2B194-CFFC-4905-8F06-90F1A0000DF2} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
 		{3548AF21-B8CB-4C45-88B6-80FAD43EB561} = {A6598DE7-6C8A-46CE-9E33-A4540E8F82D0}
 		{5FA0C1A5-BDE5-41FB-B031-EB8285FC549B} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 		{3452537D-7FA0-4916-BAA9-B4985F11581E} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 		{526A7092-2EE6-49A6-BEEE-2C22F1E7CDCE} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
 		{82DE83B7-6A8E-4BCB-8B12-5E80E30DDBAD} = {754EFFFE-0D82-49BB-9361-A3A30BD4761E}
+		{032B8E55-9233-47B6-BD67-4A4ECE158039} = {390FD219-6696-4F18-BFEE-8FDBBB15233A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2BF8B4D8-D64B-4380-BBDD-D8D01FF83DF0}
 	EndGlobalSection
 EndGlobal

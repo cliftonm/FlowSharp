@@ -5,11 +5,12 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+using Clifton.Core.ExtensionMethods;
 using Clifton.Core.Semantics;
 
 // When the runner is moved to its own AppDomain DLL, remove the reference in FlowSharpHopeService to the Clifton.SemanticProcessorService.
 
-using Clifton.Core.Services.SemanticProcessorService;
+using HopeRunnerAppDomainInterface;
 
 namespace FlowSharpHopeService
 {
@@ -17,41 +18,64 @@ namespace FlowSharpHopeService
 
     public class Runner
     {
-        protected SemanticProcessor sp;
-        protected Assembly assy;                // Eventually will be an AppDomain
-        protected HopeMembrane membrane;
+        protected AppDomain appDomain;
+        protected IHopeRunner runner;
 
         public Runner()
         {
-            sp = new SemanticProcessor();
-            membrane = new HopeMembrane();
-            sp.RegisterMembrane<HopeMembrane>();
         }
 
-        public void Load(string dll)
+        public void Load(string fullDllName)
         {
-            assy = Assembly.LoadFrom(dll);
+            string dll = fullDllName.LeftOf(".");
+            appDomain = CreateAppDomain(dll);
+            runner = InstantiateRunner(dll, appDomain);
+        }
+
+        public void Unload()
+        {
+            AppDomain.Unload(appDomain);
         }
 
         public void InstantiateReceptor(Type t)
         {
-            // Get the agent type from our assembly, not the "loaded for reflection only" assembly type.
-            var agent = assy.GetTypes().SingleOrDefault(at => at.IsClass && t.IsPublic && at.Name == t.Name);
-            IReceptor receptor = (IReceptor)Activator.CreateInstance(agent);
-            sp.Register<HopeMembrane>(receptor);
+            runner.InstantiateReceptor(t.Name);
         }
 
         public dynamic InstantiateSemanticType(string typeName)
         {
-            Type st = assy.GetTypes().SingleOrDefault(t => t.IsClass && t.IsPublic && t.GetInterfaces().Any(i => i.Name == nameof(ISemanticType)));
-            object inst = Activator.CreateInstance(st);
+            ISemanticType st = runner.InstantiateSemanticType(typeName);
 
-            return inst;
+            return st;
         }
 
         public void Publish(ISemanticType st)
         {
-            sp.ProcessInstance<HopeMembrane>(st);
+            runner.Publish(st);
+        }
+
+        private AppDomain CreateAppDomain(string dllName)
+        {
+            AppDomainSetup setup = new AppDomainSetup()
+            {
+                ApplicationName = dllName,
+                ConfigurationFile = dllName + "dll.config",
+                ApplicationBase = AppDomain.CurrentDomain.BaseDirectory
+            };
+
+            AppDomain appDomain = AppDomain.CreateDomain(
+              setup.ApplicationName,
+              AppDomain.CurrentDomain.Evidence,
+              setup);
+
+            return appDomain;
+        }
+
+        private IHopeRunner InstantiateRunner(string dllName, AppDomain domain)
+        {
+            IHopeRunner runner = domain.CreateInstanceAndUnwrap(dllName, "HopeRunner.Runner") as IHopeRunner;
+
+            return runner;
         }
     }
 }

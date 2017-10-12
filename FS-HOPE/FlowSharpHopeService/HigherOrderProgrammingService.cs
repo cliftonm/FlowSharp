@@ -101,6 +101,8 @@ namespace FlowSharpHopeService
                 dynamic st = runner.InstantiateSemanticType("ST_Text");
                 st.Text = "Hello World!";
                 runner.Publish(st);
+                System.Threading.Thread.Sleep(2000);
+                runner.Unload();
             }
 
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve -= ReflectionOnlyAssemblyResolve;
@@ -196,8 +198,7 @@ namespace FlowSharpHopeService
             List<GraphicElement> sourceList = new List<GraphicElement>();
 
             foreach (GraphicElement srcEl in canvasController.Elements.Where(
-                srcEl => !ContainedIn<IAssemblyBox>(canvasController, srcEl) &&
-                !(srcEl is IFileBox)))
+                srcEl => !ContainedIn<IAssemblyBox>(canvasController, srcEl) /* && !(srcEl is IFileBox) */ ))
             {
                 sourceList.Add(srcEl);
             }
@@ -252,6 +253,10 @@ namespace FlowSharpHopeService
 
         protected CompilerResults Compile(string assyFilename, List<string> sources, List<string> refs, bool generateExecutable = false)
         {
+            // https://stackoverflow.com/questions/31639602/using-c-sharp-6-features-with-codedomprovider-rosyln
+            // The built-in CodeDOM provider doesn't support C# 6. Use this one instead:
+            // https://www.nuget.org/packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform/
+            // var options = new Dictionary<string, string>() { { "CompilerVersion", "v7.0" } };
             CSharpCodeProvider provider = new CSharpCodeProvider();
             CompilerParameters parameters = new CompilerParameters();
 
@@ -268,6 +273,9 @@ namespace FlowSharpHopeService
             parameters.ReferencedAssemblies.Add("System.Windows.Forms.dll");
 
             parameters.ReferencedAssemblies.Add("System.Speech.dll");
+
+            //parameters.ReferencedAssemblies.Add("HopeRunner.dll");
+            //parameters.ReferencedAssemblies.Add("HopeRunnerAppDomainInterface.dll");
 
             // parameters.ReferencedAssemblies.Add("System.Xml.dll");
             // parameters.ReferencedAssemblies.Add("System.Xml.Linq.dll");

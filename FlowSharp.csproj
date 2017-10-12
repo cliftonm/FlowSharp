@@ -119,10 +119,6 @@
       <Project>{eb69e349-53a1-45ca-8982-988b9bc557a3}</Project>
       <Name>HopeRunnerAppDomainInterface</Name>
     </ProjectReference>
-    <ProjectReference Include="FS-HOPE\HopeRunner\HopeRunner.csproj">
-      <Project>{6c543371-0da1-4e8a-ac3e-52f17613ff22}</Project>
-      <Name>HopeRunner</Name>
-    </ProjectReference>
     <ProjectReference Include="Services\FlowSharpCanvasService\FlowSharpCanvasService.csproj">
       <Project>{8072dc59-f5de-46c3-98a2-e483484b253c}</Project>
       <Name>FlowSharpCanvasService</Name>

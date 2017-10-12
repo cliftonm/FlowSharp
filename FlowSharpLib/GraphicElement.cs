@@ -146,6 +146,8 @@ namespace FlowSharpLib
             TextAlign = ContentAlignment.MiddleCenter;
         }
 
+        public virtual void RightClick() { }
+
         public virtual void Select()
         {
             Selected = true;

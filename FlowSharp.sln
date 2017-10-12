@@ -73,7 +73,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharpHopeShapeInterface
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HopeRunnerAppDomainInterface", "FS-HOPE\HopeRunnerAppDomainInterface\HopeRunnerAppDomainInterface.csproj", "{EB69E349-53A1-45CA-8982-988B9BC557A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HopeRunner", "FS-HOPE\HopeRunner\HopeRunner.csproj", "{6C543371-0DA1-4E8A-AC3E-52F17613FF22}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clifton.DockingFormService", "..\clifton\Clifton.WinForm\Services\Clifton.DockingFormService\Clifton.DockingFormService.csproj", "{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clifton.WinForm.ServiceInterfaces", "..\clifton\Clifton.WinForm\Clifton.WinForm.ServiceInterfaces\Clifton.WinForm.ServiceInterfaces.csproj", "{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -209,10 +211,14 @@ Global
 		{EB69E349-53A1-45CA-8982-988B9BC557A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB69E349-53A1-45CA-8982-988B9BC557A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB69E349-53A1-45CA-8982-988B9BC557A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6C543371-0DA1-4E8A-AC3E-52F17613FF22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C543371-0DA1-4E8A-AC3E-52F17613FF22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C543371-0DA1-4E8A-AC3E-52F17613FF22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C543371-0DA1-4E8A-AC3E-52F17613FF22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{543D44B1-BA75-4A6E-ADCA-7B8D8F3D7492}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -246,7 +252,6 @@ Global
 		{D2031348-E8A6-4895-A4B8-A7F6093BE054} = {390FD219-6696-4F18-BFEE-8FDBBB15233A}
 		{087E600F-F5A4-430F-97A9-94E5F52673F8} = {390FD219-6696-4F18-BFEE-8FDBBB15233A}
 		{EB69E349-53A1-45CA-8982-988B9BC557A3} = {390FD219-6696-4F18-BFEE-8FDBBB15233A}
-		{6C543371-0DA1-4E8A-AC3E-52F17613FF22} = {390FD219-6696-4F18-BFEE-8FDBBB15233A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2BF8B4D8-D64B-4380-BBDD-D8D01FF83DF0}

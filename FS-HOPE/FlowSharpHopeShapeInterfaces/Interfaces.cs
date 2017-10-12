@@ -5,4 +5,6 @@
         string AgentName { get;}
         string Text { get; }
     }
+
+    public interface ISemanticTypeShape { }
 }

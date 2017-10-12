@@ -544,6 +544,18 @@ namespace FlowSharpMouseControllerService
                 }
             });
 
+            // Right-click on shape
+            router.Add(new MouseRouter()
+            {
+                RouteName = RouteName.StartDragSelectionBox,
+                MouseEvent = MouseEvent.MouseDown,
+                Condition = () => serviceManager.Get<IFlowSharpCanvasService>().ActiveController.IsRootShapeSelectable(CurrentMousePosition) && CurrentButtons == MouseButtons.Right,
+                Action = (_) =>
+                {
+                    RightClick();
+                },
+            });
+
             // SELECTION BOX
 
             // Start selection box
@@ -820,6 +832,13 @@ namespace FlowSharpMouseControllerService
                 hoverShape.UpdateSize(selectedAnchor, delta);
                 controller.SnapController.UpdateRunningDelta(delta);
             }
+        }
+
+        protected void RightClick()
+        {
+            BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
+            GraphicElement hoverShape = HoverShape;
+            hoverShape.RightClick();
         }
 
         protected void CreateSelectionBox()

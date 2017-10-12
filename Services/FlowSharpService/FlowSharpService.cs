@@ -20,6 +20,11 @@ using FlowSharpServiceInterfaces;
 
 namespace FlowSharpService
 {
+    public class FlowSharpForm : BaseForm, IFlowSharpForm
+    {
+        public IServiceManager ServiceManager { get; set; }
+    }
+
     public class FlowSharpServiceModule : IModule
     {
         public void InitializeServices(IServiceManager serviceManager)
@@ -47,7 +52,8 @@ namespace FlowSharpService
             dockingService.ContentLoaded += OnContentLoaded;
             dockingService.ActiveDocumentChanged += (sndr, args) => OnActiveDocumentChanged(sndr);
             dockingService.DocumentClosing += (sndr, args) => OnDocumentClosing(sndr);
-            form = dockingService.CreateMainForm();
+            form = dockingService.CreateMainForm<FlowSharpForm>();
+            ((FlowSharpForm)form).ServiceManager = ServiceManager;
             form.Text = "FlowSharp";
             form.Icon = icon;
             form.Size = new Size(1200, 800);

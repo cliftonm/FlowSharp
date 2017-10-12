@@ -64,6 +64,7 @@ namespace FlowSharpCanvasService
         public void CreateCanvas(Control parent)
         {
             Canvas canvas = new Canvas();
+            canvas.ServiceManager = ServiceManager;
             CanvasController canvasController = new CanvasController(canvas);
             documents[parent] = canvasController;
             // Canvas.Initialize requires that the parent be attached to the form!

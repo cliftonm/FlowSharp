@@ -34,12 +34,6 @@
     <Reference Include="Clifton.Core">
       <HintPath>..\..\Libs\Clifton.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Clifton.DockingFormService">
-      <HintPath>..\..\Libs\Clifton.DockingFormService.dll</HintPath>
-    </Reference>
-    <Reference Include="Clifton.WinForm.ServiceInterfaces">
-      <HintPath>..\..\Libs\Clifton.WinForm.ServiceInterfaces.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -52,10 +46,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FlowSharpService.cs" />
+    <Compile Include="FlowSharpService.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\clifton\Clifton.WinForm\Clifton.WinForm.ServiceInterfaces\Clifton.WinForm.ServiceInterfaces.csproj">
+      <Project>{2c326de7-2f39-49cb-9a2b-1fe6de7918b0}</Project>
+      <Name>Clifton.WinForm.ServiceInterfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\clifton\Clifton.WinForm\Services\Clifton.DockingFormService\Clifton.DockingFormService.csproj">
+      <Project>{543d44b1-ba75-4a6e-adca-7b8d8f3d7492}</Project>
+      <Name>Clifton.DockingFormService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\FlowSharpLib\FlowSharpLib.csproj">
       <Project>{07f65ca7-b8d3-4716-bfbf-812ef4da68be}</Project>
       <Name>FlowSharpLib</Name>

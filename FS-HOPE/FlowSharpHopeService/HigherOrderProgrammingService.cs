@@ -31,17 +31,77 @@ namespace FlowSharpHopeService
         }
     }
 
-    public class HigherOrderProgrammingService : ServiceBase
+    public class HigherOrderProgrammingService : ServiceBase, IHigherOrderProgrammingService
     {
         protected ToolStripMenuItem mnuBuild = new ToolStripMenuItem() { Name = "mnuBuild", Text = "Build" };
         protected ToolStripMenuItem mnuRun = new ToolStripMenuItem() { Name = "mnuRun", Text = "Run" };
         protected ToolStripMenuItem mnuStop = new ToolStripMenuItem() { Name = "mnuStop", Text = "Stop" };
         protected Dictionary<string, string> tempToTextBoxMap = new Dictionary<string, string>();
+        protected Runner runner = new Runner();
 
         public override void FinishedInitialization()
         {
             InitializeEditorsMenu();
+            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ReflectionOnlyAssemblyResolve;
             base.FinishedInitialization();
+        }
+
+        public void LoadHopeAssembly()
+        {
+            IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
+            string dllFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.dll" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".dll";
+            runner.Load(dllFilename);
+        }
+
+        public void UnloadHopeAssembly()
+        {
+            runner.Unload();
+        }
+
+        public void InstantiateReceptors()
+        {
+            var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
+            IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
+            string dllFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.dll" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".dll";
+            Assembly assy = Assembly.ReflectionOnlyLoadFrom(dllFilename);
+            var (agents, errors) = GetAgents(assy);
+
+            if (errors.Count > 0)
+            {
+                outputWindow.WriteLine(String.Join("\r\n", errors));
+            }
+            else
+            {
+                IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+                BaseController canvasController = canvasService.ActiveController;
+                List<GraphicElement> receptors = GetReceptors(canvasController);
+
+                foreach (var el in receptors.Cast<IAgentReceptor>())
+                {
+                    Type agent = agents.SingleOrDefault(a => a.Name == el.AgentName);
+
+                    if (agent == null)
+                    {
+                        outputWindow.WriteLine("Receptor " + el.Text + " references an agent that is not defined: " + el.AgentName);
+                    }
+                    else
+                    {
+                        runner.InstantiateReceptor(agent);
+                    }
+                }
+            }
+        }
+
+        public ISemanticType InstantiateSemanticType(string typeName)
+        {
+            var ret = runner.InstantiateSemanticType(typeName);
+
+            return ret;
+        }
+
+        public void Publish(ISemanticType st)
+        {
+            runner.Publish(st);
         }
 
         protected void InitializeEditorsMenu()
@@ -61,8 +121,6 @@ namespace FlowSharpHopeService
 
         protected void OnHopeRun(object sender, EventArgs e)
         {
-            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ReflectionOnlyAssemblyResolve;
-
             var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
             IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
             string dllFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.dll" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".dll";
@@ -76,26 +134,8 @@ namespace FlowSharpHopeService
             else
             {
                 // Temporary, for testing getting things working.
-                Runner runner = new Runner();
                 runner.Load(dllFilename);
-
-                IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
-                BaseController canvasController = canvasService.ActiveController;
-                List<GraphicElement> receptors = GetReceptors(canvasController);
-
-                foreach (var el in receptors.Cast<IAgentReceptor>())
-                {
-                    Type agent = agents.SingleOrDefault(a => a.Name == el.AgentName);
-
-                    if (agent == null)
-                    {
-                        outputWindow.WriteLine("Receptor " + el.Text + " references an agent that is not defined: " + el.AgentName);
-                    }
-                    else
-                    {
-                        runner.InstantiateReceptor(agent);
-                    }
-                }
+                InstantiateReceptors();
 
                 // Testing
                 dynamic st = runner.InstantiateSemanticType("ST_Text");
@@ -104,8 +144,6 @@ namespace FlowSharpHopeService
                 System.Threading.Thread.Sleep(2000);
                 runner.Unload();
             }
-
-            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve -= ReflectionOnlyAssemblyResolve;
         }
 
         private Assembly ReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs args)

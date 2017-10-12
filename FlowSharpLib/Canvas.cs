@@ -9,11 +9,13 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Clifton.Core.ExtensionMethods;
+using Clifton.Core.ServiceManagement;
 
 namespace FlowSharpLib
 {
     public class Canvas : Panel
     {
+        public IServiceManager ServiceManager { get; set; }
 		public Action<Canvas> PaintComplete { get; set; }
 		public Color BackgroundColor { get { return canvasBrush.Color; } }
 		public BaseController Controller { get; set; }

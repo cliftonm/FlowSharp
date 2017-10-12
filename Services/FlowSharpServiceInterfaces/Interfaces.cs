@@ -16,6 +16,11 @@ using FlowSharpLib;
 
 namespace FlowSharpServiceInterfaces
 {
+    public interface IFlowSharpForm
+    {
+        IServiceManager ServiceManager { get; set; }
+    }
+
     /// <summary>
     /// The master controller for FlowSharp
     /// </summary>

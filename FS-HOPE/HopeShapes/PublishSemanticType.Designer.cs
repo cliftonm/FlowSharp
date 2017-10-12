@@ -30,6 +30,7 @@
         {
             this.pgSemanticType = new System.Windows.Forms.PropertyGrid();
             this.btnPublish = new System.Windows.Forms.Button();
+            this.ckUnload = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // pgSemanticType
@@ -51,16 +52,30 @@
             this.btnPublish.UseVisualStyleBackColor = true;
             this.btnPublish.Click += new System.EventHandler(this.btnPublish_Click);
             // 
+            // ckUnload
+            // 
+            this.ckUnload.AutoSize = true;
+            this.ckUnload.Checked = true;
+            this.ckUnload.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckUnload.Location = new System.Drawing.Point(504, 49);
+            this.ckUnload.Name = "ckUnload";
+            this.ckUnload.Size = new System.Drawing.Size(103, 17);
+            this.ckUnload.TabIndex = 2;
+            this.ckUnload.Text = "Unload on close";
+            this.ckUnload.UseVisualStyleBackColor = true;
+            // 
             // PublishSemanticType
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(609, 305);
+            this.Controls.Add(this.ckUnload);
             this.Controls.Add(this.btnPublish);
             this.Controls.Add(this.pgSemanticType);
             this.Name = "PublishSemanticType";
             this.Text = "Publish Semantic Type";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -68,5 +83,6 @@
 
         private System.Windows.Forms.PropertyGrid pgSemanticType;
         private System.Windows.Forms.Button btnPublish;
+        public System.Windows.Forms.CheckBox ckUnload;
     }
 }

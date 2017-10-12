@@ -37,6 +37,7 @@ namespace FlowSharpHopeService
         protected ToolStripMenuItem mnuRun = new ToolStripMenuItem() { Name = "mnuRun", Text = "Run" };
         protected ToolStripMenuItem mnuStop = new ToolStripMenuItem() { Name = "mnuStop", Text = "Stop" };
         protected Dictionary<string, string> tempToTextBoxMap = new Dictionary<string, string>();
+        // protected InAppRunner runner = new InAppRunner();
         protected Runner runner = new Runner();
 
         public override void FinishedInitialization()
@@ -74,9 +75,9 @@ namespace FlowSharpHopeService
             {
                 IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
                 BaseController canvasController = canvasService.ActiveController;
-                List<GraphicElement> receptors = GetReceptors(canvasController);
+                List<IAgentReceptor> receptors = GetReceptors(canvasController);
 
-                foreach (var el in receptors.Cast<IAgentReceptor>())
+                foreach (var el in receptors)
                 {
                     Type agent = agents.SingleOrDefault(a => a.Name == el.AgentName);
 
@@ -90,6 +91,11 @@ namespace FlowSharpHopeService
                     }
                 }
             }
+        }
+
+        public void EnableDisableReceptor(string typeName, bool state)
+        {
+            runner.EnableDisableReceptor(typeName, state);
         }
 
         public ISemanticType InstantiateSemanticType(string typeName)
@@ -181,10 +187,10 @@ namespace FlowSharpHopeService
             return (agents, errors);
         }
 
-        protected List<GraphicElement> GetReceptors(BaseController canvasController)
+        protected List<IAgentReceptor> GetReceptors(BaseController canvasController)
         {
-            List<GraphicElement> receptors = new List<GraphicElement>();
-            receptors.AddRange(canvasController.Elements.Where(srcEl => srcEl is IAgentReceptor));
+            List<IAgentReceptor> receptors = new List<IAgentReceptor>();
+            receptors.AddRange(canvasController.Elements.Where(srcEl => srcEl is IAgentReceptor).Cast<IAgentReceptor>().Where(agent=>agent.Enabled));
 
             return receptors;
         }
@@ -216,7 +222,7 @@ namespace FlowSharpHopeService
 
         protected void DeleteTempFiles(List<string> files)
         {
-            files.ForEach(fn => File.Delete(fn));
+            // files.ForEach(fn => File.Delete(fn));
         }
 
         protected List<string> GetCanvasReferences(BaseController canvasController)
@@ -282,7 +288,8 @@ namespace FlowSharpHopeService
 
         protected string CreateCodeFile(string code, string shapeText)
         {
-            string filename = Path.GetFileNameWithoutExtension(Path.GetTempFileName()) + ".cs";
+            // string filename = Path.GetFileNameWithoutExtension(Path.GetTempFileName()) + ".cs";
+            string filename = Path.GetFileNameWithoutExtension(shapeText.Replace("\r", "").Replace("\n", "")) + ".cs";
             File.WriteAllText(filename, code);
             tempToTextBoxMap[filename] = shapeText;
 

@@ -4,20 +4,13 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
-using System;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows.Forms;
 
-using Clifton.Core.ExtensionMethods;
 using Clifton.Core.Semantics;
 using Clifton.Core.ServiceManagement;
 
 using FlowSharpLib;
 using FlowSharpHopeShapeInterfaces;
-using FlowSharpServiceInterfaces;
 using FlowSharpHopeServiceInterfaces;
 
 namespace FlowSharpCodeShapes
@@ -50,7 +43,11 @@ namespace FlowSharpCodeShapes
             ISemanticType st = hope.InstantiateSemanticType(Text);
             PublishSemanticType pst = new PublishSemanticType(st, hope);
             pst.ShowDialog();
-            hope.UnloadHopeAssembly();
+
+            if (pst.ckUnload.Checked)
+            {
+                hope.UnloadHopeAssembly();
+            }
         }
     }
 }

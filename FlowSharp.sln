@@ -77,6 +77,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clifton.DockingFormService"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clifton.WinForm.ServiceInterfaces", "..\clifton\Clifton.WinForm\Clifton.WinForm.ServiceInterfaces\Clifton.WinForm.ServiceInterfaces.csproj", "{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clifton.SemanticProcessorService", "..\clifton\Clifton.Core\Services\Clifton.SemanticProcessorService\Clifton.SemanticProcessorService.csproj", "{B716A014-8C9F-4A24-83A4-ACBAE19C28C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clifton.Core", "..\clifton\Clifton.Core\Clifton.Core.csproj", "{54E73707-81C4-4C7F-9739-446C6D7D5FEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -219,6 +223,14 @@ Global
 		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C326DE7-2F39-49CB-9A2B-1FE6DE7918B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B716A014-8C9F-4A24-83A4-ACBAE19C28C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B716A014-8C9F-4A24-83A4-ACBAE19C28C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B716A014-8C9F-4A24-83A4-ACBAE19C28C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B716A014-8C9F-4A24-83A4-ACBAE19C28C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54E73707-81C4-4C7F-9739-446C6D7D5FEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54E73707-81C4-4C7F-9739-446C6D7D5FEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54E73707-81C4-4C7F-9739-446C6D7D5FEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54E73707-81C4-4C7F-9739-446C6D7D5FEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

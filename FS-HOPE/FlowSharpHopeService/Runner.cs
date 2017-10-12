@@ -42,6 +42,12 @@ namespace FlowSharpHopeService
             runner.InstantiateReceptor(t.Name);
         }
 
+        public void EnableDisableReceptor(string typeName, bool state)
+        {
+            // Runner may not be up when we get this.
+            runner?.EnableDisableReceptor(typeName, state);
+        }
+
         public dynamic InstantiateSemanticType(string typeName)
         {
             ISemanticType st = runner.InstantiateSemanticType(typeName);

@@ -20,8 +20,9 @@ namespace FlowSharpCodeShapes
 
         public PublishSemanticType(ISemanticType st, IHigherOrderProgrammingService hope)
         {
-            this.hope = hope;
             InitializeComponent();
+            Text = st.GetType().Name;
+            this.hope = hope;
             pgSemanticType.SelectedObject = st;
         }
 

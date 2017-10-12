@@ -34,6 +34,9 @@
     <Reference Include="Clifton.Core">
       <HintPath>..\..\Libs\Clifton.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Clifton.SemanticProcessorService">
+      <HintPath>..\..\Libs\Clifton.SemanticProcessorService.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
@@ -48,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HigherOrderProgrammingService.cs" />
+    <Compile Include="InAppRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runner.cs" />
   </ItemGroup>

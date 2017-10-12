@@ -29,7 +29,8 @@ namespace FlowSharp
                 IModuleManager moduleMgr = (IModuleManager)ServiceManager.Get<IServiceModuleManager>();
                 List<AssemblyFileName> modules = GetModuleList(XmlFileName.Create(moduleFilename));
                 moduleMgr.RegisterModules(modules);
-                ServiceManager.FinishedInitialization();
+                List<Exception> exceptions = ServiceManager.FinishSingletonInitialization();
+                ShowAnyExceptions(exceptions);
             }
             catch(ReflectionTypeLoadException lex)
             {

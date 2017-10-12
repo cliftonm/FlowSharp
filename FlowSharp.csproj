@@ -111,6 +111,10 @@
     <None Include="Resources\FlowSharp.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="FS-HOPE\FlowSharpHopeService\FlowSharpHopeService.csproj">
+      <Project>{85be4c98-f377-4e78-b3ef-01c675a25db8}</Project>
+      <Name>FlowSharpHopeService</Name>
+    </ProjectReference>
     <ProjectReference Include="Services\FlowSharpCanvasService\FlowSharpCanvasService.csproj">
       <Project>{8072dc59-f5de-46c3-98a2-e483484b253c}</Project>
       <Name>FlowSharpCanvasService</Name>

@@ -8,7 +8,7 @@ using System;
 
 namespace FlowSharpLib
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class ExcludeFromToolboxAttribute : Attribute { }
 
     [AttributeUsage(AttributeTargets.Class)]

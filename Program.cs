@@ -5,6 +5,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -30,6 +31,14 @@ namespace FlowSharp
             Icon icon = Properties.Resources.FlowSharp;
             Form form = ServiceManager.Get<IFlowSharpService>().CreateDockingForm(icon);
             Application.Run(form);
+        }
+
+        private static void ShowAnyExceptions(List<Exception> exceptions)
+        {
+            foreach (var ex in exceptions)
+            {
+                MessageBox.Show(ex.Message, "Module Finalizer Exception", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }

@@ -2,4 +2,6 @@
 ..\..\Plugins\FlowSharpWindowsControlShapes\bin\Debug\FlowSharpWindowsControlShapes.dll
 ..\..\Services\FlowSharpCodeServices\FlowSharpCodeShapes\bin\Debug\FlowSharpCodeShapes.dll
 ..\..\Services\FlowSharpCodeServices\FlowSharpCodeDrakonShapes\bin\Debug\FlowSharpCodeDrakonShapes.dll
+..\..\FS-HOPE\HopeShapes\bin\Debug\HopeShapes.dll
+
 

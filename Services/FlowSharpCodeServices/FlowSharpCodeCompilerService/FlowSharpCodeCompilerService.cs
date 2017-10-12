@@ -357,7 +357,7 @@ namespace FlowSharpCodeCompilerService
             string code = GetCode(root);
             string filename = Path.GetFileNameWithoutExtension(Path.GetTempFileName()) + ".cs";
             tempToTextBoxMap[filename] = root.Text;
-            File.WriteAllText(filename, GetCode(root));
+            File.WriteAllText(filename, code);
 
             return filename;
         }

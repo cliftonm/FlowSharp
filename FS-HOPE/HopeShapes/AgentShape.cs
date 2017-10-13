@@ -56,7 +56,7 @@ namespace FlowSharpCodeShapes
     [ToolboxOrder(9)]
     public class ToolboxAssemblyAgentShape : AgentShape
     {
-        public override Rectangle ToolboxDisplayRectangle { get { return new Rectangle(0, 0, 45, 25); } }
+        public override Rectangle ToolboxDisplayRectangle { get { return new Rectangle(0, 0, 35, 25); } }
 
         public ToolboxAssemblyAgentShape(Canvas canvas) : base(canvas)
         {

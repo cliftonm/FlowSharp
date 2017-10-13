@@ -24,6 +24,11 @@ namespace FlowSharpHopeService
             sp = new SemanticProcessor();
             membrane = new HopeMembrane();
             sp.RegisterMembrane<HopeMembrane>();
+            sp.Processing += ProcessingSemanticType;
+        }
+
+        private void ProcessingSemanticType(object sender, ProcessEventArgs e)
+        {
         }
 
         public void Load(string dll)
@@ -32,6 +37,10 @@ namespace FlowSharpHopeService
         }
 
         public void Unload()
+        {
+        }
+
+        public void EnableDisableReceptor(string typeName, bool state)
         {
         }
 

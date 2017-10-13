@@ -122,11 +122,13 @@ namespace FlowSharpHopeService
 
         protected void OnHopeBuild(object sender, EventArgs e)
         {
+            runner.Unload();
             Compile();
         }
 
         protected void OnHopeRun(object sender, EventArgs e)
         {
+            runner.Unload();
             var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
             IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
             string dllFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.dll" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".dll";
@@ -147,8 +149,6 @@ namespace FlowSharpHopeService
                 dynamic st = runner.InstantiateSemanticType("ST_Text");
                 st.Text = "Hello World!";
                 runner.Publish(st);
-                System.Threading.Thread.Sleep(2000);
-                runner.Unload();
             }
         }
 
@@ -161,6 +161,7 @@ namespace FlowSharpHopeService
 
         protected void OnHopeStop(object sender, EventArgs e)
         {
+            runner.Unload();
         }
 
         protected (List<Type> agents, List<string> errors) GetAgents(Assembly assy)

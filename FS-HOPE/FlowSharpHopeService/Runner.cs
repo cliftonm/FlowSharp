@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
+using Clifton.Core.Assertions;
 using Clifton.Core.ExtensionMethods;
 using Clifton.Core.Semantics;
 
@@ -16,6 +12,7 @@ namespace FlowSharpHopeService
 {
     public class HopeMembrane : Membrane { }
 
+    [Serializable]
     public class Runner
     {
         protected AppDomain appDomain;
@@ -27,14 +24,25 @@ namespace FlowSharpHopeService
 
         public void Load(string fullDllName)
         {
-            string dll = fullDllName.LeftOf(".");
-            appDomain = CreateAppDomain(dll);
-            runner = InstantiateRunner(dll, appDomain);
+            if (runner == null)
+            {
+                string dll = fullDllName.LeftOf(".");
+                appDomain = CreateAppDomain(dll);
+                runner = InstantiateRunner(dll, appDomain);
+                appDomain.DomainUnload += AppDomainUnloading;
+            }
         }
 
         public void Unload()
         {
-            AppDomain.Unload(appDomain);
+            if (appDomain != null)
+            {
+                appDomain.DomainUnload -= AppDomainUnloading;
+                runner.Processing -= ProcessingSemanticType;
+                Assert.SilentTry(() => AppDomain.Unload(appDomain));
+                appDomain = null;
+                runner = null;
+            }
         }
 
         public void InstantiateReceptor(Type t)
@@ -80,8 +88,22 @@ namespace FlowSharpHopeService
         private IHopeRunner InstantiateRunner(string dllName, AppDomain domain)
         {
             IHopeRunner runner = domain.CreateInstanceAndUnwrap(dllName, "HopeRunner.Runner") as IHopeRunner;
+            runner.Processing += ProcessingSemanticType;
 
             return runner;
+        }
+
+        private void ProcessingSemanticType(object sender, HopeRunnerAppDomainInterface.ProcessEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Unexpected app domain unload.  Unfortunately, the stack trace doesn't indicate where this is coming from!
+        /// </summary>
+        private void AppDomainUnloading(object sender, EventArgs e)
+        {
+            appDomain = null;
+            runner = null;
         }
     }
 }

@@ -38,6 +38,7 @@ namespace FlowSharpCodeShapes
         {
             IServiceManager serviceManager = canvas.ServiceManager;
             IHigherOrderProgrammingService hope = serviceManager.Get<IHigherOrderProgrammingService>();
+            hope.UnloadHopeAssembly();
             hope.LoadHopeAssembly();
             hope.InstantiateReceptors();
             ISemanticType st = hope.InstantiateSemanticType(Text);

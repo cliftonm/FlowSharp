@@ -838,7 +838,9 @@ namespace FlowSharpMouseControllerService
         {
             BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
             GraphicElement hoverShape = HoverShape;
-            hoverShape.RightClick();
+
+            // Sometimes this is null.  Not sure why.
+            hoverShape?.RightClick();
         }
 
         protected void CreateSelectionBox()

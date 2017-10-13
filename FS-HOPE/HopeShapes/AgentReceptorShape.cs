@@ -38,8 +38,10 @@ namespace FlowSharpCodeShapes
         }
     }
 
-    public class AgentReceptorShape : Ellipse, IAgentReceptor
+    [ExcludeFromToolbox]
+    public class AgentReceptorShape : GraphicElement, IAgentReceptor
     {
+        protected Point[] path;
         protected bool enabled;
 
         public string AgentName { get; set; }
@@ -49,11 +51,11 @@ namespace FlowSharpCodeShapes
             set
             {
                 enabled = value;
-                FillBrush.Color = enabled ? Color.LightGreen : Color.Red;
+                FillBrush.Color = enabled ? Color.LightGreen : Color.FromArgb(255, 80, 80);
                 Redraw();
                 IServiceManager serviceManager = canvas.ServiceManager;
                 IHigherOrderProgrammingService hope = serviceManager.Get<IHigherOrderProgrammingService>();
-                hope.EnableDisableReceptor(Text, enabled);
+                hope.EnableDisableReceptor(Text.Replace("\r", "").Replace("\n", ""), enabled);
             }
         }
 
@@ -81,6 +83,27 @@ namespace FlowSharpCodeShapes
             return new AgentReceptorProperties(this);
         }
 
+        public override void UpdatePath()
+        {
+            int indentSize = ZoomRectangle.Width / 3;
+            path = new Point[]
+            {
+                new Point(ZoomRectangle.X + indentSize, ZoomRectangle.Y),                                                            // top left of indented left "arrow"
+                new Point(ZoomRectangle.X + ZoomRectangle.Width - indentSize,    ZoomRectangle.Y),                                // top right of indented right "arrow"
+                new Point(ZoomRectangle.X + ZoomRectangle.Width, ZoomRectangle.Y + ZoomRectangle.Height/2),                     // right tip (middle of box)
+                new Point(ZoomRectangle.X + ZoomRectangle.Width - indentSize, ZoomRectangle.Y + ZoomRectangle.Height),         // bottom right of indented right "arrow"
+                new Point(ZoomRectangle.X + indentSize, ZoomRectangle.Y + ZoomRectangle.Height),                                  // bottom left of indented left "arrow"
+                new Point(ZoomRectangle.X, ZoomRectangle.Y + ZoomRectangle.Height/2),                                                            // middle left of indented left "arrow"
+            };
+        }
+
+        public override void Draw(Graphics gr, bool showSelection = true)
+        {
+            gr.FillPolygon(FillBrush, path);
+            gr.DrawPolygon(BorderPen, path);
+            base.Draw(gr, showSelection);
+        }
+
         public override void Serialize(ElementPropertyBag epb, IEnumerable<GraphicElement> elementsBeingSerialized)
         {
             Json["agentName"] = AgentName;
@@ -98,6 +121,36 @@ namespace FlowSharpCodeShapes
             {
                 Enabled = Json["agentEnabled"].to_b();
             }
+        }
+    }
+
+    [ToolboxShape]
+    [ToolboxOrder(10)]
+    public class ToolboxAssemblyAgentReceptorShape : AgentReceptorShape
+    {
+        public override Rectangle ToolboxDisplayRectangle { get { return new Rectangle(0, 0, 35, 25); } }
+
+        public ToolboxAssemblyAgentReceptorShape(Canvas canvas) : base(canvas)
+        {
+            Text = "Rcptr";
+            TextFont.Dispose();
+            TextFont = new Font(FontFamily.GenericSansSerif, 6);
+            FillBrush.Color = Color.LightGreen;
+        }
+
+        public override GraphicElement CloneDefault(Canvas canvas)
+        {
+            return CloneDefault(canvas, Point.Empty);
+        }
+
+        public override GraphicElement CloneDefault(Canvas canvas, Point offset)
+        {
+            AgentShape shape = new AgentShape(canvas);
+            shape.DisplayRectangle = shape.DefaultRectangle().Move(offset);
+            shape.UpdateProperties();
+            shape.UpdatePath();
+
+            return shape;
         }
     }
 }

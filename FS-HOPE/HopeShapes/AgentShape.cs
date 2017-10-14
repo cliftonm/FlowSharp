@@ -8,10 +8,12 @@ using System.Drawing;
 
 using FlowSharpLib;
 
-namespace FlowSharpCodeShapes
+using FlowSharpHopeShapeInterfaces;
+
+namespace HopeShapes
 {
     [ExcludeFromToolbox]
-    public class AgentShape : GraphicElement
+    public class AgentShape : GraphicElement, IAgent
     {
         protected Point[] path;
 

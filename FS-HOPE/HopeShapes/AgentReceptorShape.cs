@@ -12,10 +12,11 @@ using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ServiceManagement;
 
 using FlowSharpLib;
+
 using FlowSharpHopeShapeInterfaces;
 using FlowSharpHopeServiceInterfaces;
 
-namespace FlowSharpCodeShapes
+namespace HopeShapes
 {
     public class AgentReceptorProperties : ShapeProperties
     {

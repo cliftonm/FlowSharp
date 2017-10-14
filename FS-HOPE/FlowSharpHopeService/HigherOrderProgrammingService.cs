@@ -37,11 +37,16 @@ namespace FlowSharpHopeService
         protected ToolStripMenuItem mnuRun = new ToolStripMenuItem() { Name = "mnuRun", Text = "Run" };
         protected ToolStripMenuItem mnuStop = new ToolStripMenuItem() { Name = "mnuStop", Text = "Stop" };
         protected Dictionary<string, string> tempToTextBoxMap = new Dictionary<string, string>();
-        // protected InAppRunner runner = new InAppRunner();
-        protected Runner runner = new Runner();
+        protected Runner runner;
+        protected Animator animator;
+        // protected InAppRunner runner;
 
         public override void FinishedInitialization()
         {
+            runner = new Runner();
+            animator = new Animator(ServiceManager);
+            runner.Processing += animator.Animate;
+
             InitializeEditorsMenu();
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ReflectionOnlyAssemblyResolve;
             base.FinishedInitialization();
@@ -52,10 +57,20 @@ namespace FlowSharpHopeService
             IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
             string dllFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.dll" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".dll";
             runner.Load(dllFilename);
+
+            // Initialize the proxy so that we don't have to mark this class (and others) as serializable.  We cannot do:
+            // runner.runner.Processing += Animator because this forces this class to be serializable.
+            // runnerProxy = new RunnerProxy(runner.appDomainRunner);
+            // runnerProxy.Processing += Animator;
         }
 
         public void UnloadHopeAssembly()
         {
+            //if (runnerProxy != null)
+            //{
+            //    runnerProxy.Processing -= Animator;
+            //}
+
             runner.Unload();
         }
 

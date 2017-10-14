@@ -13,7 +13,7 @@ using FlowSharpLib;
 using FlowSharpHopeShapeInterfaces;
 using FlowSharpHopeServiceInterfaces;
 
-namespace FlowSharpCodeShapes
+namespace HopeShapes
 {
     public class SemanticTypeShape : Box, ISemanticTypeShape
     {

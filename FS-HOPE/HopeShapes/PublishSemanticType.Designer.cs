@@ -1,4 +1,4 @@
-﻿namespace FlowSharpCodeShapes
+﻿namespace HopeShapes
 {
     partial class PublishSemanticType
     {

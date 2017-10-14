@@ -563,7 +563,8 @@ namespace FlowSharpEditService
         {
             BaseController controller = ServiceManager.Get<IFlowSharpCanvasService>().ActiveController;
 
-            if (controller.SelectedElements.Count == 1)
+            // TODO: Sometimes on startup in the debugger the controller isn't initialized yet.
+            if ((controller?.SelectedElements?.Count ?? 0) == 1)
             {
                 List<GraphicElement> selectedElementHistory = controllerSelectElementsHistory[controller];
                 MoveSelectedElementToTopOfHistory(selectedElementHistory, controller.SelectedElements[0]);

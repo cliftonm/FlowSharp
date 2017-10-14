@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animator.cs" />
+    <Compile Include="CarrierShape.cs" />
     <Compile Include="HigherOrderProgrammingService.cs" />
     <Compile Include="InAppRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

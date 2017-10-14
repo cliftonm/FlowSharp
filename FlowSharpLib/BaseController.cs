@@ -525,8 +525,6 @@ namespace FlowSharpLib
                 int dx = delta.X.Abs();
                 int dy = delta.Y.Abs();
                 var els = EraseIntersectionsTopToBottom(el, dx, dy);
-                // X1
-                //el.MoveUndoRedo(delta, false);
                 el.Move(delta);
 				el.UpdatePath();
                 UpdateConnections(el);
@@ -536,12 +534,34 @@ namespace FlowSharpLib
 			else
 			{
 				el.CancelBackground();
-                // X1
-                //el.MoveUndoRedo(delta, false);
                 el.Move(delta);
 				// TODO: Display element if moved back on screen at this point?
 			}
 		}
+
+        public void MoveElementTo(GraphicElement el, Point location)
+        {
+            Point delta = new Point(location.X - el.DisplayRectangle.Left, location.Y - el.DisplayRectangle.Top);
+
+            if (el.OnScreen())
+            {
+                Trace.WriteLine("*** MoveElement " + el.GetType().Name);
+                int dx = delta.X.Abs();
+                int dy = delta.Y.Abs();
+                var els = EraseIntersectionsTopToBottom(el, dx, dy);
+                el.Move(delta);
+                el.UpdatePath();
+                UpdateConnections(el);
+                DrawBottomToTop(els, dx, dy);
+                UpdateScreen(els, dx, dy);
+            }
+            else
+            {
+                el.CancelBackground();
+                el.Move(delta);
+                // TODO: Display element if moved back on screen at this point?
+            }
+        }
 
         // For canvas dragging.
         public void MoveAllElements(Point delta)

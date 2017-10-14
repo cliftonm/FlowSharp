@@ -4,19 +4,28 @@ using Clifton.Core.Assertions;
 using Clifton.Core.ExtensionMethods;
 using Clifton.Core.Semantics;
 
-// When the runner is moved to its own AppDomain DLL, remove the reference in FlowSharpHopeService to the Clifton.SemanticProcessorService.
-
 using HopeRunnerAppDomainInterface;
 
 namespace FlowSharpHopeService
 {
     public class HopeMembrane : Membrane { }
 
+    // Must be derived from MarshalByRefObject so that the Processing event handler stays wired up to its handler on the callback from the app domain.
     [Serializable]
-    public class Runner
+    public class Runner : MarshalByRefObject
     {
+        // We need this attribute, otherwise the class HigherOrderProgrammingService needs to be marked serializable,
+        // which if you do that, starts a horrid cascade of classes (like Clifton.Core to start with) that must be marked as serializable as well.
+        // Gross.
+        // So why does Runner need to be marked as Serializable, and how do we avoid that?
+        // Because this Runner wires up an event in the AppDomain, which requires serialiation of this class.
+        [field:NonSerialized]
+        public event EventHandler<HopeRunnerAppDomainInterface.ProcessEventArgs> Processing;
+
+        [NonSerialized]
         protected AppDomain appDomain;
-        protected IHopeRunner runner;
+        [NonSerialized]
+        public IHopeRunner appDomainRunner;
 
         public Runner()
         {
@@ -24,11 +33,11 @@ namespace FlowSharpHopeService
 
         public void Load(string fullDllName)
         {
-            if (runner == null)
+            if (appDomainRunner == null)
             {
                 string dll = fullDllName.LeftOf(".");
                 appDomain = CreateAppDomain(dll);
-                runner = InstantiateRunner(dll, appDomain);
+                appDomainRunner = InstantiateRunner(dll, appDomain);
                 appDomain.DomainUnload += AppDomainUnloading;
             }
         }
@@ -38,34 +47,33 @@ namespace FlowSharpHopeService
             if (appDomain != null)
             {
                 appDomain.DomainUnload -= AppDomainUnloading;
-                runner.Processing -= ProcessingSemanticType;
                 Assert.SilentTry(() => AppDomain.Unload(appDomain));
                 appDomain = null;
-                runner = null;
+                appDomainRunner = null;
             }
         }
 
         public void InstantiateReceptor(Type t)
         {
-            runner.InstantiateReceptor(t.Name);
+            appDomainRunner.InstantiateReceptor(t.Name);
         }
 
         public void EnableDisableReceptor(string typeName, bool state)
         {
             // Runner may not be up when we get this.
-            runner?.EnableDisableReceptor(typeName, state);
+            appDomainRunner?.EnableDisableReceptor(typeName, state);
         }
 
         public dynamic InstantiateSemanticType(string typeName)
         {
-            ISemanticType st = runner.InstantiateSemanticType(typeName);
+            ISemanticType st = appDomainRunner.InstantiateSemanticType(typeName);
 
             return st;
         }
 
         public void Publish(ISemanticType st)
         {
-            runner.Publish(st);
+            appDomainRunner.Publish(st);
         }
 
         private AppDomain CreateAppDomain(string dllName)
@@ -88,13 +96,9 @@ namespace FlowSharpHopeService
         private IHopeRunner InstantiateRunner(string dllName, AppDomain domain)
         {
             IHopeRunner runner = domain.CreateInstanceAndUnwrap(dllName, "HopeRunner.Runner") as IHopeRunner;
-            runner.Processing += ProcessingSemanticType;
+            runner.Processing += (sender, args) => Processing.Fire(this, args);
 
             return runner;
-        }
-
-        private void ProcessingSemanticType(object sender, HopeRunnerAppDomainInterface.ProcessEventArgs e)
-        {
         }
 
         /// <summary>
@@ -103,7 +107,7 @@ namespace FlowSharpHopeService
         private void AppDomainUnloading(object sender, EventArgs e)
         {
             appDomain = null;
-            runner = null;
+            appDomainRunner = null;
         }
     }
 }

@@ -12,7 +12,7 @@ using Clifton.Core.Semantics;
 
 using FlowSharpHopeServiceInterfaces;
 
-namespace FlowSharpCodeShapes
+namespace HopeShapes
 {
     public partial class PublishSemanticType : Form
     {

@@ -307,7 +307,7 @@ namespace FlowSharpHopeService
         protected string CreateCodeFile(string code, string shapeText)
         {
             // string filename = Path.GetFileNameWithoutExtension(Path.GetTempFileName()) + ".cs";
-            string filename = Path.GetFileNameWithoutExtension(shapeText.Replace("\r", "").Replace("\n", "")) + ".cs";
+            string filename = Path.GetFileNameWithoutExtension(shapeText.RemoveWhitespace()) + ".cs";
             File.WriteAllText(filename, code);
             tempToTextBoxMap[filename] = shapeText;
 
@@ -364,7 +364,7 @@ namespace FlowSharpHopeService
                 {
                     try
                     {
-                        sb.AppendLine(String.Format("Error ({0} - {1}): {2}", tempToTextBoxMap[Path.GetFileNameWithoutExtension(error.FileName) + ".cs"], error.Line, error.ErrorText));
+                        sb.AppendLine(String.Format("Error ({0} - {1}): {2}", tempToTextBoxMap[Path.GetFileNameWithoutExtension(error.FileName.RemoveWhitespace()) + ".cs"], error.Line, error.ErrorText));
                     }
                     catch
                     {

@@ -622,7 +622,7 @@ namespace FlowSharpCodeCompilerService
                 {
                     try
                     {
-                        sb.AppendLine(String.Format("Error ({0} - {1}): {2}", tempToTextBoxMap[Path.GetFileNameWithoutExtension(error.FileName) + ".cs"], error.Line, error.ErrorText));
+                        sb.AppendLine(String.Format("Error ({0} - {1}): {2}", tempToTextBoxMap[Path.GetFileNameWithoutExtension(error.FileName.RemoveWhitespace()) + ".cs"], error.Line, error.ErrorText));
                     }
                     catch
                     {
@@ -679,7 +679,7 @@ namespace FlowSharpCodeCompilerService
             foreach (GraphicElement srcEl in canvasController.Elements.Where(srcEl => elAssy.DisplayRectangle.Contains(srcEl.DisplayRectangle)))
             {
                 string filename = Path.GetFileNameWithoutExtension(Path.GetTempFileName()) + ".cs";
-                tempToTextBoxMap[filename] = srcEl.Text;
+                tempToTextBoxMap[filename] = srcEl.Text.RemoveWhitespace();
                 File.WriteAllText(filename, GetCode(srcEl));
                 sourceList.Add(filename);
             }

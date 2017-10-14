@@ -47,10 +47,13 @@ namespace FlowSharpHopeService
             CarrierShape carrier = new CarrierShape(canvasController.Canvas);
             carrier.DisplayRectangle = new Rectangle(elSrc.DisplayRectangle.Center().X, elSrc.DisplayRectangle.Center().Y, 10, 10);
 
-            lock (this)
+            canvasController.Canvas.FindForm().BeginInvoke(() =>
             {
-                canvasController.Insert(carrier);
-            }
+                lock (this)
+                {
+                    canvasController.Insert(carrier);
+                }
+            });
 
             double dx = elDest.DisplayRectangle.Center().X - elSrc.DisplayRectangle.Center().X;
             double dy = elDest.DisplayRectangle.Center().Y - elSrc.DisplayRectangle.Center().Y;
@@ -67,16 +70,22 @@ namespace FlowSharpHopeService
                 px += subx;
                 py += suby;
 
-                lock (this)
+                canvasController.Canvas.FindForm().BeginInvoke(() =>
                 {
-                    canvasController.MoveElementTo(carrier, new Point((int)px, (int)py));
-                }
+                    lock (this)
+                    {
+                        canvasController.MoveElementTo(carrier, new Point((int)px, (int)py));
+                    }
+                });
             }
 
-            lock (this)
+            canvasController.Canvas.FindForm().BeginInvoke(() =>
             {
-                canvasController.DeleteElement(carrier);
-            }
+                lock (this)
+                {
+                    canvasController.DeleteElement(carrier);
+                }
+            });
         }
 
         protected (string name, FromShapeType shapeType) GetSourceShapeName(HopeRunnerAppDomainInterface.ProcessEventArgs args)

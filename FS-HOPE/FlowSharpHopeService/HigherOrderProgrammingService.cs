@@ -72,6 +72,7 @@ namespace FlowSharpHopeService
             //}
 
             runner.Unload();
+            animator.RemoveCarriers();
         }
 
         public void InstantiateReceptors()
@@ -177,6 +178,7 @@ namespace FlowSharpHopeService
         protected void OnHopeStop(object sender, EventArgs e)
         {
             runner.Unload();
+            animator.RemoveCarriers();
         }
 
         protected (List<Type> agents, List<string> errors) GetAgents(Assembly assy)

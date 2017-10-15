@@ -130,7 +130,7 @@ namespace FlowSharpHopeService
             switch (shapeType)
             {
                 case FromShapeType.Receptor:
-                    el = canvasController.Elements.Single(e => e.Text?.RemoveWhitespace() == name && e is IAgent);
+                    el = canvasController.Elements.Single(e => e.Text?.RemoveWhitespace() == name && e is IAgentReceptor);
                     break;
 
                 case FromShapeType.SemanticType:

@@ -106,6 +106,7 @@
     <Content Include="bin\Debug\modules.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="bin\Debug\personOfInterest.py" />
     <Content Include="bin\Debug\plugins.txt" />
     <Content Include="FlowSharp.ico" />
     <None Include="Resources\FlowSharp.ico" />

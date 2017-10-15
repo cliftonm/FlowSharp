@@ -98,7 +98,6 @@ namespace FlowSharpRestService
 
             if (t != null)
             {
-
                 controller.Canvas.FindForm().BeginInvoke(() =>
                 {
                     GraphicElement el = (GraphicElement)Activator.CreateInstance(t, new object[] { controller.Canvas });
@@ -136,6 +135,7 @@ namespace FlowSharpRestService
                     el.Name = cmd.Name;
                     el.StartPoint = new Point(cmd.X1, cmd.Y1);
                     el.EndPoint = new Point(cmd.X2, cmd.Y2);
+                    cmd.BorderColor.IfNotNull(c => el.BorderPenColor = GetColor(c));
                     int x1 = cmd.X1.Min(cmd.X2);
                     int y1 = cmd.Y1.Min(cmd.Y2);
                     int x2 = cmd.X1.Max(cmd.X2);

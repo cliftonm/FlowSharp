@@ -1,0 +1,1270 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ArrayOfElementPropertyBag xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="a92a0899-340a-45e9-89df-a2517fed562d" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>555</X>
+        <Y>-87</Y>
+      </Location>
+      <Size>
+        <Width>263</Width>
+        <Height>31</Height>
+      </Size>
+      <X>555</X>
+      <Y>-87</Y>
+      <Width>263</Width>
+      <Height>31</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>6</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"AssyRef":"System.Windows.Forms.dll"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-16192</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="29585bfb-ccd1-40cf-8684-c5c581e41520" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>555</X>
+        <Y>-128</Y>
+      </Location>
+      <Size>
+        <Width>263</Width>
+        <Height>31</Height>
+      </Size>
+      <X>555</X>
+      <Y>-128</Y>
+      <Width>263</Width>
+      <Height>31</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>6</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"AssyRef":"System.Speech.dll"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-16192</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="204e10b4-92dc-400d-b6d3-be177da2a342" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>269</X>
+        <Y>-129</Y>
+      </Location>
+      <Size>
+        <Width>263</Width>
+        <Height>31</Height>
+      </Size>
+      <X>269</X>
+      <Y>-129</Y>
+      <Width>263</Width>
+      <Height>31</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>6</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"AssyRef":"Newtonsoft.Json.dll"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-16192</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1613470f-fdc5-49de-96fe-9e79db24f4d7" Visible="true" Text="WebServer.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>512</X>
+        <Y>-304</Y>
+      </Location>
+      <Size>
+        <Width>170</Width>
+        <Height>29</Height>
+      </Size>
+      <X>512</X>
+      <Y>-304</Y>
+      <Width>170</Width>
+      <Height>29</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <ExtraData>WebServer.cs</ExtraData>
+    <Json>{"csharp":"","Code":"/* \r\n* Copyright (c) Marc Clifton\r\n* The Code Project Open License (CPOL) 1.02\r\n* http://www.codeproject.com/info/cpol10.aspx\r\n*/\r\n\r\nusing System;\r\nusing System.IO;\r\nusing System.Net;\r\nusing System.Text;\r\nusing System.Threading.Tasks;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\n\r\nnamespace FlowSharpHopeCommon\r\n{\r\n\tpublic class HandlerResponse\r\n\t{\r\n\t\tpublic string Text {get;set;}\r\n\t\tpublic string Mime {get;set;}\r\n\t\t\r\n\t\tpublic HandlerResponse(string text, string mime)\r\n\t\t{\r\n\t\t\tText=text;\r\n\t\t\tMime=mime;\r\n\t\t}\r\n\t}\r\n\t\r\n    public class WebServer\r\n    {\r\n        protected HttpListener listener;\r\n\t\tprotected BaseRouteHandlers routeHandlers;\r\n\r\n        public WebServer(BaseRouteHandlers routeHandlers)\r\n        {\r\n\t\t\tthis.routeHandlers = routeHandlers;\r\n        }\r\n\r\n        public void Start(string ip, int[] ports)\r\n        {\r\n            listener = new HttpListener();\r\n\r\n            foreach (int port in ports)\r\n            {\r\n                string url = IpWithPort(ip, port);\r\n                listener.Prefixes.Add(url);\r\n            }\r\n\r\n            listener.Start();\r\n            Task.Run(() =&gt; WaitForConnection(listener));\r\n        }\r\n\r\n        protected void WaitForConnection(object objListener)\r\n        {\r\n            HttpListener listener = (HttpListener)objListener;\r\n\r\n            while (true)\r\n            {\r\n                // Wait for a connection.  Return to caller while we wait.\r\n                HttpListenerContext context = listener.GetContext();\r\n\r\n                // Redirect to HTTPS if not local and not secure.\r\n                if (!context.Request.IsLocal &amp;&amp; !context.Request.IsSecureConnection)\r\n                {\r\n                    string redirectUrl = context.Request.Url.ToString().Replace(\"http:\", \"https:\");\r\n                    context.Response.Redirect(redirectUrl);\r\n                    context.Response.Close();\r\n                }\r\n                else\r\n                {\r\n                    string data = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding).ReadToEnd();\r\n                    ProcessRoute(context, data);\r\n                }\r\n            }\r\n        }\r\n\r\n        protected void ProcessRoute(HttpListenerContext context, string data)\r\n        {\r\n            //Program.form.Invoke(() =&gt;\r\n            //{\r\n            //    Program.tbLog.AppendText(context.Request.Url.ToString() + \"\\n\");\r\n            //    Program.tbLog.AppendText(data + \"\\n\");\r\n            //});\r\n\r\n            string route = context.Request.Url.ToString().RightOfRightmostOf('/').LeftOf('?');\r\n            string parms = context.Request.Url.ToString().RightOf('?');\r\n            Func&lt;HttpListenerContext, string, HandlerResponse&gt; handler;\r\n\r\n            if (routeHandlers.Routes.TryGetValue(route, out handler))\r\n            {\r\n                try\r\n                {\r\n                    var resp = handler(context, parms);\r\n\t\t\t\t\tResponse(context, resp.Text, resp.Mime);\r\n                }\r\n                catch (Exception ex)\r\n                {\r\n                    //Program.form.BeginInvoke(() =&gt;\r\n                    //{\r\n                    //    Program.tbLog.AppendText(ex.Message + \"\\n\");\r\n                    //    Program.tbLog.AppendText(ex.StackTrace + \"\\n\");\r\n                    //});\r\n                }\r\n            }\r\n\r\n            context.Response.Close();\r\n        }\r\n\r\n\r\n        protected void Response(HttpListenerContext context, string resp, string contentType)\r\n        {\r\n            byte[] utf8data = Encoding.UTF8.GetBytes(resp);\r\n            context.Response.ContentType = contentType;\r\n            context.Response.ContentEncoding = Encoding.UTF8;\r\n            context.Response.ContentLength64 = utf8data.Length;\r\n            context.Response.OutputStream.Write(utf8data, 0, utf8data.Length);\r\n        }\r\n\r\n        protected string IpWithPort(string ip, int port)\r\n        {\r\n            string ret;\r\n\r\n            if (port == 80)\r\n            {\r\n                ret = \"http://\" + ip + \"/\";\r\n            }\r\n            else if ((ip == \"localhost\") || (ip == \"127.0.0.1\"))\r\n            {\r\n                ret = \"http://\" + ip + \":\" + port.ToString() + \"/\";\r\n            }\r\n            else\r\n            {\r\n                ret = \"https://\" + ip + \":\" + port.ToString() + \"/\";\r\n            }\r\n\r\n            return ret;\r\n        }\r\n    }\r\n}","TextChanged":"True","NamespaceName":"Namespace","ClassName":"Class","MethodName":"Method"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopLeft</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="694a9b57-394d-459e-a7f4-95833325a22d" Visible="true" Text="BaseRouteHandlers.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>510</X>
+        <Y>-347</Y>
+      </Location>
+      <Size>
+        <Width>169</Width>
+        <Height>28</Height>
+      </Size>
+      <X>510</X>
+      <Y>-347</Y>
+      <Width>169</Width>
+      <Height>28</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <ExtraData>BaseRouteHandlers.cs</ExtraData>
+    <Json>{"csharp":"","Code":"using System;\r\nusing System.Collections.Generic;\r\nusing System.Net;\r\n\r\nnamespace FlowSharpHopeCommon\r\n{\r\n\tpublic abstract class BaseRouteHandlers\r\n\t{\r\n\t\tpublic Dictionary&lt;string, Func&lt;HttpListenerContext, string, HandlerResponse&gt;&gt; Routes { get { return routes; } }\r\n\t\tprotected Dictionary&lt;string, Func&lt;HttpListenerContext, string, HandlerResponse&gt;&gt; routes;\r\n\t}\r\n}\r\n","TextChanged":"True","NamespaceName":"Namespace","ClassName":"Class","MethodName":"Method"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopLeft</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="af2c26a0-8c4d-4388-92a5-4913e2473744" Visible="true" Text="HttpGet.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>309</X>
+        <Y>-282</Y>
+      </Location>
+      <Size>
+        <Width>133</Width>
+        <Height>25</Height>
+      </Size>
+      <X>309</X>
+      <Y>-282</Y>
+      <Width>133</Width>
+      <Height>25</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <ExtraData>HttpGet.cs</ExtraData>
+    <Json>{"csharp":"","Code":"/* \r\n* Copyright (c) Marc Clifton\r\n* The Code Project Open License (CPOL) 1.02\r\n* http://www.codeproject.com/info/cpol10.aspx\r\n*/\r\n\r\nusing System.Net;\r\nusing System.IO;\r\n\r\nnamespace FlowSharpRestService\r\n{\r\n    public static class Http\r\n    {\r\n        public static string Get(string uri)\r\n        {\r\n            WebClient client = new WebClient();\r\n\r\n            // Add a user agent header in case the \r\n            // requested URI contains a query.\r\n\r\n            client.Headers.Add(\"user-agent\", \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)\");\r\n\r\n            Stream data = client.OpenRead(uri);\r\n            StreamReader reader = new StreamReader(data);\r\n            string s = reader.ReadToEnd();\r\n            data.Close();\r\n            reader.Close();\r\n\r\n            return s;\r\n        }\r\n    }\r\n}","TextChanged":"True","NamespaceName":"Namespace","ClassName":"Class","MethodName":"Method"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopLeft</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="78d9d29e-2eef-42f9-ab0a-3d04cbf81c04" Visible="true" Text="RouteHandlers.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>309</X>
+        <Y>-315</Y>
+      </Location>
+      <Size>
+        <Width>133</Width>
+        <Height>25</Height>
+      </Size>
+      <X>309</X>
+      <Y>-315</Y>
+      <Width>133</Width>
+      <Height>25</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <ExtraData>RouteHandlers.cs</ExtraData>
+    <Json>{"csharp":"","Code":"using System;\r\nusing System.Collections.Generic;\r\nusing System.Diagnostics;\r\nusing System.Net;\r\n\r\nusing Newtonsoft.Json;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\nusing Clifton.Core.Services.SemanticProcessorService;\r\n\r\nusing FlowSharpHopeCommon;\r\n\r\nnamespace App\r\n{\r\n\tpublic class RouteHandlers : BaseRouteHandlers\r\n\t{\r\n\t\tprotected const string INSTANTIATE_RECEPTOR = \"instantiateReceptor\";\r\n\t\tprotected const string INSTANTIATE_SEMANTIC_TYPE = \"instantiateSemanticType\";\r\n\t\tprotected const string PUBLISH_SEMANTIC_TYPE = \"publishSemanticType\";\r\n\t\tprotected const string ENABLE_DISABLE_RECEPTOR = \"enableDisableReceptor\";\r\n\r\n\t\tprotected SemanticProcessor sp;\r\n\t\tprotected string assyName;\r\n\r\n\t\t// TODO: Membrane needs to be added to the type name as well.\r\n\t\tprotected Dictionary&lt;string, IReceptor&gt; receptors = new Dictionary&lt;string, IReceptor&gt;();\r\n\r\n\t\tpublic RouteHandlers(SemanticProcessor sp)\r\n\t\t{\r\n\t\t\troutes = new Dictionary&lt;string, Func&lt;HttpListenerContext, string, HandlerResponse&gt;&gt;()\r\n\t\t\t{\r\n\t\t\t\t{INSTANTIATE_RECEPTOR, InstantiateReceptor},\r\n\t\t\t\t{INSTANTIATE_SEMANTIC_TYPE, InstantiateSemanticType },\r\n\t\t\t\t{PUBLISH_SEMANTIC_TYPE, PublishSemanticType },\r\n\t\t\t\t{ENABLE_DISABLE_RECEPTOR, EnableDisableReceptor },\r\n\t\t\t};\r\n\r\n\t\t\tthis.sp = sp;\r\n\t\t\tassyName = Process.GetCurrentProcess().ProcessName;\r\n\t\t}\r\n\r\n\t\tprotected HandlerResponse InstantiateReceptor(HttpListenerContext context, string data)\r\n\t\t{\r\n\t\t\tstring typeName = data.RightOf('=');\r\n\t\t\tInstantiateReceptor(typeName);\r\n\r\n\t\t\treturn new HandlerResponse(\"OK\", \"text/text\");\r\n\t\t}\r\n\r\n\t\tprotected HandlerResponse InstantiateSemanticType(HttpListenerContext context, string data)\r\n\t\t{\r\n\t\t\tType t = Type.GetType(\"App.\" + data.RightOf('=') + \", \" + assyName);\r\n\t\t\tISemanticType st = (ISemanticType)Activator.CreateInstance(t);\r\n\t\t\tstring json = JsonConvert.SerializeObject(st);\r\n\r\n\t\t\treturn new HandlerResponse(json, \"text/json\");\r\n\t\t}\r\n\r\n\t\tprotected HandlerResponse PublishSemanticType(HttpListenerContext context, string data)\r\n\t\t{\r\n\t\t\t// TODO: Fix assumptions about ordering of params\r\n\t\t\tstring[] parms = data.Split('&amp;');\r\n\t\t\tType t = Type.GetType(\"App.\" + parms[0].RightOf('=') + \", \" + assyName);\r\n\t\t\tISemanticType st = (ISemanticType)JsonConvert.DeserializeObject(parms[1].RightOf('='), t);\r\n\t\t\tsp.ProcessInstance&lt;App.HopeMembrane&gt;(st);\r\n\r\n\t\t\treturn new HandlerResponse(\"OK\", \"text/text\");\r\n\t\t}\r\n\r\n\t\tprotected HandlerResponse EnableDisableReceptor(HttpListenerContext context, string data)\r\n\t\t{\r\n\t\t\t// TODO: Fix assumptions about ordering of params\r\n\t\t\tstring[] parms = data.Split('&amp;');\r\n\t\t\tstring typeName = \"App.\" + parms[0].RightOf('=');\r\n\r\n\t\t\tif (parms[1].RightOf('=').to_b())\r\n\t\t\t{\r\n\t\t\t\t// enable\r\n\t\t\t\tif (!receptors.ContainsKey(typeName))\r\n\t\t\t\t{\r\n\t\t\t\t\tInstantiateReceptor(typeName);\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t\telse\r\n\t\t\t{\r\n\t\t\t\t// disable\r\n\t\t\t\tIReceptor receptor;\r\n\r\n\t\t\t\tif (receptors.TryGetValue(typeName, out receptor))\r\n\t\t\t\t{\r\n\t\t\t\t\tsp.Unregister&lt;App.HopeMembrane&gt;(receptor);\r\n\t\t\t\t\treceptors.Remove(typeName);\r\n\t\t\t\t}\r\n\t\t\t}\r\n\r\n\t\t\treturn new HandlerResponse(\"OK\", \"text/text\");\r\n\t\t}\r\n\r\n\t\tprotected void InstantiateReceptor(string typeName)\r\n\t\t{\r\n\t\t\tProgram.form.BeginInvoke(() =&gt;\r\n\t\t\t{\r\n\t\t\t\tType t = Type.GetType(typeName + \", \" + assyName);\r\n\t\t\t\tIReceptor receptor = (IReceptor)Activator.CreateInstance(t);\r\n\t\t\t\tsp.Register&lt;App.HopeMembrane&gt;(receptor);\r\n\t\t\t\treceptors[typeName] = receptor;\r\n\t\t\t});\r\n\t\t}\r\n\t}\r\n}\r\n","TextChanged":"True","NamespaceName":"Namespace","ClassName":"Class","MethodName":"Method"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopLeft</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="272351d2-d5cc-4da7-9346-4230f0a7aef4" Visible="true" Text="Program.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>308</X>
+        <Y>-352</Y>
+      </Location>
+      <Size>
+        <Width>133</Width>
+        <Height>25</Height>
+      </Size>
+      <X>308</X>
+      <Y>-352</Y>
+      <Width>133</Width>
+      <Height>25</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <ExtraData>Program.cs</ExtraData>
+    <Json>{"csharp":"","Code":"using System;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\n\r\nusing Newtonsoft.Json;\r\n\r\nusing Clifton.Core.Semantics;\r\nusing Clifton.Core.Services.SemanticProcessorService;\r\n\r\nusing FlowSharpHopeCommon;\r\nusing FlowSharpRestService;\r\n\r\nnamespace App\r\n{\r\n\tpublic class HopeMembrane : Membrane { }\r\n\t\r\n    /// &lt;summary&gt;\r\n    /// For testing the FlowSharpHopeService.StandAloneRunner.\r\n    /// Note that this project references a DLL built by FlowSharpHopeService.\r\n    /// &lt;/summary&gt;\r\n    public static class Program\r\n    {\r\n        public static TextBox tbLog;\r\n        public static Form form;\r\n\t\tpublic static SemanticProcessor sp;\r\n\r\n\t\tprivate static string url = \"http://localhost:5002/\";\r\n\t\tprivate static string PROCESSING = \"processing\";\r\n\r\n\t\t[STAThread]\r\n        public static void Main()\r\n        {\r\n            Application.EnableVisualStyles();\r\n            Application.SetCompatibleTextRenderingDefault(false);\r\n\r\n\t\t\tsp = new SemanticProcessor();\r\n\t\t\tsp.Processing += Processing;\r\n\r\n\t\t\tRouteHandlers routeHandlers = new RouteHandlers(sp);\r\n\r\n            WebServer webServer = new WebServer(routeHandlers);\r\n            webServer.Start(\"localhost\", new int[] { 5001 });\r\n\r\n            form = new Form();\r\n            form.Location = new Point(100, 100);\r\n            form.Size = new Size(500, 200);\r\n            form.Text = \"Stand Alone Runner\";\r\n\r\n            tbLog = new TextBox();\r\n            tbLog.Multiline = true;\r\n            tbLog.Dock = DockStyle.Fill;\r\n            form.Controls.Add(tbLog);\r\n\r\n            Application.Run(form);\r\n        }\r\n\r\n\t\tprivate static void Processing(object sender, ProcessEventArgs args)\r\n\t\t{\r\n\t\t\tstring fromMembraneTypeName = null;\r\n\t\t\tstring fromReceptorTypeName = null;\r\n\t\t\t\r\n\t\t\tif (args.FromMembrane != null)\r\n\t\t\t{\r\n\t\t\t\tfromMembraneTypeName = args.FromMembrane.GetType().FullName;\r\n\t\t\t}\r\n\t\t\t\r\n\t\t\tif (args.FromReceptor != null)\r\n\t\t\t{\r\n\t\t\t\tfromReceptorTypeName = args.FromReceptor.GetType().FullName;\r\n\t\t\t}\r\n\t\t\t\r\n\t\t\tstring json = JsonConvert.SerializeObject(new\r\n\t\t\t{\r\n\t\t\t\tFromMembraneTypeName = fromMembraneTypeName,\r\n\t\t\t\tFromReceptorTypeName = fromReceptorTypeName,\r\n\t\t\t\tToMembraneTypeName = args.ToMembrane.GetType().FullName,\r\n\t\t\t\tToReceptorTypeName = args.ToReceptor.GetType().FullName,\r\n\t\t\t\tSemanticTypeTypeName = args.SemanticType.GetType().FullName,\r\n\t\t\t});\r\n\r\n\t\t\tHttp.Get(url + PROCESSING + \"?proc=\" + json);\r\n\t\t}\r\n\t}\r\n}\r\n","TextChanged":"True","NamespaceName":"Namespace","ClassName":"Class","MethodName":"Method"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopLeft</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="42aba2f4-cc1b-40f8-b2e2-99750005f345" Visible="true" Text="PythonLauncher.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>309</X>
+        <Y>-222</Y>
+      </Location>
+      <Size>
+        <Width>133</Width>
+        <Height>25</Height>
+      </Size>
+      <X>309</X>
+      <Y>-222</Y>
+      <Width>133</Width>
+      <Height>25</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <ExtraData>PythonLauncher.cs</ExtraData>
+    <Json>{"csharp":"","Code":"using System;\r\nusing System.Collections.Generic;\r\nusing System.Diagnostics;\r\nusing System.Windows.Forms;\r\n\r\nnamespace App\r\n{\r\n\tpublic static class PythonLauncher\r\n\t{\r\n        public static Process LaunchProcess(string arguments, Action&lt;string&gt; onOutput, Action&lt;string&gt; onError = null)\r\n        {\r\n        \tstring processName = \"python\";\r\n            Process p = new Process();\r\n            p.StartInfo.UseShellExecute = false;\r\n            p.StartInfo.RedirectStandardOutput = true;\r\n            p.StartInfo.RedirectStandardError = true;\r\n            p.StartInfo.RedirectStandardInput = true;\r\n            p.StartInfo.FileName = processName;\r\n            p.StartInfo.Arguments = arguments;\r\n            p.StartInfo.CreateNoWindow = true;\r\n\r\n            p.OutputDataReceived += (sndr, args) =&gt; { if (args.Data != null) onOutput(args.Data); };\r\n\r\n            if (onError != null)\r\n            {\r\n                p.ErrorDataReceived += (sndr, args) =&gt; { if (args.Data != null) onError(args.Data); };\r\n            }\r\n\r\n            p.Start();\r\n\r\n            // Interestingly, this has to be called after Start().\r\n            p.BeginOutputReadLine();\r\n            p.BeginErrorReadLine();\r\n\r\n            return p;\r\n        }\r\n    }\r\n}\r\n","TextChanged":"True","NamespaceName":"Namespace","ClassName":"Class","MethodName":"Method"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopLeft</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="28aa875a-c6da-45e7-905b-dfe82e241e02" Visible="true" Text="LogText" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>525</X>
+        <Y>189</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>525</X>
+      <Y>189</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"LogText","agentEnabled":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="68c60d1d-fe7c-4f30-8bbf-824184858c24" Visible="true" Text="LogText" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>-82</X>
+        <Y>-102</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>-82</X>
+      <Y>-102</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class LogText : IReceptor\r\n\t{\r\n\t\tprotected Form form;\r\n\t\tprotected TextBox tbLog;\r\n\t\t\r\n\t\tpublic LogText()\r\n\t\t{\r\n\t\t\tform = new Form();\r\n\t\t\tform.Location = new Point(0, 0);\r\n\t\t\tform.Size = new Size(200, 300);\r\n\t\t\tform.Text = \"Text Logger\";\r\n\t\t\ttbLog = new TextBox();\r\n\t\t\ttbLog.Multiline = true;\r\n\t\t\ttbLog.Dock = DockStyle.Fill;\r\n\t\t\tform.Controls.Add(tbLog);\r\n\t\t\tform.Show();\r\n\t\t}\r\n\t\t\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_Text text)\r\n\t\t{\r\n\t\t\tform.BeginInvoke(()=&gt;\r\n\t\t\t{\r\n\t\t\t\ttbLog.AppendText(text.Text+\"\\r\\n\");\r\n\t\t\t\tApplication.DoEvents();\r\n\t\t\t});\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="bef3b8f9-d418-4f2d-be41-871ba5f995e9" Visible="true" Text="Person&#xD;&#xA;Of&#xD;&#xA;Interest" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>450</X>
+        <Y>301</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>450</X>
+      <Y>301</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"PersonOfInterest","agentEnabled":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="089df595-46b1-49f4-8167-4ebcd2f9747e" Visible="true" Text="ST_PersonOfInterest" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>48</X>
+        <Y>323</Y>
+      </Location>
+      <Size>
+        <Width>170</Width>
+        <Height>32</Height>
+      </Size>
+      <X>48</X>
+      <Y>323</Y>
+      <Width>170</Width>
+      <Height>32</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\t[Serializable]\r\n\tpublic class ST_PersonOfInterest : MarshalByRefObject, ISemanticType \r\n\t{\r\n\t\tpublic string Month {get;set;}\r\n\t\tpublic string DayOfMonth {get;set;}\r\n\t\t\r\n\t\tpublic ST_PersonOfInterest()\r\n\t\t{\r\n\t\t\tMonth = \"August\";\r\n\t\t\tDayOfMonth = \"19\";\r\n\t\t}\r\n\t} \r\n}","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="454b2e5d-6b13-4a8a-a6aa-7bc6b4f8febd" Visible="true" Text="Person&#xD;&#xA;Of&#xD;&#xA;Interest" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>-168</X>
+        <Y>13</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>-168</X>
+      <Y>13</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.Threading;\r\nusing System.Windows.Forms;\r\n\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class PersonOfInterest : IReceptor\r\n\t{\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_PersonOfInterest poi)\r\n\t\t{\r\n\t\t\tPythonLauncher.LaunchProcess(\r\n\t\t\t\t\"personOfInterest.py \" + poi.Month + \" \" + poi.DayOfMonth,\r\n\t\t\t\tstdout =&gt; SendOutput(proc, membrane, stdout),\r\n\t\t\t\tstdErr =&gt; SendOutput(proc, membrane, stdErr)\r\n\t\t\t);\r\n\t\t}\r\n\t\t\r\n\t\tprivate void SendOutput(ISemanticProcessor proc, IMembrane membrane, string msg)\r\n\t\t{\r\n\t\t\t// Process synchronously so text speaker doesn't get overwhelmed.\r\n\t\t\tproc.ProcessInstanceFrom&lt;HopeMembrane&gt;(membrane, this, new ST_Text() {Text = msg}, true);\t\t\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.PythonFileBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="61ba7433-cb98-4ca9-98bc-01e5c008b378" Visible="true" Text="personOfInterest.py" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>490</X>
+        <Y>-222</Y>
+      </Location>
+      <Size>
+        <Width>158</Width>
+        <Height>30</Height>
+      </Size>
+      <X>490</X>
+      <Y>-222</Y>
+      <Width>158</Width>
+      <Height>30</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <ExtraData>personOfInterest.py</ExtraData>
+    <Json>{"python":"#pylint: disable=C0111, C0301, C0303, W0311, W0614, W0401, W0232, W0702, W0703, W0201\r\n# Make sure pip and setup tools are up to date:\r\n# python -m pip install -U pip\r\n# pip install -U setuptools\r\n# pip install requests\r\n# pip install lxml\r\n# pip install cssselect\nimport requests\r\nimport sys\r\nfrom lxml import html\r\nfrom lxml.cssselect import CSSSelector\r\nfrom lxml import etree\r\n \r\nurl = \"http://www.onthisday.com/birthdays/\" + sys.argv[1] + \"/\" + sys.argv[2]\r\n# print(\"URL: \" + url)\r\npage = requests.get(url)\r\ntree = html.fromstring(page.content)\r\nsel = CSSSelector('.section--person-of-interest')\r\npois = sel(tree)\r\n \r\nfor poi in pois:\r\n print(poi.xpath(\"div/div/div[1]/p\")[0].text_content().encode('cp437', errors='replace'))\r\n \r\n ","TextChanged":"True","GenerateClass":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopLeft</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b5129ffd-805c-4fa7-8130-89280adc5f2c" Visible="true" Text="Announce&#xD;&#xA;Time" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>346</X>
+        <Y>266</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>346</X>
+      <Y>266</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"AnnounceTime","agentEnabled":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="662289bc-9581-4c89-8766-f79a99658d6f" Visible="true" Text="Announce&#xD;&#xA;Time" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>-118</X>
+        <Y>-17</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>-118</X>
+      <Y>-17</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.Threading;\r\nusing System.Windows.Forms;\r\n\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class AnnounceTime : IReceptor\r\n\t{\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_Tick _)\r\n\t\t{\r\n\t\t\tDateTime now = DateTime.Now;\r\n\t\t\tstring time = NumberToWords(now.Hour) + \" \" + NumberToWords(now.Minute) + \" \" + NumberToWords(now.Second);\r\n\t\t\tproc.ProcessInstanceFrom&lt;HopeMembrane&gt;(membrane, this, new ST_Text() {Text = time});\r\n\t\t}\r\n\t\t\r\n\t\tprivate string NumberToWords(int number)\r\n\t\t{\r\n\t\t    if (number == 0)\r\n\t\t        return \"zero\";\r\n\t\t\r\n\t\t    if (number &lt; 0)\r\n\t\t        return \"minus \" + NumberToWords(Math.Abs(number));\r\n\t\t\r\n\t\t    string words = \"\";\r\n\t\t\r\n\t\t    if ((number / 1000000) &gt; 0)\r\n\t\t    {\r\n\t\t        words += NumberToWords(number / 1000000) + \" million \";\r\n\t\t        number %= 1000000;\r\n\t\t    }\r\n\t\t\r\n\t\t    if ((number / 1000) &gt; 0)\r\n\t\t    {\r\n\t\t        words += NumberToWords(number / 1000) + \" thousand \";\r\n\t\t        number %= 1000;\r\n\t\t    }\r\n\t\t\r\n\t\t    if ((number / 100) &gt; 0)\r\n\t\t    {\r\n\t\t        words += NumberToWords(number / 100) + \" hundred \";\r\n\t\t        number %= 100;\r\n\t\t    }\r\n\t\t\r\n\t\t    if (number &gt; 0)\r\n\t\t    {\r\n\t\t        if (words != \"\")\r\n\t\t            words += \"and \";\r\n\t\t\r\n\t\t        var unitsMap = new[] { \"zero\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\", \"ten\", \"eleven\", \"twelve\", \"thirteen\", \"fourteen\", \"fifteen\", \"sixteen\", \"seventeen\", \"eighteen\", \"nineteen\" };\r\n\t\t        var tensMap = new[] { \"zero\", \"ten\", \"twenty\", \"thirty\", \"forty\", \"fifty\", \"sixty\", \"seventy\", \"eighty\", \"ninety\" };\r\n\t\t\r\n\t\t        if (number &lt; 20)\r\n\t\t            words += unitsMap[number];\r\n\t\t        else\r\n\t\t        {\r\n\t\t            words += tensMap[number / 10];\r\n\t\t            if ((number % 10) &gt; 0)\r\n\t\t                words += \"-\" + unitsMap[number % 10];\r\n\t\t        }\r\n\t\t    }\r\n\t\t\r\n\t\t    return words;\r\n\t\t}\t\t\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="28f4d7ca-589d-4947-ab42-f8828ef861cf" Visible="true" Text="ST_Tick" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>51</X>
+        <Y>262</Y>
+      </Location>
+      <Size>
+        <Width>100</Width>
+        <Height>32</Height>
+      </Size>
+      <X>51</X>
+      <Y>262</Y>
+      <Width>100</Width>
+      <Height>32</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\t[Serializable]\r\n\tpublic class ST_Tick : MarshalByRefObject, ISemanticType { } \r\n}","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="ef134a15-dc94-46dd-93b5-c67361db8d3b" Visible="true" Text="ShowText" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>272</X>
+        <Y>190</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>272</X>
+      <Y>190</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"ShowText","agentEnabled":"False"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-44976</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="8055e52a-87f5-4cf5-bfa4-19a5653d1e3b" Visible="true" Text="Timer" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>344</X>
+        <Y>128</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>344</X>
+      <Y>128</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"Timer","agentEnabled":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="06615a3e-9377-4432-9559-667e773e16fa" Visible="true" Text="ST_StartTimer" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>49</X>
+        <Y>209</Y>
+      </Location>
+      <Size>
+        <Width>100</Width>
+        <Height>32</Height>
+      </Size>
+      <X>49</X>
+      <Y>209</Y>
+      <Width>100</Width>
+      <Height>32</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.ComponentModel;\r\n\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\t[Serializable]\r\n\tpublic class ST_StartTimer : MarshalByRefObject, ISemanticType \r\n\t{\r\n\t\t[Description(\"Delay in ms.\")]\r\n\t\tpublic int Delay {get;set;}\r\n\t\r\n\t\tpublic ST_StartTimer()\r\n\t\t{\r\n\t\t\tDelay=1000;\r\n\t\t}\r\n\t}\r\n}","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="27b4d673-5126-4339-971e-e71313e6757a" Visible="true" Text="Timer" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>-119</X>
+        <Y>45</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>-119</X>
+      <Y>45</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.Threading;\r\nusing System.Windows.Forms;\r\n\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class Timer : IReceptor\r\n\t{\r\n\t\tprotected ISemanticProcessor proc;\r\n\t\tprotected IMembrane membrane;\r\n\t\tprotected Thread thread = null;\r\n\t\tprotected int delay = 0;\r\n\t\t\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_StartTimer timer)\r\n\t\t{\r\n\t\t\tthis.proc = proc;\r\n\t\t\tthis.membrane = membrane;\r\n\t\t\tdelay = timer.Delay;\r\n\t\t\t\r\n\t\t\tif (thread == null)\r\n\t\t\t{\r\n\t\t\t\t// proc.ProcessInstance&lt;HopeMembrane&gt;(new ST_Text() {Text = \"Starting Timer\"}); \r\n\t\t\t\tthread = new Thread(new ThreadStart(TimerThread));\r\n\t\t\t\tthread.IsBackground = true;\r\n\t\t\t\tthread.Start();\r\n\t\t\t}\r\n\t\t}\r\n\t\t\r\n\t\tprivate void TimerThread()\r\n\t\t{\r\n\t\t\ttry\r\n\t\t\t{\r\n\t\t\t\twhile(true)\r\n\t\t\t\t{\r\n\t\t\t\t\tproc.ProcessInstanceFrom&lt;HopeMembrane, ST_Tick&gt;(membrane, this);\r\n\t\t\t\t\tThread.Sleep(delay);\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t\tcatch(ThreadAbortException) { } \r\n\t\t\tcatch(Exception) { }\r\n\t\t\t\r\n\t\t\tthread=null;\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1e435d8e-190b-46bf-9640-aeba3c8accc1" Visible="true" Text="ST_Text" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>49</X>
+        <Y>163</Y>
+      </Location>
+      <Size>
+        <Width>100</Width>
+        <Height>32</Height>
+      </Size>
+      <X>49</X>
+      <Y>163</Y>
+      <Width>100</Width>
+      <Height>32</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\t[Serializable]\r\n\tpublic class ST_Text : MarshalByRefObject, ISemanticType \r\n\t{\r\n\t\tpublic string Text {get; set;}\r\n\t}\r\n}","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="cc617c1d-d8a5-4e1a-aa98-3c950e65f854" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>270</X>
+        <Y>-87</Y>
+      </Location>
+      <Size>
+        <Width>263</Width>
+        <Height>31</Height>
+      </Size>
+      <X>270</X>
+      <Y>-87</Y>
+      <Width>263</Width>
+      <Height>31</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>6</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"AssyRef":"Clifton.Core.dll"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-16192</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="4255b7b5-1c3f-4647-bb53-2ef01e5a7095" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>269</X>
+        <Y>-44</Y>
+      </Location>
+      <Size>
+        <Width>263</Width>
+        <Height>31</Height>
+      </Size>
+      <X>269</X>
+      <Y>-44</Y>
+      <Width>263</Width>
+      <Height>31</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>6</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"AssyRef":"Clifton.SemanticProcessorService.dll"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-16192</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="2c2b618a-0eea-47ea-bbab-810869f0f933" Visible="true" Text="SpeakText" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>412</X>
+        <Y>193</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>412</X>
+      <Y>193</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"SpeakText","agentEnabled":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="966065e1-f6cc-45b4-8d13-5f9626c239f5" Visible="true" Text="SpeakText" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>-133</X>
+        <Y>-133</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>-133</X>
+      <Y>-133</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System.Speech.Synthesis;\r\n\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class SpeakText : IReceptor\r\n\t{\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_Text text)\r\n\t\t{\r\n\t\t\tSpeechSynthesizer synth = new SpeechSynthesizer();\r\n\t\t    synth.SetOutputToDefaultAudioDevice();\r\n\t\t\tsynth.Speak(text.Text);\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="14227774-8c97-4f1a-95dd-3d4f823352f5" Visible="true" Text="ShowText" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false">
+    <DisplayRectangle>
+      <Location>
+        <X>-83</X>
+        <Y>-165</Y>
+      </Location>
+      <Size>
+        <Width>70</Width>
+        <Height>60</Height>
+      </Size>
+      <X>-83</X>
+      <Y>-165</Y>
+      <Width>70</Width>
+      <Height>60</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.Windows.Forms;\r\n\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ShowText : IReceptor\r\n\t{\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_Text text)\r\n\t\t{\r\n\t\t\tMessageBox.Show(text.Text, \"Output\", MessageBoxButtons.OK, MessageBoxIcon.Information);\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+</ArrayOfElementPropertyBag>

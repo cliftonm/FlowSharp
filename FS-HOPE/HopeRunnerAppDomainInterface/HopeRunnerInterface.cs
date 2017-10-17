@@ -7,13 +7,15 @@ namespace HopeRunnerAppDomainInterface
     [Serializable]
     public class ProcessEventArgs : EventArgs
     {
-        public string FromMembraneTypeName { get; protected set; }
-        public string FromReceptorTypeName { get; protected set; }
-        public string ToMembraneTypeName { get; protected set; }
-        public string ToReceptorTypeName { get; protected set; }
-        public string SemanticTypeTypeName { get; protected set; }
+        public string FromMembraneTypeName { get; set; }
+        public string FromReceptorTypeName { get; set; }
+        public string ToMembraneTypeName { get; set; }
+        public string ToReceptorTypeName { get; set; }
+        public string SemanticTypeTypeName { get; set; }
 
-        public ProcessEventArgs(string fromMembraneTypeName, string fromReceptorTypeName, string toMembraneTypeName, string toReceptorTypeName, string stTypeName)
+		public ProcessEventArgs() { }
+
+		public ProcessEventArgs(string fromMembraneTypeName, string fromReceptorTypeName, string toMembraneTypeName, string toReceptorTypeName, string stTypeName)
         {
             FromMembraneTypeName = fromMembraneTypeName;
             FromReceptorTypeName = fromReceptorTypeName;

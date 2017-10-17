@@ -5,9 +5,11 @@ using System.Dynamic;
 
 using Newtonsoft.Json;
 
+using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ServiceManagement;
 
 using FlowSharpCodeServiceInterfaces;
+using FlowSharpHopeCommon;
 using FlowSharpServiceInterfaces;
 
 namespace FlowSharpHopeService
@@ -24,13 +26,16 @@ namespace FlowSharpHopeService
         protected const string PUBLISH_SEMANTIC_TYPE = "publishSemanticType";
         protected const string ENABLE_DISABLE_RECEPTOR = "enableDisableReceptor";
         protected bool loaded = false;
+		protected WebServer webServer;
 
-        public StandAloneRunner(IServiceManager serviceManager)
+		public StandAloneRunner(IServiceManager serviceManager)
         {
             this.serviceManager = serviceManager;
-        }
+			webServer = new WebServer(new RouteHandlers(this));
+			webServer.Start("localhost", new int[] { 5002 });
+		}
 
-        public void Load(string fullName)
+		public void Load(string fullName)
         {
             //IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
             //process = codeSvc.LaunchProcess(fullName, String.Empty, _ => { });
@@ -90,5 +95,10 @@ namespace FlowSharpHopeService
                 restSvc.HttpGet(url + ENABLE_DISABLE_RECEPTOR, "receptorTypeName=" + typeName + "&state=" + state);
             }
         }
-    }
+
+		public void ProcessMessage(HopeRunnerAppDomainInterface.ProcessEventArgs stMsg)
+		{
+			Processing.Fire(this, stMsg);
+		}
+	}
 }

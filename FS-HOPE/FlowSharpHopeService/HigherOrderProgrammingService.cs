@@ -48,7 +48,7 @@ namespace FlowSharpHopeService
             animator = new Animator(ServiceManager);
             runner.Processing += animator.Animate;
 
-            InitializeEditorsMenu();
+			InitializeEditorsMenu();
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ReflectionOnlyAssemblyResolve;
             base.FinishedInitialization();
         }

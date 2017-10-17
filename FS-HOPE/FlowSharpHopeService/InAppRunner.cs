@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+using Clifton.Core.ExtensionMethods;
 using Clifton.Core.Semantics;
-
-// When the runner is moved to its own AppDomain DLL, remove the reference in FlowSharpHopeService to the Clifton.SemanticProcessorService.
-
 using Clifton.Core.Services.SemanticProcessorService;
+
+using HopeRunnerAppDomainInterface;
 
 namespace FlowSharpHopeService
 {
@@ -36,9 +36,19 @@ namespace FlowSharpHopeService
             sp.Processing += ProcessingSemanticType;
         }
 
-        private void ProcessingSemanticType(object sender, ProcessEventArgs e)
+        private void ProcessingSemanticType(object sender, Clifton.Core.Semantics.ProcessEventArgs args)
         {
-        }
+			var stMsg = new HopeRunnerAppDomainInterface.ProcessEventArgs()
+			{
+				FromMembraneTypeName = args.FromMembrane?.GetType()?.FullName,
+				FromReceptorTypeName = args.FromReceptor?.GetType()?.FullName,
+				ToMembraneTypeName = args.ToMembrane.GetType().FullName,
+				ToReceptorTypeName = args.ToReceptor.GetType().FullName,
+				SemanticTypeTypeName = args.SemanticType.GetType().FullName,
+			};
+
+			Processing.Fire(this, stMsg);
+		}
 
         public void Load(string dll)
         {

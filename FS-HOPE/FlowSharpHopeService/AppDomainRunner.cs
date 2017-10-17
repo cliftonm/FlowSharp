@@ -58,6 +58,11 @@ namespace FlowSharpHopeService
             appDomainRunner.InstantiateReceptor(t.Name);
         }
 
+        public void InstantiateReceptors()
+        {
+            // TODO: Implement.
+        }
+
         public void EnableDisableReceptor(string typeName, bool state)
         {
             // Runner may not be up when we get this.

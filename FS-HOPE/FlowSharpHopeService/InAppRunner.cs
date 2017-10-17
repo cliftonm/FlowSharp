@@ -71,6 +71,11 @@ namespace FlowSharpHopeService
             sp.Register<HopeMembrane>(receptor);
         }
 
+        public void InstantiateReceptors()
+        {
+            // TODO: Implement.
+        }
+
         public object InstantiateSemanticType(string typeName)
         {
             Type st = assy.GetTypes().Single(t => t.Name == typeName);

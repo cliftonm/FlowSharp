@@ -22,9 +22,11 @@ namespace FlowSharpHopeService
         protected Process process;
         protected string url = "http://localhost:5001/";
         protected const string INSTANTIATE_RECEPTOR = "instantiateReceptor";
+        protected const string INSTANTIATE_RECEPTORS = "instantiateReceptors";
         protected const string INSTANTIATE_SEMANTIC_TYPE = "instantiateSemanticType";
         protected const string PUBLISH_SEMANTIC_TYPE = "publishSemanticType";
         protected const string ENABLE_DISABLE_RECEPTOR = "enableDisableReceptor";
+        protected const string CLOSE = "close";
         protected bool loaded = false;
 		protected WebServer webServer;
 
@@ -44,9 +46,16 @@ namespace FlowSharpHopeService
 
         public void Unload()
 		{
-			IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
-			codeSvc.TerminateProcess(process);
-			process = null;
+            //IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
+            //codeSvc.TerminateProcess(process);
+            if (loaded)
+            {
+                IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
+                restSvc.HttpGet(url + CLOSE, "");
+                process.WaitForExit();
+            }
+
+            process = null;
 			loaded = false;
 		}
 
@@ -54,6 +63,12 @@ namespace FlowSharpHopeService
         {
             IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
             restSvc.HttpGet(url + INSTANTIATE_RECEPTOR, "receptorTypeName=" + t.FullName);
+        }
+
+        public void InstantiateReceptors()
+        {
+            IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
+            restSvc.HttpGet(url + INSTANTIATE_RECEPTORS, "");
         }
 
         public dynamic InstantiateSemanticType(string typeName)

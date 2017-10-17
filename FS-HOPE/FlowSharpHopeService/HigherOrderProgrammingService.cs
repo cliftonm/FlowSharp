@@ -68,37 +68,46 @@ namespace FlowSharpHopeService
 
         public void InstantiateReceptors()
         {
-            var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
-            IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
-			string filename = GetExeOrDllFilename(menuService.Filename);
-            Assembly assy = Assembly.ReflectionOnlyLoadFrom(filename);
-            var (agents, errors) = GetAgents(assy);
-
-            if (errors.Count > 0)
-            {
-                outputWindow.WriteLine(String.Join("\r\n", errors));
-            }
-            else
-            {
-                IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
-                BaseController canvasController = canvasService.ActiveController;
-                List<IAgentReceptor> receptors = GetReceptors(canvasController);
-
-                foreach (var el in receptors)
-                {
-                    Type agent = agents.SingleOrDefault(a => a.Name == el.AgentName);
-
-                    if (agent == null)
-                    {
-                        outputWindow.WriteLine("Receptor " + el.Text + " references an agent that is not defined: " + el.AgentName);
-                    }
-                    else
-                    {
-                        runner.InstantiateReceptor(agent);
-                    }
-                }
-            }
+            runner.InstantiateReceptors();
         }
+   //         var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
+   //         IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
+			//string filename = GetExeOrDllFilename(menuService.Filename);
+
+   //         // Assembly assy = Assembly.ReflectionOnlyLoadFrom(filename);
+   //         AppDomain ad = AppDomain.CreateDomain("temp");
+   //         byte[] assemblyBytes = File.ReadAllBytes(filename);
+   //         var assy = ad.Load(assemblyBytes);
+
+   //         var (agents, errors) = GetAgents(assy);
+
+   //         AppDomain.Unload(ad);
+
+   //         if (errors.Count > 0)
+   //         {
+   //             outputWindow.WriteLine(String.Join("\r\n", errors));
+   //         }
+   //         else
+   //         {
+   //             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+   //             BaseController canvasController = canvasService.ActiveController;
+   //             List<IAgentReceptor> receptors = GetReceptors(canvasController);
+
+   //             foreach (var el in receptors)
+   //             {
+   //                 Type agent = agents.SingleOrDefault(a => a.Name == el.AgentName);
+
+   //                 if (agent == null)
+   //                 {
+   //                     outputWindow.WriteLine("Receptor " + el.Text + " references an agent that is not defined: " + el.AgentName);
+   //                 }
+   //                 else
+   //                 {
+   //                     runner.InstantiateReceptor(agent);
+   //                 }
+   //             }
+   //         }
+   //     }
 
         public void EnableDisableReceptor(string typeName, bool state)
         {

@@ -41,14 +41,9 @@ namespace HopeShapes
             hope.UnloadHopeAssembly();
             hope.LoadHopeAssembly();
             hope.InstantiateReceptors();
-            ISemanticType st = hope.InstantiateSemanticType(Text);
-            PublishSemanticType pst = new PublishSemanticType(st, hope);
-            pst.ShowDialog();
-
-            if (pst.ckUnload.Checked)
-            {
-                hope.UnloadHopeAssembly();
-            }
+            object st = hope.InstantiateSemanticType(Text);
+            PublishSemanticType pst = new PublishSemanticType(Text, st, hope);
+            pst.Show();
         }
     }
 }

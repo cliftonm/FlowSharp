@@ -4,6 +4,10 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System.Collections.Generic;
+using System.Linq;
+
+using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ModuleManagement;
 using Clifton.Core.Semantics;
 using Clifton.Core.ServiceManagement;
@@ -30,6 +34,21 @@ namespace FlowSharpRestService
             InitializeListener();
             ServiceManager.Get<ISemanticProcessor>().Register<FlowSharpMembrane, CommandProcessor>();
             ServiceManager.Get<ISemanticProcessor>().Register<FlowSharpMembrane, HttpSender>();
+        }
+
+        public string HttpGet(string url, string data)
+        {
+            string ret = Http.Get(url + "?" + data);
+
+            return ret;
+        }
+
+        public string HttpGet(string url, Dictionary<string, string> data)
+        {
+            string asParams = string.Join("&", data.Select(kvp => kvp.Key + "=" + kvp.Value));
+            string ret = Http.Get(url + "?" + asParams);
+
+            return ret;
         }
 
         protected void InitializeListener()

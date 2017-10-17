@@ -12,7 +12,7 @@ namespace FlowSharpHopeService
 
     // Must be derived from MarshalByRefObject so that the Processing event handler stays wired up to its handler on the callback from the app domain.
     [Serializable]
-    public class Runner : MarshalByRefObject
+    public class AppDomainRunner : MarshalByRefObject, IRunner
     {
         // We need this attribute, otherwise the class HigherOrderProgrammingService needs to be marked serializable,
         // which if you do that, starts a horrid cascade of classes (like Clifton.Core to start with) that must be marked as serializable as well.
@@ -27,7 +27,7 @@ namespace FlowSharpHopeService
         [NonSerialized]
         public IHopeRunner appDomainRunner;
 
-        public Runner()
+        public AppDomainRunner()
         {
         }
 
@@ -64,16 +64,16 @@ namespace FlowSharpHopeService
             appDomainRunner?.EnableDisableReceptor(typeName, state);
         }
 
-        public dynamic InstantiateSemanticType(string typeName)
+        public object InstantiateSemanticType(string typeName)
         {
-            ISemanticType st = appDomainRunner.InstantiateSemanticType(typeName);
+            var st = appDomainRunner.InstantiateSemanticType(typeName);
 
             return st;
         }
 
-        public void Publish(ISemanticType st)
+        public void Publish(string _, object st)
         {
-            appDomainRunner.Publish(st);
+            appDomainRunner.Publish((ISemanticType)st);
         }
 
         private AppDomain CreateAppDomain(string dllName)

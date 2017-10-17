@@ -30,6 +30,7 @@ namespace FlowSharpCodeServiceInterfaces
 
         Process LaunchProcess(string processName, string arguments, Action<string> onOutput, Action<string> onError = null);
         void LaunchProcessAndWaitForExit(string processName, string arguments, Action<string> onOutput, Action<string> onError = null);
+        void TerminateProcess(Process p);
 
         GraphicElement ParseDrakonWorkflow(DrakonCodeTree dcg, IFlowSharpCodeService codeService, BaseController canvasController, GraphicElement el, bool inCondition = false);
     }

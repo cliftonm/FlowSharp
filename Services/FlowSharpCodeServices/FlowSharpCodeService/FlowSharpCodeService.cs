@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
+using Clifton.Core.Assertions;
 using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ModuleManagement;
 using Clifton.Core.ServiceManagement;
@@ -185,6 +186,11 @@ namespace FlowSharpCodeService
         {
             var proc = LaunchProcess(processName, arguments, onOutput, onError);
             proc.WaitForExit();
+        }
+
+        public void TerminateProcess(Process p)
+        {
+            Assert.SilentTry(() => p?.Kill());
         }
 
         // ===================================================

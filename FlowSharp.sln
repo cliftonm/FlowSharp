@@ -81,6 +81,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clifton.SemanticProcessorSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clifton.Core", "..\clifton\Clifton.Core\Clifton.Core.csproj", "{54E73707-81C4-4C7F-9739-446C6D7D5FEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandAloneRunner", "FS-HOPE\StandAloneRunner\StandAloneRunner.csproj", "{EAB1BE73-9426-42F1-8113-4C8511A6BBEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -231,6 +233,10 @@ Global
 		{54E73707-81C4-4C7F-9739-446C6D7D5FEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54E73707-81C4-4C7F-9739-446C6D7D5FEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54E73707-81C4-4C7F-9739-446C6D7D5FEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAB1BE73-9426-42F1-8113-4C8511A6BBEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAB1BE73-9426-42F1-8113-4C8511A6BBEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAB1BE73-9426-42F1-8113-4C8511A6BBEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAB1BE73-9426-42F1-8113-4C8511A6BBEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -264,6 +270,7 @@ Global
 		{D2031348-E8A6-4895-A4B8-A7F6093BE054} = {390FD219-6696-4F18-BFEE-8FDBBB15233A}
 		{087E600F-F5A4-430F-97A9-94E5F52673F8} = {390FD219-6696-4F18-BFEE-8FDBBB15233A}
 		{EB69E349-53A1-45CA-8982-988B9BC557A3} = {390FD219-6696-4F18-BFEE-8FDBBB15233A}
+		{EAB1BE73-9426-42F1-8113-4C8511A6BBEB} = {390FD219-6696-4F18-BFEE-8FDBBB15233A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2BF8B4D8-D64B-4380-BBDD-D8D01FF83DF0}

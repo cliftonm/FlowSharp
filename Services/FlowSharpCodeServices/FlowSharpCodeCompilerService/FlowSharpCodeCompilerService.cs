@@ -345,11 +345,9 @@ namespace FlowSharpCodeCompilerService
 
         protected void TerminateRunningProcess()
         {
-            if (runningProcess != null)
-            {
-                Assert.SilentTry(() => runningProcess.Kill());
-                runningProcess = null;
-            }
+            var fscSvc = ServiceManager.Get<IFlowSharpCodeService>();
+            fscSvc.TerminateProcess(runningProcess);
+            runningProcess = null;
         }
 
         protected string CreateCodeFile(GraphicElement root)

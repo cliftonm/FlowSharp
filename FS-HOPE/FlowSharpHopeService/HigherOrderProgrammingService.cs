@@ -37,13 +37,14 @@ namespace FlowSharpHopeService
         protected ToolStripMenuItem mnuRun = new ToolStripMenuItem() { Name = "mnuRun", Text = "Run" };
         protected ToolStripMenuItem mnuStop = new ToolStripMenuItem() { Name = "mnuStop", Text = "Stop" };
         protected Dictionary<string, string> tempToTextBoxMap = new Dictionary<string, string>();
-        protected Runner runner;
+        protected IRunner runner;
         protected Animator animator;
-        // protected InAppRunner runner;
 
         public override void FinishedInitialization()
         {
-            runner = new Runner();
+            // runner = new AppDomainRunner();
+            runner = new StandAloneRunner(ServiceManager);
+            // runner = new InAppRunner();
             animator = new Animator(ServiceManager);
             runner.Processing += animator.Animate;
 
@@ -57,20 +58,10 @@ namespace FlowSharpHopeService
             IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
             string dllFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.dll" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".dll";
             runner.Load(dllFilename);
-
-            // Initialize the proxy so that we don't have to mark this class (and others) as serializable.  We cannot do:
-            // runner.runner.Processing += Animator because this forces this class to be serializable.
-            // runnerProxy = new RunnerProxy(runner.appDomainRunner);
-            // runnerProxy.Processing += Animator;
         }
 
         public void UnloadHopeAssembly()
         {
-            //if (runnerProxy != null)
-            //{
-            //    runnerProxy.Processing -= Animator;
-            //}
-
             runner.Unload();
             animator.RemoveCarriers();
         }
@@ -114,16 +105,16 @@ namespace FlowSharpHopeService
             runner.EnableDisableReceptor(typeName, state);
         }
 
-        public ISemanticType InstantiateSemanticType(string typeName)
+        public object InstantiateSemanticType(string typeName)
         {
             var ret = runner.InstantiateSemanticType(typeName);
 
             return ret;
         }
 
-        public void Publish(ISemanticType st)
+        public void Publish(string typeName, object st)
         {
-            runner.Publish(st);
+            runner.Publish(typeName, st);
         }
 
         protected void InitializeEditorsMenu()
@@ -144,6 +135,8 @@ namespace FlowSharpHopeService
 
         protected void OnHopeRun(object sender, EventArgs e)
         {
+            // TODO: This doesn't make much sense as we don't really have anything to run -- the runner has already loaded the DLL or started the EXE.
+            /*
             runner.Unload();
             var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
             IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
@@ -166,6 +159,7 @@ namespace FlowSharpHopeService
                 st.Text = "Hello World!";
                 runner.Publish(st);
             }
+            */
         }
 
         private Assembly ReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs args)
@@ -229,7 +223,7 @@ namespace FlowSharpHopeService
             List<string> sourceFilenames = GetSourceFiles(shapeSources);
 
             string dllFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.dll" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".dll";
-            CompilerResults results = Compile(dllFilename, sourceFilenames, refs);
+            CompilerResults results = Compile(dllFilename, sourceFilenames, refs, false); // runner is StandAloneRunner);
             DeleteTempFiles(sourceFilenames);
 
             if (!results.Errors.HasErrors)

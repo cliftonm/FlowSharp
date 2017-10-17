@@ -119,7 +119,11 @@ namespace FlowSharpServiceInterfaces
         void FindShape(GraphicElement shape);
     }
 
-    public interface IFlowSharpRestService : IService { }
+    public interface IFlowSharpRestService : IService
+    {
+        string HttpGet(string url, string data);
+        string HttpGet(string url, Dictionary<string, string> data);
+    }
 
     public interface IFlowSharpWebSocketService : IService { }
 

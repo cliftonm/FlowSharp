@@ -13,8 +13,17 @@ using Clifton.Core.Services.SemanticProcessorService;
 
 namespace FlowSharpHopeService
 {
-    public class InAppRunner
+    /// <summary>
+    /// For in-memory, no app-domain, testing.
+    /// Incomplete implementation:
+    /// Processing
+    /// EnableDisableReceptor
+    /// Unload can't do anything because this is an in-memory load, the assembly cannot be unloaded.
+    /// </summary>
+    public class InAppRunner : IRunner
     {
+        public event EventHandler<HopeRunnerAppDomainInterface.ProcessEventArgs> Processing;
+
         protected SemanticProcessor sp;
         protected Assembly assy;                // Eventually will be an AppDomain
         protected HopeMembrane membrane;
@@ -52,7 +61,7 @@ namespace FlowSharpHopeService
             sp.Register<HopeMembrane>(receptor);
         }
 
-        public dynamic InstantiateSemanticType(string typeName)
+        public object InstantiateSemanticType(string typeName)
         {
             Type st = assy.GetTypes().Single(t => t.Name == typeName);
             object inst = Activator.CreateInstance(st);
@@ -60,9 +69,9 @@ namespace FlowSharpHopeService
             return inst;
         }
 
-        public void Publish(ISemanticType st)
+        public void Publish(string _, object st)
         {
-            sp.ProcessInstance<HopeMembrane>(st, true);
+            sp.ProcessInstance<HopeMembrane>((ISemanticType)st, true);
         }
     }
 }

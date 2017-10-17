@@ -9,7 +9,7 @@ namespace FlowSharpHopeServiceInterfaces
         void UnloadHopeAssembly();
         void InstantiateReceptors();
         void EnableDisableReceptor(string typeName, bool state);
-        ISemanticType InstantiateSemanticType(string typeName);
-        void Publish(ISemanticType st);
+        object InstantiateSemanticType(string typeName);
+        void Publish(string typeName, object st);
     }
 }

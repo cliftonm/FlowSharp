@@ -1,4 +1,10 @@
 #pylint: disable=C0111, C0301, C0303, W0311, W0614, W0401, W0232, W0702, W0703, W0201
+# Make sure pip and setup tools are up to date:
+# python -m pip install -U pip
+# pip install -U setuptools
+# pip install requests
+# pip install lxml
+# pip install cssselect
 import requests
 import sys
 from lxml import html

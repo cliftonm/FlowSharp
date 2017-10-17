@@ -30,27 +30,27 @@ namespace FlowSharpHopeService
 
 		public StandAloneRunner(IServiceManager serviceManager)
         {
-            this.serviceManager = serviceManager;
+			this.serviceManager = serviceManager;
 			webServer = new WebServer(new RouteHandlers(this));
 			webServer.Start("localhost", new int[] { 5002 });
 		}
 
 		public void Load(string fullName)
         {
-            //IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
-            //process = codeSvc.LaunchProcess(fullName, String.Empty, _ => { });
-            loaded = true;
-        }
+			IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
+			process = codeSvc.LaunchProcess(fullName, String.Empty, _ => { });
+			loaded = true;
+		}
 
         public void Unload()
-        {
-            IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
-            codeSvc.TerminateProcess(process);
-            process = null;
-            loaded = false;
-        }
+		{
+			IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
+			codeSvc.TerminateProcess(process);
+			process = null;
+			loaded = false;
+		}
 
-        public void InstantiateReceptor(Type t)
+		public void InstantiateReceptor(Type t)
         {
             IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
             restSvc.HttpGet(url + INSTANTIATE_RECEPTOR, "receptorTypeName=" + t.FullName);

@@ -55,9 +55,9 @@ namespace FlowSharpHopeService
 
         public void LoadHopeAssembly()
         {
-            IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
-            string dllFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.dll" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".dll";
-            runner.Load(dllFilename);
+			IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
+			string filename = GetExeOrDllFilename(menuService.Filename);
+            runner.Load(filename);
         }
 
         public void UnloadHopeAssembly()
@@ -70,8 +70,8 @@ namespace FlowSharpHopeService
         {
             var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
             IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
-            string dllFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.dll" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".dll";
-            Assembly assy = Assembly.ReflectionOnlyLoadFrom(dllFilename);
+			string filename = GetExeOrDllFilename(menuService.Filename);
+            Assembly assy = Assembly.ReflectionOnlyLoadFrom(filename);
             var (agents, errors) = GetAgents(assy);
 
             if (errors.Count > 0)
@@ -135,44 +135,19 @@ namespace FlowSharpHopeService
 
         protected void OnHopeRun(object sender, EventArgs e)
         {
-            // TODO: This doesn't make much sense as we don't really have anything to run -- the runner has already loaded the DLL or started the EXE.
-            /*
-            runner.Unload();
-            var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
-            IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
-            string dllFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.dll" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".dll";
-            Assembly assy = Assembly.ReflectionOnlyLoadFrom(dllFilename);
-            var (agents, errors) = GetAgents(assy);
-
-            if (errors.Count > 0)
-            {
-                outputWindow.WriteLine(String.Join("\r\n", errors));
-            }
-            else
-            {
-                // Temporary, for testing getting things working.
-                runner.Load(dllFilename);
-                InstantiateReceptors();
-
-                // Testing
-                dynamic st = runner.InstantiateSemanticType("ST_Text");
-                st.Text = "Hello World!";
-                runner.Publish(st);
-            }
-            */
+			LoadHopeAssembly();
         }
 
-        private Assembly ReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs args)
+		protected void OnHopeStop(object sender, EventArgs e)
+		{
+			UnloadHopeAssembly();
+		}
+
+		private Assembly ReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs args)
         {
             string dll = args.Name.LeftOf(',') + ".dll";
             Assembly assy = Assembly.ReflectionOnlyLoadFrom(dll);
             return assy;
-        }
-
-        protected void OnHopeStop(object sender, EventArgs e)
-        {
-            runner.Unload();
-            animator.RemoveCarriers();
         }
 
         protected (List<Type> agents, List<string> errors) GetAgents(Assembly assy)
@@ -222,8 +197,9 @@ namespace FlowSharpHopeService
             List<GraphicElement> shapeSources = GetCanvasSources(canvasController);
             List<string> sourceFilenames = GetSourceFiles(shapeSources);
 
-            string dllFilename = String.IsNullOrEmpty(menuService.Filename) ? "temp.dll" : Path.GetFileNameWithoutExtension(menuService.Filename) + ".dll";
-            CompilerResults results = Compile(dllFilename, sourceFilenames, refs, false); // runner is StandAloneRunner);
+			bool isStandAlone = runner is StandAloneRunner;
+			string filename = GetExeOrDllFilename(menuService.Filename);
+			CompilerResults results = Compile(filename, sourceFilenames, refs, isStandAlone);			
             DeleteTempFiles(sourceFilenames);
 
             if (!results.Errors.HasErrors)
@@ -232,7 +208,17 @@ namespace FlowSharpHopeService
             }
         }
 
-        protected void DeleteTempFiles(List<string> files)
+		protected string GetExeOrDllFilename(string fn)
+		{
+			// TODO: We should really check if the any of the C# shape code-behind contains App.Main
+			bool isStandAlone = runner is StandAloneRunner;
+			string ext = isStandAlone ? ".exe" : ".dll";
+			string filename = String.IsNullOrEmpty(fn) ? "temp" + ext : Path.GetFileNameWithoutExtension(fn) + ext;
+
+			return filename;
+		}
+
+		protected void DeleteTempFiles(List<string> files)
         {
             // files.ForEach(fn => File.Delete(fn));
         }
@@ -320,6 +306,7 @@ namespace FlowSharpHopeService
             parameters.IncludeDebugInformation = true;
             parameters.GenerateInMemory = false;
             parameters.GenerateExecutable = generateExecutable;
+			parameters.CompilerOptions = "/t:winexe";
 
             parameters.ReferencedAssemblies.Add("System.dll");
             parameters.ReferencedAssemblies.Add("System.Core.dll");

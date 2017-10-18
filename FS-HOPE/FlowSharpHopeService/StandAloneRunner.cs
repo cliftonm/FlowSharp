@@ -83,14 +83,15 @@ namespace FlowSharpHopeService
             IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
             string ret = restSvc.HttpGet(url + INSTANTIATE_SEMANTIC_TYPE, "semanticTypeName=" + typeName);
 
-            // Amazing.
+            // Amazing, but needs a bunch of type descriptor support to display and Expando object on a property grid.
+			// See HopeShapesPublishSemanticType.cs for implementation.
             var converter = new Newtonsoft.Json.Converters.ExpandoObjectConverter();
-            dynamic inst = JsonConvert.DeserializeObject<ExpandoObject>(ret, converter);
+			dynamic inst = JsonConvert.DeserializeObject<ExpandoObject>(ret, converter);
 
-            return inst;
+			return inst;
         }
 
-        public void Publish(string typeName, object jsonObject)
+		public void Publish(string typeName, object jsonObject)
         {
             IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
             string json = JsonConvert.SerializeObject(jsonObject);

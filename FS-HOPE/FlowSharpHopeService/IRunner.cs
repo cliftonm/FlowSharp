@@ -16,6 +16,7 @@ namespace FlowSharpHopeService
         void Unload();
         [Obsolete]
         void InstantiateReceptor(Type t);
+        void InstantiateReceptor(string name);
         void InstantiateReceptors();
         void EnableDisableReceptor(string typeName, bool state);
         dynamic InstantiateSemanticType(string typeName);

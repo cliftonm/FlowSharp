@@ -65,6 +65,13 @@ namespace FlowSharpHopeService
             restSvc.HttpGet(url + INSTANTIATE_RECEPTOR, "receptorTypeName=" + t.FullName);
         }
 
+        public void InstantiateReceptor(string name)
+        {
+            IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
+            // TODO: Fix the hardcoded "App." -- figure out some way of getting the namespace?
+            restSvc.HttpGet(url + INSTANTIATE_RECEPTOR, "receptorTypeName=" + "App." + name);
+        }
+
         public void InstantiateReceptors()
         {
             IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();

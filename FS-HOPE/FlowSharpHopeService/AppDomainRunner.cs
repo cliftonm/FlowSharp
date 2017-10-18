@@ -58,6 +58,11 @@ namespace FlowSharpHopeService
             appDomainRunner.InstantiateReceptor(t.Name);
         }
 
+        public void InstantiateReceptor(string name)
+        {
+            // TODO: Implement.
+        }
+
         public void InstantiateReceptors()
         {
             // TODO: Implement.

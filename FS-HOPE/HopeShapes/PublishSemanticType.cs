@@ -55,7 +55,7 @@ namespace HopeShapes
 
         private string CreateJson(PropertyContainer pc, object obj)
         {
-            StringBuilder sb = new StringBuilder("}");
+            StringBuilder sb = new StringBuilder("{");
             SerializeProperties(sb, pc, obj);
             sb.Append("}");
 
@@ -75,7 +75,7 @@ namespace HopeShapes
 
             propertyData.Where(t => t.ChildType == null).ForEach(ct =>
             {
-                string val = ((CustomClass)obj)[ct.Name]?.ToString();
+                string val = ((CustomClass)obj)[ct.Name]?.Value?.ToString();
 
                 if (val != null)
                 {

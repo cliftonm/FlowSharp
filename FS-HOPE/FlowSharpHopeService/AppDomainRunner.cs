@@ -4,6 +4,7 @@ using Clifton.Core.Assertions;
 using Clifton.Core.ExtensionMethods;
 using Clifton.Core.Semantics;
 
+using FlowSharpHopeCommon;
 using HopeRunnerAppDomainInterface;
 
 namespace FlowSharpHopeService
@@ -79,6 +80,11 @@ namespace FlowSharpHopeService
             var st = appDomainRunner.InstantiateSemanticType(typeName);
 
             return st;
+        }
+
+        public PropertyContainer DescribeSemanticType(string typeName)
+        {
+            return null;
         }
 
         public void Publish(string _, object st)

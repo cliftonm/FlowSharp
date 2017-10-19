@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 using Clifton.Core.ExtensionMethods;
 using Clifton.Core.Semantics;
 using Clifton.Core.Services.SemanticProcessorService;
 
-using HopeRunnerAppDomainInterface;
+using FlowSharpHopeCommon;
 
 namespace FlowSharpHopeService
 {
@@ -87,6 +84,11 @@ namespace FlowSharpHopeService
             object inst = Activator.CreateInstance(st);
 
             return inst;
+        }
+
+        public PropertyContainer DescribeSemanticType(string typeName)
+        {
+            return null;
         }
 
         public void Publish(string _, object st)

@@ -4,14 +4,19 @@
 * http://www.codeproject.com/info/cpol10.aspx
 */
 
+using System;
 using System.Drawing;
+using System.Linq;
 
-using Clifton.Core.Semantics;
+using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ServiceManagement;
 
 using FlowSharpLib;
+using FlowSharpHopeCommon;
 using FlowSharpHopeShapeInterfaces;
 using FlowSharpHopeServiceInterfaces;
+
+using HopeShapes.PropertyGridHelpers;
 
 namespace HopeShapes
 {
@@ -41,9 +46,41 @@ namespace HopeShapes
             hope.UnloadHopeAssembly();
             hope.LoadHopeAssembly();
             hope.InstantiateReceptors();
-            object st = hope.InstantiateSemanticType(Text);
-            PublishSemanticType pst = new PublishSemanticType(Text, st, hope);
+            PropertyContainer pc = hope.DescribeSemanticType(Text);
+            CustomClass cls = new CustomClass();
+            AddProperties(cls, pc);
+            PublishSemanticType pst = new PublishSemanticType(Text, cls, hope);
             pst.Show();
+        }
+
+        /// <summary>
+        /// Creates a flat view of all value types and strings.
+        /// Any PropertyData that has a non-null ChildType is a reference type.
+        /// These are added to "CustomClass", which is used to create the PropertyGrid properties at runtime.
+        /// </summary>
+        protected void AddProperties(CustomClass cls, PropertyContainer pc)
+        {
+            pc.Types.ForEach(pd =>
+            {
+                if (pd.ChildType == null)
+                {
+                    // Other interesting solutions for getting the default value:
+                    // https://stackoverflow.com/questions/325426/programmatic-equivalent-of-defaulttype
+                    Type type = Type.GetType(pd.TypeName);
+                    object val = null;
+
+                    if (type.Name != "String")
+                    {
+                        val = Activator.CreateInstance(type);
+                    }
+
+                    cls.Add(new CustomProperty(pd.Name, val, pd.Description, pd.Category, type, false, true));
+                }
+                else
+                {
+                    AddProperties(cls, pd.ChildType);
+                }
+            });
         }
     }
 }

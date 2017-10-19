@@ -17,6 +17,7 @@ using Clifton.Core.ServiceManagement;
 using FlowSharpLib;
 using FlowSharpCodeServiceInterfaces;
 using FlowSharpCodeShapeInterfaces;
+using FlowSharpHopeCommon;
 using FlowSharpHopeServiceInterfaces;
 using FlowSharpHopeShapeInterfaces;
 using FlowSharpServiceInterfaces;
@@ -119,9 +120,9 @@ namespace FlowSharpHopeService
             runner.EnableDisableReceptor(typeName, state);
         }
 
-        public object InstantiateSemanticType(string typeName)
+        public PropertyContainer DescribeSemanticType(string typeName)
         {
-            var ret = runner.InstantiateSemanticType(typeName);
+            var ret = runner.DescribeSemanticType(typeName);
 
             return ret;
         }

@@ -24,6 +24,7 @@ namespace FlowSharpHopeService
         protected const string INSTANTIATE_RECEPTOR = "instantiateReceptor";
         protected const string INSTANTIATE_RECEPTORS = "instantiateReceptors";
         protected const string INSTANTIATE_SEMANTIC_TYPE = "instantiateSemanticType";
+        protected const string DESCRIBE_SEMANTIC_TYPE = "describeSemanticType";
         protected const string PUBLISH_SEMANTIC_TYPE = "publishSemanticType";
         protected const string ENABLE_DISABLE_RECEPTOR = "enableDisableReceptor";
         protected const string CLOSE = "close";
@@ -78,20 +79,23 @@ namespace FlowSharpHopeService
             restSvc.HttpGet(url + INSTANTIATE_RECEPTORS, "");
         }
 
-        public dynamic InstantiateSemanticType(string typeName)
+        public PropertyContainer DescribeSemanticType(string typeName)
         {
             IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
-            string ret = restSvc.HttpGet(url + INSTANTIATE_SEMANTIC_TYPE, "semanticTypeName=" + typeName);
+            string json = restSvc.HttpGet(url + DESCRIBE_SEMANTIC_TYPE, "semanticTypeName=" + typeName);
+            var ret = JsonConvert.DeserializeObject<PropertyContainer>(json);
+
+            return ret;
 
             // Amazing, but needs a bunch of type descriptor support to display and Expando object on a property grid.
-			// See HopeShapesPublishSemanticType.cs for implementation.
-            var converter = new Newtonsoft.Json.Converters.ExpandoObjectConverter();
-			dynamic inst = JsonConvert.DeserializeObject<ExpandoObject>(ret, converter);
+            // See HopeShapesPublishSemanticType.cs for implementation.
+            //         var converter = new Newtonsoft.Json.Converters.ExpandoObjectConverter();
+            //dynamic inst = JsonConvert.DeserializeObject<ExpandoObject>(ret, converter);
 
-			return inst;
+            // return inst;
         }
 
-		public void Publish(string typeName, object jsonObject)
+        public void Publish(string typeName, object jsonObject)
         {
             IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
             string json = JsonConvert.SerializeObject(jsonObject);

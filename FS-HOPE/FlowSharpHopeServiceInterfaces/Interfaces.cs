@@ -1,5 +1,6 @@
-﻿using Clifton.Core.Semantics;
-using Clifton.Core.ServiceManagement;
+﻿using Clifton.Core.ServiceManagement;
+
+using FlowSharpHopeCommon;
 
 namespace FlowSharpHopeServiceInterfaces
 {
@@ -9,7 +10,7 @@ namespace FlowSharpHopeServiceInterfaces
         void UnloadHopeAssembly();
         void InstantiateReceptors();
         void EnableDisableReceptor(string typeName, bool state);
-        object InstantiateSemanticType(string typeName);
+        PropertyContainer DescribeSemanticType(string typeName);
         void Publish(string typeName, object st);
     }
 }

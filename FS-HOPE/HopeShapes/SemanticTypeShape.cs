@@ -49,7 +49,7 @@ namespace HopeShapes
             PropertyContainer pc = hope.DescribeSemanticType(Text);
             CustomClass cls = new CustomClass();
             AddProperties(cls, pc);
-            PublishSemanticType pst = new PublishSemanticType(Text, cls, hope);
+            PublishSemanticType pst = new PublishSemanticType(Text, pc, cls, hope);
             pst.Show();
         }
 
@@ -58,7 +58,7 @@ namespace HopeShapes
         /// Any PropertyData that has a non-null ChildType is a reference type.
         /// These are added to "CustomClass", which is used to create the PropertyGrid properties at runtime.
         /// </summary>
-        protected void AddProperties(CustomClass cls, PropertyContainer pc)
+        protected void AddProperties(CustomClass cls, PropertyContainer pc, string root = "")
         {
             pc.Types.ForEach(pd =>
             {
@@ -74,11 +74,12 @@ namespace HopeShapes
                         val = Activator.CreateInstance(type);
                     }
 
-                    cls.Add(new CustomProperty(pd.Name, val, pd.Description, pd.Category, type, false, true));
+                    // TODO: Resolve property names that are the same.
+                    cls.Add(new CustomProperty(root, pd.Name, val, pd.Description, pd.Category, type, false, true));
                 }
                 else
                 {
-                    AddProperties(cls, pd.ChildType);
+                    AddProperties(cls, pd.ChildType, pd.Name);
                 }
             });
         }

@@ -5,6 +5,7 @@ namespace HopeShapes.PropertyGridHelpers
     // From: https://www.codeproject.com/Articles/9280/Add-Remove-Items-to-from-PropertyGrid-at-Runtime
     public class CustomProperty
     {
+        public string Root { get; set; }
         public string Name { get; set; }
         public bool ReadOnly { get; set; }
         public bool Visible { get; set; }
@@ -13,8 +14,9 @@ namespace HopeShapes.PropertyGridHelpers
         public string Category { get; set; }
         public Type PropertyType { get; set; }
 
-        public CustomProperty(string name, object value, string description, string category, Type propertyType, bool readOnly = false, bool visible = true)
+        public CustomProperty(string root, string name, object value, string description, string category, Type propertyType, bool readOnly = false, bool visible = true)
         {
+            Root = root;
             Name = name;
             Value = value;
             ReadOnly = readOnly;

@@ -132,6 +132,11 @@ namespace FlowSharpHopeService
             runner.Publish(typeName, st);
         }
 
+        public void Publish(string typeName, string json)
+        {
+            runner.Publish(typeName, json);
+        }
+
         protected void InitializeEditorsMenu()
         {
             ToolStripMenuItem hopeToolStripMenuItem = new ToolStripMenuItem() { Name = "mnuHope", Text = "&Hope" };

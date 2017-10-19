@@ -4,18 +4,25 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
+
+using FlowSharpHopeCommon;
 using FlowSharpHopeServiceInterfaces;
+
+using HopeShapes.PropertyGridHelpers;
 
 namespace HopeShapes
 {
     public partial class PublishSemanticType : Form
     {
+        protected PropertyContainer pc;
         protected IHigherOrderProgrammingService hope;
         protected string typeName;
 
-        public PublishSemanticType(string typeName, object st, IHigherOrderProgrammingService hope)
+        public PublishSemanticType(string typeName, PropertyContainer pc, object st, IHigherOrderProgrammingService hope)
         {
             if (st is ExpandoObject)
             {
@@ -24,6 +31,7 @@ namespace HopeShapes
 
             InitializeComponent();
             Text = typeName;
+            this.pc = pc;
             this.hope = hope;
             this.typeName = typeName;
             pgSemanticType.SelectedObject = st;
@@ -40,7 +48,57 @@ namespace HopeShapes
 
         private void btnPublish_Click(object sender, EventArgs e)
         {
-            hope.Publish(typeName, pgSemanticType.SelectedObject);
+            string json = CreateJson(pc, pgSemanticType.SelectedObject);
+            // hope.Publish(typeName, pgSemanticType.SelectedObject);
+            hope.Publish(typeName, json);
+        }
+
+        private string CreateJson(PropertyContainer pc, object obj)
+        {
+            StringBuilder sb = new StringBuilder("}");
+            SerializeProperties(sb, pc, obj);
+            sb.Append("}");
+
+            return sb.ToString();
+        }
+
+        // TODO: As per comment in SemanticTypeShapes.cs, this does not account for properties with the same name.
+        private void SerializeProperties(StringBuilder sb, PropertyContainer pc, object obj)
+        {
+            string comma = SerializeValueTypes(sb, pc.Types, obj);
+            SerializeObjectTypes(sb, pc.Types, obj, comma);
+        }
+
+        private string SerializeValueTypes(StringBuilder sb, List<PropertyData> propertyData, object obj)
+        {
+            string comma = "";
+
+            propertyData.Where(t => t.ChildType == null).ForEach(ct =>
+            {
+                string val = ((CustomClass)obj)[ct.Name]?.ToString();
+
+                if (val != null)
+                {
+                    sb.Append(comma);
+                    sb.Append(ct.Name.Quote() + ":" + val.Quote());
+                    comma = ", ";
+                }
+            });
+
+            return comma;
+        }
+
+        private void SerializeObjectTypes(StringBuilder sb, List<PropertyData> propertyData, object obj, string comma)
+        {
+            propertyData.Where(t => t.ChildType != null).ForEach(ct =>
+            {
+                sb.Append(comma);
+                sb.Append(ct.Name.Quote() + ":{");
+                string comma2 = SerializeValueTypes(sb, ct.ChildType.Types, obj);
+                SerializeObjectTypes(sb, ct.ChildType.Types, obj, comma2);
+                sb.Append("}");
+                comma = ", ";
+            });
         }
     }
 

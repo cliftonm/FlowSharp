@@ -52,5 +52,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\clifton\Clifton.Core\Clifton.Core.csproj">
+      <Project>{54e73707-81c4-4c7f-9739-446c6d7d5fea}</Project>
+      <Name>Clifton.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

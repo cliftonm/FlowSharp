@@ -12,15 +12,11 @@ namespace HopeShapes.PropertyGridHelpers
             List.Add(Value);
         }
 
-        /// <summary>
-        /// Remove item from List
-        /// </summary>
-        /// <param name="Name"></param>
-        public void Remove(string Name)
+        public void Remove(string name)
         {
             foreach (CustomProperty prop in base.List)
             {
-                if (prop.Name == Name)
+                if (prop.Name == name)
                 {
                     base.List.Remove(prop);
                     return;
@@ -28,10 +24,26 @@ namespace HopeShapes.PropertyGridHelpers
             }
         }
 
-        /// <summary>
-        /// Indexer
-        /// </summary>
-        public CustomProperty this[int index]
+        public CustomProperty this[string name]
+        {
+            get
+            {
+                CustomProperty ret = null;
+
+                foreach (CustomProperty prop in base.List)
+                {
+                    if (prop.Name == name)
+                    {
+                        ret = prop;
+                        break;
+                    }
+                }
+
+                return ret;
+            }
+        }
+
+    public CustomProperty this[int index]
         {
             get
             {

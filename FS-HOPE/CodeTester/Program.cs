@@ -5,6 +5,8 @@ using System.Reflection;
 
 using Newtonsoft.Json;
 
+using Clifton.Core.Semantics;
+
 namespace CodeTester
 {
     public class Foo
@@ -26,6 +28,57 @@ namespace CodeTester
 
         public int J { get; set; }
     }
+
+
+    public class ST_Address : ISemanticType
+    {
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public ST_City City { get; set; }
+        public ST_State State { get; set; }
+        public ST_Zip Zip { get; set; }
+
+        public ST_Address()
+        {
+            City = new ST_City();
+            State = new ST_State();
+            Zip = new ST_Zip();
+        }
+    }
+
+    public class ST_Zip : ISemanticType
+    {
+        public ST_Zip5 Zip5 { get; set; }
+        public ST_Zip4 Zip4 { get; set; }
+
+        public ST_Zip()
+        {
+            Zip5 = new ST_Zip5();
+            Zip4 = new ST_Zip4();
+        }
+    }
+
+    public class ST_Zip4 : ISemanticType
+    {
+        public string Zip4 { get; set; }
+    }
+
+    public class ST_Zip5 : ISemanticType
+    {
+        public string Zip5 { get; set; }
+    }
+
+    public class ST_City : ISemanticType
+    {
+        public string City { get; set; }
+    }
+
+    public class ST_State : ISemanticType
+    {
+        public string State { get; set; }
+    }
+
+
 
     public class PropertyContainer
     {
@@ -54,7 +107,7 @@ namespace CodeTester
     {
         static void Main(string[] args)
         {
-            Type t = typeof(Foo);
+            Type t = typeof(ST_Address);
             PropertyInfo[] pis = t.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             PropertyContainer pc = new PropertyContainer();
             BuildTypes(pc, pis);

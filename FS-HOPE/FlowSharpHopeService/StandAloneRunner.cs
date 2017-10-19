@@ -97,9 +97,14 @@ namespace FlowSharpHopeService
 
         public void Publish(string typeName, object jsonObject)
         {
-            IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
             string json = JsonConvert.SerializeObject(jsonObject);
 
+            Publish(typeName, json);
+        }
+
+        public void Publish(string typeName, string json)
+        {
+            IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
             Dictionary<string, string> data = new Dictionary<string, string>()
             {
                 {"semanticTypeName", typeName },

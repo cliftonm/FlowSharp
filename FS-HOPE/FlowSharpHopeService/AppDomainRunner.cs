@@ -92,6 +92,10 @@ namespace FlowSharpHopeService
             appDomainRunner.Publish((ISemanticType)st);
         }
 
+        public void Publish(string typeName, string json)
+        {
+        }
+
         private AppDomain CreateAppDomain(string dllName)
         {
             AppDomainSetup setup = new AppDomainSetup()

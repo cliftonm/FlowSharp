@@ -95,5 +95,9 @@ namespace FlowSharpHopeService
         {
             sp.ProcessInstance<HopeMembrane>((ISemanticType)st, true);
         }
+
+        public void Publish(string typeName, string json)
+        {
+        }
     }
 }

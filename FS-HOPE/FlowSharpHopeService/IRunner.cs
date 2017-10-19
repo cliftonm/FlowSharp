@@ -21,5 +21,6 @@ namespace FlowSharpHopeService
         void EnableDisableReceptor(string typeName, bool state);
         PropertyContainer DescribeSemanticType(string typeName);
         void Publish(string typeName, object st);
+        void Publish(string typeName, string json);
     }
 }

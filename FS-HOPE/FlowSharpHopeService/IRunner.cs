@@ -14,10 +14,10 @@ namespace FlowSharpHopeService
         void Load(string fullName);
 
         void Unload();
-        [Obsolete]
-        void InstantiateReceptor(Type t);
+        // [Obsolete]
+        // void InstantiateReceptor(Type t);
         void InstantiateReceptor(string name);
-        void InstantiateReceptors();
+        // void InstantiateReceptors();
         void EnableDisableReceptor(string typeName, bool state);
         PropertyContainer DescribeSemanticType(string typeName);
         void Publish(string typeName, object st);

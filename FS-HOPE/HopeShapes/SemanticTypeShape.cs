@@ -72,6 +72,11 @@ namespace HopeShapes
                     if (type.Name != "String")
                     {
                         val = Activator.CreateInstance(type);
+                        // TODO: Do a type conversion to assign the value.
+                    }
+                    else
+                    {
+                        val = pd.Value;
                     }
 
                     // TODO: Resolve property names that are the same.

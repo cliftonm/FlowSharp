@@ -335,6 +335,7 @@ namespace FlowSharpHopeService
             parameters.ReferencedAssemblies.Add("System.Drawing.dll");
             parameters.ReferencedAssemblies.Add("System.Net.dll");
             parameters.ReferencedAssemblies.Add("System.Windows.Forms.dll");
+            parameters.ReferencedAssemblies.Add("System.Xml.dll");
 
             parameters.ReferencedAssemblies.Add("System.Speech.dll");
 

@@ -6,6 +6,7 @@
         public string Description { get; set; }
         public string Name { get; set; }
         public string TypeName { get; set; }
+        public string Value { get; set; }
         public PropertyContainer ChildType { get; set; }
 
         public PropertyData()

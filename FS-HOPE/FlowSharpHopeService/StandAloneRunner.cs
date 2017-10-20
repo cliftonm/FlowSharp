@@ -22,7 +22,6 @@ namespace FlowSharpHopeService
         protected Process process;
         protected string url = "http://localhost:5001/";
         protected const string INSTANTIATE_RECEPTOR = "instantiateReceptor";
-        protected const string INSTANTIATE_RECEPTORS = "instantiateReceptors";
         protected const string INSTANTIATE_SEMANTIC_TYPE = "instantiateSemanticType";
         protected const string DESCRIBE_SEMANTIC_TYPE = "describeSemanticType";
         protected const string PUBLISH_SEMANTIC_TYPE = "publishSemanticType";
@@ -60,23 +59,11 @@ namespace FlowSharpHopeService
 			loaded = false;
 		}
 
-		public void InstantiateReceptor(Type t)
-        {
-            IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
-            restSvc.HttpGet(url + INSTANTIATE_RECEPTOR, "receptorTypeName=" + t.FullName);
-        }
-
         public void InstantiateReceptor(string name)
         {
             IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
             // TODO: Fix the hardcoded "App." -- figure out some way of getting the namespace?
             restSvc.HttpGet(url + INSTANTIATE_RECEPTOR, "receptorTypeName=" + "App." + name);
-        }
-
-        public void InstantiateReceptors()
-        {
-            IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
-            restSvc.HttpGet(url + INSTANTIATE_RECEPTORS, "");
         }
 
         public PropertyContainer DescribeSemanticType(string typeName)

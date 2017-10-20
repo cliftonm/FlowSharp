@@ -9,8 +9,6 @@ using HopeRunnerAppDomainInterface;
 
 namespace FlowSharpHopeService
 {
-    public class HopeMembrane : Membrane { }
-
     // Must be derived from MarshalByRefObject so that the Processing event handler stays wired up to its handler on the callback from the app domain.
     [Serializable]
     public class AppDomainRunner : MarshalByRefObject, IRunner
@@ -54,17 +52,7 @@ namespace FlowSharpHopeService
             }
         }
 
-        public void InstantiateReceptor(Type t)
-        {
-            appDomainRunner.InstantiateReceptor(t.Name);
-        }
-
         public void InstantiateReceptor(string name)
-        {
-            // TODO: Implement.
-        }
-
-        public void InstantiateReceptors()
         {
             // TODO: Implement.
         }

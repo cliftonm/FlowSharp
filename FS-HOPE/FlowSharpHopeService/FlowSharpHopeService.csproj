@@ -34,9 +34,6 @@
     <Reference Include="Clifton.Core">
       <HintPath>..\..\Libs\Clifton.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Clifton.SemanticProcessorService">
-      <HintPath>..\..\Libs\Clifton.SemanticProcessorService.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\Newtonsoft.Json.dll</HintPath>
@@ -65,6 +62,10 @@
     <Compile Include="StandAloneRunner.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\clifton\Clifton.Core\Services\Clifton.SemanticProcessorService\Clifton.SemanticProcessorService.csproj">
+      <Project>{b716a014-8c9f-4a24-83a4-acbae19c28c5}</Project>
+      <Name>Clifton.SemanticProcessorService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\FlowSharpLib\FlowSharpLib.csproj">
       <Project>{07f65ca7-b8d3-4716-bfbf-812ef4da68be}</Project>
       <Name>FlowSharpLib</Name>

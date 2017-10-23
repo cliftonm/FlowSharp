@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +10,7 @@ using System.Windows.Forms;
 
 using Microsoft.CSharp;
 
+using Clifton.Core.Assertions;
 using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ModuleManagement;
 using Clifton.Core.Semantics;
@@ -34,9 +36,12 @@ namespace FlowSharpHopeService
 
     public class HigherOrderProgrammingService : ServiceBase, IHigherOrderProgrammingService
     {
+        public bool RunnerLoaded { get { return runner.Loaded; } }
+
         protected ToolStripMenuItem mnuBuild = new ToolStripMenuItem() { Name = "mnuBuild", Text = "Build" };
         protected ToolStripMenuItem mnuRun = new ToolStripMenuItem() { Name = "mnuRun", Text = "Run" };
         protected ToolStripMenuItem mnuStop = new ToolStripMenuItem() { Name = "mnuStop", Text = "Stop" };
+        protected ToolStripMenuItem mnuShowRouting = new ToolStripMenuItem() { Name = "mnuShowRouting", Text = "Show Routing" };
         protected Dictionary<string, string> tempToTextBoxMap = new Dictionary<string, string>();
         protected IRunner runner;
         protected Animator animator;
@@ -44,8 +49,8 @@ namespace FlowSharpHopeService
         public override void FinishedInitialization()
         {
             // runner = new AppDomainRunner();
-            runner = new StandAloneRunner(ServiceManager);
-            // runner = new InAppRunner();
+            // runner = new StandAloneRunner(ServiceManager);
+            runner = new InAppRunner();
             animator = new Animator(ServiceManager);
             runner.Processing += animator.Animate;
 
@@ -63,57 +68,31 @@ namespace FlowSharpHopeService
 
         public void UnloadHopeAssembly()
         {
-            runner.Unload();
-            animator.RemoveCarriers();
+            Assert.SilentTry(() =>
+            {
+                runner.Unload();
+                animator.RemoveCarriers();
+            });
         }
+
+        //public List<ReceptorDescription> DescribeReceptors()
+        //{
+        //}
 
         public void InstantiateReceptors()
         {
-            // runner.InstantiateReceptors();
+            List<IAgentReceptor> receptors = GetReceptors();
+            receptors.Where(r=>r.Enabled).ForEach(r => runner.InstantiateReceptor(r.AgentName));
+        }
+
+        protected List<IAgentReceptor> GetReceptors()
+        {
             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
             BaseController canvasController = canvasService.ActiveController;
             List<IAgentReceptor> receptors = GetReceptors(canvasController);
-            receptors.Where(r=>r.Enabled).ForEach(r => runner.InstantiateReceptor(r.AgentName));
 
+            return receptors;
         }
-        //         var outputWindow = ServiceManager.Get<IFlowSharpCodeOutputWindowService>();
-        //         IFlowSharpMenuService menuService = ServiceManager.Get<IFlowSharpMenuService>();
-        //string filename = GetExeOrDllFilename(menuService.Filename);
-
-        //         // Assembly assy = Assembly.ReflectionOnlyLoadFrom(filename);
-        //         AppDomain ad = AppDomain.CreateDomain("temp");
-        //         byte[] assemblyBytes = File.ReadAllBytes(filename);
-        //         var assy = ad.Load(assemblyBytes);
-
-        //         var (agents, errors) = GetAgents(assy);
-
-        //         AppDomain.Unload(ad);
-
-        //         if (errors.Count > 0)
-        //         {
-        //             outputWindow.WriteLine(String.Join("\r\n", errors));
-        //         }
-        //         else
-        //         {
-        //             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
-        //             BaseController canvasController = canvasService.ActiveController;
-        //             List<IAgentReceptor> receptors = GetReceptors(canvasController);
-
-        //             foreach (var el in receptors)
-        //             {
-        //                 Type agent = agents.SingleOrDefault(a => a.Name == el.AgentName);
-
-        //                 if (agent == null)
-        //                 {
-        //                     outputWindow.WriteLine("Receptor " + el.Text + " references an agent that is not defined: " + el.AgentName);
-        //                 }
-        //                 else
-        //                 {
-        //                     runner.InstantiateReceptor(agent);
-        //                 }
-        //             }
-        //         }
-        //     }
 
         public void EnableDisableReceptor(string typeName, bool state)
         {
@@ -140,11 +119,85 @@ namespace FlowSharpHopeService
         protected void InitializeEditorsMenu()
         {
             ToolStripMenuItem hopeToolStripMenuItem = new ToolStripMenuItem() { Name = "mnuHope", Text = "&Hope" };
-            hopeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { mnuBuild, mnuRun, mnuStop });
+            hopeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { mnuBuild, mnuRun, mnuStop, mnuShowRouting });
             ServiceManager.Get<IFlowSharpMenuService>().AddMenu(hopeToolStripMenuItem);
             mnuBuild.Click += OnHopeBuild;
             mnuRun.Click += OnHopeRun;
             mnuStop.Click += OnHopeStop;
+            mnuShowRouting.Click += OnShowRouting;
+        }
+
+        protected void OnShowRouting(object sender, EventArgs e)
+        {
+            mnuShowRouting.Checked ^= true;
+
+            mnuShowRouting.Checked.IfElse(ShowRouting, RemoveRouting);
+
+        }
+
+        protected void ShowRouting()
+        {
+            LoadIfNotLoaded();
+            List<IAgentReceptor> receptors = GetReceptors();
+            List<ReceptorDescription> descr = new List<ReceptorDescription>();
+
+            receptors.Where(r => r.Enabled).ForEach(r =>
+            {
+                descr.AddRange(runner.DescribeReceptor(r.AgentName));
+            });
+
+            CreateConnectors(descr);
+        }
+
+        protected void RemoveRouting()
+        {
+            IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+            BaseController canvasController = canvasService.ActiveController;
+            var receptorConnections = canvasController.Elements.Where(el => el.Name == "RCPTRCONN").ToList();
+
+            receptorConnections.ForEach(rc => canvasController.DeleteElement(rc));
+        }
+
+        protected void CreateConnectors(List<ReceptorDescription> descr)
+        {
+            IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
+            BaseController canvasController = canvasService.ActiveController;
+            Canvas canvas = canvasController.Canvas;
+
+            descr.ForEach(d =>
+            {
+                GraphicElement elSrc = canvasController.Elements.Single(el => (el is IAgentReceptor) && el.Text.RemoveWhitespace() == d.ReceptorTypeName);
+
+                d.Publishes.ForEach(p =>
+                {
+                    // Get all receivers that receive the type being published.
+                    var receivers = descr.Where(r => r.ReceivingSemanticType == p);
+
+                    receivers.ForEach(r =>
+                    {
+                        GraphicElement elDest = canvasController.Elements.Single(el => (el is IAgentReceptor) && el.Text.RemoveWhitespace() == r.ReceptorTypeName);
+                        DiagonalConnector dc = new DiagonalConnector(canvas, elSrc.DisplayRectangle.Center(), elDest.DisplayRectangle.Center());
+                        dc.Name = "RCPTRCONN";
+                        dc.EndCap = AvailableLineCap.Arrow;
+                        dc.BorderPenColor = Color.Red;
+                        dc.UpdateProperties();
+                        canvasController.Insert(dc);
+                    });
+
+                });
+            });
+        }
+
+        protected void RemoveConnectors(List<ReceptorDescription> descr)
+        {
+        }
+
+        protected void LoadIfNotLoaded()
+        {
+            if (!runner.Loaded)
+            {
+                LoadHopeAssembly();
+            }
         }
 
         protected void OnHopeBuild(object sender, EventArgs e)
@@ -232,7 +285,7 @@ namespace FlowSharpHopeService
 		{
 			// TODO: We should really check if the any of the C# shape code-behind contains App.Main
 			bool isStandAlone = runner is StandAloneRunner;
-			string ext = isStandAlone ? ".exe" : ".dll";
+            string ext = isStandAlone ? ".exe" : ".exe"; //  ".dll";            // TODO: Put back to DLL unless, for inAppRunner, we want to still load the exe?
 			string filename = String.IsNullOrEmpty(fn) ? "temp" + ext : Path.GetFileNameWithoutExtension(fn) + ext;
 
 			return filename;

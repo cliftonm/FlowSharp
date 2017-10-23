@@ -43,9 +43,15 @@ namespace HopeShapes
         {
             IServiceManager serviceManager = canvas.ServiceManager;
             IHigherOrderProgrammingService hope = serviceManager.Get<IHigherOrderProgrammingService>();
-            hope.UnloadHopeAssembly();
-            hope.LoadHopeAssembly();
-            hope.InstantiateReceptors();
+            // hope.UnloadHopeAssembly();
+            // hope.LoadHopeAssembly();
+
+            if (!hope.RunnerLoaded)
+            {
+                hope.LoadHopeAssembly();
+                hope.InstantiateReceptors();
+            }
+
             PropertyContainer pc = hope.DescribeSemanticType(Text);
             CustomClass cls = new CustomClass();
             AddProperties(cls, pc);

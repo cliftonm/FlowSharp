@@ -17,6 +17,7 @@ namespace FlowSharpHopeService
     public class StandAloneRunner : IRunner
     {
         public event EventHandler<HopeRunnerAppDomainInterface.ProcessEventArgs> Processing;
+        public bool Loaded { get { return loaded; } }
 
         protected IServiceManager serviceManager;
         protected Process process;
@@ -24,6 +25,7 @@ namespace FlowSharpHopeService
         protected const string INSTANTIATE_RECEPTOR = "instantiateReceptor";
         protected const string INSTANTIATE_SEMANTIC_TYPE = "instantiateSemanticType";
         protected const string DESCRIBE_SEMANTIC_TYPE = "describeSemanticType";
+        protected const string DESCRIBE_RECEPTOR = "describeReceptor";
         protected const string PUBLISH_SEMANTIC_TYPE = "publishSemanticType";
         protected const string ENABLE_DISABLE_RECEPTOR = "enableDisableReceptor";
         protected const string CLOSE = "close";
@@ -64,6 +66,15 @@ namespace FlowSharpHopeService
             IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
             // TODO: Fix the hardcoded "App." -- figure out some way of getting the namespace?
             restSvc.HttpGet(url + INSTANTIATE_RECEPTOR, "receptorTypeName=" + "App." + name);
+        }
+
+        public List<ReceptorDescription> DescribeReceptor(string typeName)
+        {
+            IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
+            string json = restSvc.HttpGet(url + DESCRIBE_RECEPTOR, "receptorName=" + typeName);
+            var ret = JsonConvert.DeserializeObject<List<ReceptorDescription>>(json);
+
+            return ret;
         }
 
         public PropertyContainer DescribeSemanticType(string typeName)

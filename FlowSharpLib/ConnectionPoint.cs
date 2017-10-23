@@ -23,7 +23,10 @@ namespace FlowSharpLib
 		// for lines:
 		Start,
 		End,
-	};
+
+        // Other anchor points:
+        Center,
+    };
 
 	public class ConnectionPoint
 	{

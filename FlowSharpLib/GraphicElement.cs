@@ -99,11 +99,13 @@ namespace FlowSharpLib
         protected bool HasCenterAnchors { get; set; }
         protected bool HasLeftRightAnchors { get; set; }
         protected bool HasTopBottomAnchors { get; set; }
+        protected bool HasCenterAnchor { get; set; }
 
         protected bool HasCornerConnections { get; set; }
         protected bool HasCenterConnections { get; set; }
         protected bool HasLeftRightConnections { get; set; }
         protected bool HasTopBottomConnections { get; set; }
+        protected bool HasCenterConnection { get; set; }
 
         protected Bitmap background;
         protected Rectangle backgroundRectangle;
@@ -134,10 +136,12 @@ namespace FlowSharpLib
             HasCornerAnchors = true;
             HasLeftRightAnchors = false;
             HasTopBottomAnchors = false;
+            HasCenterAnchor = false;
             HasCenterConnections = true;
             HasCornerConnections = true;
             HasLeftRightConnections = false;
             HasTopBottomConnections = false;
+            HasCenterConnection = false;
             FillBrush = new SolidBrush(Color.White);
             BorderPen = new Pen(Color.Black);
             BorderPen.Width = 1;
@@ -331,6 +335,9 @@ namespace FlowSharpLib
             epb.HasLeftRightConnections = HasLeftRightConnections;
             epb.HasTopBottomConnections = HasTopBottomConnections;
 
+            epb.HasCenterAnchor = HasCenterAnchor;
+            epb.HasCenterConnection = HasCenterConnection;
+
             Connections.ForEach(c => c.Serialize(epb, elementsBeingSerialized));
             GroupChildren.ForEach(c => epb.Children.Add(new ChildPropertyBag() { ChildId = c.Id }));
         }
@@ -370,6 +377,9 @@ namespace FlowSharpLib
             HasCenterConnections = epb.HasCenterConnections;
             HasLeftRightConnections = epb.HasLeftRightConnections;
             HasTopBottomConnections = epb.HasTopBottomConnections;
+            HasCenterConnection = epb.HasCenterConnection;
+
+            HasCenterAnchor = epb.HasCenterAnchor;
         }
 
         public virtual void FinalFixup(List<GraphicElement> elements, ElementPropertyBag epb, Dictionary<Guid, Guid> oldNewGuidMap)
@@ -447,6 +457,13 @@ namespace FlowSharpLib
                     Draw(gr);
                 }
 
+                // Draw text before anchors and CP's, otherwise centered text will overlay
+                // on top of any center anchor/CP.
+                if (!String.IsNullOrEmpty(Text))
+                {
+                    DrawText(gr);
+                }
+
                 if (ShowAnchors)
                 {
                     DrawAnchors(gr);
@@ -455,11 +472,6 @@ namespace FlowSharpLib
                 if (ShowConnectionPoints)
                 {
                     DrawConnectionPoints(gr);
-                }
-
-                if (!String.IsNullOrEmpty(Text))
-                {
-                    DrawText(gr);
                 }
 
                 if (IsBookmarked)
@@ -531,7 +543,13 @@ namespace FlowSharpLib
 				anchors.Add(new ShapeAnchor(GripType.BottomMiddle, r, Cursors.SizeNS));
 			}
 
-			return anchors;
+            if (HasCenterAnchor)
+            {
+                r = new Rectangle(ZoomRectangle.Center().Move(-anchorWidthHeight / 2, -anchorWidthHeight / 2), anchorSize);
+                anchors.Add(new ShapeAnchor(GripType.Center, r, Cursors.Cross));
+            }
+
+            return anchors;
 		}
 
 		public virtual List<ConnectionPoint> GetConnectionPoints()
@@ -565,6 +583,11 @@ namespace FlowSharpLib
 				connectionPoints.Add(new ConnectionPoint(GripType.Start, DisplayRectangle.TopMiddle()));
 				connectionPoints.Add(new ConnectionPoint(GripType.End, DisplayRectangle.BottomMiddle()));
 			}
+
+            if (HasCenterConnection)
+            {
+                connectionPoints.Add(new ConnectionPoint(GripType.Center, DisplayRectangle.Center()));
+            }
 
 			return connectionPoints;
 		}
@@ -699,9 +722,9 @@ namespace FlowSharpLib
                 // We change where the connection point renders, not the unzoomed connection point.
                 var cpz = AdjustForZoom(cp);
 				gr.FillRectangle(anchorBrush, new Rectangle(cpz.Point.X - BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y - BaseController.CONNECTION_POINT_SIZE, BaseController.CONNECTION_POINT_SIZE*2, BaseController.CONNECTION_POINT_SIZE*2));
-				gr.DrawLine(connectionPointPen, cpz.Point.X - BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y - BaseController.CONNECTION_POINT_SIZE, cpz.Point.X + BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y + BaseController.CONNECTION_POINT_SIZE);
-				gr.DrawLine(connectionPointPen, cpz.Point.X + BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y - BaseController.CONNECTION_POINT_SIZE, cpz.Point.X - BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y + BaseController.CONNECTION_POINT_SIZE);
-			});
+                gr.DrawLine(connectionPointPen, cpz.Point.X - BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y - BaseController.CONNECTION_POINT_SIZE, cpz.Point.X + BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y + BaseController.CONNECTION_POINT_SIZE);
+                gr.DrawLine(connectionPointPen, cpz.Point.X + BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y - BaseController.CONNECTION_POINT_SIZE, cpz.Point.X - BaseController.CONNECTION_POINT_SIZE, cpz.Point.Y + BaseController.CONNECTION_POINT_SIZE);
+            });
 		}
 
         protected ConnectionPoint AdjustForZoom(ConnectionPoint cp)

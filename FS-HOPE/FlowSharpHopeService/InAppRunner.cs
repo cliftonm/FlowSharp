@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -27,6 +28,7 @@ namespace FlowSharpHopeService
     /// </summary>
     public class InAppRunner : IRunner
     {
+        public bool Loaded { get; protected set; }
         public event EventHandler<HopeRunnerAppDomainInterface.ProcessEventArgs> Processing;
 
         protected SemanticProcessor sp;
@@ -65,14 +67,40 @@ namespace FlowSharpHopeService
             Type t = assy.GetTypes().Single(at => at.Name == "HopeMembrane");
             membrane = (IMembrane)Activator.CreateInstance(t);
             sp.RegisterMembrane(membrane);
+            Loaded = true;
         }
 
         public void Unload()
         {
+            Loaded = false;
         }
 
         public void EnableDisableReceptor(string typeName, bool state)
         {
+        }
+
+        public List<ReceptorDescription> DescribeReceptor(string typeName)
+        {
+            List<ReceptorDescription> descrList = new List<ReceptorDescription>();
+            Type rtype = assy.GetTypes().Single(at => at.Name == typeName);
+
+            var mis = rtype.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(m => m.Name == "Process");
+
+            foreach(var mi in mis)
+            {
+                ReceptorDescription descr = new ReceptorDescription();
+                descr.ReceptorTypeName = typeName;
+                descr.ReceivingSemanticType =  mi.GetParameters()[2].ParameterType.Name;
+                descrList.Add(descr);
+                var attrs = mi.GetCustomAttributes().Where(attr => attr is PublishesAttribute).Cast<PublishesAttribute>();
+
+                foreach (var attr in attrs)
+                {
+                    descr.Publishes.Add(attr.PublishesType.Name);
+                }
+            }
+
+            return descrList;
         }
 
         public void InstantiateReceptor(string name)

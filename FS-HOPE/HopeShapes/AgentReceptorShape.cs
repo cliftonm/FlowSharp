@@ -7,6 +7,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
 
 using Clifton.Core.ExtensionMethods;
 using Clifton.Core.ServiceManagement;
@@ -67,6 +68,8 @@ namespace HopeShapes
             TextFont.Dispose();
             TextFont = new Font(FontFamily.GenericSansSerif, 6);
             FillBrush.Color = Color.LightGreen;
+            HasCenterAnchor = true;
+            HasCenterConnection = true;
         }
 
         public override GraphicElement CloneDefault(Canvas canvas, Point offset)
@@ -74,6 +77,8 @@ namespace HopeShapes
             enabled = true;
             GraphicElement el = base.CloneDefault(canvas, offset);
             el.Text = "Rcptr";
+            ((AgentReceptorShape)el).HasCenterAnchor = true;
+            ((AgentReceptorShape)el).HasCenterConnection = true;
             FillBrush.Color = Color.LightGreen;
 
             return el;
@@ -146,7 +151,7 @@ namespace HopeShapes
 
         public override GraphicElement CloneDefault(Canvas canvas, Point offset)
         {
-            AgentShape shape = new AgentShape(canvas);
+            AgentReceptorShape shape = new AgentReceptorShape(canvas);
             shape.DisplayRectangle = shape.DefaultRectangle().Move(offset);
             shape.UpdateProperties();
             shape.UpdatePath();

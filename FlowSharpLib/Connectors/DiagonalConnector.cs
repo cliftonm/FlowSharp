@@ -19,7 +19,6 @@ namespace FlowSharpLib
 
         public DiagonalConnector(Canvas canvas) : base(canvas)
         {
-            Initialize();
         }
 
         public DiagonalConnector(Canvas canvas, Point start, Point end) : base(canvas)
@@ -27,11 +26,6 @@ namespace FlowSharpLib
             StartPoint = start;
             EndPoint = end;
             DisplayRectangle = RecalcDisplayRectangle();
-            Initialize();
-        }
-
-        protected void Initialize()
-        {
         }
 
         public override bool IsSelectable(Point p)

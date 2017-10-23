@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using FlowSharpHopeCommon;
 
@@ -6,6 +7,7 @@ namespace FlowSharpHopeService
 {
     public interface IRunner
     {
+        bool Loaded { get; }
         event EventHandler<HopeRunnerAppDomainInterface.ProcessEventArgs> Processing;
 
         /// <summary>
@@ -14,10 +16,8 @@ namespace FlowSharpHopeService
         void Load(string fullName);
 
         void Unload();
-        // [Obsolete]
-        // void InstantiateReceptor(Type t);
+        List<ReceptorDescription> DescribeReceptor(string name);
         void InstantiateReceptor(string name);
-        // void InstantiateReceptors();
         void EnableDisableReceptor(string typeName, bool state);
         PropertyContainer DescribeSemanticType(string typeName);
         void Publish(string typeName, object st);

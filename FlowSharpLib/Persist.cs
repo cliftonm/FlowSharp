@@ -64,8 +64,10 @@ namespace FlowSharpLib
 		public bool HasLeftRightAnchors { get; set; }
 		[XmlAttribute]
 		public bool HasTopBottomAnchors { get; set; }
+        [XmlAttribute]
+        public bool HasCenterAnchor { get; set; }
 
-		[XmlAttribute]
+        [XmlAttribute]
 		public bool HasCornerConnections { get; set; }
 		[XmlAttribute]
 		public bool HasCenterConnections { get; set; }
@@ -73,8 +75,10 @@ namespace FlowSharpLib
 		public bool HasLeftRightConnections { get; set; }
 		[XmlAttribute]
 		public bool HasTopBottomConnections { get; set; }
+        [XmlAttribute]
+        public bool HasCenterConnection { get; set; }
 
-		public AvailableLineCap StartCap { get; set; }
+        public AvailableLineCap StartCap { get; set; }
 		public AvailableLineCap EndCap { get; set; }
 
 		public Guid StartConnectedShapeId { get; set; }

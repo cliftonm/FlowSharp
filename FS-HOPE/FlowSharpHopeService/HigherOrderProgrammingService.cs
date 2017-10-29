@@ -49,8 +49,8 @@ namespace FlowSharpHopeService
         public override void FinishedInitialization()
         {
             // runner = new AppDomainRunner();
-            // runner = new StandAloneRunner(ServiceManager);
-            runner = new InAppRunner();
+            runner = new StandAloneRunner(ServiceManager);
+            // runner = new InAppRunner();
             animator = new Animator(ServiceManager);
             runner.Processing += animator.Animate;
 
@@ -285,7 +285,7 @@ namespace FlowSharpHopeService
 		{
 			// TODO: We should really check if the any of the C# shape code-behind contains App.Main
 			bool isStandAlone = runner is StandAloneRunner;
-            string ext = isStandAlone ? ".exe" : ".exe"; //  ".dll";            // TODO: Put back to DLL unless, for inAppRunner, we want to still load the exe?
+            string ext = isStandAlone ? ".exe" : ".dll";
 			string filename = String.IsNullOrEmpty(fn) ? "temp" + ext : Path.GetFileNameWithoutExtension(fn) + ext;
 
 			return filename;

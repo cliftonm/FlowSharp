@@ -64,6 +64,10 @@ namespace FlowSharpLib
             ElementSelected.Fire(this, new ElementEventArgs() { Element = null });
         }
 
+        /// <summary>
+        /// Deselect grouped elements so that those selected in a grouping and those not in a grouping results in the grouped elements being
+        /// removed from the selection criteria, as grouped elements cannot be moved with non-grouped elements.
+        /// </summary>
         public override void DeselectGroupedElements()
         {
             List<GraphicElement> elementsToRemove = new List<GraphicElement>();
@@ -85,10 +89,10 @@ namespace FlowSharpLib
             }
             else
             {
-                // Select the first element.
+                // Select the first element.  TODO: WHY???
                 // TODO: This needs to fire an event that can handle the group of selected elements,
                 // particularly for PropertyGrid handling.
-                ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElements[0] });
+                // ElementSelected.Fire(this, new ElementEventArgs() { Element = selectedElements[0] });
             }
         }
 

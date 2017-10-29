@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
@@ -38,6 +39,8 @@ namespace FlowSharpCodeService
         protected ToolStripMenuItem mnuHtml = new ToolStripMenuItem() { Name = "mnuHtml", Text = "Html" };
         protected ToolStripMenuItem mnuCss = new ToolStripMenuItem() { Name = "mnuCss", Text = "Css" };
         protected ToolStripMenuItem mnuOutput = new ToolStripMenuItem() { Name = "mnuOutput", Text = "Output" };
+
+        protected Dictionary<string, int> fileCaretPos = new Dictionary<string, int>();
 
         public override void FinishedInitialization()
         {
@@ -532,11 +535,39 @@ namespace FlowSharpCodeService
             if (args.Element != null)
             {
                 GraphicElement el = args.Element;
+                System.Diagnostics.Trace.WriteLine("*** ON ELEMENT SELECTED " + el.Id.ToString());
                 elementProperties = el.CreateProperties();
-
+                
+                if (!String.IsNullOrEmpty(csCodeEditorService.Filename))
+                {
+                    // Save last position.
+                    int curpos = csCodeEditorService.GetPosition();
+                    fileCaretPos[csCodeEditorService.Filename] = curpos;
+                    System.Diagnostics.Trace.WriteLine("*** " + csCodeEditorService.Filename + " => SET CURRENT POS: " + curpos);
+                }
+                
                 string code;
                 el.Json.TryGetValue("Code", out code);
                 csCodeEditorService.SetText("C#", code ?? String.Empty);
+
+                string fn = el.Id.ToString();               // Use something that is unique for this shape's code.
+                System.Diagnostics.Trace.WriteLine("*** " + fn + " => SET ID");
+                csCodeEditorService.Filename = fn;
+
+                // Set the last known position if we have one.
+                int pos;
+
+                if (fileCaretPos.TryGetValue(fn, out pos))
+                {
+                    System.Diagnostics.Trace.WriteLine("*** " + fn + " => SET PREVIOUS POS: " + pos);
+                    csCodeEditorService.SetPosition(pos);
+                }
+                else
+                {
+                    // A newly seen document, set the caret to pos 0 so the editor doesn't retain
+                    // the previous scrollbar location.
+                    csCodeEditorService.SetPosition(0);
+                }
 
                 el.Json.TryGetValue("python", out code);
                 editorService.SetText("python", code ?? String.Empty);

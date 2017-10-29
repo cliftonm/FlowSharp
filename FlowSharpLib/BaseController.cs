@@ -403,14 +403,25 @@ namespace FlowSharpLib
             r.Inflate(GROUPBOX_INFLATE, GROUPBOX_INFLATE);
             groupBox.DisplayRectangle = r;
             shapesToGroup.ForEach(s => s.Parent = groupBox);
-            IEnumerable<GraphicElement> intersections = FindAllIntersections(groupBox);
+            List<GraphicElement> intersections = FindAllIntersections(groupBox).ToList();
+
+            // Also include shapes being grouped so these are erased as well, 
+            // otherwise they leave an "echo" behind the new grouping.
+            shapesToGroup.ForEach(s =>
+            {
+                if (!intersections.Contains(s))
+                {
+                    intersections.Add(s);
+                }
+            });
+
             EraseTopToBottom(intersections);
 
             // Insert groupbox just after the lowest shape being grouped.
             int insertionPoint = shapesToGroup.Select(s => elements.IndexOf(s)).OrderBy(n => n).Last() + 1;
             elements.Insert(insertionPoint, groupBox);
 
-            intersections = FindAllIntersections(groupBox);
+            intersections = FindAllIntersections(groupBox).ToList();
             DrawBottomToTop(intersections);
             UpdateScreen(intersections);
 

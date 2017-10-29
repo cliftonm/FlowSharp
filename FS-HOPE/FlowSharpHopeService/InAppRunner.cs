@@ -14,7 +14,7 @@ using FlowSharpHopeCommon;
 
 namespace App
 {
-    public class HopeMembrane : IMembrane { };
+    public class HopeMembrane : Membrane { };
 }
 
 namespace FlowSharpHopeService

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Dynamic;
+using System.Linq;
 
 using Newtonsoft.Json;
 
@@ -11,6 +11,9 @@ using Clifton.Core.ServiceManagement;
 using FlowSharpCodeServiceInterfaces;
 using FlowSharpHopeCommon;
 using FlowSharpServiceInterfaces;
+
+// TODO: We need to be able to un-instantiate receptors for when an externally loaded runner
+// is "unloaded" - in this case, the runner shouldn't be stopped, but the receptors should be disposed of and removed by the runner.
 
 namespace FlowSharpHopeService
 {
@@ -30,6 +33,7 @@ namespace FlowSharpHopeService
         protected const string ENABLE_DISABLE_RECEPTOR = "enableDisableReceptor";
         protected const string CLOSE = "close";
         protected bool loaded = false;
+        protected bool externallyStarted = false;
 		protected WebServer webServer;
 
 		public StandAloneRunner(IServiceManager serviceManager)
@@ -41,11 +45,25 @@ namespace FlowSharpHopeService
 
 		public void Load(string fullName)
         {
-			IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
-			process = codeSvc.LaunchProcess(fullName, String.Empty, _ => { });
-			loaded = true;
+            // Testing externally started is a workaround for the fact that once we detect the "Stand Alone Runner" app,
+            // which sets externallyStarted to true, subsequently any child windows that it opens results in AlreadyRunning
+            // returning false, so we have to check if we already know that the runner was externally started.
+            if (!AlreadyRunning() || externallyStarted)
+            {
+                IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
+                process = codeSvc.LaunchProcess(fullName, String.Empty, _ => { });
+                loaded = true;
+            }
+            else
+            {
+                externallyStarted = true;
+                loaded = false;     // Ensure loaded flag stays false so we don't unload an externally started process.
+            }
 		}
 
+        /// <summary>
+        /// An externally started runner will not be unloaded because the loaded flag is still false.
+        /// </summary>
         public void Unload()
 		{
             //IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
@@ -118,7 +136,7 @@ namespace FlowSharpHopeService
             // instantiate the receptor.  In the former case, we don't really want this, as the the stand-alone runner
             // may not be instantiated yet.  In the latter case, the user has the choice to stop the stand-alone runner
             // before creating more agent receptors.
-            if (loaded)
+            if (loaded || externallyStarted)
             {
                 IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
                 // TODO: Membrane is also required so we manipulate the correct receptor.
@@ -130,5 +148,13 @@ namespace FlowSharpHopeService
 		{
 			Processing.Fire(this, stMsg);
 		}
-	}
+
+        protected bool AlreadyRunning()
+        {
+            Process[] processes = Process.GetProcesses();
+            Process proc = processes.Where(p => p.MainWindowTitle == "Stand Alone Runner").SingleOrDefault();
+
+            return proc != null;
+        }
+    }
 }

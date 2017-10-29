@@ -65,9 +65,12 @@ namespace FlowSharpCodeServiceInterfaces
 
     public interface IFlowSharpCodeEditorService : IFlowSharpCodeEditorServiceBase
     {
+        string Filename { get; set; }
         void CreateEditor(Control parent);
         void AddAssembly(string filename);
         void AddAssembly(Type t);
+        int GetPosition();
+        void SetPosition(int pos);
     }
 
     public interface IFlowSharpScintillaEditorService : IFlowSharpCodeEditorServiceBase

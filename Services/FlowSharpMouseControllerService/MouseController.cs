@@ -279,6 +279,8 @@ namespace FlowSharpMouseControllerService
                 {
                     BaseController controller = serviceManager.Get<IFlowSharpCanvasService>().ActiveController;
                     controller.SnapController.Reset();
+                    // Deselect grouped elements so that those selected in a grouping and those not in a grouping results in the grouped elements being
+                    // removed from the selection criteria, as grouped elements cannot be moved with non-grouped elements.
                     controller.DeselectGroupedElements();
                     DraggingShapes = true;
                     startedDraggingShapesAt = CurrentMousePosition;

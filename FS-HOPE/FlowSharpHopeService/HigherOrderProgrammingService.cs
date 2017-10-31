@@ -130,9 +130,7 @@ namespace FlowSharpHopeService
         protected void OnShowRouting(object sender, EventArgs e)
         {
             mnuShowRouting.Checked ^= true;
-
             mnuShowRouting.Checked.IfElse(ShowRouting, RemoveRouting);
-
         }
 
         protected void ShowRouting()
@@ -153,7 +151,7 @@ namespace FlowSharpHopeService
         {
             IFlowSharpCanvasService canvasService = ServiceManager.Get<IFlowSharpCanvasService>();
             BaseController canvasController = canvasService.ActiveController;
-            var receptorConnections = canvasController.Elements.Where(el => el.Name == "RCPTRCONN").ToList();
+            var receptorConnections = canvasController.Elements.Where(el => el.Name == "_RCPTRCONN_").ToList();
 
             receptorConnections.ForEach(rc => canvasController.DeleteElement(rc));
         }
@@ -166,33 +164,39 @@ namespace FlowSharpHopeService
 
             descr.ForEach(d =>
             {
-                GraphicElement elSrc = canvasController.Elements.Single(el => (el is IAgentReceptor) && el.Text.RemoveWhitespace() == d.ReceptorTypeName);
+				// TODO: Deal with namespace handling better than this RightOof kludge.
+				// TODO: Converting to lowercase is a bit of a kludge as well.
+                GraphicElement elSrc = canvasController.Elements.SingleOrDefault(el => (el is IAgentReceptor) && el.Text.RemoveWhitespace().ToLower() == d.ReceptorTypeName.RightOf(".").ToLower());
 
-                d.Publishes.ForEach(p =>
-                {
-                    // Get all receivers that receive the type being published.
-                    var receivers = descr.Where(r => r.ReceivingSemanticType == p);
+				if (elSrc != null)
+				{
+					d.Publishes.ForEach(p =>
+					{
+					// Get all receivers that receive the type being published.
+					var receivers = descr.Where(r => r.ReceivingSemanticType == p);
 
-                    receivers.ForEach(r =>
-                    {
-                        GraphicElement elDest = canvasController.Elements.Single(el => (el is IAgentReceptor) && el.Text.RemoveWhitespace() == r.ReceptorTypeName);
-                        DiagonalConnector dc = new DiagonalConnector(canvas, elSrc.DisplayRectangle.Center(), elDest.DisplayRectangle.Center());
-                        dc.Name = "RCPTRCONN";
-                        dc.EndCap = AvailableLineCap.Arrow;
-                        dc.BorderPenColor = Color.Red;
-                        dc.UpdateProperties();
-                        canvasController.Insert(dc);
-                    });
+						receivers.ForEach(r =>
+						{
+							// TODO: Deal with namespace handling better than this RightOof kludge.
+							// TODO: Converting to lowercase is a bit of a kludge as well.
+							GraphicElement elDest = canvasController.Elements.SingleOrDefault(el => (el is IAgentReceptor) && el.Text.RemoveWhitespace().ToLower() == r.ReceptorTypeName.RightOf(".").ToLower());
 
-                });
+							if (elDest != null)
+							{
+								DiagonalConnector dc = new DiagonalConnector(canvas, elSrc.DisplayRectangle.Center(), elDest.DisplayRectangle.Center());
+								dc.Name = "_RCPTRCONN_";
+								dc.EndCap = AvailableLineCap.Arrow;
+								dc.BorderPenColor = Color.Red;
+								dc.UpdateProperties();
+								canvasController.Insert(dc);
+							}
+						});
+					});
+				}
             });
         }
 
-        protected void RemoveConnectors(List<ReceptorDescription> descr)
-        {
-        }
-
-        protected void LoadIfNotLoaded()
+		protected void LoadIfNotLoaded()
         {
             if (!runner.Loaded)
             {

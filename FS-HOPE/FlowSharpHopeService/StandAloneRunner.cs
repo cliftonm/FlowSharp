@@ -89,7 +89,8 @@ namespace FlowSharpHopeService
         public List<ReceptorDescription> DescribeReceptor(string typeName)
         {
             IFlowSharpRestService restSvc = serviceManager.Get<IFlowSharpRestService>();
-            string json = restSvc.HttpGet(url + DESCRIBE_RECEPTOR, "receptorName=" + typeName);
+			// TODO: Fix the hardcoded "App." -- figure out some way of getting the namespace?
+			string json = restSvc.HttpGet(url + DESCRIBE_RECEPTOR, "receptorName=" + "App." + typeName);
             var ret = JsonConvert.DeserializeObject<List<ReceptorDescription>>(json);
 
             return ret;

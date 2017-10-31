@@ -45,20 +45,22 @@ namespace FlowSharpHopeService
 
 		public void Load(string fullName)
         {
-            // Testing externally started is a workaround for the fact that once we detect the "Stand Alone Runner" app,
-            // which sets externallyStarted to true, subsequently any child windows that it opens results in AlreadyRunning
-            // returning false, so we have to check if we already know that the runner was externally started.
-            if (!AlreadyRunning() || externallyStarted)
-            {
-                IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
-                process = codeSvc.LaunchProcess(fullName, String.Empty, _ => { });
-                loaded = true;
-            }
-            else
-            {
-                externallyStarted = true;
-                loaded = false;     // Ensure loaded flag stays false so we don't unload an externally started process.
-            }
+			// Testing externally started is a workaround for the fact that once we detect the "Stand Alone Runner" app,
+			// which sets externallyStarted to true, subsequently any child windows that it opens results in AlreadyRunning
+			// returning false, so we have to check if we already know that the runner was externally started.
+			bool alreadyRunning = AlreadyRunning();
+
+			if (!alreadyRunning && !externallyStarted && !loaded)
+			{
+				IFlowSharpCodeService codeSvc = serviceManager.Get<IFlowSharpCodeService>();
+				process = codeSvc.LaunchProcess(fullName, String.Empty, _ => { });
+				loaded = true;
+			}
+			else if (alreadyRunning)
+			{
+				externallyStarted = true;
+				loaded = false;     // Ensure loaded flag stays false so we don't unload an externally started process.
+			}
 		}
 
         /// <summary>
@@ -77,6 +79,7 @@ namespace FlowSharpHopeService
 
             process = null;
 			loaded = false;
+			externallyStarted = false;
 		}
 
         public void InstantiateReceptor(string name)

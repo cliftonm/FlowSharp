@@ -213,7 +213,8 @@ namespace FlowSharpHopeService
         protected void OnHopeRun(object sender, EventArgs e)
         {
 			LoadHopeAssembly();
-        }
+			InstantiateReceptors();
+		}
 
 		protected void OnHopeStop(object sender, EventArgs e)
 		{
@@ -389,12 +390,14 @@ namespace FlowSharpHopeService
             parameters.ReferencedAssemblies.Add("System.Core.dll");
             parameters.ReferencedAssemblies.Add("System.Data.dll");
             parameters.ReferencedAssemblies.Add("System.Data.Linq.dll");
-            parameters.ReferencedAssemblies.Add("System.Drawing.dll");
+			parameters.ReferencedAssemblies.Add("System.Design.dll");
+			parameters.ReferencedAssemblies.Add("System.Drawing.dll");
             parameters.ReferencedAssemblies.Add("System.Net.dll");
             parameters.ReferencedAssemblies.Add("System.Windows.Forms.dll");
             parameters.ReferencedAssemblies.Add("System.Xml.dll");
+			parameters.ReferencedAssemblies.Add("System.Xml.Linq.dll");
 
-            parameters.ReferencedAssemblies.Add("System.Speech.dll");
+			parameters.ReferencedAssemblies.Add("System.Speech.dll");
 
             //parameters.ReferencedAssemblies.Add("HopeRunner.dll");
             //parameters.ReferencedAssemblies.Add("HopeRunnerAppDomainInterface.dll");

@@ -1,17 +1,107 @@
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfElementPropertyBag xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="5d089681-ac56-425c-8f8d-14ae10b59678" Visible="true" Text="ST_Vehicle" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="6e0d279d-d4f3-4a0c-bc74-60f77383336d" Visible="true" Text="Show&#xD;&#xA;Image" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>417</X>
-        <Y>331</Y>
+        <X>490</X>
+        <Y>647</Y>
+      </Location>
+      <Size>
+        <Width>83</Width>
+        <Height>70</Height>
+      </Size>
+      <X>490</X>
+      <Y>647</Y>
+      <Width>83</Width>
+      <Height>70</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"ShowImage","agentEnabled":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="e68e6d83-9b34-4862-9684-24967b7d2cbb" Visible="true" Text="Show&#xD;&#xA;Image" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>377</X>
+        <Y>649</Y>
+      </Location>
+      <Size>
+        <Width>81</Width>
+        <Height>71</Height>
+      </Size>
+      <X>377</X>
+      <Y>649</Y>
+      <Width>81</Width>
+      <Height>71</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.Collections.Generic;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ShowImage : IReceptor\r\n\t{\r\n\t\tprotected List&lt;Form&gt; forms = new List&lt;Form&gt;();\r\n\t\t\r\n\t\t// Use ISemanticType to see all types being published!\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_Image img)\r\n\t\t{\r\n\t\t\tProgram.form.BeginInvoke(()=&gt;\r\n\t\t\t{\r\n\t\t\t\tForm form = Program.layoutManager.RequestForm(img.Image.Width+30, img.Image.Height+30, img.Caption);\r\n\t            PictureBox pb = new PictureBox();\r\n\t            pb.Dock = DockStyle.Fill;\r\n\t            pb.Image = img.Image;\r\n\t            form.Controls.Add(pb);\r\n\t            form.Show();\r\n\t            forms.Add(form);\r\n\t        });\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="e98dadb7-e156-4dd6-b77a-aa81bed45328" Visible="true" Text="ST_Image" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>727</X>
+        <Y>360</Y>
       </Location>
       <Size>
         <Width>178</Width>
         <Height>32</Height>
       </Size>
-      <X>417</X>
-      <Y>331</Y>
+      <X>727</X>
+      <Y>360</Y>
       <Width>178</Width>
       <Height>32</Height>
     </DisplayRectangle>
@@ -36,7 +126,7 @@
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
     <TextFontBold>false</TextFontBold>
-    <Json>{"Code":"using Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ST_Vehicle : ISemanticType \r\n\t{\r\n\t\tpublic string Make {get; set;}\r\n\t\tpublic string Model {get; set;}\r\n\t\tpublic int Year {get; set;}\r\n\t}\r\n}","TextChanged":"True"}</Json>
+    <Json>{"Code":"using System;\r\nusing System.Drawing;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ST_Image : ISemanticType \r\n\t{\r\n\t\tpublic string Caption {get;set;}\r\n\t\tpublic Image Image {get;set;}\r\n\t}\r\n}","TextChanged":"True"}</Json>
     <Connections />
     <Children />
     <TextAlign>MiddleCenter</TextAlign>
@@ -45,18 +135,695 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="964ee690-22ae-4a7f-98ea-b49ef0885969" Visible="true" Text="Extract&#xD;&#xA;Vehicles" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="85b3adbf-c506-4f60-8171-1394a9877cb8" Visible="true" Text="Get&#xD;&#xA;Vehicle&#xD;&#xA;Image" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>181</X>
-        <Y>470</Y>
+        <X>491</X>
+        <Y>570</Y>
       </Location>
       <Size>
         <Width>83</Width>
         <Height>70</Height>
       </Size>
-      <X>181</X>
-      <Y>470</Y>
+      <X>491</X>
+      <Y>570</Y>
+      <Width>83</Width>
+      <Height>70</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"GetVehicleImage","agentEnabled":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="7a84730d-f420-40ca-97c2-9f72c79f60d2" Visible="true" Text="Get&#xD;&#xA;Vehicle&#xD;&#xA;Image" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>375</X>
+        <Y>572</Y>
+      </Location>
+      <Size>
+        <Width>81</Width>
+        <Height>71</Height>
+      </Size>
+      <X>375</X>
+      <Y>572</Y>
+      <Width>81</Width>
+      <Height>71</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.Drawing;\r\nusing System.IO;\r\nusing System.Net;\r\n\r\nusing Clifton.Core.Semantics;\r\nusing HtmlAgilityPack;\r\n\r\nnamespace App\r\n{\r\n\tpublic class GetVehicleImage : IReceptor\r\n\t{\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_Vehicle vehicle)\r\n\t\t{\r\n            HtmlWeb web = new HtmlWeb();\r\n            HtmlAgilityPack.HtmlDocument doc = web.Load(\"https://www.google.com/search?q=\"+String.Join(\"+\", new String[] {vehicle.Year.ToString(), vehicle.Make, vehicle.Model})+\"&amp;tbm=isch\");\r\n            var nodes = doc.DocumentNode.SelectNodes(\"(//*[@id='ires']//img)[1]\");\r\n            var src = nodes[0].Attributes[\"src\"].Value;\r\n            WebClient client = new WebClient();\r\n            client.Headers.Add(\"user-agent\", \"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)\");\r\n            Stream reader = client.OpenRead(src);\r\n\r\n            var bytes = default(byte[]);\r\n            using (var memstream = new MemoryStream())\r\n            {\r\n                reader.CopyTo(memstream);\r\n                bytes = memstream.ToArray();\r\n            }\r\n\r\n            MemoryStream ms = new MemoryStream(bytes);\r\n            var img = System.Drawing.Image.FromStream(ms);\r\n\t\t\tproc.ProcessInstanceFrom&lt;HopeMembrane&gt;(membrane, this, \r\n\t\t\tnew ST_Image \r\n\t\t\t{\r\n\t\t\t\tCaption = vehicle.Year.ToString() + \" \" + vehicle.Make + \" \" + vehicle.Model,\r\n\t\t\t\tImage = img\r\n\t\t\t});            \r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="e4d8056b-9191-4769-8105-1542e3150057" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>1523</X>
+        <Y>-137</Y>
+      </Location>
+      <Size>
+        <Width>263</Width>
+        <Height>31</Height>
+      </Size>
+      <X>1523</X>
+      <Y>-137</Y>
+      <Width>263</Width>
+      <Height>31</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>6</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"AssyRef":"HtmlAgilityPack.dll"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-16192</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="876f83b2-18f6-4d2e-8d5b-165488962ae7" Visible="true" Text="Client&#xD;&#xA;Address" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>675</X>
+        <Y>417</Y>
+      </Location>
+      <Size>
+        <Width>83</Width>
+        <Height>70</Height>
+      </Size>
+      <X>675</X>
+      <Y>417</Y>
+      <Width>83</Width>
+      <Height>70</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"ClientAddress","agentEnabled":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b89241ba-f252-4d02-a6a5-55cdf489a79b" Visible="true" Text="Client&#xD;&#xA;Address" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>196</X>
+        <Y>417</Y>
+      </Location>
+      <Size>
+        <Width>81</Width>
+        <Height>71</Height>
+      </Size>
+      <X>196</X>
+      <Y>417</Y>
+      <Width>81</Width>
+      <Height>71</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.Collections.Generic;\r\nusing System.IO;\r\nusing System.Xml;\r\nusing System.Xml.Linq;\r\nusing System.Xml.XPath;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ClientAddress : IReceptor\r\n\t{\r\n\t\t[Publishes(typeof(ST_Address))]\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_PolicyXml xml)\r\n\t\t{\r\n            var root = XDocument.Parse(xml.Xml);\r\n\t\t\tXElement clientAddr = root.XPathSelectElement(\"PolicyInfo/Account/Clients/Client/Address\");\r\n\t\t\tstring zip = XmlHelpers.GetValue(clientAddr, \"ZipCode\");\r\n\t\t\t\r\n\t\t\tproc.ProcessInstanceFrom&lt;HopeMembrane&gt;(membrane, this, \r\n\t\t\tnew ST_Address()\r\n\t\t\t{\r\n\t\t\t\tAddress1 = XmlHelpers.GetValue(clientAddr, \"Address1\"),\r\n\t\t\t\tAddress2 = XmlHelpers.GetSafeValue(clientAddr, \"Address2\"),\r\n\t\t\t\tCity = new ST_City() {City = XmlHelpers.GetValue(clientAddr, \"City\")},\r\n\t\t\t\tState = new ST_State() {State = XmlHelpers.GetValue(clientAddr, \"State\")},\r\n\t\t\t\tZip = new ST_Zip() \r\n\t\t\t\t{\r\n\t\t\t\t\tZip5 = new ST_Zip5() { Zip5 = zip.LeftOf(\"-\")},\r\n\t\t\t\t\tZip4 = new ST_Zip4() { Zip4 = zip.RightOf(\"-\")}\r\n\t\t\t\t},\r\n\t\t\t}); \r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="365520ba-bd94-4a5f-a6a1-b07af6dcfe05" Visible="true" Text="Show&#xD;&#xA;Driver" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>583</X>
+        <Y>493</Y>
+      </Location>
+      <Size>
+        <Width>83</Width>
+        <Height>70</Height>
+      </Size>
+      <X>583</X>
+      <Y>493</Y>
+      <Width>83</Width>
+      <Height>70</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"ShowDriver","agentEnabled":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="28f3ecf5-1dc1-4bd0-b498-f4a2941ae0ff" Visible="true" Text="Show&#xD;&#xA;Driver" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>284</X>
+        <Y>493</Y>
+      </Location>
+      <Size>
+        <Width>81</Width>
+        <Height>71</Height>
+      </Size>
+      <X>284</X>
+      <Y>493</Y>
+      <Width>81</Width>
+      <Height>71</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.Data;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ShowDriver : IReceptor\r\n\t{\r\n\t\tprotected Form form;\r\n\t\tprotected DataGridView dgv;\r\n\t\tprotected DataTable dtDrivers;\r\n\t\tprotected DataView dvDrivers;\r\n\t\t\r\n\t\tpublic ShowDriver()\r\n\t\t{\r\n\t\t\tform = Program.layoutManager.RequestForm(600, 150, \"Drivers\");\r\n\t\t\tdgv = new DataGridView();\r\n\t\t\tdtDrivers = new DataTable();\r\n\t\t\tdtDrivers.Columns.Add(new DataColumn(\"LastName\", typeof(string)));\r\n\t\t\tdtDrivers.Columns.Add(new DataColumn(\"FirstName\", typeof(string)));\r\n\t\t\tdtDrivers.Columns.Add(new DataColumn(\"DOB\", typeof(DateTime)));\r\n\t\t\tdtDrivers.Columns.Add(new DataColumn(\"Age\", typeof(int)));\r\n\t\t\tdtDrivers.Columns.Add(new DataColumn(\"Gender\", typeof(string)));\r\n\t\t\tdtDrivers.Columns.Add(new DataColumn(\"LicenseNumber\", typeof(string)));\r\n\t\t\tdtDrivers.Columns.Add(new DataColumn(\"LicenseState\", typeof(string)));\r\n\t\t\tdvDrivers = new DataView(dtDrivers);\r\n\t\t\tdgv.Dock = DockStyle.Fill;\r\n\t\t\tdgv.ReadOnly = true;\r\n\t\t\tdgv.RowHeadersVisible = false;\r\n\t\t\tdgv.AllowUserToAddRows = false;\r\n\t\t\tdgv.AllowUserToDeleteRows = false;\r\n\t\t\tdgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; \r\n\t\t\tdgv.DataSource = dvDrivers;\r\n\t\t\tform.Controls.Add(dgv);\r\n\t\t\tform.Show();\r\n\t\t}\r\n\t\t\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_Driver driver)\r\n\t\t{\r\n\t\t\tform.BeginInvoke(()=&gt;\r\n\t\t\t{\r\n\t\t\t\tDataRow row = dtDrivers.NewRow();\r\n\t\t\t\trow[\"LastName\"] = driver.LastName;\r\n\t\t\t\trow[\"FirstName\"] = driver.FirstName;\r\n\t\t\t\trow[\"DOB\"] = driver.DOB.ToString(\"MM/dd/yyyy\");\r\n\t\t\t\trow[\"Age\"] = GetAge(driver.DOB);\r\n\t\t\t\trow[\"Gender\"] = driver.Gender;\r\n\t\t\t\trow[\"LicenseNumber\"] = driver.LicenseNumber;\r\n\t\t\t\trow[\"LicenseState\"] = driver.LicenseState;\r\n\t\t\t\tdtDrivers.Rows.Add(row);\r\n\t\t\t\tApplication.DoEvents();\r\n\t\t\t});\r\n\t\t}\r\n\t\t\r\n\t\t// https://stackoverflow.com/questions/9/calculate-age-in-c-sharp\r\n\t\tprotected int GetAge(DateTime dob)\r\n\t\t{\r\n\t\t\tint inow = int.Parse(DateTime.Now.ToString(\"yyyyMMdd\"));\r\n\t\t\tint idob = int.Parse(dob.ToString(\"yyyyMMdd\"));\r\n\t\t\tint age = (inow - idob) / 10000;\t\t\r\n\t\t\t\r\n\t\t\treturn age;\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="d32564cd-3bf3-4ca1-beac-61df83c20cb9" Visible="true" Text="ST_Driver" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>727</X>
+        <Y>321</Y>
+      </Location>
+      <Size>
+        <Width>178</Width>
+        <Height>32</Height>
+      </Size>
+      <X>727</X>
+      <Y>321</Y>
+      <Width>178</Width>
+      <Height>32</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ST_Driver : ISemanticType \r\n\t{\r\n\t\tpublic bool IsValid\r\n\t\t{\r\n\t\t\tget\r\n\t\t\t{\r\n\t\t\t\treturn \r\n\t\t\t\t\t!String.IsNullOrEmpty(FirstName) &amp;&amp;\r\n\t\t\t\t\t!String.IsNullOrEmpty(LastName) &amp;&amp;\r\n\t\t\t\t\tDOB != default(DateTime) &amp;&amp;\r\n\t\t\t\t\t!String.IsNullOrEmpty(Gender) &amp;&amp;\r\n\t\t\t\t\t!String.IsNullOrEmpty(LicenseNumber) &amp;&amp;\r\n\t\t\t\t\t!String.IsNullOrEmpty(LicenseState);\r\n\t\t\t}\r\n\t\t}\r\n\t\t\r\n\t\tpublic string FirstName {get; set;}\r\n\t\tpublic string LastName {get; set;}\r\n\t\tpublic DateTime DOB {get; set;}\r\n\t\tpublic string Gender {get;set;}\r\n\t\tpublic string LicenseNumber {get;set;}\r\n\t\tpublic string LicenseState {get;set;}\r\n\t}\r\n}","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="9de7ae10-356f-4925-b32e-3a95e61dcb80" Visible="true" Text="Extract&#xD;&#xA;Drivers" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>583</X>
+        <Y>417</Y>
+      </Location>
+      <Size>
+        <Width>83</Width>
+        <Height>70</Height>
+      </Size>
+      <X>583</X>
+      <Y>417</Y>
+      <Width>83</Width>
+      <Height>70</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"ExtractDrivers","agentEnabled":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="02d80a15-1d23-4d34-af3d-1e3dac711b7f" Visible="true" Text="Extract&#xD;&#xA;Drivers" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>283</X>
+        <Y>417</Y>
+      </Location>
+      <Size>
+        <Width>81</Width>
+        <Height>71</Height>
+      </Size>
+      <X>283</X>
+      <Y>417</Y>
+      <Width>81</Width>
+      <Height>71</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.Collections.Generic;\r\nusing System.IO;\r\nusing System.Xml;\r\nusing System.Xml.Linq;\r\nusing System.Xml.XPath;\r\n\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ExtractDrivers : IReceptor\r\n\t{\r\n\t\t[Publishes(typeof(ST_Driver))]\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_PolicyXml xml)\r\n\t\t{\r\n            var root = XDocument.Parse(xml.Xml);\r\n            \r\n\t\t\tIEnumerable&lt;XElement&gt; drivers = root.XPathSelectElements(\"PolicyInfo/Policy/Lines/Line/Drivers/Driver\");\r\n\t\t\t\r\n\t\t\tforeach (XElement driverEl in drivers)\r\n\t\t\t{\r\n                string firstName;\r\n                string lastName;\r\n                DateTime DOB;\r\n                string gender;\r\n                string licenseNumber;\r\n                string licenseState;\r\n                IEnumerable&lt;XElement&gt; exposures = driverEl.XPathSelectElements(\"Exposures/Exposure\");\r\n\r\n                firstName = XmlHelpers.GetValue(driverEl, \"NameFirst\");\r\n                lastName = XmlHelpers.GetValue(driverEl, \"NameLast\");\r\n                DateTime.TryParse(XmlHelpers.GetExposureValue(exposures, \"DateOfBirth\"), out DOB);\r\n                gender = XmlHelpers.GetExposureValue(exposures, \"Gender\");\r\n                licenseNumber = XmlHelpers.GetExposureValue(exposures, \"DriverLicenseNumber\");\r\n                licenseState = XmlHelpers.GetExposureValue(exposures, \"LicenseState\");\r\n                \r\n\t\t\t\tvar driver = new ST_Driver() \r\n\t\t\t\t{\r\n\t\t\t\t\tFirstName = firstName,\r\n\t\t\t\t\tLastName = lastName,\r\n\t\t\t\t\tDOB = DOB,\r\n\t\t\t\t\tGender = gender,\r\n\t\t\t\t\tLicenseNumber = licenseNumber,\r\n\t\t\t\t\tLicenseState = licenseState,\r\n\t\t\t\t};\r\n                \r\n                if (driver.IsValid)\r\n                {\r\n\t\t\t\t\tproc.ProcessInstanceFrom&lt;HopeMembrane&gt;(membrane, this, driver); \r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="7d0ec7dd-7335-4887-874c-42ea24390774" Visible="true" Text="LayoutManager.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>1274</X>
+        <Y>-482</Y>
+      </Location>
+      <Size>
+        <Width>133</Width>
+        <Height>25</Height>
+      </Size>
+      <X>1274</X>
+      <Y>-482</Y>
+      <Width>133</Width>
+      <Height>25</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <ExtraData>LayoutManager.cs</ExtraData>
+    <Json>{"csharp":"","Code":"using System.Collections.Generic;\r\nusing System.Drawing;\r\nusing System.Linq;\r\nusing System.Windows.Forms;\r\n\r\nnamespace App\r\n{\r\n    public class LayoutManager\r\n    {\r\n    \tprotected List&lt;List&lt;Rectangle&gt;&gt; rowRegions = new List&lt;List&lt;Rectangle&gt;&gt;();\r\n    \t\r\n    \tpublic LayoutManager()\r\n    \t{\r\n    \t\tCreateRow();\r\n    \t}\r\n    \t\r\n    \tpublic Form RequestForm(int w, int h, string caption)\r\n    \t{\r\n\t\t\tForm form = new Form();\r\n\t\t\tvar rect = Program.layoutManager.RequestRegion(w, h);\r\n\t\t\tform.Location = rect.Location;\r\n\t\t\tform.Size = rect.Size;\r\n\t\t\tform.StartPosition = FormStartPosition.Manual;\r\n\t\t\tform.Text = caption;\r\n\t\t\t\r\n\t\t\treturn form;\r\n    \t}\r\n    \t\r\n    \t// Returns a region where the requested box of width and height can fit on the screen.\r\n    \tpublic Rectangle RequestRegion(int w, int h)\r\n    \t{\r\n    \t\tint screenWidth = Screen.PrimaryScreen.WorkingArea.Width; \r\n    \t\tint currentWidth = 0;\r\n    \t\tint currentY = 0;\r\n    \t\t\r\n    \t\tList&lt;Rectangle&gt; currentRow = rowRegions.Last();\r\n    \t\t\r\n    \t\tif (currentRow.Count &gt; 0)\r\n    \t\t{\r\n\t    \t\tcurrentWidth = currentRow.Sum(r=&gt;r.Width);\r\n    \t\t\tcurrentY = currentRow.First().Y;\r\n    \t\t}\r\n    \t\t\r\n    \t\tif (currentWidth + w &gt; screenWidth)\r\n    \t\t{\r\n    \t\t\tcurrentY = currentRow.Max(r=&gt;r.Y + r.Height); \r\n    \t\t\tcurrentRow = CreateRow();\r\n    \t\t\tcurrentWidth = 0;\r\n    \t\t}\r\n    \t\t\r\n\t\t\tRectangle ret = new Rectangle(currentWidth, currentY, w, h);\r\n\t\t\t\r\n\t\t\tProgram.Log(\"Position = \" + ret.ToString());\r\n\t\t\t\r\n\t\t\tcurrentRow.Add(ret);\r\n    \t\t\r\n    \t\treturn ret;\r\n    \t}\r\n    \t\r\n    \tprotected List&lt;Rectangle&gt; CreateRow()\r\n    \t{\r\n    \t\tList&lt;Rectangle&gt; row = new List&lt;Rectangle&gt;();\r\n    \t\trowRegions.Add(row);\r\n    \t\t\r\n    \t\treturn row;\r\n    \t}\r\n    }\r\n}\r\n","TextChanged":"True","NamespaceName":"Namespace","ClassName":"Class","MethodName":"Method"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopLeft</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="5a6bf041-0730-498e-8abd-54b15b12c29f" Visible="true" Text="Show&#xD;&#xA;Vehicle" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>492</X>
+        <Y>493</Y>
+      </Location>
+      <Size>
+        <Width>83</Width>
+        <Height>70</Height>
+      </Size>
+      <X>492</X>
+      <Y>493</Y>
+      <Width>83</Width>
+      <Height>70</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"agentName":"ShowVehicle","agentEnabled":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b77fcd43-145e-48c6-8a2f-1341e9adad35" Visible="true" Text="Show&#xD;&#xA;Vehicle" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>373</X>
+        <Y>493</Y>
+      </Location>
+      <Size>
+        <Width>81</Width>
+        <Height>71</Height>
+      </Size>
+      <X>373</X>
+      <Y>493</Y>
+      <Width>81</Width>
+      <Height>71</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing System.Data;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ShowVehicle : IReceptor\r\n\t{\r\n\t\tprotected Form form;\r\n\t\tprotected DataGridView dgv;\r\n\t\tprotected DataTable dtVehicles;\r\n\t\tprotected DataView dvVehicles;\r\n\t\t\r\n\t\tpublic ShowVehicle()\r\n\t\t{\r\n\t\t\tform = Program.layoutManager.RequestForm(400, 200, \"Vehicles\");\r\n\t\t\tdgv = new DataGridView();\r\n\t\t\tdtVehicles = new DataTable();\r\n\t\t\tdtVehicles.Columns.Add(new DataColumn(\"Make\", typeof(string)));\r\n\t\t\tdtVehicles.Columns.Add(new DataColumn(\"Model\", typeof(string)));\r\n\t\t\tdtVehicles.Columns.Add(new DataColumn(\"Year\", typeof(int)));\r\n\t\t\tdvVehicles = new DataView(dtVehicles);\r\n\t\t\tdgv.Dock = DockStyle.Fill;\r\n\t\t\tdgv.ReadOnly = true;\r\n\t\t\tdgv.RowHeadersVisible = false;\r\n\t\t\tdgv.AllowUserToAddRows = false;\r\n\t\t\tdgv.AllowUserToDeleteRows = false;\r\n\t\t\tdgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; \r\n\t\t\tdgv.DataSource = dvVehicles;\r\n\t\t\tform.Controls.Add(dgv);\r\n\t\t\tform.Show();\r\n\t\t}\r\n\t\t\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_Vehicle vehicle)\r\n\t\t{\r\n\t\t\tform.BeginInvoke(()=&gt;\r\n\t\t\t{\r\n\t\t\t\tDataRow row = dtVehicles.NewRow();\r\n\t\t\t\trow[\"Make\"] = vehicle.Make;\r\n\t\t\t\trow[\"Model\"] = vehicle.Model;\r\n\t\t\t\trow[\"Year\"] = vehicle.Year;\r\n\t\t\t\tdtVehicles.Rows.Add(row);\r\n\t\t\t\tApplication.DoEvents();\r\n\t\t\t});\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>true</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-5185306</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="c3809506-121c-45b3-abd3-4f13738b0fd9" Visible="true" Text="XmlHelpers.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>823</X>
+        <Y>-557</Y>
+      </Location>
+      <Size>
+        <Width>133</Width>
+        <Height>25</Height>
+      </Size>
+      <X>823</X>
+      <Y>-557</Y>
+      <Width>133</Width>
+      <Height>25</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>10</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <ExtraData>XmlHelpers.cs</ExtraData>
+    <Json>{"csharp":"","Code":"using System.Collections.Generic;\r\nusing System.Linq;\r\nusing System.Xml.Linq;\r\nusing System.Xml.XPath;\r\n\r\nnamespace App\r\n{\r\n    public static class XmlHelpers\r\n    {\r\n        public static string GetValue(XElement el, string attrName)\r\n        {\r\n            return el.Element(attrName).Value;\r\n        }\r\n\r\n        public static string GetSafeValue(XElement el, string attrName)\r\n        {\r\n        \tstring ret = string.Empty;\r\n        \tXElement child = el.Element(attrName);\r\n        \t\r\n        \tif (child != null)\r\n        \t{\r\n            \tret = el.Element(attrName).Value;\r\n            }\r\n            \r\n            return ret;\r\n        }\r\n\r\n        public static string GetExposureValue(IEnumerable&lt;XElement&gt; exposures, string typeName)\r\n        {\r\n            string ret = null;\r\n\r\n            var exp = exposures.FirstOrDefault(x =&gt; x.Element(\"Type\").Value == typeName);\r\n\r\n            if (exp != null)\r\n            {\r\n                ret = exp.Element(\"Value\").Value;\r\n            }\r\n\r\n            return ret;\r\n        }\r\n\r\n        public static string GetExposureValue(IEnumerable&lt;XElement&gt; exposures, string[] typeNameOptions)\r\n        {\r\n            int idx = -1;\r\n            string ret = null;\r\n\r\n            while (++idx &lt; typeNameOptions.Length)\r\n            {\r\n                var exp = exposures.FirstOrDefault(x =&gt; x.Element(\"Type\").Value == typeNameOptions[idx]);\r\n\r\n                if (exp != null)\r\n                {\r\n                    ret = exp.Element(\"Value\").Value;\r\n                    break;\r\n                }\r\n            }\r\n            \r\n            return ret;\r\n        }\r\n    }\r\n}\r\n","TextChanged":"True","NamespaceName":"Namespace","ClassName":"Class","MethodName":"Method"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>TopLeft</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-1</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="eb3c050b-dfa5-45d5-94ba-106f87d88ef3" Visible="true" Text="ST_Vehicle" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>727</X>
+        <Y>278</Y>
+      </Location>
+      <Size>
+        <Width>178</Width>
+        <Height>32</Height>
+      </Size>
+      <X>727</X>
+      <Y>278</Y>
+      <Width>178</Width>
+      <Height>32</Height>
+    </DisplayRectangle>
+    <StartPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </StartPoint>
+    <EndPoint>
+      <X>0</X>
+      <Y>0</Y>
+    </EndPoint>
+    <HyAdjust>0</HyAdjust>
+    <VxAdjust>0</VxAdjust>
+    <BorderPenWidth>1</BorderPenWidth>
+    <StartCap>None</StartCap>
+    <EndCap>None</EndCap>
+    <StartConnectedShapeId>00000000-0000-0000-0000-000000000000</StartConnectedShapeId>
+    <EndConnectedShapeId>00000000-0000-0000-0000-000000000000</EndConnectedShapeId>
+    <TextFontFamily>Microsoft Sans Serif</TextFontFamily>
+    <TextFontSize>8.25</TextFontSize>
+    <TextFontUnderline>false</TextFontUnderline>
+    <TextFontStrikeout>false</TextFontStrikeout>
+    <TextFontItalic>false</TextFontItalic>
+    <TextFontBold>false</TextFontBold>
+    <Json>{"Code":"using System;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ST_Vehicle : ISemanticType \r\n\t{\r\n\t\tpublic bool IsValid\r\n\t\t{\r\n\t\t\tget\r\n\t\t\t{\r\n\t\t\t\treturn \r\n\t\t\t\t\t!String.IsNullOrEmpty(Make) &amp;&amp;\r\n\t\t\t\t\t!String.IsNullOrEmpty(Model) &amp;&amp;\r\n\t\t\t\t\tYear != 0;\r\n\t\t\t}\r\n\t\t}\r\n\t\t\r\n\t\tpublic string Make {get; set;}\r\n\t\tpublic string Model {get; set;}\r\n\t\tpublic int Year {get; set;}\r\n\t}\r\n}","TextChanged":"True"}</Json>
+    <Connections />
+    <Children />
+    <TextAlign>MiddleCenter</TextAlign>
+    <Multiline>false</Multiline>
+    <TextColor>-16777216</TextColor>
+    <BorderPenColor>-16777216</BorderPenColor>
+    <FillBrushColor>-7278960</FillBrushColor>
+  </ElementPropertyBag>
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="f1f2541b-5a4f-433f-ab5e-49014f777bda" Visible="true" Text="Extract&#xD;&#xA;Vehicles" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+    <DisplayRectangle>
+      <Location>
+        <X>491</X>
+        <Y>417</Y>
+      </Location>
+      <Size>
+        <Width>83</Width>
+        <Height>70</Height>
+      </Size>
+      <X>491</X>
+      <Y>417</Y>
       <Width>83</Width>
       <Height>70</Height>
     </DisplayRectangle>
@@ -90,18 +857,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="eb7fc32c-34c5-4da4-81b5-c19ca00dc03b" Visible="true" Text="Extract&#xD;&#xA;Vehicles" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="07cc0e01-29ec-4371-8de8-5da7e13b6eaf" Visible="true" Text="Extract&#xD;&#xA;Vehicles" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>62</X>
-        <Y>469</Y>
+        <X>372</X>
+        <Y>417</Y>
       </Location>
       <Size>
         <Width>81</Width>
         <Height>71</Height>
       </Size>
-      <X>62</X>
-      <Y>469</Y>
+      <X>372</X>
+      <Y>417</Y>
       <Width>81</Width>
       <Height>71</Height>
     </DisplayRectangle>
@@ -126,7 +893,7 @@
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
     <TextFontBold>false</TextFontBold>
-    <Json>{"Code":"using System;\r\nusing System.Collections.Generic;\r\nusing System.IO;\r\nusing System.Xml;\r\nusing System.Xml.Linq;\r\nusing System.Xml.XPath;\r\n\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ExtractVehicles : IReceptor\r\n\t{\r\n\t\t[Publishes(typeof(ST_Vehicle))]\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_PolicyXml xml)\r\n\t\t{\r\n            var root = XDocument.Parse(xml.Xml);\r\n            IEnumerable&lt;XElement&gt; risks = root.XPathSelectElements(\"policy/line/risk\");\r\n            // var val = xdoc.XPathSelectElement(\"(policyAdmin/transactions/transaction[last()]/Type)[1]\").Value;\r\n\t\t\t\r\n\t\t\tproc.ProcessInstanceFrom&lt;HopeMembrane&gt;(membrane, this, \r\n\t\t\t\tnew ST_Vehicle() \r\n\t\t\t\t{\r\n\t\t\t\t\tMake = make,\r\n\t\t\t\t\tModel = model,\r\n\t\t\t\t\tYear = year,\r\n\t\t\t\t});\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Json>{"Code":"using System;\r\nusing System.Collections.Generic;\r\nusing System.IO;\r\nusing System.Xml;\r\nusing System.Xml.Linq;\r\nusing System.Xml.XPath;\r\n\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ExtractVehicles : IReceptor\r\n\t{\r\n\t\t[Publishes(typeof(ST_Vehicle))]\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_PolicyXml xml)\r\n\t\t{\r\n            var root = XDocument.Parse(xml.Xml);\r\n            \r\n\t\t\tIEnumerable&lt;XElement&gt; risks = root.XPathSelectElements(\"PolicyInfo/Policy/Lines/Line/Risks/Risk\");\r\n\t\t\t\r\n\t\t\tforeach (XElement risk in risks)\r\n\t\t\t{\r\n                string make;\r\n                string model;\r\n                int year;\r\n                IEnumerable&lt;XElement&gt; exposures = risk.XPathSelectElements(\"Exposures/Exposure\");\r\n\r\n                make = XmlHelpers.GetExposureValue(exposures, new string[] { \"VehicleMake\", \"Make\" } );\r\n                model = XmlHelpers.GetExposureValue(exposures, new string[] { \"VehicleModel\", \"Model\" } );\r\n                Int32.TryParse(XmlHelpers.GetExposureValue(exposures, new string[] { \"VehicleYear\", \"Year\" }), out year);\r\n                \r\n\t\t\t\tvar vehicle = new ST_Vehicle() \r\n\t\t\t\t{\r\n\t\t\t\t\tMake = make,\r\n\t\t\t\t\tModel = model,\r\n\t\t\t\t\tYear = year,\r\n\t\t\t\t};\r\n                \r\n                if (vehicle.IsValid)\r\n                {\r\n\t\t\t\t\tproc.ProcessInstanceFrom&lt;HopeMembrane&gt;(membrane, this, vehicle); \r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
     <Connections />
     <Children />
     <TextAlign>MiddleCenter</TextAlign>
@@ -135,18 +902,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-5185306</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="ff049a5b-ab2a-4755-9c01-a5c8af6f105e" Visible="true" Text="ViewXml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="210d0119-8f9f-4a11-954a-830562be25d5" Visible="true" Text="ViewXml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>187</X>
-        <Y>403</Y>
+        <X>497</X>
+        <Y>350</Y>
       </Location>
       <Size>
         <Width>70</Width>
         <Height>60</Height>
       </Size>
-      <X>187</X>
-      <Y>403</Y>
+      <X>497</X>
+      <Y>350</Y>
       <Width>70</Width>
       <Height>60</Height>
     </DisplayRectangle>
@@ -180,18 +947,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="6777ee22-3667-448f-9fd3-d2cd5e02a5ce" Visible="true" Text="ViewXml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="6f56090d-5985-4161-9543-41eb6fc62930" Visible="true" Text="ViewXml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>67</X>
-        <Y>402</Y>
+        <X>377</X>
+        <Y>349</Y>
       </Location>
       <Size>
         <Width>70</Width>
         <Height>60</Height>
       </Size>
-      <X>67</X>
-      <Y>402</Y>
+      <X>377</X>
+      <Y>349</Y>
       <Width>70</Width>
       <Height>60</Height>
     </DisplayRectangle>
@@ -216,7 +983,7 @@
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
     <TextFontBold>false</TextFontBold>
-    <Json>{"Code":"using System;\r\nusing System.Drawing;\r\nusing System.IO;\r\nusing System.Text;\r\nusing System.Windows.Forms;\r\nusing System.Xml;\r\nusing System.Xml.Linq;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ViewXml : IReceptor\r\n\t{\r\n\t\tprotected Form form;\r\n\t\tprotected TextBox tbLog;\r\n\t\t\r\n\t\tpublic ViewXml()\r\n\t\t{\r\n\t\t\tform = new Form();\r\n\t\t\tform.Location = new Point(0, 0);\r\n\t\t\tform.Size = new Size(400, 300);\r\n\t\t\tform.Text = \"XML Viewer\";\r\n\t\t\ttbLog = new TextBox();\r\n\t\t\ttbLog.Multiline = true;\r\n\t\t\ttbLog.Dock = DockStyle.Fill;\r\n\t\t\ttbLog.ScrollBars = ScrollBars.Both;\r\n\t\t\ttbLog.WordWrap = false;\r\n\t\t\tform.Controls.Add(tbLog);\r\n\t\t\tform.Show();\r\n\t\t}\r\n\t\t\r\n\t\t// TODO: I should be able to receive an ST_Xml type here!\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_PolicyXml xml)\r\n\t\t{\r\n\t\t\tform.BeginInvoke(()=&gt;\r\n\t\t\t{\r\n\t\t\t\tException ex;\r\n\t\t\t\tstring formattedXml = FormatXml(xml.Xml, out ex);\r\n\t\t\t\ttbLog.Text = (ex == null) ? formattedXml : ex.Message;\r\n\t\t\t});\r\n\t\t}\r\n\t\t\r\n\t\tprivate string FormatXml(string xml, out Exception ex)\r\n\t\t{\r\n\t\t\tvar stringBuilder = new StringBuilder();\r\n\t\t\tex = null;\r\n\t\t\t\r\n\t\t\ttry\r\n\t\t\t{\r\n\t\t\t    var element = XElement.Parse(xml);\r\n\t\t\t\r\n\t\t\t    var settings = new XmlWriterSettings();\r\n\t\t\t    settings.OmitXmlDeclaration = true;\r\n\t\t\t    settings.Indent = true;\r\n\t\t\t    settings.NewLineOnAttributes = true;\r\n\t\t\t\r\n\t\t\t    using (var xmlWriter = XmlWriter.Create(stringBuilder, settings))\r\n\t\t\t    {\r\n\t\t\t        element.Save(xmlWriter);\r\n\t\t\t    }\r\n\t\t    }\r\n\t\t    catch(Exception ex2)\r\n\t\t    {\r\n\t\t    \tex=ex2;\r\n\t\t    }\r\n\t\t    \r\n\t\t\r\n\t\t    return stringBuilder.ToString();\t\t\r\n\t\t    \r\n\t\t    /*\r\n\t\t\tstring result = \"\";\r\n\t\t\tex = null;\r\n\t\t\t\r\n\t\t\tMemoryStream mStream = new MemoryStream();\r\n\t\t\tXmlTextWriter writer = new XmlTextWriter(mStream, Encoding.Unicode);\r\n\t\t\tXmlDocument document   = new XmlDocument();\r\n\t\t\t\r\n\t\t\ttry\r\n\t\t\t{\r\n\t\t\t    document.LoadXml(xml);\r\n\t\t\t    writer.Formatting = Formatting.Indented;\r\n\t\t\t    document.WriteContentTo(writer);\r\n\t\t\t    writer.Flush();\r\n\t\t\t    mStream.Flush();\r\n\t\t\t\r\n\t\t\t    // Have to rewind the MemoryStream in order to read\r\n\t\t\t    // its contents.\r\n\t\t\t    mStream.Position = 0;\r\n\t\t\t    \r\n\t\t\t    StreamReader sReader = new StreamReader(mStream);\r\n\t\t\t    result = sReader.ReadToEnd();\r\n\t\t\t}\r\n\t\t\tcatch (Exception ex2)\r\n\t\t\t{\r\n\t\t\t\t// TODO: Show exception.\r\n\t\t\t\tex = ex2;\r\n\t\t\t}\r\n\t\t\tfinally\r\n\t\t\t{\r\n\t\t\t\tmStream.Close();\r\n\t\t\t\twriter.Close();\r\n\t\t\t}\r\n\t\t\t\r\n\t\t\treturn result;\r\n\t\t\t*/\r\n\t\t}\t\t\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Json>{"Code":"using System;\r\nusing System.Drawing;\r\nusing System.IO;\r\nusing System.Text;\r\nusing System.Windows.Forms;\r\nusing System.Xml;\r\nusing System.Xml.Linq;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ViewXml : IReceptor\r\n\t{\r\n\t\tprotected Form form;\r\n\t\tprotected TextBox tbLog;\r\n\t\t\r\n\t\tpublic ViewXml()\r\n\t\t{\r\n\t\t\tform = Program.layoutManager.RequestForm(400, 300, \"Xml Viewer\");\r\n\t\t\ttbLog = new TextBox();\r\n\t\t\ttbLog.Multiline = true;\r\n\t\t\ttbLog.Dock = DockStyle.Fill;\r\n\t\t\ttbLog.ScrollBars = ScrollBars.Both;\r\n\t\t\ttbLog.WordWrap = false;\r\n\t\t\tform.Controls.Add(tbLog);\r\n\t\t\tform.Show();\r\n\t\t}\r\n\t\t\r\n\t\t// TODO: I should be able to receive an ST_Xml type here!\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_PolicyXml xml)\r\n\t\t{\r\n\t\t\tform.BeginInvoke(()=&gt;\r\n\t\t\t{\r\n\t\t\t\tException ex;\r\n\t\t\t\tstring formattedXml = FormatXml(xml.Xml, out ex);\r\n\t\t\t\ttbLog.Text = (ex == null) ? formattedXml : ex.Message;\r\n\t\t\t});\r\n\t\t}\r\n\t\t\r\n\t\tprivate string FormatXml(string xml, out Exception ex)\r\n\t\t{\r\n\t\t\tvar stringBuilder = new StringBuilder();\r\n\t\t\tex = null;\r\n\t\t\t\r\n\t\t\ttry\r\n\t\t\t{\r\n\t\t\t    var element = XElement.Parse(xml);\r\n\t\t\t\r\n\t\t\t    var settings = new XmlWriterSettings();\r\n\t\t\t    settings.OmitXmlDeclaration = true;\r\n\t\t\t    settings.Indent = true;\r\n\t\t\t    settings.NewLineOnAttributes = true;\r\n\t\t\t\r\n\t\t\t    using (var xmlWriter = XmlWriter.Create(stringBuilder, settings))\r\n\t\t\t    {\r\n\t\t\t        element.Save(xmlWriter);\r\n\t\t\t    }\r\n\t\t    }\r\n\t\t    catch(Exception ex2)\r\n\t\t    {\r\n\t\t    \tex=ex2;\r\n\t\t    }\r\n\t\t    \r\n\t\t\r\n\t\t    return stringBuilder.ToString();\t\t\r\n\t\t    \r\n\t\t    /*\r\n\t\t\tstring result = \"\";\r\n\t\t\tex = null;\r\n\t\t\t\r\n\t\t\tMemoryStream mStream = new MemoryStream();\r\n\t\t\tXmlTextWriter writer = new XmlTextWriter(mStream, Encoding.Unicode);\r\n\t\t\tXmlDocument document   = new XmlDocument();\r\n\t\t\t\r\n\t\t\ttry\r\n\t\t\t{\r\n\t\t\t    document.LoadXml(xml);\r\n\t\t\t    writer.Formatting = Formatting.Indented;\r\n\t\t\t    document.WriteContentTo(writer);\r\n\t\t\t    writer.Flush();\r\n\t\t\t    mStream.Flush();\r\n\t\t\t\r\n\t\t\t    // Have to rewind the MemoryStream in order to read\r\n\t\t\t    // its contents.\r\n\t\t\t    mStream.Position = 0;\r\n\t\t\t    \r\n\t\t\t    StreamReader sReader = new StreamReader(mStream);\r\n\t\t\t    result = sReader.ReadToEnd();\r\n\t\t\t}\r\n\t\t\tcatch (Exception ex2)\r\n\t\t\t{\r\n\t\t\t\t// TODO: Show exception.\r\n\t\t\t\tex = ex2;\r\n\t\t\t}\r\n\t\t\tfinally\r\n\t\t\t{\r\n\t\t\t\tmStream.Close();\r\n\t\t\t\twriter.Close();\r\n\t\t\t}\r\n\t\t\t\r\n\t\t\treturn result;\r\n\t\t\t*/\r\n\t\t}\t\t\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
     <Connections />
     <Children />
     <TextAlign>MiddleCenter</TextAlign>
@@ -225,18 +992,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-5185306</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="6fe7c64a-9db9-41c4-adf8-5bdddd42c0d9" Visible="true" Text="ST_Xml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b5cea3c1-1e4c-4939-8498-2293b20339fe" Visible="true" Text="ST_Xml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>418</X>
-        <Y>290</Y>
+        <X>728</X>
+        <Y>237</Y>
       </Location>
       <Size>
         <Width>178</Width>
         <Height>32</Height>
       </Size>
-      <X>418</X>
-      <Y>290</Y>
+      <X>728</X>
+      <Y>237</Y>
       <Width>178</Width>
       <Height>32</Height>
     </DisplayRectangle>
@@ -270,18 +1037,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="c4ab24db-0995-4b95-9932-d9104313c942" Visible="true" Text="Load Policy&#xD;&#xA;From File" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="f294247d-1631-4bf2-9156-17cbcdbc0dcf" Visible="true" Text="Load Policy&#xD;&#xA;From File" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>179</X>
-        <Y>326</Y>
+        <X>489</X>
+        <Y>273</Y>
       </Location>
       <Size>
         <Width>83</Width>
         <Height>70</Height>
       </Size>
-      <X>179</X>
-      <Y>326</Y>
+      <X>489</X>
+      <Y>273</Y>
       <Width>83</Width>
       <Height>70</Height>
     </DisplayRectangle>
@@ -315,18 +1082,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="bb843411-10d3-4f5c-ac43-748d34c728d6" Visible="true" Text="Load Policy &#xD;&#xA;From File" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="eae0a246-8151-48ec-920d-eb17d1ec6caa" Visible="true" Text="Load Policy &#xD;&#xA;From File" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>60</X>
-        <Y>325</Y>
+        <X>370</X>
+        <Y>272</Y>
       </Location>
       <Size>
         <Width>81</Width>
         <Height>71</Height>
       </Size>
-      <X>60</X>
-      <Y>325</Y>
+      <X>370</X>
+      <Y>272</Y>
       <Width>81</Width>
       <Height>71</Height>
     </DisplayRectangle>
@@ -360,18 +1127,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-5185306</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="ae1709cd-8f01-4599-a06e-a3418acbb2df" Visible="true" Text="ST_PolicyXml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="42faeee3-58dd-43fe-a25d-eb5c703d6c19" Visible="true" Text="ST_PolicyXml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>419</X>
-        <Y>251</Y>
+        <X>729</X>
+        <Y>198</Y>
       </Location>
       <Size>
         <Width>178</Width>
         <Height>32</Height>
       </Size>
-      <X>419</X>
-      <Y>251</Y>
+      <X>729</X>
+      <Y>198</Y>
       <Width>178</Width>
       <Height>32</Height>
     </DisplayRectangle>
@@ -405,18 +1172,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="8efbb233-dd8b-4213-9af6-f41ba95b5f8b" Visible="true" Text="ST_PolicyXmlPath" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="9d98cd45-0435-4b4c-a5d0-caaa702f577b" Visible="true" Text="ST_PolicyXmlPath" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>419</X>
-        <Y>209</Y>
+        <X>729</X>
+        <Y>156</Y>
       </Location>
       <Size>
         <Width>178</Width>
         <Height>32</Height>
       </Size>
-      <X>419</X>
-      <Y>209</Y>
+      <X>729</X>
+      <Y>156</Y>
       <Width>178</Width>
       <Height>32</Height>
     </DisplayRectangle>
@@ -450,18 +1217,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b72a7224-e87e-4d56-b3f2-5d0e3d4baaf8" Visible="true" Text="Constants.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="d8444c33-4191-4ed4-a1b3-74ebcb813a4f" Visible="true" Text="Constants.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>514</X>
-        <Y>-471</Y>
+        <X>824</X>
+        <Y>-524</Y>
       </Location>
       <Size>
         <Width>133</Width>
         <Height>25</Height>
       </Size>
-      <X>514</X>
-      <Y>-471</Y>
+      <X>824</X>
+      <Y>-524</Y>
       <Width>133</Width>
       <Height>25</Height>
     </DisplayRectangle>
@@ -496,18 +1263,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="cce9ba83-6f31-437b-b343-bc243e4f0a8d" Visible="true" Text="ReceptorDescription.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="58be6655-339c-4e91-9525-7c1cd5847512" Visible="true" Text="ReceptorDescription.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>769</X>
-        <Y>-447</Y>
+        <X>1079</X>
+        <Y>-500</Y>
       </Location>
       <Size>
         <Width>170</Width>
         <Height>25</Height>
       </Size>
-      <X>769</X>
-      <Y>-447</Y>
+      <X>1079</X>
+      <Y>-500</Y>
       <Width>170</Width>
       <Height>25</Height>
     </DisplayRectangle>
@@ -542,18 +1309,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="ST_USPSAddressResponse" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="7c716140-a385-475e-bc8a-a20e9161aa38" Visible="true" Text="ST_USPSAddressError" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="ST_USPSAddressResponse" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="05fffccf-77c3-436b-b357-968aad958c25" Visible="true" Text="ST_USPSAddressError" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>420</X>
-        <Y>-142</Y>
+        <X>730</X>
+        <Y>-195</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>28</Height>
       </Size>
-      <X>420</X>
-      <Y>-142</Y>
+      <X>730</X>
+      <Y>-195</Y>
       <Width>177</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -587,18 +1354,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="ST_HttpGet" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="72dea729-ee40-4252-95c4-7bd2bea4676a" Visible="true" Text="ST_ShowSemanticType" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="ST_HttpGet" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="2cfb93e3-fea6-4ab0-a1ae-1245b0830686" Visible="true" Text="ST_ShowSemanticType" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>420</X>
-        <Y>-97</Y>
+        <X>730</X>
+        <Y>-150</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>28</Height>
       </Size>
-      <X>420</X>
-      <Y>-97</Y>
+      <X>730</X>
+      <Y>-150</Y>
       <Width>177</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -632,18 +1399,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="5f132485-ff1b-4c9d-bb92-49ee8851681a" Visible="true" Text="Show&#xD;&#xA;Semantic&#xD;&#xA;Type" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b38a0f57-0f05-4b84-ae66-91278665300e" Visible="true" Text="Show&#xD;&#xA;Semantic&#xD;&#xA;Type" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>181</X>
-        <Y>174</Y>
+        <X>491</X>
+        <Y>121</Y>
       </Location>
       <Size>
         <Width>83</Width>
         <Height>70</Height>
       </Size>
-      <X>181</X>
-      <Y>174</Y>
+      <X>491</X>
+      <Y>121</Y>
       <Width>83</Width>
       <Height>70</Height>
     </DisplayRectangle>
@@ -677,18 +1444,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1d1cd456-6350-4ba5-a0f1-cdd918456c12" Visible="true" Text="Show&#xD;&#xA;Semantic&#xD;&#xA;Type" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="abfab2a4-e976-4ca8-a6d0-8527c0fee47b" Visible="true" Text="Show&#xD;&#xA;Semantic&#xD;&#xA;Type" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>59</X>
-        <Y>174</Y>
+        <X>369</X>
+        <Y>121</Y>
       </Location>
       <Size>
         <Width>81</Width>
         <Height>71</Height>
       </Size>
-      <X>59</X>
-      <Y>174</Y>
+      <X>369</X>
+      <Y>121</Y>
       <Width>81</Width>
       <Height>71</Height>
     </DisplayRectangle>
@@ -713,7 +1480,7 @@
     <TextFontStrikeout>false</TextFontStrikeout>
     <TextFontItalic>false</TextFontItalic>
     <TextFontBold>false</TextFontBold>
-    <Json>{"Code":"using System;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ShowSemanticType : IReceptor\r\n\t{\r\n\t\tprotected Form form;\r\n\t\tprotected PropertyGrid pg;\r\n\t\t\r\n\t\tpublic ShowSemanticType()\r\n\t\t{\r\n\t\t\tform = new Form();\r\n\t\t\tform.Location = new Point(0, 0);\r\n\t\t\tform.Size = new Size(200, 300);\r\n\t\t\tform.Text = \"Semantic Type Viewer\";\r\n\t\t\tpg = new PropertyGrid();\r\n\t\t\tpg.Dock = DockStyle.Fill;\r\n\t\t\tform.Controls.Add(pg);\r\n\t\t\tform.Show();\r\n\t\t}\r\n\t\t\r\n\t\t// Use ISemanticType to see all types being published!\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_ShowSemanticType st)\r\n\t\t{\r\n\t\t\tform.BeginInvoke(()=&gt;\r\n\t\t\t{\r\n\t\t\t\tpg.SelectedObject = st.Type;\r\n\t\t\t\tApplication.DoEvents();\r\n\t\t\t});\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
+    <Json>{"Code":"using System;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\n\r\nnamespace App\r\n{\r\n\tpublic class ShowSemanticType : IReceptor\r\n\t{\r\n\t\tprotected Form form;\r\n\t\tprotected PropertyGrid pg;\r\n\t\t\r\n\t\tpublic ShowSemanticType()\r\n\t\t{\r\n\t\t\tform = Program.layoutManager.RequestForm(400, 500, \"Semantic Type Viewer\");\r\n\t\t\tpg = new PropertyGrid();\r\n\t\t\tpg.Dock = DockStyle.Fill;\r\n\t\t\tform.Controls.Add(pg);\r\n\t\t\tform.Show();\r\n\t\t}\r\n\t\t\r\n\t\t// Use ISemanticType to see all types being published!\r\n\t\tpublic void Process(ISemanticProcessor proc, IMembrane membrane, ST_ShowSemanticType st)\r\n\t\t{\r\n\t\t\tform.BeginInvoke(()=&gt;\r\n\t\t\t{\r\n\t\t\t\tpg.SelectedObject = st.Type;\r\n\t\t\t\tApplication.DoEvents();\r\n\t\t\t});\r\n\t\t}\r\n    }\r\n}\r\n","TextChanged":"True"}</Json>
     <Connections />
     <Children />
     <TextAlign>MiddleCenter</TextAlign>
@@ -722,18 +1489,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-5185306</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="USPSValidationResponse" ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="a4b8eef6-49a9-4cb8-be3d-847c5ecaa369" Visible="true" Text="USPS&#xD;&#xA;Validation&#xD;&#xA;Response" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="USPSValidationResponse" ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1809199b-11fa-4819-a5c5-c3c0f551e6c1" Visible="true" Text="USPS&#xD;&#xA;Validation&#xD;&#xA;Response" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>181</X>
-        <Y>99</Y>
+        <X>491</X>
+        <Y>46</Y>
       </Location>
       <Size>
         <Width>83</Width>
         <Height>70</Height>
       </Size>
-      <X>181</X>
-      <Y>99</Y>
+      <X>491</X>
+      <Y>46</Y>
       <Width>83</Width>
       <Height>70</Height>
     </DisplayRectangle>
@@ -767,18 +1534,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="" ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="18e168b5-be61-4c48-8a45-ea0e2eac5265" Visible="true" Text="USPS&#xD;&#xA;Validation&#xD;&#xA;Response" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="" ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="14c0d3f8-8d81-4e3c-8e6e-63a22994eb77" Visible="true" Text="USPS&#xD;&#xA;Validation&#xD;&#xA;Response" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>59</X>
-        <Y>99</Y>
+        <X>369</X>
+        <Y>46</Y>
       </Location>
       <Size>
         <Width>81</Width>
         <Height>71</Height>
       </Size>
-      <X>59</X>
-      <Y>99</Y>
+      <X>369</X>
+      <Y>46</Y>
       <Width>81</Width>
       <Height>71</Height>
     </DisplayRectangle>
@@ -812,18 +1579,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-5185306</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="USPSValidationRequest" ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="ae34e6d8-3793-4836-a3a9-9aaff10721cc" Visible="true" Text="USPS&#xD;&#xA;Validation&#xD;&#xA;Request" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="USPSValidationRequest" ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1a2b0a06-856e-42e8-9deb-7de60e36ebe8" Visible="true" Text="USPS&#xD;&#xA;Validation&#xD;&#xA;Request" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>181</X>
-        <Y>24</Y>
+        <X>491</X>
+        <Y>-29</Y>
       </Location>
       <Size>
         <Width>83</Width>
         <Height>70</Height>
       </Size>
-      <X>181</X>
-      <Y>24</Y>
+      <X>491</X>
+      <Y>-29</Y>
       <Width>83</Width>
       <Height>70</Height>
     </DisplayRectangle>
@@ -857,18 +1624,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="6214e563-f11f-4667-815b-6e9fe1d791d9" Visible="true" Text="AddressValidateResponse.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="adf7cc41-6a8e-4f42-bc85-386c0fd4e6ad" Visible="true" Text="AddressValidateResponse.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>518</X>
-        <Y>-368</Y>
+        <X>828</X>
+        <Y>-421</Y>
       </Location>
       <Size>
         <Width>242</Width>
         <Height>25</Height>
       </Size>
-      <X>518</X>
-      <Y>-368</Y>
+      <X>828</X>
+      <Y>-421</Y>
       <Width>242</Width>
       <Height>25</Height>
     </DisplayRectangle>
@@ -903,18 +1670,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="" ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="d1b5aa65-bd25-4583-a194-cadbdd6ce59e" Visible="true" Text="USPS&#xD;&#xA;Validation&#xD;&#xA;Request" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="" ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="2caff50a-de34-49d3-9699-398cdf98e699" Visible="true" Text="USPS&#xD;&#xA;Validation&#xD;&#xA;Request" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>59</X>
-        <Y>24</Y>
+        <X>369</X>
+        <Y>-29</Y>
       </Location>
       <Size>
         <Width>81</Width>
         <Height>71</Height>
       </Size>
-      <X>59</X>
-      <Y>24</Y>
+      <X>369</X>
+      <Y>-29</Y>
       <Width>81</Width>
       <Height>71</Height>
     </DisplayRectangle>
@@ -948,18 +1715,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-5185306</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="XmlSerialization" ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="e508d720-a8f0-4364-80dd-2d2ffe558bf6" Visible="true" Text="Avr&#xD;&#xA;Serialization" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="XmlSerialization" ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="06fcd8ac-1983-45d0-9f4a-82be0507fa4b" Visible="true" Text="Avr&#xD;&#xA;Serialization" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>181</X>
-        <Y>-51</Y>
+        <X>491</X>
+        <Y>-104</Y>
       </Location>
       <Size>
         <Width>83</Width>
         <Height>70</Height>
       </Size>
-      <X>181</X>
-      <Y>-51</Y>
+      <X>491</X>
+      <Y>-104</Y>
       <Width>83</Width>
       <Height>70</Height>
     </DisplayRectangle>
@@ -993,18 +1760,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="5022e693-a262-4b9d-b405-459eefbbff61" Visible="true" Text="AddressValidationRequest.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="e8362223-89ac-4466-9275-1e9405a96e45" Visible="true" Text="AddressValidationRequest.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>517</X>
-        <Y>-404</Y>
+        <X>827</X>
+        <Y>-457</Y>
       </Location>
       <Size>
         <Width>221</Width>
         <Height>25</Height>
       </Size>
-      <X>517</X>
-      <Y>-404</Y>
+      <X>827</X>
+      <Y>-457</Y>
       <Width>221</Width>
       <Height>25</Height>
     </DisplayRectangle>
@@ -1039,18 +1806,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="f16cd206-9742-42ae-9424-46496d0a7d9d" Visible="true" Text="Address.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="64da2396-573c-4d95-940e-1662830adedc" Visible="true" Text="Address.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>516</X>
-        <Y>-435</Y>
+        <X>826</X>
+        <Y>-488</Y>
       </Location>
       <Size>
         <Width>133</Width>
         <Height>25</Height>
       </Size>
-      <X>516</X>
-      <Y>-435</Y>
+      <X>826</X>
+      <Y>-488</Y>
       <Width>133</Width>
       <Height>25</Height>
     </DisplayRectangle>
@@ -1085,18 +1852,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="" ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="2ca07d07-eb70-47c3-898c-09d49438fc3c" Visible="true" Text="Avr&#xD;&#xA;Serialization" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="" ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="aa2411a6-9426-40c9-af98-0e67c5680f06" Visible="true" Text="Avr&#xD;&#xA;Serialization" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>59</X>
-        <Y>-51</Y>
+        <X>369</X>
+        <Y>-104</Y>
       </Location>
       <Size>
         <Width>81</Width>
         <Height>71</Height>
       </Size>
-      <X>59</X>
-      <Y>-51</Y>
+      <X>369</X>
+      <Y>-104</Y>
       <Width>81</Width>
       <Height>71</Height>
     </DisplayRectangle>
@@ -1130,18 +1897,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-5185306</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="ST_USPSAddressResponse" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="2c32c1b8-a194-4341-9d79-7df342893098" Visible="true" Text="ST_USPSAddressResponse" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="ST_USPSAddressResponse" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="0dc1822b-d85b-4030-b274-3fe5631865a8" Visible="true" Text="ST_USPSAddressResponse" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>419</X>
-        <Y>-185</Y>
+        <X>729</X>
+        <Y>-238</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>28</Height>
       </Size>
-      <X>419</X>
-      <Y>-185</Y>
+      <X>729</X>
+      <Y>-238</Y>
       <Width>177</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -1175,18 +1942,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="ST_Xml" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="a4f0a688-6c86-4665-a2d4-ea8d0deb5477" Visible="true" Text="ST_ValidateAddressXml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="ST_Xml" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="3367a84e-bfd9-489a-b000-032bfdb47727" Visible="true" Text="ST_ValidateAddressXml" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>417</X>
-        <Y>-225</Y>
+        <X>727</X>
+        <Y>-278</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>28</Height>
       </Size>
-      <X>417</X>
-      <Y>-225</Y>
+      <X>727</X>
+      <Y>-278</Y>
       <Width>177</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -1220,18 +1987,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="3f67deaa-6b35-48cd-9aa4-9070fd3be6d4" Visible="true" Text="ST_USPSAddressValidateRequest" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="4634ffa4-933f-43fe-8855-f01363c32e9f" Visible="true" Text="ST_USPSAddressValidateRequest" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>416</X>
-        <Y>-263</Y>
+        <X>726</X>
+        <Y>-316</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>28</Height>
       </Size>
-      <X>416</X>
-      <Y>-263</Y>
+      <X>726</X>
+      <Y>-316</Y>
       <Width>177</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -1265,18 +2032,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1adbd362-6791-4cb7-b925-242cb08b3869" Visible="true" Text="USPS&#xD;&#xA;Address&#xD;&#xA;Verifier" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="25b9067d-8c93-4be6-ab2a-e3312ad10307" Visible="true" Text="USPS&#xD;&#xA;Address&#xD;&#xA;Verifier" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>181</X>
-        <Y>-126</Y>
+        <X>491</X>
+        <Y>-179</Y>
       </Location>
       <Size>
         <Width>83</Width>
         <Height>70</Height>
       </Size>
-      <X>181</X>
-      <Y>-126</Y>
+      <X>491</X>
+      <Y>-179</Y>
       <Width>83</Width>
       <Height>70</Height>
     </DisplayRectangle>
@@ -1310,18 +2077,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="492d728a-dbb4-46bb-8336-854505292f2b" Visible="true" Text="ShowText" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentReceptorShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="bcded94a-d07a-4aca-ab59-a8832b09e7bf" Visible="true" Text="ShowText" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="false" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>181</X>
-        <Y>249</Y>
+        <X>491</X>
+        <Y>196</Y>
       </Location>
       <Size>
         <Width>83</Width>
         <Height>70</Height>
       </Size>
-      <X>181</X>
-      <Y>249</Y>
+      <X>491</X>
+      <Y>196</Y>
       <Width>83</Width>
       <Height>70</Height>
     </DisplayRectangle>
@@ -1355,18 +2122,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="35bdc5fe-3c24-4e39-b424-6c9b97f347d7" Visible="true" Text="ST_Text" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="58e340f3-8379-4980-9a35-f0bb1d26a21b" Visible="true" Text="ST_Text" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>419</X>
-        <Y>167</Y>
+        <X>729</X>
+        <Y>114</Y>
       </Location>
       <Size>
         <Width>178</Width>
         <Height>32</Height>
       </Size>
-      <X>419</X>
-      <Y>167</Y>
+      <X>729</X>
+      <Y>114</Y>
       <Width>178</Width>
       <Height>32</Height>
     </DisplayRectangle>
@@ -1400,18 +2167,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="f4b999e9-aec6-4f32-9c12-195da710f8a1" Visible="true" Text="ShowText" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="cb9f35e1-e0b3-4228-9f5e-32513b464b64" Visible="true" Text="ShowText" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>59</X>
-        <Y>249</Y>
+        <X>369</X>
+        <Y>196</Y>
       </Location>
       <Size>
         <Width>81</Width>
         <Height>71</Height>
       </Size>
-      <X>59</X>
-      <Y>249</Y>
+      <X>369</X>
+      <Y>196</Y>
       <Width>81</Width>
       <Height>71</Height>
     </DisplayRectangle>
@@ -1445,18 +2212,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-5185306</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="2f5a0684-b999-4688-acc8-56516b61a6f7" Visible="true" Text="PropertyContainer.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="24117db7-f21b-42ca-9b81-9a1b32369fe1" Visible="true" Text="PropertyContainer.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>770</X>
-        <Y>-408</Y>
+        <X>1080</X>
+        <Y>-461</Y>
       </Location>
       <Size>
         <Width>161</Width>
         <Height>25</Height>
       </Size>
-      <X>770</X>
-      <Y>-408</Y>
+      <X>1080</X>
+      <Y>-461</Y>
       <Width>161</Width>
       <Height>25</Height>
     </DisplayRectangle>
@@ -1491,18 +2258,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="59cce5d1-2887-4859-920c-c1629498cb24" Visible="true" Text="PropertyData.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="d15f3930-4588-4b7d-8224-1b788bc5ba33" Visible="true" Text="PropertyData.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>801</X>
-        <Y>-368</Y>
+        <X>1111</X>
+        <Y>-421</Y>
       </Location>
       <Size>
         <Width>133</Width>
         <Height>25</Height>
       </Size>
-      <X>801</X>
-      <Y>-368</Y>
+      <X>1111</X>
+      <Y>-421</Y>
       <Width>133</Width>
       <Height>25</Height>
     </DisplayRectangle>
@@ -1537,18 +2304,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="7d254d6a-5e8a-49d7-a3b0-d0281fbab8b0" Visible="true" Text="RouteHandlers.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="7da5a60f-b994-45c4-97be-7ae9bfc7e36b" Visible="true" Text="RouteHandlers.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>968</X>
-        <Y>-362</Y>
+        <X>1278</X>
+        <Y>-415</Y>
       </Location>
       <Size>
         <Width>133</Width>
         <Height>25</Height>
       </Size>
-      <X>968</X>
-      <Y>-362</Y>
+      <X>1278</X>
+      <Y>-415</Y>
       <Width>133</Width>
       <Height>25</Height>
     </DisplayRectangle>
@@ -1583,18 +2350,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="ST_Zip4" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="684b8541-65c9-4a0d-a7d0-5ce894006cba" Visible="true" Text="ST_Zip4" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="ST_Zip4" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="5f56fbff-840c-4f9f-b63f-bd60c266bc12" Visible="true" Text="ST_Zip4" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>421</X>
-        <Y>125</Y>
+        <X>731</X>
+        <Y>72</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>28</Height>
       </Size>
-      <X>421</X>
-      <Y>125</Y>
+      <X>731</X>
+      <Y>72</Y>
       <Width>177</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -1628,18 +2395,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="ST_Zip5" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b1905129-8020-4c55-b045-b9c6c3f5adda" Visible="true" Text="ST_Zip5" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="ST_Zip5" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="489a6568-2390-4f4b-be4f-5e1eca69aec6" Visible="true" Text="ST_Zip5" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>421</X>
-        <Y>89</Y>
+        <X>731</X>
+        <Y>36</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>28</Height>
       </Size>
-      <X>421</X>
-      <Y>89</Y>
+      <X>731</X>
+      <Y>36</Y>
       <Width>177</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -1673,18 +2440,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="ST_Zip" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="8650222b-9c4e-478d-b979-5c8bbc19416e" Visible="true" Text="ST_Zip" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="ST_Zip" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="275eaabe-5f71-4f53-bd11-37ccf5758a6c" Visible="true" Text="ST_Zip" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>421</X>
-        <Y>46</Y>
+        <X>731</X>
+        <Y>-7</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>28</Height>
       </Size>
-      <X>421</X>
-      <Y>46</Y>
+      <X>731</X>
+      <Y>-7</Y>
       <Width>177</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -1718,18 +2485,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="ST_State" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="32c3157b-2dfb-47cb-a6da-2d9dc7c55525" Visible="true" Text="ST_State" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="ST_State" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="e26db9d9-fd55-461b-8bec-50a682001032" Visible="true" Text="ST_State" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>421</X>
-        <Y>11</Y>
+        <X>731</X>
+        <Y>-42</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>28</Height>
       </Size>
-      <X>421</X>
-      <Y>11</Y>
+      <X>731</X>
+      <Y>-42</Y>
       <Width>177</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -1763,18 +2530,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="ST_City" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="0748c240-8a34-43e2-a3fa-520ec10c8c03" Visible="true" Text="ST_City" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="ST_City" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="69be8dd9-6264-4840-8d04-beeecec00c47" Visible="true" Text="ST_City" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>421</X>
-        <Y>-25</Y>
+        <X>731</X>
+        <Y>-78</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>28</Height>
       </Size>
-      <X>421</X>
-      <Y>-25</Y>
+      <X>731</X>
+      <Y>-78</Y>
       <Width>177</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -1808,18 +2575,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="ST_Address" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="1351541e-b0b9-41f5-928a-0278ec161bc7" Visible="true" Text="ST_Address" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="ST_Address" ElementName="HopeShapes.SemanticTypeShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="d089633a-44fa-4f96-b798-80b8a157bc2d" Visible="true" Text="ST_Address" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>421</X>
-        <Y>-60</Y>
+        <X>731</X>
+        <Y>-113</Y>
       </Location>
       <Size>
         <Width>177</Width>
         <Height>28</Height>
       </Size>
-      <X>421</X>
-      <Y>-60</Y>
+      <X>731</X>
+      <Y>-113</Y>
       <Width>177</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -1853,18 +2620,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-7278960</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag Name="USPSAddressVerifier" ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b9efe053-eabf-45ee-b5ef-e5a32db1cc29" Visible="true" Text="USPS&#xD;&#xA;Address&#xD;&#xA;Verifier" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag Name="USPSAddressVerifier" ElementName="HopeShapes.AgentShape, HopeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="f50644e3-45fb-4fb4-b914-df7644b5fd69" Visible="true" Text="USPS&#xD;&#xA;Address&#xD;&#xA;Verifier" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>59</X>
-        <Y>-126</Y>
+        <X>369</X>
+        <Y>-179</Y>
       </Location>
       <Size>
         <Width>81</Width>
         <Height>71</Height>
       </Size>
-      <X>59</X>
-      <Y>-126</Y>
+      <X>369</X>
+      <Y>-179</Y>
       <Width>81</Width>
       <Height>71</Height>
     </DisplayRectangle>
@@ -1898,18 +2665,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-5185306</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="5ce730c7-8839-434f-b8ec-aaa60f6370fe" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="2315a6c6-4e6c-425a-b0de-0e9db0107e62" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>1214</X>
-        <Y>-129</Y>
+        <X>1524</X>
+        <Y>-182</Y>
       </Location>
       <Size>
         <Width>263</Width>
         <Height>31</Height>
       </Size>
-      <X>1214</X>
-      <Y>-129</Y>
+      <X>1524</X>
+      <Y>-182</Y>
       <Width>263</Width>
       <Height>31</Height>
     </DisplayRectangle>
@@ -1943,18 +2710,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-16192</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="b55d823f-e930-40ab-baa6-e5ef24414b16" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="8542d9f4-9cbd-4316-808a-6d8263539e9a" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>1214</X>
-        <Y>-170</Y>
+        <X>1524</X>
+        <Y>-223</Y>
       </Location>
       <Size>
         <Width>263</Width>
         <Height>31</Height>
       </Size>
-      <X>1214</X>
-      <Y>-170</Y>
+      <X>1524</X>
+      <Y>-223</Y>
       <Width>263</Width>
       <Height>31</Height>
     </DisplayRectangle>
@@ -1988,18 +2755,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-16192</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="3e27bc33-0df7-40f3-af71-488dc3f6c1cb" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="ad7069d0-7962-44b4-945f-13f3b05d74ff" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>928</X>
-        <Y>-171</Y>
+        <X>1238</X>
+        <Y>-224</Y>
       </Location>
       <Size>
         <Width>263</Width>
         <Height>31</Height>
       </Size>
-      <X>928</X>
-      <Y>-171</Y>
+      <X>1238</X>
+      <Y>-224</Y>
       <Width>263</Width>
       <Height>31</Height>
     </DisplayRectangle>
@@ -2033,18 +2800,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-16192</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="fff979aa-e97b-492c-9492-8ec28758a436" Visible="true" Text="WebServer.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="20094617-1d39-45cf-9f76-9dc4b1492528" Visible="true" Text="WebServer.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>1171</X>
-        <Y>-346</Y>
+        <X>1481</X>
+        <Y>-399</Y>
       </Location>
       <Size>
         <Width>170</Width>
         <Height>29</Height>
       </Size>
-      <X>1171</X>
-      <Y>-346</Y>
+      <X>1481</X>
+      <Y>-399</Y>
       <Width>170</Width>
       <Height>29</Height>
     </DisplayRectangle>
@@ -2079,18 +2846,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="bf8e7853-807f-4de1-8216-8b45621f324f" Visible="true" Text="BaseRouteHandlers.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="dd819e71-71c1-47d7-9665-eac015c27399" Visible="true" Text="BaseRouteHandlers.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>1169</X>
-        <Y>-389</Y>
+        <X>1479</X>
+        <Y>-442</Y>
       </Location>
       <Size>
         <Width>169</Width>
         <Height>28</Height>
       </Size>
-      <X>1169</X>
-      <Y>-389</Y>
+      <X>1479</X>
+      <Y>-442</Y>
       <Width>169</Width>
       <Height>28</Height>
     </DisplayRectangle>
@@ -2125,18 +2892,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="e20ba2c3-4190-4671-99e7-639bb85a2856" Visible="true" Text="HttpGet.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="29127689-242a-4fde-ba47-6c354be90efe" Visible="true" Text="HttpGet.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>968</X>
-        <Y>-324</Y>
+        <X>1278</X>
+        <Y>-377</Y>
       </Location>
       <Size>
         <Width>133</Width>
         <Height>25</Height>
       </Size>
-      <X>968</X>
-      <Y>-324</Y>
+      <X>1278</X>
+      <Y>-377</Y>
       <Width>133</Width>
       <Height>25</Height>
     </DisplayRectangle>
@@ -2171,18 +2938,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="cf55d29e-300b-4df4-b5eb-0d352801dc2a" Visible="true" Text="PythonLauncher.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="4c3c3153-d602-4b7d-b49a-1eee1d529c87" Visible="true" Text="PythonLauncher.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>968</X>
-        <Y>-264</Y>
+        <X>1278</X>
+        <Y>-317</Y>
       </Location>
       <Size>
         <Width>133</Width>
         <Height>25</Height>
       </Size>
-      <X>968</X>
-      <Y>-264</Y>
+      <X>1278</X>
+      <Y>-317</Y>
       <Width>133</Width>
       <Height>25</Height>
     </DisplayRectangle>
@@ -2217,18 +2984,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.PythonFileBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="dac02da4-ae7b-46b9-ba04-602250e9e724" Visible="true" Text="personOfInterest.py" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.PythonFileBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="ca41cfcd-3221-451f-9455-7d402738e941" Visible="true" Text="personOfInterest.py" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>1130</X>
-        <Y>-267</Y>
+        <X>1440</X>
+        <Y>-320</Y>
       </Location>
       <Size>
         <Width>158</Width>
         <Height>30</Height>
       </Size>
-      <X>1130</X>
-      <Y>-267</Y>
+      <X>1440</X>
+      <Y>-320</Y>
       <Width>158</Width>
       <Height>30</Height>
     </DisplayRectangle>
@@ -2263,18 +3030,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-1</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="c3230525-f1c2-4f68-8147-16de1a1cf058" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="8b3c784b-1c12-49a7-8a14-9915b5186b09" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>929</X>
-        <Y>-129</Y>
+        <X>1239</X>
+        <Y>-182</Y>
       </Location>
       <Size>
         <Width>263</Width>
         <Height>31</Height>
       </Size>
-      <X>929</X>
-      <Y>-129</Y>
+      <X>1239</X>
+      <Y>-182</Y>
       <Width>263</Width>
       <Height>31</Height>
     </DisplayRectangle>
@@ -2308,18 +3075,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-16192</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="2687aee0-b5f1-4a40-b25c-0bac79c9f32c" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.AssemblyReferenceBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="8b9f01b6-ec00-404f-9c65-41b3e5825032" Visible="true" Text="AssyRef" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>928</X>
-        <Y>-86</Y>
+        <X>1238</X>
+        <Y>-139</Y>
       </Location>
       <Size>
         <Width>263</Width>
         <Height>31</Height>
       </Size>
-      <X>928</X>
-      <Y>-86</Y>
+      <X>1238</X>
+      <Y>-139</Y>
       <Width>263</Width>
       <Height>31</Height>
     </DisplayRectangle>
@@ -2353,18 +3120,18 @@
     <BorderPenColor>-16777216</BorderPenColor>
     <FillBrushColor>-16192</FillBrushColor>
   </ElementPropertyBag>
-  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="490a3a98-967f-4e01-b3fb-02c5a3dc9cf1" Visible="true" Text="Program.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
+  <ElementPropertyBag ElementName="FlowSharpCodeShapes.CSharpClassBox, FlowSharpCodeShapes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Id="feeebccf-5a55-4dda-ae05-ea32129176fc" Visible="true" Text="Program.cs" IsBookmarked="false" HasCornerAnchors="true" HasCenterAnchors="true" HasLeftRightAnchors="false" HasTopBottomAnchors="false" HasCenterAnchor="false" HasCornerConnections="true" HasCenterConnections="true" HasLeftRightConnections="false" HasTopBottomConnections="false" HasCenterConnection="false">
     <DisplayRectangle>
       <Location>
-        <X>967</X>
-        <Y>-394</Y>
+        <X>1277</X>
+        <Y>-447</Y>
       </Location>
       <Size>
         <Width>133</Width>
         <Height>25</Height>
       </Size>
-      <X>967</X>
-      <Y>-394</Y>
+      <X>1277</X>
+      <Y>-447</Y>
       <Width>133</Width>
       <Height>25</Height>
     </DisplayRectangle>
@@ -2390,7 +3157,7 @@
     <TextFontItalic>false</TextFontItalic>
     <TextFontBold>false</TextFontBold>
     <ExtraData>Program.cs</ExtraData>
-    <Json>{"csharp":"","Code":"using System;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\n\r\nusing Newtonsoft.Json;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\nusing Clifton.Core.Services.SemanticProcessorService;\r\n\r\nnamespace App\r\n{\r\n\tpublic class HopeMembrane : Membrane { }\r\n\t\r\n    /// &lt;summary&gt;\r\n    /// For testing the FlowSharpHopeService.StandAloneRunner.\r\n    /// Note that this project references a DLL built by FlowSharpHopeService.\r\n    /// &lt;/summary&gt;\r\n    public static class Program\r\n    {\r\n        public static TextBox tbLog;\r\n        public static Form form;\r\n\t\tpublic static SemanticProcessor sp;\r\n\r\n\t\tprivate static string url = \"http://localhost:5002/\";\r\n\t\tprivate static string PROCESSING = \"processing\";\r\n\r\n\t\t[STAThread]\r\n        public static void Main()\r\n        {\r\n            Application.EnableVisualStyles();\r\n            Application.SetCompatibleTextRenderingDefault(false);\r\n\r\n\t\t\tsp = new SemanticProcessor();\r\n\t\t\tsp.Processing += Processing;\r\n\r\n\t\t\tRouteHandlers routeHandlers = new RouteHandlers(sp);\r\n\r\n            WebServer webServer = new WebServer(routeHandlers);\r\n            webServer.Start(\"localhost\", new int[] { 5001 });\r\n\r\n            form = new Form();\r\n            form.Location = new Point(100, 100);\r\n            form.Size = new Size(500, 200);\r\n            form.Text = \"Stand Alone Runner\";\r\n\r\n            tbLog = new TextBox();\r\n            tbLog.Multiline = true;\r\n            tbLog.Dock = DockStyle.Fill;\r\n            form.Controls.Add(tbLog);\r\n\r\n            Application.Run(form);\r\n        }\r\n        \r\n        public static void Close()\r\n        {\r\n        \tform.Close();\r\n        }\r\n        \r\n        public static void Log(string msg)\r\n        {\r\n        \tform.Invoke(()=&gt;tbLog.AppendText(msg + \"\\r\\n\"));\r\n        }\r\n\r\n\t\tprivate static void Processing(object sender, ProcessEventArgs args)\r\n\t\t{\r\n\t\t\tstring fromMembraneTypeName = null;\r\n\t\t\tstring fromReceptorTypeName = null;\r\n\t\t\t\r\n\t\t\tif (args.FromMembrane != null)\r\n\t\t\t{\r\n\t\t\t\tfromMembraneTypeName = args.FromMembrane.GetType().FullName;\r\n\t\t\t}\r\n\t\t\t\r\n\t\t\tif (args.FromReceptor != null)\r\n\t\t\t{\r\n\t\t\t\tfromReceptorTypeName = args.FromReceptor.GetType().FullName;\r\n\t\t\t}\r\n\t\t\t\r\n\t\t\tstring json = JsonConvert.SerializeObject(new\r\n\t\t\t{\r\n\t\t\t\tFromMembraneTypeName = fromMembraneTypeName,\r\n\t\t\t\tFromReceptorTypeName = fromReceptorTypeName,\r\n\t\t\t\tToMembraneTypeName = args.ToMembrane.GetType().FullName,\r\n\t\t\t\tToReceptorTypeName = args.ToReceptor.GetType().FullName,\r\n\t\t\t\tSemanticTypeTypeName = args.SemanticType.GetType().FullName,\r\n\t\t\t});\r\n\r\n\t\t\tHttp.Get(url + PROCESSING + \"?proc=\" + json);\r\n\t\t}\r\n\t}\r\n}\r\n","TextChanged":"True","NamespaceName":"Namespace","ClassName":"Class","MethodName":"Method"}</Json>
+    <Json>{"csharp":"","Code":"using System;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\n\r\nusing Newtonsoft.Json;\r\n\r\nusing Clifton.Core.ExtensionMethods;\r\nusing Clifton.Core.Semantics;\r\nusing Clifton.Core.Services.SemanticProcessorService;\r\n\r\nnamespace App\r\n{\r\n\tpublic class HopeMembrane : Membrane { }\r\n\t\r\n    /// &lt;summary&gt;\r\n    /// For testing the FlowSharpHopeService.StandAloneRunner.\r\n    /// Note that this project references a DLL built by FlowSharpHopeService.\r\n    /// &lt;/summary&gt;\r\n    public static class Program\r\n    {\r\n        public static TextBox tbLog;\r\n        public static Form form;\r\n\t\tpublic static SemanticProcessor sp;\r\n\t\tpublic static LayoutManager layoutManager;\r\n\r\n\t\tprivate static string url = \"http://localhost:5002/\";\r\n\t\tprivate static string PROCESSING = \"processing\";\r\n\r\n\t\t[STAThread]\r\n        public static void Main()\r\n        {\r\n            Application.EnableVisualStyles();\r\n            Application.SetCompatibleTextRenderingDefault(false);\r\n            \r\n            layoutManager = new LayoutManager();\r\n\r\n\t\t\tsp = new SemanticProcessor();\r\n\t\t\tsp.Processing += Processing;\r\n\r\n\t\t\tRouteHandlers routeHandlers = new RouteHandlers(sp);\r\n\r\n            WebServer webServer = new WebServer(routeHandlers);\r\n            webServer.Start(\"localhost\", new int[] { 5001 });\r\n\r\n            form = new Form();\r\n            form.Location = new Point(100, 100);\r\n            form.Size = new Size(500, 200);\r\n            form.Text = \"Stand Alone Runner\";\r\n\r\n            tbLog = new TextBox();\r\n            tbLog.Multiline = true;\r\n            tbLog.Dock = DockStyle.Fill;\r\n            form.Controls.Add(tbLog);\r\n\r\n            Application.Run(form);\r\n        }\r\n        \r\n        public static void Close()\r\n        {\r\n        \tform.Close();\r\n        }\r\n        \r\n        public static void Log(string msg)\r\n        {\r\n        \tform.Invoke(()=&gt;tbLog.AppendText(msg + \"\\r\\n\"));\r\n        }\r\n\r\n\t\tprivate static void Processing(object sender, ProcessEventArgs args)\r\n\t\t{\r\n\t\t\tstring fromMembraneTypeName = null;\r\n\t\t\tstring fromReceptorTypeName = null;\r\n\t\t\t\r\n\t\t\tif (args.FromMembrane != null)\r\n\t\t\t{\r\n\t\t\t\tfromMembraneTypeName = args.FromMembrane.GetType().FullName;\r\n\t\t\t}\r\n\t\t\t\r\n\t\t\tif (args.FromReceptor != null)\r\n\t\t\t{\r\n\t\t\t\tfromReceptorTypeName = args.FromReceptor.GetType().FullName;\r\n\t\t\t}\r\n\t\t\t\r\n\t\t\tstring json = JsonConvert.SerializeObject(new\r\n\t\t\t{\r\n\t\t\t\tFromMembraneTypeName = fromMembraneTypeName,\r\n\t\t\t\tFromReceptorTypeName = fromReceptorTypeName,\r\n\t\t\t\tToMembraneTypeName = args.ToMembrane.GetType().FullName,\r\n\t\t\t\tToReceptorTypeName = args.ToReceptor.GetType().FullName,\r\n\t\t\t\tSemanticTypeTypeName = args.SemanticType.GetType().FullName,\r\n\t\t\t});\r\n\r\n\t\t\tHttp.Get(url + PROCESSING + \"?proc=\" + json);\r\n\t\t}\r\n\t}\r\n}\r\n","TextChanged":"True","NamespaceName":"Namespace","ClassName":"Class","MethodName":"Method"}</Json>
     <Connections />
     <Children />
     <TextAlign>TopLeft</TextAlign>

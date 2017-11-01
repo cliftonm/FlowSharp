@@ -36,6 +36,7 @@ namespace HopeShapes
             this.typeName = typeName;
             pgSemanticType.SelectedObject = st;
             FormClosing += OnFormClosing;
+			TopMost = true;
         }
 
         private void OnFormClosing(object sender, FormClosingEventArgs e)

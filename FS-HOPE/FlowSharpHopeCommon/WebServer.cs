@@ -57,7 +57,7 @@ namespace FlowSharpHopeCommon
                 else
                 {
                     string data = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding).ReadToEnd();
-                    ProcessRoute(context, data);
+                    Task.Run(() => ProcessRoute(context, data));
                 }
             }
         }

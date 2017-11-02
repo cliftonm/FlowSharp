@@ -208,7 +208,7 @@ namespace FlowSharpToolboxService
 
             if (el != null)
             {
-                var els = EraseIntersectionsTopToBottom(el);
+                var els = EraseOurselvesAndIntersectionsTopToBottom(el);
                 el.Select();
                 DrawBottomToTop(els);
                 UpdateScreen(els);
@@ -228,7 +228,7 @@ namespace FlowSharpToolboxService
         {
             if (selectedElements.Any())
             {
-                var els = EraseIntersectionsTopToBottom(selectedElements[0]);
+                var els = EraseOurselvesAndIntersectionsTopToBottom(selectedElements[0]);
                 selectedElements[0].Deselect();
                 DrawBottomToTop(els);
                 UpdateScreen(els);

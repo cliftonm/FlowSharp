@@ -41,6 +41,8 @@ namespace FlowSharpHopeService
         protected ToolStripMenuItem mnuBuild = new ToolStripMenuItem() { Name = "mnuBuild", Text = "Build" };
         protected ToolStripMenuItem mnuRun = new ToolStripMenuItem() { Name = "mnuRun", Text = "Run" };
         protected ToolStripMenuItem mnuStop = new ToolStripMenuItem() { Name = "mnuStop", Text = "Stop" };
+        protected ToolStripMenuItem mnuShowAnimation = new ToolStripMenuItem() { Name = "mnuShowAnimation", Text = "Show Animation" };
+        protected ToolStripMenuItem mnuShowActivation = new ToolStripMenuItem() { Name = "mnuShowActivation", Text = "Show Activation" };
         protected ToolStripMenuItem mnuShowRouting = new ToolStripMenuItem() { Name = "mnuShowRouting", Text = "Show Routing" };
         protected Dictionary<string, string> tempToTextBoxMap = new Dictionary<string, string>();
         protected IRunner runner;
@@ -119,12 +121,38 @@ namespace FlowSharpHopeService
         protected void InitializeEditorsMenu()
         {
             ToolStripMenuItem hopeToolStripMenuItem = new ToolStripMenuItem() { Name = "mnuHope", Text = "&Hope" };
-            hopeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { mnuBuild, mnuRun, mnuStop, mnuShowRouting });
+            hopeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] 
+            {
+                mnuBuild,
+                mnuRun,
+                mnuStop,
+                new ToolStripSeparator(),
+                mnuShowAnimation,
+                mnuShowActivation,
+                new ToolStripSeparator(),
+                mnuShowRouting
+            });
             ServiceManager.Get<IFlowSharpMenuService>().AddMenu(hopeToolStripMenuItem);
             mnuBuild.Click += OnHopeBuild;
             mnuRun.Click += OnHopeRun;
             mnuStop.Click += OnHopeStop;
             mnuShowRouting.Click += OnShowRouting;
+            mnuShowAnimation.Click += (_, __) =>
+            {
+                mnuShowAnimation.Checked ^= true;
+                animator.ShowAnimation = mnuShowAnimation.Checked;
+            };
+
+            mnuShowActivation.Click += (_, __) =>
+            {
+                mnuShowActivation.Checked ^= true;
+                animator.ShowActivation = mnuShowActivation.Checked;
+            };
+
+            mnuShowAnimation.Checked = true;
+            mnuShowActivation.Checked = true;
+            animator.ShowAnimation = true;
+            animator.ShowActivation = true;
         }
 
         protected void OnShowRouting(object sender, EventArgs e)

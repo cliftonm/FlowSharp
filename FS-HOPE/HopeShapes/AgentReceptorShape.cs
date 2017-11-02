@@ -46,6 +46,12 @@ namespace HopeShapes
         protected Point[] path;
         protected bool enabled;
 
+        public Color EnabledColor { get { return enabledColor; } }
+
+        protected Color enabledColor = Color.LightGreen;
+        protected Color disabledColor = Color.FromArgb(255, 80, 80);
+
+
         public string AgentName { get; set; }
         public bool Enabled
         {
@@ -53,11 +59,11 @@ namespace HopeShapes
             set
             {
                 enabled = value;
-                FillBrush.Color = enabled ? Color.LightGreen : Color.FromArgb(255, 80, 80);
-                Redraw();
-                IServiceManager serviceManager = canvas.ServiceManager;
-                IHigherOrderProgrammingService hope = serviceManager.Get<IHigherOrderProgrammingService>();
-                hope.EnableDisableReceptor(Text.Replace("\r", "").Replace("\n", ""), enabled);
+                // Note that redraw is not necessary because, as a property in the property grid, the
+                // property grid change handler has already erased the element.  All we need to do here
+                // is update the fill color.
+                FillBrush.Color = enabled ? enabledColor : disabledColor;
+                UpdateHope();
             }
         }
 
@@ -125,8 +131,18 @@ namespace HopeShapes
 
             if (Json.TryGetValue("agentEnabled", out strEnabled))
             {
-                Enabled = Json["agentEnabled"].to_b();
+                // use field, not property, so property setter doesn't get triggered before the
+                // element is drawn, because the path is null at this point.
+                enabled = Json["agentEnabled"].to_b();
+                UpdateHope();
             }
+        }
+
+        protected void UpdateHope()
+        {
+            IServiceManager serviceManager = canvas.ServiceManager;
+            IHigherOrderProgrammingService hope = serviceManager.Get<IHigherOrderProgrammingService>();
+            hope.EnableDisableReceptor(Text.RemoveWhitespace().Replace("\n", ""), enabled);
         }
     }
 

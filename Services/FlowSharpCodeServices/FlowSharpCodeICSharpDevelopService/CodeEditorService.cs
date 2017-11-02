@@ -84,10 +84,13 @@ namespace FlowSharpCodeICSharpDevelopService
 
         public void SetPosition(int pos)
         {
-            lastCaretPosition = pos;
-            editor.CaretOffset = pos;
-            DocumentLine docLine = editor.Document.GetLineByOffset(pos);
-            editor.ScrollToLine(docLine.LineNumber);
+            if (editor != null)
+            {
+                lastCaretPosition = pos;
+                editor.CaretOffset = pos;
+                DocumentLine docLine = editor.Document.GetLineByOffset(pos);
+                editor.ScrollToLine(docLine.LineNumber);
+            }
         }
 
         public void AddAssembly(string filename)

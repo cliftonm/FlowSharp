@@ -18,6 +18,9 @@ namespace FlowSharpHopeService
 {
     public class Animator
     {
+        public bool ShowAnimation { get; set; }
+        public bool ShowActivation { get; set; }
+
         protected enum FromShapeType
         {
             SemanticType,
@@ -47,50 +50,68 @@ namespace FlowSharpHopeService
                 elDest = GetElement(canvasController, args.ToReceptorTypeName.RightOf('.'), FromShapeType.Receptor);
             }
 
-            CarrierShape carrier = new CarrierShape(canvasController.Canvas);
-            carrier.DisplayRectangle = new Rectangle(elSrc.DisplayRectangle.Center().X, elSrc.DisplayRectangle.Center().Y, 10, 10);
-
-            canvasController.Canvas.FindForm().BeginInvoke(() =>
+            if (ShowAnimation)
             {
-                lock (this)
-                {
-                    carriers.Add(carrier);
-                    canvasController.Insert(carrier);
-                }
-            });
-
-            double dx = elDest.DisplayRectangle.Center().X - elSrc.DisplayRectangle.Center().X;
-            double dy = elDest.DisplayRectangle.Center().Y - elSrc.DisplayRectangle.Center().Y;
-            double steps = 20;
-            double subx = dx / steps;
-            double suby = dy / steps;
-            double px = elSrc.DisplayRectangle.Center().X;
-            double py = elSrc.DisplayRectangle.Center().Y;
-
-            for (int i = 0; i < steps; i++)
-            {
-                Application.DoEvents();
-                System.Threading.Thread.Sleep(25);
-                px += subx;
-                py += suby;
+                CarrierShape carrier = new CarrierShape(canvasController.Canvas);
+                carrier.DisplayRectangle = new Rectangle(elSrc.DisplayRectangle.Center().X, elSrc.DisplayRectangle.Center().Y, 10, 10);
 
                 canvasController.Canvas.FindForm().BeginInvoke(() =>
                 {
                     lock (this)
                     {
-                        Assert.SilentTry(() => canvasController.MoveElementTo(carrier, new Point((int)px, (int)py)));
+                        carriers.Add(carrier);
+                        canvasController.Insert(carrier);
                     }
                 });
-            }
 
-            canvasController.Canvas.FindForm().BeginInvoke(() =>
-            {
+                double dx = elDest.DisplayRectangle.Center().X - elSrc.DisplayRectangle.Center().X;
+                double dy = elDest.DisplayRectangle.Center().Y - elSrc.DisplayRectangle.Center().Y;
+                double steps = 20;
+                double subx = dx / steps;
+                double suby = dy / steps;
+                double px = elSrc.DisplayRectangle.Center().X;
+                double py = elSrc.DisplayRectangle.Center().Y;
+
+                for (int i = 0; i < steps; i++)
+                {
+                    Application.DoEvents();
+                    System.Threading.Thread.Sleep(25);
+                    px += subx;
+                    py += suby;
+
+                    canvasController.Canvas.FindForm().BeginInvoke(() =>
+                    {
+                        lock (this)
+                        {
+                            Assert.SilentTry(() => canvasController.MoveElementTo(carrier, new Point((int)px, (int)py)));
+                        }
+                    });
+                }
+
                 lock (this)
                 {
                     carriers.Remove(carrier);
                     Assert.SilentTry(() => canvasController.DeleteElement(carrier));
                 }
-            });
+            }
+
+            if (ShowActivation)
+            {
+                canvasController.Canvas.FindForm().BeginInvoke(() =>
+                {
+                    lock (this)
+                    {
+                        elDest.FillBrush.Color = Color.Blue;
+                        canvasController.Redraw(elDest);
+                        Application.DoEvents();
+                        System.Threading.Thread.Sleep(25);
+                        elDest.FillBrush.Color = ((IAgentReceptor)elDest).EnabledColor;
+                        canvasController.Redraw(elDest);
+                        Application.DoEvents();
+                        System.Threading.Thread.Sleep(25);
+                    }
+                });
+            }
         }
 
         public void RemoveCarriers()

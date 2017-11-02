@@ -336,7 +336,7 @@ namespace FlowSharpLib
         {
             selectedElements.Remove(el);
             el.DetachAll();
-            var els = EraseIntersectionsTopToBottom(el);
+            var els = EraseOurselvesAndIntersectionsTopToBottom(el);
             List<GraphicElement> elsToRedraw = els.ToList();
             elsToRedraw.Remove(el);
             el.Connections.ForEach(c => c.ToElement.RemoveConnection(c.ToConnectionPoint.Type));
@@ -349,7 +349,7 @@ namespace FlowSharpLib
         public void Redraw(GraphicElement el, int dx=0, int dy=0)
 		{
             Trace.WriteLine("*** Redraw1 " + el.GetType().Name);
-			var els = EraseIntersectionsTopToBottom(el, dx, dy);
+			var els = EraseOurselvesAndIntersectionsTopToBottom(el, dx, dy);
 			DrawBottomToTop(els, dx, dy);
 			UpdateScreen(els, dx, dy);
 		}
@@ -357,7 +357,7 @@ namespace FlowSharpLib
 		public void Redraw(GraphicElement el, Action<GraphicElement> afterErase)
 		{
             Trace.WriteLine("*** Redraw2 " + el.GetType().Name);
-            var els = EraseIntersectionsTopToBottom(el);
+            var els = EraseOurselvesAndIntersectionsTopToBottom(el);
 			UpdateScreen(els);
 			afterErase(el);
             el.UpdatePath();
@@ -388,7 +388,7 @@ namespace FlowSharpLib
             Trace.WriteLine("*** UpdateDisplayRectangle " + el.GetType().Name);
             int dx = delta.X.Abs();
 			int dy = delta.Y.Abs();
-            var els = EraseIntersectionsTopToBottom(el, dx, dy);
+            var els = EraseOurselvesAndIntersectionsTopToBottom(el, dx, dy);
             el.DisplayRectangle = newRect;
 			el.UpdatePath();
 			DrawBottomToTop(els, dx, dy);
@@ -535,7 +535,7 @@ namespace FlowSharpLib
                 Trace.WriteLine("*** MoveElement " + el.GetType().Name);
                 int dx = delta.X.Abs();
                 int dy = delta.Y.Abs();
-                var els = EraseIntersectionsTopToBottom(el, dx, dy);
+                var els = EraseOurselvesAndIntersectionsTopToBottom(el, dx, dy);
                 el.Move(delta);
 				el.UpdatePath();
                 UpdateConnections(el);
@@ -559,7 +559,7 @@ namespace FlowSharpLib
                 Trace.WriteLine("*** MoveElement " + el.GetType().Name);
                 int dx = delta.X.Abs();
                 int dy = delta.Y.Abs();
-                var els = EraseIntersectionsTopToBottom(el, dx, dy);
+                var els = EraseOurselvesAndIntersectionsTopToBottom(el, dx, dy);
                 el.Move(delta);
                 el.UpdatePath();
                 UpdateConnections(el);
@@ -681,7 +681,7 @@ namespace FlowSharpLib
         {
             List<GraphicElement> intersections = new List<GraphicElement>();
             RecursiveFindAllIntersections(intersections, el, dx, dy);
-            
+
             return intersections.OrderBy(e => elements.IndexOf(e));
         }
 
@@ -889,7 +889,7 @@ namespace FlowSharpLib
 			});
 		}
 
-		protected IEnumerable<GraphicElement> EraseIntersectionsTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
+		protected IEnumerable<GraphicElement> EraseOurselvesAndIntersectionsTopToBottom(GraphicElement el, int dx = 0, int dy = 0)
 		{
             if (++eraseCount > 1)
             {
@@ -897,8 +897,9 @@ namespace FlowSharpLib
             }
 
             Trace.WriteLine("Shape:EraseIntersectionsTopToBottom " + eraseCount);
-            IEnumerable<GraphicElement> intersections = FindAllIntersections(el, dx, dy);
-			intersections.Where(e => e.OnScreen(dx, dy)).ForEach(e => e.Erase());
+            var intersections = FindAllIntersections(el, dx, dy).ToList();
+            intersections.AddIfUnique(el);
+            intersections.Where(e => e.OnScreen(dx, dy)).OrderBy(e => elements.IndexOf(e)).ForEach(e => e.Erase());
 
 			return intersections;
 		}

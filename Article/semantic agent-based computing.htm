@@ -1,0 +1,150 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Semantic</title>
+</head>
+
+<body>
+
+<h2>Semantics</h2>
+<p>Semantic: &quot;Relating to meaning in language or logic&quot;<sup>1</sup></p>
+<p>Computer programs have no concept of the meaning of the information that they 
+process.&nbsp; As the expression goes, &quot;it's all just one's and zero's.&quot;&nbsp; 
+Programmers provide meaning to some piece of information by attaching a label to 
+some piece of information.&nbsp; There are labels everywhere -- in the program, 
+in the database, and in the information as its transmitted from one computer to 
+another.&nbsp; If these labels didn't exist, it wouldn't be possible for one 
+person to enter, say, an address, and another person on another computer system 
+to see that address in its &quot;right place.&quot;&nbsp; Labels themselves come in a 
+variety of forms, sometimes an actual name, sometimes just &quot;the information 
+starts at location 23 and has a length of 5&quot; (COBOL systems, still in use today, 
+are like that) -- this could be something that describes a 5 digit US ZipCode.</p>
+<p>But here's the thing -- the program doesn't know what the label means -- in 
+fact even when the programmer uses a label that is meaningful to the programmer,
+<i>the computer often throws away the label or reduced to something simpler (and 
+shorter and more memory efficient) for that the computer understands.</i>&nbsp; 
+In other words, the computer loses the &quot;meaning&quot; of the information.&nbsp; 
+Sometimes the label <i>is </i>preserved, for example in a database, but the only 
+reason the label is preserved is so that another programmer can access that 
+information with the same label, otherwise the programmer would have no idea 
+where to find the information -- the database program knows how to store and 
+retrieve the information for every label.</p>
+<p>And here's the other thing -- even if the program retains the label for a 
+piece of information, a single piece of information is usually in itself 
+meaningless -- <i>it has to be associated with other pieces of information to be 
+meaningful</i>.&nbsp; For example, your name actually consists of several pieces 
+of information: your first name, last name, middle initial, and perhaps other 
+information like &quot;Mr.&quot; or &quot;Mrs&quot;, or &quot;the 3<sup>rd</sup>&quot;.&nbsp; Uniqueness, 
+something that identifies a thing from all the other similar things is critical 
+in our world, for example an address can uniquely identify your house, which is 
+vital for plugging into our GPS navigator.&nbsp; Similarly, latitude and 
+longitude is another way of uniquely identifying any location on the planet.</p>
+<p>While a single label can sometimes have useful information by itself, it is 
+often the case that only when information is grouped together, like your street 
+name, street number, town and state into your &quot;address&quot;, does the collection of 
+information have any meaning to anyone and anything. </p>
+<p>Here's the next thing -- the program usually doesn't know about this 
+&quot;grouping&quot; of information.&nbsp; Even when the programmer groups the information 
+together, again the program, when translated into one's and zero's, loses that 
+grouping, or at best, retains it only for the purposes of another programmer to 
+&quot;translate back&quot; into a meaningful grouping <i>for the programmer.</i>&nbsp; 
+Labels are therefore hierarchical, but usually not to a very deep level -- 
+usually a grouping of a small set of labels is sufficient to create a &quot;group 
+label&quot; that incorporates the uniqueness, or at least usefulness, of the 
+information.&nbsp; </p>
+<p>Instead, another aspect of labels is that they are <i>relational</i>.&nbsp; 
+We are always creating relationships between things, for example, &quot;Marc lives in 
+New York.&quot;&nbsp; Given two labels &quot;first name&quot; (Marc) and &quot;state&quot; (New York), 
+there is a relationship between these two, expressed by &quot;lives in.&quot;&nbsp; As 
+with labels, relationships are a construct that the programmer creates, and 
+programs like a &quot;relational database manager&quot; preserve those relationships, but 
+again with no understanding of the label &quot;lives in&quot; -- this kind of label, a 
+&quot;relationship label&quot; is again converted into meaningless ones and zeros.</p>
+<p>While our whole world is relational, we usually end up being constrained by 
+the program to create new and interesting relationships because the programmer 
+wrote the program to only work with a small (sometimes very small) set of 
+relationships.&nbsp; There is nothing that <i>glues together</i> information and 
+its relationships unless it's been programmed.&nbsp; Those &quot;fixed relationship&quot; 
+programs have worked pretty well for us so far but is one of the reasons 
+programs keep being upgraded or even rewritten.&nbsp; We even have general 
+relationship building programs that let us create new relationships, whether its 
+graphing numbers in Excel to using a program like Sales Force that help us do 
+fund raising (for example) and create our own relationships out of groups of 
+labels.</p>
+<h2>Agents</h2>
+<p>Agent: &quot;Something that produces or is capable of producing an effect&quot;<sup>2</sup></p>
+<p>At the end of the day, all those programs still have no idea what <i>to do
+</i>with all their the information unless they are told exactly what to do with 
+it.&nbsp; I would go so far as to say that information, regardless of how its 
+grouped and related, is actually meaningless (or pointless) unless there is 
+something acts on that information.&nbsp; Usually, the &quot;agent&quot; is a person, or 
+possibly a &quot;bot&quot; - some autonomous expert system process like credit card fraud 
+detection - or nowadays the term du jour, &quot;AI&quot; because the process is not just a 
+set of rules but is capable of adapting/learning from the information.&nbsp; 
+Whether the agent is a person or an AI, the information becomes meaningful 
+because an effect is produced, be it a hotel reservation system or a 
+self-driving car.&nbsp; </p>
+<p>Historically, programs have been closed systems capable only of &quot;producing an 
+effect&quot; based on how they were programmed (again a reason why programs are being 
+extended and/or rewritten constantly.)&nbsp; Nowadays, many programs are 
+extensible - even your browser is extensible (for example, an ad blocker) so 
+that different effects can be produced (like blocking ads.)&nbsp; Programs even 
+provide services that other programs can use to produce different effects than 
+originally intended -- for example, there are many services another program can 
+tap into for weather reports, news feeds, crime rates, horoscope of the day, and 
+so on, to act on the information in a different way.</p>
+<p>There are two ways that one program communicates with another program.&nbsp; 
+Program A either &quot;pulls&quot; the information from program B, or program B &quot;pushes&quot; 
+the information to program A.&nbsp; An example of &quot;pulling&quot; is when you look 
+something up on Google.&nbsp; Ignoring the details for the moment, what Google 
+does is &quot;pull&quot; the content from other websites, databases, and programs so that 
+when you search for something, you get a list of (hopefully) relevant links 
+often with additional information such as images, maps, ratings, availabilities, 
+menus, hours of operation, addresses, phone numbers, etc., depending on your 
+search request.&nbsp; Blogging is an example of &quot;pushing.&quot;&nbsp; Any blogging 
+website (such as WordPress) has the capability to also &quot;push&quot; your post onto 
+your Facebook, LinkedIn, and Twitter accounts. </p>
+<p>Both pulling and pushing can be set up as autonomous processes, meaning that 
+they not only happen automatically but in some cases will happen at regular 
+intervals.&nbsp; The problem is that regardless of whether information is pulled 
+or pushed, program A is interacting with program B in a very specific, <i>
+pre-programmed</i> manner.&nbsp; For example, the popular picture site &quot;Pinterest&quot; 
+can connect to your Facebook, Twitter, Google+, Gmail, Yahoo, and Microsoft 
+accounts.&nbsp; That's it.&nbsp; If you post a picture to PInterest, there's no 
+way to send it to your blog.&nbsp; Conversely, it's interesting to note that 
+there are several extensions -- called plugins -- for WordPress that can connect 
+to Pinterest.</p>
+<p>This limitation exists because of how the program is written (websites are 
+still programs.)&nbsp; A program may have a limited set of &quot;push&quot; features and 
+may also provide some service from which you can &quot;pull&quot; information -- it's 
+really up to what the programmer (but more realistically, the company) decides 
+to offer.&nbsp; Of course, some services, like Kelly Blue Book, offer many 
+interesting services if you are another company that can afford to pay for those 
+services.&nbsp;&nbsp; </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&quot;Linguistic representations support logical outcomes.&quot;<sup>3</sup></p>
+<p>&quot;Understanding the meanings (semantics) of computational content (of various 
+sorts, including, but is not limited to, text, video, audio, process, network, 
+software and hardware) and expressing them in a machine-processable format&quot;<sup>4</sup></p>
+<p>&nbsp;</p>
+<p>References</p>
+<p>1 - <a href="https://www.merriam-webster.com/dictionary/semantic">
+https://www.merriam-webster.com/dictionary/semantic</a> </p>
+<p>2 - <a href="https://www.merriam-webster.com/dictionary/agent">
+https://www.merriam-webster.com/dictionary/agent</a></p>
+<p>&nbsp;</p>
+<p>3 - <a href="https://www.techopedia.com/definition/687/semantics-computing">
+https://www.techopedia.com/definition/687/semantics-computing</a></p>
+<p>4- <a href="https://en.wikipedia.org/wiki/Semantic_computing">
+https://en.wikipedia.org/wiki/Semantic_computing</a> </p>
+
+</body>
+
+</html>

@@ -454,7 +454,7 @@ namespace FlowSharpHopeService
                 {
                     try
                     {
-                        sb.AppendLine(String.Format("Error ({0} - {1}): {2}", tempToTextBoxMap[Path.GetFileNameWithoutExtension(error.FileName.RemoveWhitespace()) + ".cs"], error.Line, error.ErrorText));
+                        sb.AppendLine(String.Format("Error ({0} - {1}): {2}", tempToTextBoxMap[Path.GetFileNameWithoutExtension(error.FileName.RemoveWhitespace()) + ".cs"].RemoveWhitespace(), error.Line, error.ErrorText));
                     }
                     catch
                     {

@@ -103,6 +103,7 @@
   <ItemGroup>
     <Content Include="bin\Debug\FlowSharpCodeModules.xml" />
     <Content Include="bin\Debug\HelloWorld.py" />
+    <Content Include="bin\Debug\HopeTestPolicy.xml" />
     <Content Include="bin\Debug\layout.xml" />
     <Content Include="bin\Debug\modules.xml">
       <SubType>Designer</SubType>
